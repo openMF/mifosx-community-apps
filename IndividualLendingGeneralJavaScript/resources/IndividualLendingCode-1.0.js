@@ -822,17 +822,7 @@ function loadILLoan(loanId) {
 					e.preventDefault();
 				});
 				
-				var oTable = $("#entitytable").dataTable( {
-					"bSort": true,
-					"bInfo": true,
-					"bJQueryUI": true,
-					"bRetrieve": false,
-					"bScrollCollapse": false,
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": false,
-					"bAutoWidth": false
-				} );
+				var oTable = displayListTable("entitytable");
 			  };
 
   		executeAjaxRequest('users', 'GET', "", successFunction, formErrorFunction);
@@ -876,17 +866,7 @@ function loadILLoan(loanId) {
 					e.preventDefault();
 				});
 				
-				var oTable = $("#entitytable").dataTable( {
-					"bSort": true,
-					"bInfo": true,
-					"bJQueryUI": true,
-					"bRetrieve": false,
-					"bScrollCollapse": false,
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": false,
-					"bAutoWidth": false
-				} );
+				var oTable = displayListTable("entitytable");
 			  };
 		
   		executeAjaxRequest('roles', 'GET', "", successFunction, formErrorFunction);
@@ -917,17 +897,7 @@ function loadILLoan(loanId) {
 				var listHtml = $(templateSelector).render(permissionsObject);
 				$(displayAreaDivSelector).html(listHtml);
 				
-				var oTable = $("#entitytable").dataTable( {
-					"bSort": true,
-					"bInfo": true,
-					"bJQueryUI": true,
-					"bRetrieve": false,
-					"bScrollCollapse": false,
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": false,
-					"bAutoWidth": false
-				} );
+				var oTable = displayListTable("entitytable");
 			  };
 
   		executeAjaxRequest('permissions', 'GET', "", successFunction, formErrorFunction);
@@ -975,17 +945,7 @@ function loadILLoan(loanId) {
 					e.preventDefault();
 				});
 				
-				var oTable = $("#productstable").dataTable( {
-					"bSort": true,
-					"bInfo": true,
-					"bJQueryUI": true,
-					"bRetrieve": false,
-					"bScrollCollapse": false,
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": false,
-					"bAutoWidth": false
-				});
+				var oTable = displayListTable("productstable");
 			  };
 
   		executeAjaxRequest('loanproducts', 'GET', "", successFunction, formErrorFunction);
@@ -1031,18 +991,7 @@ function loadILLoan(loanId) {
 					e.preventDefault();
 				});
 				
-				var oTable = $("#officestable").dataTable( {
-					"bSort": true,
-					"bInfo": true,
-					"bJQueryUI": true,
-					"bRetrieve": false,
-					"bScrollCollapse": false,
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": false,
-					"bAutoWidth": false
-					
-				} );
+				var oTable = displayListTable("officestable");
 			  };
 		
   		executeAjaxRequest('offices', 'GET', "", successFunction, formErrorFunction);
@@ -1565,6 +1514,35 @@ $.fn.serializeObject = function()
 	};
 	
 
+
+function displayListTable(tableDiv) {
+
+	return  $("#" + tableDiv).dataTable( {
+					"bSort": true,
+					"bInfo": true,
+					"bJQueryUI": true,
+					"bRetrieve": false,
+					"bScrollCollapse": false,
+					"bPaginate": false,
+					"bLengthChange": false,
+					"bFilter": false,
+					"bAutoWidth": false,
+					"oLanguage": {
+								"sEmptyTable": doI18N("rpt.no.entries"),
+								"sZeroRecords": doI18N("rpt.no.matching.entries"),
+								"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
+								"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
+        							"oPaginate": {
+            									"sFirst"    : doI18N("rpt.first"),
+            									"sLast"     : doI18N("rpt.last"),
+            									"sNext"     : doI18N("rpt.next"),
+            									"sPrevious" : doI18N("rpt.previous")
+        									},
+								"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
+								"sSearch": doI18N("rpt.search")
+					}
+				} );
+}
 
 
 
