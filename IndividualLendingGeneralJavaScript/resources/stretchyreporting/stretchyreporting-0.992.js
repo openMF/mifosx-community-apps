@@ -727,9 +727,18 @@ dataTableDef = {
 		"aoColumns": [],
 		"sPaginationType": "full_numbers",
 		"oLanguage": {
-					"SZeroRecords": doI18N("rpt.no.entries"),
+					"sEmptyTable": doI18N("rpt.no.entries"),
+					"sZeroRecords": doI18N("rpt.no.matching.entries"),
 					"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
-					"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")"
+					"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
+        				"oPaginate": {
+            						"sFirst"    : doI18N("rpt.first"),
+            						"sLast"     : doI18N("rpt.last"),
+            						"sNext"     : doI18N("rpt.next"),
+            						"sPrevious" : doI18N("rpt.previous")
+        						},
+					"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
+					"sSearch": doI18N("rpt.search")
 				},
 		"bDeferRender": true,
 		"bProcessing": true,
