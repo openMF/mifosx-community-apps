@@ -719,10 +719,6 @@ dataTableDef = {
 						{	"sExtends": "xls",
 							"sButtonText": doI18N("Save to CSV")
 						}
-						// {
-						// "sExtends": "print",
-						// "sButtonText": doI18N("Print")
-						// }
 						],
 				"sSwfPath": resValue + "DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
 			        },
@@ -730,6 +726,11 @@ dataTableDef = {
 		"aaData": [],
 		"aoColumns": [],
 		"sPaginationType": "full_numbers",
+		"oLanguage": {
+					"SZeroRecords": doI18N("rpt.no.entries"),
+					"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
+					"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")"
+				},
 		"bDeferRender": true,
 		"bProcessing": true,
 		"aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]]
