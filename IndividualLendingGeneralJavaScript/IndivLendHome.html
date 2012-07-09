@@ -139,7 +139,7 @@ $(document).ready(function() {
 
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
-	<input type="hidden" id="locale" name="locale" value="en" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.loan.information")}}</legend>
