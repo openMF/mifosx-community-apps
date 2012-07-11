@@ -1150,6 +1150,45 @@ $(document).ready(function() {
 </form>
 </script>
 
+
+<script id="fundListTemplate" type="text/x-jquery-tmpl">
+<table id='fundstable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.fund.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.fund.externalid")}}</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+{{#each}}
+<tr>
+	<td>{{=name}}</td>
+	<td>{{=externalId}}</td>
+	<td>
+		<a id='edit{{=id}}' class='edit' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.fund.viewedit")}}</a>
+		<a id='delete{{=id}}' class='delete' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.fund.delete")}}</a>
+	</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
+<script id="fundFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.fund.details")}}</legend>
+		<label for="name">{{=$ctx.doI18N("form.label.fund.name")}}</label>
+		<input id="name" name="name" title="" type="text" value="{{=name}}" size="75"/>
+		<label for="externalId">{{=$ctx.doI18N("form.label.fund.externalid")}}</label>
+		<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" size="75"/>
+	</fieldset>
+</form>
+</script>
+
 <script id="configurationFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>

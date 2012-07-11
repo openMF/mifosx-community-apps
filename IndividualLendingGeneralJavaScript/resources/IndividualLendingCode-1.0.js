@@ -110,6 +110,7 @@ function setOrgAdminContent(divName) {
 
 	var addLoanProductUrl = "maintainLoanProduct('loanproducts/template', 'loanproducts', 'POST', 'dialog.title.add.loan.product');return false;";
 	var addOfficeUrl = "maintainOffice('offices/template', 'offices', 'POST', 'dialog.title.add.office');return false;";
+	var addFundUrl = "maintainFund('', 'funds', 'POST', 'dialog.title.add.fund');return false;";
 	var orgCurrenciesUrl = "maintainOrgCurrencies('configurations/currency', 'configurations/currency', 'PUT', 'dialog.title.configuration.currencies');return false;";
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
@@ -122,6 +123,10 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshOfficesView();return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addOfficeUrl + '" id="addoffice">' + doI18N("administration.link.add.office") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="refreshFundsView();return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrenciesUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
 	htmlVar += '</span>';
@@ -1009,6 +1014,50 @@ function loadILLoan(loanId) {
 		
 		popupDialogWithFormView(getUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
 	}
+
+
+	function refreshFundsView() {
+
+		var successFunction = function(data, textStatus, jqXHR) {
+								
+				var html = $("#fundListTemplate").render(data);
+				$("#listplaceholder").html(html);  
+				
+				$("a.edit").click( function(e) {
+					var linkId = this.id;
+					var entityId = linkId.replace("edit", "");
+					var getAndPutUrl = 'funds/' + entityId;
+					maintainFund(getAndPutUrl, getAndPutUrl, 'PUT', "dialog.title.fund.details");
+					e.preventDefault();
+				});
+
+				$("a.delete").click( function(e) {
+					//var linkId = this.id;
+					//var entityId = linkId.replace("delete", "");
+					showNotAvailableDialog('dialog.title.functionality.not.available');
+					e.preventDefault();
+				});
+				
+				var oTable = displayListTable("fundstable");
+			  };
+		
+  		executeAjaxRequest('funds', 'GET', "", successFunction, formErrorFunction);
+	}
+	
+	function maintainFund(getUrl, putOrPostUrl, submitType, dialogTitle) {
+		var templateSelector = "#fundFormTemplate";
+		var width = 600; 
+		var height = 400;
+
+		var saveSuccessFunction = function(data, textStatus, jqXHR) {
+			  $("#dialog-form").dialog("close");
+			  refreshFundsView();
+		}
+		
+		if (getUrl > '') popupDialogWithFormView(getUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction)
+		else popupDialogWithPostOnlyFormView(putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
+	}
+
 
 	function maintainOrgCurrencies(getUrl, putOrPostUrl, submitType, dialogTitle) {
 		var templateSelector = "#configurationFormTemplate";
