@@ -919,7 +919,7 @@ $(document).ready(function() {
 <!-- admin templates below here -->
 
 
-<script id="productFormTemplate" type="text/x-jquery-tmpl">
+<script id="loanproductFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
 	<fieldset>
@@ -1058,8 +1058,8 @@ $(document).ready(function() {
 </form>
 </script>
 
-<script id="productListTemplate" type="text/x-jquery-tmpl">
-<table id='productstable' width='100%'>
+<script id="loanproductListTemplate" type="text/x-jquery-tmpl">
+<table id='loanproductstable' width='100%'>
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.product.name")}}</th>
@@ -1070,16 +1070,16 @@ $(document).ready(function() {
 		</tr>
 	</thead>
 	<tbody>
-{{#each products}}
+{{#each crudRows}}
 <tr>
 	<td title='{{=description}}'>{{=name}}</td>
 	<td>{{=$ctx.globalDateTime(createdOn)}}</td>
 	<td>{{=$ctx.globalDateTime(lastModifedOn)}}</td>
 	<td>Yes</td>
 	<td>
-		<a id='deactivateproduct{{=id}}' class='deactivateproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deactivate")}}</a>
-		<a id='editproduct{{=id}}' class='editproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='deleteproduct{{=id}}' class='deleteproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		<a id='deactivateloanproduct{{=id}}' class='deactivateloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deactivate")}}</a>
+		<a id='editloanproduct{{=id}}' class='editloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='deleteloanproduct{{=id}}' class='deleteloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 	</td>
 </tr>
 {{/each}}
@@ -1166,8 +1166,8 @@ $(document).ready(function() {
 	<td>{{=name}}</td>
 	<td>{{=externalId}}</td>
 	<td>
-		<a id='edit{{=id}}' class='edit' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='delete{{=id}}' class='delete' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		<a id='editfund{{=id}}' class='editfund' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='deletefund{{=id}}' class='deletefund' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 	</td>
 </tr>
 {{/each}}
