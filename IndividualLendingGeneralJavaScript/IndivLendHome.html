@@ -1361,8 +1361,8 @@ $(document).ready(function() {
 </table>
 </script>
 
-<script id="usersListTemplate" type="text/x-jquery-tmpl">
-<table id='entitytable' width='100%'>
+<script id="userListTemplate" type="text/x-jquery-tmpl">
+<table id='userstable' width='100%'>
 <thead>
 	<tr>
 		<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
@@ -1373,15 +1373,15 @@ $(document).ready(function() {
 	</tr>
 </thead>
 <tbody>
-{{#each users}}
+{{#each crudRows}}
 <tr>
 	<td>{{=officeName}}</td>
 	<td>{{=username}}</td>
     <td>{{=lastname}}, {{=firstname}}</td>
 	<td>{{=email}}</td>
 	<td>
-		<a id='edit{{=id}}' class='edit' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='delete{{=id}}' class='delete' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		<a id='edituser{{=id}}' class='edituser' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='deleteuser{{=id}}' class='deleteuser' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 	</td>
 </tr>
 {{/each}}

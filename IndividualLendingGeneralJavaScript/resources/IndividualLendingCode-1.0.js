@@ -1,4 +1,28 @@
 
+crudData = {
+		loanproduct: {
+				editTemplateNeeded: true,
+				dialogWidth: 800,
+				dialogHeight: 550
+			},
+		office: {
+				editTemplateNeeded: true,
+				dialogWidth: 600,
+				dialogHeight: 400
+			},
+		fund: {
+				editTemplateNeeded: false,
+				dialogWidth: 600,
+				dialogHeight: 400
+			},
+		user: {
+				editTemplateNeeded: true,
+				dialogWidth: 1000,
+				dialogHeight: 550
+			}
+
+		};
+
 saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
 						  	$("#dialog-form").dialog("close");
 		  					showILClient(currentClientId );
@@ -108,24 +132,6 @@ function setAddLoanContent(divName) {
 
 function setOrgAdminContent(divName) {
 
-	crudData = {
-			loanproduct: {
-					editTemplateNeeded: true,
-					dialogWidth: 800,
-					dialogHeight: 550
-					},
-			office: {
-					editTemplateNeeded: true,
-					dialogWidth: 600,
-					dialogHeight: 400
-					},
-			fund: {
-					editTemplateNeeded: false,
-					dialogWidth: 600,
-					dialogHeight: 400
-					}
-			};
-
 	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
@@ -157,13 +163,13 @@ function setOrgAdminContent(divName) {
 
 function setUserAdminContent(divName) {
 
-	var addUserUrl = "maintainUser('users/template', 'users', 'POST', 'dialog.title.add.user');return false;";
+	var addUserUrl = "maintainTable('user', 'users', 'POST');return false;";
 	var addRoleUrl = "maintainRole('roles/template', 'roles', 'POST', 'dialog.title.add.role');return false;";
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
 	var htmlVar = '<div>';
 	htmlVar += '<span style="float: left">';
-	htmlVar += '	<a href="unknown.html" onclick="refreshUsersView();return false;" id="listusers">' + doI18N("administration.link.view.users") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'user'" + ');return false;" id="listusers">' + doI18N("administration.link.view.users") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addUserUrl + '" id="adduser">' + doI18N("administration.link.add.user") + '</a>';
 	htmlVar += ' | ';
@@ -175,7 +181,7 @@ function setUserAdminContent(divName) {
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
-	htmlVar += '<div id="contentplaceholder" ></div>';
+	htmlVar += '<div id="listplaceholder" ></div>';
 	$("#" + divName).html(htmlVar);
 }
 
@@ -893,49 +899,6 @@ function loadILLoan(loanId) {
 
 	function showILUserAdmin() {
 		setUserAdminContent("content");
-	}
-
-	function refreshUsersView() {
-				
-		var successFunction = function(data, textStatus, jqXHR) {
-				var usersObject = new Object();
-				usersObject.users = data;
-				var usersListHtml = $("#usersListTemplate").render(usersObject);
-				$("#contentplaceholder").html(usersListHtml);  
-				
-				$("a.edit").click( function(e) {
-					var linkId = this.id;
-					var entityId = linkId.replace("edit", "");
-					var getUrl = 'users/' + entityId + '?template=true';
-					var putUrl = 'users/' + entityId;
-					maintainUser(getUrl, putUrl, 'PUT', "dialog.title.edit.details");
-					e.preventDefault();
-				});
-				
-				$("a.delete").click( function(e) {
-					//var linkId = this.id;
-					//var entityId = linkId.replace("delete", "");
-					showNotAvailableDialog('dialog.title.functionality.not.available');
-					e.preventDefault();
-				});
-				
-				var oTable = displayListTable("entitytable");
-			  };
-
-  		executeAjaxRequest('users', 'GET', "", successFunction, formErrorFunction);
-	}
-	
-	function maintainUser(getUrl, putOrPostUrl, submitType, dialogTitle) {
-
-		var templateSelector = "#userFormTemplate";
-		var width = 1000; 
-		var height = 550;
-					
-		var saveSuccessFunction = function(data, textStatus, jqXHR) {
-			$("#dialog-form").dialog("close");
-			refreshUsersView();
-		}		
-		popupDialogWithFormView(getUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
 	}
 
 	function refreshRolesView() {
