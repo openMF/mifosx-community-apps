@@ -1338,7 +1338,7 @@ $(document).ready(function() {
 </script>
 
 <script id="roleListTemplate" type="text/x-jquery-tmpl">
-<table id='entitytable' width='100%'>
+<table id='rolestable' width='100%'>
 <thead>
 	<tr>
 		<th>{{=$ctx.doI18N("table.heading.rolename")}}</th>
@@ -1347,13 +1347,13 @@ $(document).ready(function() {
 	</tr>
 </thead>
 <tbody>
-{{#each roles}}
+{{#each crudRows}}
 <tr>
 	<td>{{=name}}</td>
 	<td>{{=description}}</td>
 	<td>
-		<a id='edit{{=id}}' class='edit' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='delete{{=id}}' class='delete' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		<a id='editrole{{=id}}' class='editrole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='deleterole{{=id}}' class='deleterole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 	</td>
 </tr>
 {{/each}}

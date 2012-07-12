@@ -19,6 +19,11 @@ crudData = {
 				editTemplateNeeded: true,
 				dialogWidth: 1000,
 				dialogHeight: 550
+			},
+		role: {
+				editTemplateNeeded: true,
+				dialogWidth: 1000,
+				dialogHeight: 550
 			}
 
 		};
@@ -164,7 +169,7 @@ function setOrgAdminContent(divName) {
 function setUserAdminContent(divName) {
 
 	var addUserUrl = "maintainTable('user', 'users', 'POST');return false;";
-	var addRoleUrl = "maintainRole('roles/template', 'roles', 'POST', 'dialog.title.add.role');return false;";
+	var addRoleUrl = "maintainTable('role', 'roles', 'POST');return false;";
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
 	var htmlVar = '<div>';
@@ -173,7 +178,7 @@ function setUserAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addUserUrl + '" id="adduser">' + doI18N("administration.link.add.user") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshRolesView();return false;" id="listroles">' + doI18N("administration.link.view.roles") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'role'" + ');return false;" id="listroles">' + doI18N("administration.link.view.roles") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addRoleUrl + '" id="addrole">' + doI18N("administration.link.add.role") + '</a>';
 	htmlVar += ' | ';
@@ -900,52 +905,7 @@ function loadILLoan(loanId) {
 	function showILUserAdmin() {
 		setUserAdminContent("content");
 	}
-
-	function refreshRolesView() {
-		
-		var successFunction = function(data, textStatus, jqXHR) {
-				  
-				var rolesObject = new Object();
-				rolesObject.roles = data;
-				var listHtml = $("#roleListTemplate").render(rolesObject);
-				$("#contentplaceholder").html(listHtml);
-				
-				$("a.edit").click( function(e) {
-					var linkId = this.id;
-					var entityId = linkId.replace("edit", "");
-					var getUrl = 'roles/' + entityId + '?template=true';
-					var putUrl = 'roles/' + entityId;
-					maintainRole(getUrl, putUrl, 'PUT', "dialog.title.edit.details");					
-					e.preventDefault();
-				});
-				
-				$("a.delete").click( function(e) {
-					//var linkId = this.id;
-					//var entityId = linkId.replace("delete", "");
-					showNotAvailableDialog('dialog.title.functionality.not.available');
-					e.preventDefault();
-				});
-				
-				var oTable = displayListTable("entitytable");
-			  };
-		
-  		executeAjaxRequest('roles', 'GET', "", successFunction, formErrorFunction);
-	}
 	
-	function maintainRole(getUrl, putOrPostUrl, submitType, dialogTitle) {
-
-		var templateSelector = "#roleFormTemplate";
-		var width = 1000; 
-		var height = 550;
-					
-		var saveSuccessFunction = function(data, textStatus, jqXHR) {
-						  $("#dialog-form").dialog("close");
-						  refreshRolesView();
-						}
-
-		popupDialogWithFormView(getUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
-	}
-
 
 	function refreshPermissionsView() {
 		var templateSelector = "#permissionListTemplate";
@@ -983,6 +943,9 @@ function loadILLoan(loanId) {
 		
 		popupDialogWithFormView(getUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
 	}
+
+
+
 
 
 
