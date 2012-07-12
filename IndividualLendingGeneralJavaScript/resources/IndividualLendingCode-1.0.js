@@ -108,9 +108,9 @@ function setAddLoanContent(divName) {
 
 function setOrgAdminContent(divName) {
 
-	var addProductUrl = "maintainTable('loanproduct', 'loanproducts/template', 'loanproducts', 'POST', 'dialog.title.add.loan.product', 800, 550);return false;";
-	var addOfficeUrl = "maintainOffice('offices/template', 'offices', 'POST', 'dialog.title.add.office');return false;";
-	var addFundUrl = "maintainTable('fund', '', 'funds', 'POST', 'dialog.title.add.fund', 600, 400);return false;";
+	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'loanproducts', 'POST', true, 800, 550);return false;";
+	var addOfficeUrl = "maintainTable('office', 'offices', 'offices', 'POST', true, 600, 400);return false;";
+	var addFundUrl = "maintainTable('fund', '', 'funds', 'POST', false, 600, 400);return false;";
 	var orgCurrenciesUrl = "maintainOrgCurrencies('configurations/currency', 'configurations/currency', 'PUT', 'dialog.title.configuration.currencies');return false;";
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
@@ -120,7 +120,7 @@ function setOrgAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addProductUrl + '" id="addloanproduct">' + doI18N("administration.link.add.product") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshOfficesView();return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ', true, 600, 400);return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addOfficeUrl + '" id="addoffice">' + doI18N("administration.link.add.office") + '</a>';
 	htmlVar += ' | ';
@@ -811,8 +811,7 @@ function loadILLoan(loanId) {
 
 					var putUrl = tableName + "s/" + entityId;
 					var getUrl = putUrl;
-					if (editTemplateNeeded == true) getUrl += '?template=true';
-					maintainTable(tableName, getUrl, putUrl, 'PUT', "dialog.title." + tableName + ".details", width, height);
+					maintainTable(tableName, getUrl, putUrl, 'PUT', editTemplateNeeded, width, height);
 					e.preventDefault();
 				});
 
@@ -832,16 +831,38 @@ function loadILLoan(loanId) {
   		executeAjaxRequest(tableName + 's', 'GET', "", successFunction, formErrorFunction);
 	}
 	
-	function maintainTable(tableName, getUrl, putOrPostUrl, submitType, dialogTitle, width, height) {
+	function maintainTable(tableName, getUrl, putOrPostUrl, submitType, editTemplateNeeded, width, height) {
+
+		if (!(submitType == "PUT" || submitType == "POST"))
+		{
+			alert("System Error - Invalid submitType: " + submitType);
+			return;
+		}
+
+
 		var templateSelector = "#" + tableName + "FormTemplate";
+
+		var dialogTitle = "dialog.title." + tableName + ".details";
+		if (submitType == "POST") dialogTitle = 'dialog.title.add.' + tableName;
+
+		var updatedGetUrl = getUrl
+		if (updatedGetUrl > '')
+		{
+			if (editTemplateNeeded == true) 
+			{
+				if (submitType == "POST") updatedGetUrl += '/template';
+				else updatedGetUrl += '?template=true';
+			}
+		}
 
 		var genSSF = 'var saveSuccessFunction = function(data, textStatus, jqXHR) {';
 		genSSF += '$("#dialog-form").dialog("close");';
-		genSSF += 'refreshTableView("' + tableName + '");';
+		genSSF += 'refreshTableView("' + tableName + '", ' + editTemplateNeeded + ' , ' + width + ', ' + height + ');';
 		genSSF += '}';
+alert(genSSF);
 		eval(genSSF);
 
-		if (getUrl > '') popupDialogWithFormView(getUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction)
+		if (getUrl > '') popupDialogWithFormView(updatedGetUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction)
 		else popupDialogWithPostOnlyFormView(putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
 	}
 
@@ -967,53 +988,7 @@ function loadILLoan(loanId) {
 		setOrgAdminContent("content");
 	}
 		
-
-	function refreshOfficesView() {
-
-		var successFunction = function(data, textStatus, jqXHR) {
-				
-				var officelistParent = new Object();
-				officelistParent.offices = data;
-				
-				var officeListHtml = $("#officeListTemplate").render(officelistParent);
-				$("#listplaceholder").html(officeListHtml);  
-				
-				$("a.edit").click( function(e) {
-					var linkId = this.id;
-					var entityId = linkId.replace("edit", "");
-					var getUrl = 'offices/' + entityId + '?template=true';
-					var putUrl = 'offices/' + entityId;
-					maintainOffice(getUrl, putUrl, 'PUT', "dialog.title.office.details");
-					e.preventDefault();
-				});
-				
-				$("a.delete").click( function(e) {
-					//var linkId = this.id;
-					//var entityId = linkId.replace("delete", "");
-					showNotAvailableDialog('dialog.title.functionality.not.available');
-					e.preventDefault();
-				});
-				
-				var oTable = displayListTable("officestable");
-			  };
 		
-  		executeAjaxRequest('offices', 'GET', "", successFunction, formErrorFunction);
-	}
-	
-	function maintainOffice(getUrl, putOrPostUrl, submitType, dialogTitle) {
-		var templateSelector = "#officeFormTemplate";
-		var width = 600; 
-		var height = 400;
-
-		var saveSuccessFunction = function(data, textStatus, jqXHR) {
-			  $("#dialog-form").dialog("close");
-			  refreshOfficesView();
-		}
-		
-		popupDialogWithFormView(getUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
-	}
-
-	
 	function maintainOrgCurrencies(getUrl, putOrPostUrl, submitType, dialogTitle) {
 		var templateSelector = "#configurationFormTemplate";
 		var width = 900; 
@@ -1523,6 +1498,7 @@ function displayListTable(tableDiv) {
 
 	return  $("#" + tableDiv).dataTable( {
 					"bSort": true,
+					"aaSorting": [], //disable initial sort
 					"bInfo": true,
 					"bJQueryUI": true,
 					"bRetrieve": false,

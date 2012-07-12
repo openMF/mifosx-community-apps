@@ -1099,15 +1099,15 @@ $(document).ready(function() {
 		</tr>
 	</thead>
 	<tbody>
-{{#each offices}}
+{{#each crudRows}}
 <tr>
-	<td>{{=name}}</td>
+	<td>{{=nameDecorated}}</td>
 	<td>{{=externalId}}</td>
 	<td>{{=$ctx.globalDate(openingDate)}}</td>
 	<td>{{=parentName}}</td>
 	<td>
-		<a id='edit{{=id}}' class='edit' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='delete{{=id}}' class='delete' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		<a id='editoffice{{=id}}' class='editoffice' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='deleteoffice{{=id}}' class='deleteoffice' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 	</td>
 </tr>
 {{/each}}
