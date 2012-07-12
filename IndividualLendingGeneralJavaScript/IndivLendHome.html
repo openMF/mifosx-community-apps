@@ -1189,7 +1189,7 @@ $(document).ready(function() {
 </form>
 </script>
 
-<script id="configurationFormTemplate" type="text/x-jquery-tmpl">
+<script id="orgCurrencyFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
 	<fieldset>
@@ -1298,7 +1298,7 @@ $(document).ready(function() {
 </script>
 
 <script id="permissionListTemplate" type="text/x-jquery-tmpl">
-<table id='entitytable' width='100%'>
+<table id='permissionstable' width='100%'>
 <thead>
 	<tr>
         <th>{{=$ctx.doI18N("table.heading.permission.type")}}</th>
@@ -1307,7 +1307,7 @@ $(document).ready(function() {
 	</tr>
 </thead>
 <tbody>
-{{#each permissions}}
+{{#each crudRows}}
 <tr>
     <td>
     {{#if $ctx.number(groupType)===$ctx.number(0)}}

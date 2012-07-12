@@ -2,30 +2,46 @@
 crudData = {
 		loanproduct: {
 				editTemplateNeeded: true,
+				refreshListNeeded: true,
 				dialogWidth: 800,
 				dialogHeight: 550
 			},
 		office: {
 				editTemplateNeeded: true,
+				refreshListNeeded: true,
 				dialogWidth: 600,
 				dialogHeight: 400
 			},
 		fund: {
 				editTemplateNeeded: false,
+				refreshListNeeded: true,
 				dialogWidth: 600,
 				dialogHeight: 400
 			},
 		user: {
 				editTemplateNeeded: true,
+				refreshListNeeded: true,
 				dialogWidth: 1000,
 				dialogHeight: 550
 			},
 		role: {
 				editTemplateNeeded: true,
+				refreshListNeeded: true,
 				dialogWidth: 1000,
 				dialogHeight: 550
+			},
+		orgCurrency: {
+				editTemplateNeeded: false,
+				refreshListNeeded: false,
+				dialogWidth: 900,
+				dialogHeight: 400
+			},
+		permission: {
+				editTemplateNeeded: false,
+				refreshListNeeded: false,
+				dialogWidth: 900,
+				dialogHeight: 400
 			}
-
 		};
 
 saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
@@ -70,8 +86,8 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
 	htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
-	htmlVar += '	<li><a href="unknown.html" onclick="showILUserAdmin();return false;">' + doI18N("link.topnav.users") + '</a></li>';
-	htmlVar += '	<li><a href="unknown.html" onclick="showILOrgAdmin();return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
+	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
+	htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="showILReporting();return false;">' + doI18N("link.reports") + '</a></li>';
 	htmlVar += '</ul>';
 	htmlVar += '<ul id="nav" class="floatright">';
@@ -140,7 +156,7 @@ function setOrgAdminContent(divName) {
 	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
-	var orgCurrenciesUrl = "maintainOrgCurrencies('configurations/currency', 'configurations/currency', 'PUT', 'dialog.title.configuration.currencies');return false;";
+	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
 	var htmlVar = '<div>';
@@ -157,7 +173,7 @@ function setOrgAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrenciesUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
@@ -182,7 +198,7 @@ function setUserAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addRoleUrl + '" id="addrole">' + doI18N("administration.link.add.role") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshPermissionsView();return false;" id="listpermissions">' + doI18N("administration.link.view.permissions") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'permission'" + ');return false;" id="listpermissions">' + doI18N("administration.link.view.permissions") + '</a>';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
@@ -874,7 +890,7 @@ function loadILLoan(loanId) {
 
 		var genSSF = 'var saveSuccessFunction = function(data, textStatus, jqXHR) {';
 		genSSF += '$("#dialog-form").dialog("close");';
-		genSSF += 'refreshTableView("' + tableName + '");';
+		if (crudData[tableName].refreshListNeeded == true) genSSF += 'refreshTableView("' + tableName + '");';
 		genSSF += '}';
 		eval(genSSF);
 
@@ -898,56 +914,7 @@ function loadILLoan(loanId) {
 	}
 
 
-
-
-/* user admin code */
-
-	function showILUserAdmin() {
-		setUserAdminContent("content");
-	}
-	
-
-	function refreshPermissionsView() {
-		var templateSelector = "#permissionListTemplate";
-		var displayAreaDivSelector = "#contentplaceholder";
 		
-		var successFunction = function(data, textStatus, jqXHR) {
-				var permissionsObject = new Object();
-				permissionsObject.permissions = data;
-				var listHtml = $(templateSelector).render(permissionsObject);
-				$(displayAreaDivSelector).html(listHtml);
-				
-				var oTable = displayListTable("entitytable");
-			  };
-
-  		executeAjaxRequest('permissions', 'GET', "", successFunction, formErrorFunction);
-	}
-
-
-
-/* org admin code */
-
-	function showILOrgAdmin() {
-		setOrgAdminContent("content");
-	}
-		
-		
-	function maintainOrgCurrencies(getUrl, putOrPostUrl, submitType, dialogTitle) {
-		var templateSelector = "#configurationFormTemplate";
-		var width = 900; 
-		var height = 400;
-
-		var saveSuccessFunction = function(data, textStatus, jqXHR) {
-			  $("#dialog-form").dialog("close");
-		}
-		
-		popupDialogWithFormView(getUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
-	}
-
-
-
-
-
 
 /* reports code */
 
