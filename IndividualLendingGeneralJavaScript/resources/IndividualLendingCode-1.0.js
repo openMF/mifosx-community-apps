@@ -108,23 +108,41 @@ function setAddLoanContent(divName) {
 
 function setOrgAdminContent(divName) {
 
-	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'loanproducts', 'POST', true, 800, 550);return false;";
-	var addOfficeUrl = "maintainTable('office', 'offices', 'offices', 'POST', true, 600, 400);return false;";
-	var addFundUrl = "maintainTable('fund', '', 'funds', 'POST', false, 600, 400);return false;";
+	crudData = {
+			loanproduct: {
+					editTemplateNeeded: true,
+					dialogWidth: 800,
+					dialogHeight: 550
+					},
+			office: {
+					editTemplateNeeded: true,
+					dialogWidth: 600,
+					dialogHeight: 400
+					},
+			fund: {
+					editTemplateNeeded: false,
+					dialogWidth: 600,
+					dialogHeight: 400
+					}
+			};
+
+	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'POST');return false;";
+	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
+	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	var orgCurrenciesUrl = "maintainOrgCurrencies('configurations/currency', 'configurations/currency', 'PUT', 'dialog.title.configuration.currencies');return false;";
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
 	var htmlVar = '<div>';
 	htmlVar += '<span style="float: left">';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'loanproduct'" + ', true, 800, 550);return false;" id="viewloanproducts">' + doI18N("administration.link.view.products") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'loanproduct'" + ');return false;" id="viewloanproducts">' + doI18N("administration.link.view.products") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addProductUrl + '" id="addloanproduct">' + doI18N("administration.link.add.product") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ', true, 600, 400);return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ');return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addOfficeUrl + '" id="addoffice">' + doI18N("administration.link.add.office") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ', false, 600, 400);return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
 	htmlVar += ' | ';
@@ -796,7 +814,7 @@ function loadILLoan(loanId) {
 
 /* crud admin code */
 
-	function refreshTableView(tableName, editTemplateNeeded, width, height) {
+	function refreshTableView(tableName) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
 
@@ -809,9 +827,8 @@ function loadILLoan(loanId) {
 					var linkId = this.id;
 					var entityId = linkId.replace("edit" + tableName, "");
 
-					var putUrl = tableName + "s/" + entityId;
-					var getUrl = putUrl;
-					maintainTable(tableName, getUrl, putUrl, 'PUT', editTemplateNeeded, width, height);
+					var resourceUrl = tableName + "s/" + entityId;
+					maintainTable(tableName, resourceUrl, 'PUT');
 					e.preventDefault();
 				});
 
@@ -831,7 +848,8 @@ function loadILLoan(loanId) {
   		executeAjaxRequest(tableName + 's', 'GET', "", successFunction, formErrorFunction);
 	}
 	
-	function maintainTable(tableName, getUrl, putOrPostUrl, submitType, editTemplateNeeded, width, height) {
+
+	function maintainTable(tableName, resourceUrl, submitType) {
 
 		if (!(submitType == "PUT" || submitType == "POST"))
 		{
@@ -839,31 +857,33 @@ function loadILLoan(loanId) {
 			return;
 		}
 
-
 		var templateSelector = "#" + tableName + "FormTemplate";
-
 		var dialogTitle = "dialog.title." + tableName + ".details";
 		if (submitType == "POST") dialogTitle = 'dialog.title.add.' + tableName;
 
-		var updatedGetUrl = getUrl
-		if (updatedGetUrl > '')
-		{
-			if (editTemplateNeeded == true) 
-			{
-				if (submitType == "POST") updatedGetUrl += '/template';
-				else updatedGetUrl += '?template=true';
-			}
-		}
-
 		var genSSF = 'var saveSuccessFunction = function(data, textStatus, jqXHR) {';
 		genSSF += '$("#dialog-form").dialog("close");';
-		genSSF += 'refreshTableView("' + tableName + '", ' + editTemplateNeeded + ' , ' + width + ', ' + height + ');';
+		genSSF += 'refreshTableView("' + tableName + '");';
 		genSSF += '}';
-alert(genSSF);
 		eval(genSSF);
 
-		if (getUrl > '') popupDialogWithFormView(updatedGetUrl, putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction)
-		else popupDialogWithPostOnlyFormView(putOrPostUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
+		var getUrl = ''; 
+		if (submitType == "POST") 
+		{
+			if (crudData[tableName].editTemplateNeeded == true) //needs to read data to populate dialog form
+			{
+				getUrl = resourceUrl + '/template';
+				popupDialogWithFormView(getUrl, resourceUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
+			}
+			else popupDialogWithPostOnlyFormView(resourceUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction, 0, 0, 0);
+		}
+		else
+		{
+			if (crudData[tableName].editTemplateNeeded == true) getUrl = resourceUrl + '?template=true'
+			else getUrl = resourceUrl;
+			popupDialogWithFormView(getUrl, resourceUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
+		}
+
 	}
 
 
