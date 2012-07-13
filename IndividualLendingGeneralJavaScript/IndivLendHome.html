@@ -931,6 +931,19 @@ $(document).ready(function() {
 		
 		<label for="description">{{=$ctx.doI18N("form.label.loan.product.description")}}</label>
 		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
+
+		<label for="officeId">{{=$ctx.doI18N("form.label.user.office")}}</label>
+		<select id="officeId" name="officeId" title="">
+			<option value="-1">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+			{{#each allowedOffices}}
+				{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+				{{#else}}
+					<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+				{{/if}}
+            {{/each}}
+		</select>
+
 	</fieldset>
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.loan.product.currency")}}</legend>

@@ -161,9 +161,9 @@ function setOrgAdminContent(divName) {
 
 	var htmlVar = '<div>';
 	htmlVar += '<span style="float: left">';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'loanproduct'" + ');return false;" id="viewloanproducts">' + doI18N("administration.link.view.products") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'loanproduct'" + ');return false;" id="viewloanproducts">' + doI18N("administration.link.view.loan.products") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addProductUrl + '" id="addloanproduct">' + doI18N("administration.link.add.product") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="' + addProductUrl + '" id="addloanproduct">' + doI18N("administration.link.add.loan.product") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ');return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
 	htmlVar += ' | ';
