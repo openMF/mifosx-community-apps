@@ -931,12 +931,12 @@ $(document).ready(function() {
 		
 		<label for="description">{{=$ctx.doI18N("form.label.loan.product.description")}}</label>
 		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
-this under construction and will be fund related
-		<label for="officeId">{{=$ctx.doI18N("form.label.user.office")}}</label>
-		<select id="officeId" name="officeId" title="">
-			<option value="-1">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-			{{#each allowedOffices}}
-				{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+
+		<label for="fundId">{{=$ctx.doI18N("form.label.loan.product.fund")}}</label>
+		<select id="fundId" name="fundId" title="">
+			<option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
+			{{#each fundOptions}}
+				{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
 					<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 				{{#else}}
 					<option value="{{=$ctx.number(id)}}">{{=name}}</option>
@@ -1076,6 +1076,7 @@ this under construction and will be fund related
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.product.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.fund.name")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.product.created")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.product.modified")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.product.active")}}</th>
@@ -1086,6 +1087,7 @@ this under construction and will be fund related
 {{#each crudRows}}
 <tr>
 	<td title='{{=description}}'>{{=name}}</td>
+	<td>{{=fundName}}</td>
 	<td>{{=$ctx.globalDateTime(createdOn)}}</td>
 	<td>{{=$ctx.globalDateTime(lastModifedOn)}}</td>
 	<td>Yes</td>
