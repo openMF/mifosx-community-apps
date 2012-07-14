@@ -67,7 +67,8 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 				data : jsonData, 
 				cache : false, 
 				beforeSend : function(xhr) { 
-						xhr.setRequestHeader("Authorization", "Basic " + base64); 
+						xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+						if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
 					}, 
 				success : successFunction, 
 				error : errorFunction 
@@ -118,7 +119,7 @@ function showMainContainer(containerDivName, username) {
 
 
 function showILLogon(logonDivName) {
-	var htmlVar = '<div id=theLogonForm><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/><div id=appTitle>' + doI18N("app.name") + '</div>';
+	var htmlVar = '<div id=theLogonForm><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/><div id=appTitle>' + doI18N("app.name") + ' - ' + tenantIdentifier + '</div>';
 	htmlVar += '<form name = "logonform"><table id=logonTable><tr><td>' + doI18N("login.username") + ':</td><td><input type="text" name="username"></td></tr>';
 	htmlVar += '<tr><td>' + doI18N("login.password") + ': </td><td><input type="password" name="pwd"></td></tr>';
 	htmlVar += '<tr><td><input type="button" value="Logon" name="Submit" ';
@@ -1027,6 +1028,18 @@ function showILAccountSettings() {
 //authenticate user and set global details
 function setBasicAuthKey(logonDivName, username, password) 
 { 
+
+/*temporary code for bypassing authentication
+base64 = "bWlmb3M6cGFzc3dvcmQ="; 
+currentUser = 1;
+currentUserName = "mifossy mifos";
+showMainContainer(logonDivName, username);
+showILClientListing();
+return false;
+
+*/
+
+
 	base64 = "";
 	currentUser = -1;
 	currentUserName = "";
@@ -1285,6 +1298,15 @@ function initialiseAndShowILLogon() {
 	//baseApiUrl = "https://localhost:8443/mifosng-provider/api/v1/";
 	baseApiUrl = "https://ec2-46-137-62-163.eu-west-1.compute.amazonaws.com:8443/mifosng-provider/api/v1/";
 	if (QueryParameters["baseApiUrl"]) baseApiUrl = QueryParameters["baseApiUrl"];
+
+
+	tenantIdentifier = "";
+	if (QueryParameters["tenantIdentifier"]) tenantIdentifier= QueryParameters["tenantIdentifier"];
+	else
+	{
+		alert("System Error - no tenantIdentifier specified");
+		return;
+	}
 	
 	showILLogon("container");
 }
