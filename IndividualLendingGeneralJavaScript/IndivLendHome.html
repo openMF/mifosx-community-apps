@@ -1133,7 +1133,7 @@ $(document).ready(function() {
 <script id="officeFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
-	</div>
+	
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.office.details")}}</legend>
 		<label for="name">{{=$ctx.doI18N("form.label.office.name")}}</label>
@@ -1161,6 +1161,51 @@ $(document).ready(function() {
 
 		<label for="externalId">{{=$ctx.doI18N("form.label.office.externalid")}}</label>
 		<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" size="75"/>
+	</fieldset>
+</form>
+</script>
+
+<script id="officetransactionFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.officetransaction.details")}}</legend>
+
+		<label for="transactionDate">{{=$ctx.doI18N("form.label.officetransaction.transactionDate")}}</label>
+		<input id="transactionDate" name="transactionDate" title="" type="text" value="{{=$ctx.globalDate(transactionDate)}}" size="75" class="datepickerfield" />
+
+		<label for="fromOfficeId">{{=$ctx.doI18N("form.label.officetransaction.fromOfficeId")}}</label>
+		<select id="fromOfficeId" name="fromOfficeId" title="">
+            <option value="-1">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+			{{#each allowedOffices}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+            	{{/each}}
+		</select>
+
+		<label for="toOfficeId">{{=$ctx.doI18N("form.label.officetransaction.toOfficeId")}}</label>
+		<select id="toOfficeId" name="toOfficeId" title="">
+            <option value="-1">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+			{{#each allowedOffices}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+            	{{/each}}
+		</select>
+
+		<label for="currencyCode">{{=$ctx.doI18N("form.label.officetransaction.currency")}}</label>
+		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
+			{{#each currencyOptions}}
+					<option value="{{=code}}">{{=name}}</option>
+          		{{/each}}
+		</select>
+
+		<label for="transactionAmount">{{=$ctx.doI18N("form.label.officetransaction.transactionAmount")}}</label>
+		<input id="transactionAmount" name="transactionAmount" title="" type="text" style="width: 125px;" />
+
+		<label for="description">{{=$ctx.doI18N("form.label.officetransaction.description")}}</label>
+		<input id="description" name="description" title="" type="text" value="{{=description}}" size="75"/>
 	</fieldset>
 </form>
 </script>

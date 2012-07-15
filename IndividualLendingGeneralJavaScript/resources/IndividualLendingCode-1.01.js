@@ -41,6 +41,12 @@ crudData = {
 				refreshListNeeded: false,
 				dialogWidth: 900,
 				dialogHeight: 400
+			},
+		officetransaction: {
+				editTemplateNeeded: true,
+				refreshListNeeded: false,
+				dialogWidth: 900,
+				dialogHeight: 400
 			}
 		};
 
@@ -158,6 +164,8 @@ function setOrgAdminContent(divName) {
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
+	var internalTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST', 'command=intra-transfer');return false;";
+
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
 	var htmlVar = '<div>';
@@ -175,6 +183,8 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + internalTransfer + '" id="internalTransfer">' + doI18N("administration.link.internal.transfer") + '</a>';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
@@ -879,7 +889,7 @@ function loadILLoan(loanId) {
 	}
 	
 
-	function maintainTable(tableName, resourceUrl, submitType) {
+	function maintainTable(tableName, resourceUrl, submitType, putPostQuery) {
 
 		if (!(submitType == "PUT" || submitType == "POST"))
 		{
@@ -898,20 +908,23 @@ function loadILLoan(loanId) {
 		eval(genSSF);
 
 		var getUrl = ''; 
+		var putPostUrl = resourceUrl;
+		if (putPostQuery > "") putPostUrl += "?" + putPostQuery;
+
 		if (submitType == "POST") 
 		{
 			if (crudData[tableName].editTemplateNeeded == true) //needs to read data to populate dialog form
 			{
 				getUrl = resourceUrl + '/template';
-				popupDialogWithFormView(getUrl, resourceUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
+				popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
 			}
-			else popupDialogWithPostOnlyFormView(resourceUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction, 0, 0, 0);
+			else popupDialogWithPostOnlyFormView(putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction, 0, 0, 0);
 		}
 		else
 		{
 			if (crudData[tableName].editTemplateNeeded == true) getUrl = resourceUrl + '?template=true'
 			else getUrl = resourceUrl;
-			popupDialogWithFormView(getUrl, resourceUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
+			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
 		}
 
 	}
