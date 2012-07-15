@@ -26,6 +26,14 @@
 		}
 
 
+		base64 = "";
+		if (params.basicAuthKey)
+			base64 = params.basicAuthKey;
+
+		tenantIdentifier = "";
+		if (params.tenantIdentifier)
+			tenantIdentifier = params.tenantIdentifier ;
+
 		editLabel = "Edit";	
 		if (params.editLabel) editLabel = params.editLabel;
 
@@ -394,7 +402,8 @@
 				data : form_data,
 				cache : false,
 				beforeSend : function(xhr) {
-					xhr.setRequestHeader("Authorization", "Basic " + basicAuthKey);
+						if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+						if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
 				},
 				success : function(data, textStatus, jqXHR) {
 					currentEditPopup.dialogDiv.dialog("close");
@@ -464,7 +473,8 @@
 			dataType : 'json',
 			cache : false,
 			beforeSend : function(xhr) {
-				xhr.setRequestHeader("Authorization", "Basic " + basicAuthKey);
+					if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+					if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
 			},
 			success : successFunction,
 			error : errorFunction

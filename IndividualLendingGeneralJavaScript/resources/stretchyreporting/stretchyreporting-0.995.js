@@ -83,6 +83,9 @@ function initialiseReporting(params) {
  	if (params.basicAuthKey) basicAuthKey = params.basicAuthKey
 	else basicAuthKey = "";
 
+	tenantIdentifier = "";
+	if (params.tenantIdentifier) tenantIdentifier = params.tenantIdentifier ;
+
  	if (params.pentahoUrl) pentahoUrl = params.pentahoUrl
 	else pentahoUrl = "";
 
@@ -1011,7 +1014,8 @@ return
 		crossDomain: false,
 		cache: false,
 		beforeSend: function( xhr ) {
-			xhr.setRequestHeader("Authorization", "Basic " + basicAuthKey);
+			if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+			if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + basicAuthKey); 
 		},
 		success: successFunction,
 		error:function(jqXHR, textStatus, errorThrown){
@@ -1063,7 +1067,8 @@ function getReportDataNoAuth(rptName, inParams, successFunction, isParameterType
 			crossDomain: false,
 			cache: false,
 			beforeSend : function(xhr) {
-				xhr.setRequestHeader("Authorization", "Basic " + basicAuthKey);
+				if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+				if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + basicAuthKey); 
 			},
 			success: successFunction,
 			error:function(jqXHR, textStatus, errorThrown){

@@ -67,7 +67,7 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 				data : jsonData, 
 				cache : false, 
 				beforeSend : function(xhr) { 
-						xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+						if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
 						if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
 					}, 
 				success : successFunction, 
@@ -391,6 +391,7 @@ function showILClient(clientId) {
 					var additionalFieldsParams = {
 							url: baseApiUrl,
 							basicAuthKey: base64,
+							tenantIdentifier: tenantIdentifier,
 							datasetType: "portfolio_client",
 							datasetPKValue: data.id,
 							datasetTypeDiv: "clientadditionaldata", 
@@ -821,6 +822,7 @@ function loadILLoan(loanId) {
 				var additionalFieldsParams = {
 							url: baseApiUrl,
 							basicAuthKey: base64,
+							tenantIdentifier: tenantIdentifier,
 							datasetType: "portfolio_loan",
 							datasetPKValue: data.id,
 							datasetTypeDiv: "loanadditionaldata" + data.id, 
@@ -925,6 +927,7 @@ function showILReporting() {
 var reportingParams = {
 	RESTUrl: baseApiUrl + "reports",
 	basicAuthKey: base64,
+	tenantIdentifier: tenantIdentifier,
 	pentahoUrl: baseApiUrl + "pentahoreport",
 	initialLanguage: currentCulture,
 	bundleDir: "resources/stretchyreporting/mifosngbundle/",
