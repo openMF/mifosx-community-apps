@@ -223,6 +223,21 @@ $(document).ready(function() {
 							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
 							</td>
 						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.loan.fund")}}</td>
+							<td>
+								<select id="fundId" name="fundId" title="">
+									<option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
+								{{#each selectedProduct.fundOptions}}
+									{{#if $ctx.number($parent.parent.data.selectedProduct.fundId)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+									{{/if}}
+            						{{/each}}
+								</select>
+							</td>
+						</tr>
 					</table>
 				</td>
 				<!-- interest details cell -->
