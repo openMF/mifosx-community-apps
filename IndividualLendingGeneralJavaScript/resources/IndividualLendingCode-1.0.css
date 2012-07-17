@@ -28,3 +28,10 @@ h2 {
 #toptable {
 	display: none;
 }
+
+#tenantName {
+    	font-size: 120%;
+    	font-weight: bold;
+    	margin-left: 100px;
+
+}
