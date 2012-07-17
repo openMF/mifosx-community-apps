@@ -964,12 +964,13 @@ $(document).ready(function() {
 		<legend>{{=$ctx.doI18N("form.legend.loan.product.currency")}}</legend>
 		<label for="currencyCode">{{=$ctx.doI18N("form.label.loan.product.currency")}}</label>
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
-				{{#each currencyOptions}}
-                	{{#if $parent.parent.data.principal.currencyCode===code}}
-						<option value="{{=code}}" selected="selected">{{=name}}</option>
-					{{#else}}
-						<option value="{{=code}}">{{=name}}</option>
-					{{/if}}
+            	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
+			{{#each currencyOptions}}
+                		{{#if $parent.parent.data.principal.currencyCode===code}}
+					<option value="{{=code}}" selected="selected">{{=name}}</option>
+				{{#else}}
+					<option value="{{=code}}">{{=name}}</option>
+				{{/if}}
           		{{/each}}
 		</select>
 		<label for="digitsAfterDecimal">{{=$ctx.doI18N("form.label.loan.product.decimalplaces")}}</label>
@@ -1195,7 +1196,7 @@ $(document).ready(function() {
 
 		<label for="fromOfficeId">{{=$ctx.doI18N("form.label.officetransaction.fromOfficeId")}}</label>
 		<select id="fromOfficeId" name="fromOfficeId" title="">
-            <option value="-1">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+            <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 			{{#each allowedOffices}}
 				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
             	{{/each}}
@@ -1203,7 +1204,7 @@ $(document).ready(function() {
 
 		<label for="toOfficeId">{{=$ctx.doI18N("form.label.officetransaction.toOfficeId")}}</label>
 		<select id="toOfficeId" name="toOfficeId" title="">
-            <option value="-1">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+            <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 			{{#each allowedOffices}}
 				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
             	{{/each}}
@@ -1211,6 +1212,7 @@ $(document).ready(function() {
 
 		<label for="currencyCode">{{=$ctx.doI18N("form.label.officetransaction.currency")}}</label>
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
+            <option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#each currencyOptions}}
 					<option value="{{=code}}">{{=name}}</option>
           		{{/each}}

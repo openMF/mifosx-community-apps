@@ -164,7 +164,7 @@ function setOrgAdminContent(divName) {
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
-	var internalTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST', 'command=intra-transfer');return false;";
+	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
 
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
@@ -184,7 +184,7 @@ function setOrgAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + internalTransfer + '" id="internalTransfer">' + doI18N("administration.link.internal.transfer") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="' + officeMoneyTransfer + '" id="internalTransfer">' + doI18N("administration.link.office.money.transfer") + '</a>';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
