@@ -942,7 +942,7 @@ var reportingParams = {
 	RESTUrl: baseApiUrl + "reports",
 	basicAuthKey: base64,
 	tenantIdentifier: tenantIdentifier,
-	pentahoUrl: baseApiUrl + "pentahoreport",
+	//jpw remove pentahoUrl: baseApiUrl + "pentahoreport",
 	initialLanguage: currentCulture,
 	bundleDir: "resources/stretchyreporting/mifosngbundle/",
 	reportsListDiv: "myListOfReports",

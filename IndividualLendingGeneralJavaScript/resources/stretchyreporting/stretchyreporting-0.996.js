@@ -74,9 +74,6 @@ function initialiseReporting(params) {
 		return;
 	}
 
-	rptDB = ""
- 	if (params.rptDB) rptDB = params.rptDB;
-
  	if (params.RESTUrl) RESTUrl = params.RESTUrl
 	else RESTUrl = "";
  	
@@ -85,9 +82,6 @@ function initialiseReporting(params) {
 
 	tenantIdentifier = "";
 	if (params.tenantIdentifier) tenantIdentifier = params.tenantIdentifier ;
-
- 	if (params.pentahoUrl) pentahoUrl = params.pentahoUrl
-	else pentahoUrl = "";
 
 	loadingImg = "dots64.gif";
 	if (params.loadingImg) loadingImg = params.loadingImg;
@@ -456,7 +450,7 @@ function runTheReport()
 		if (reportListing[reportListingIndex].type == 'Pentaho') reportParameterName = reportListing[reportListingIndex].parameters[i][0]
 		else reportParameterName = paramDetails.variable;
 
-		// alert("Variable: " + reportParameterName + " Value: " + pValue);
+		//alert("jpw: Variable: " + reportParameterName + " Value: " + pValue);
 		theParams[reportParameterName] = pValue ;
 	}
 
@@ -520,8 +514,7 @@ var parameterTableHtml = '<table><tr>';
 				return 1;
 		}
 	}
-
-	parameterTableHtml += '<td valign="bottom"><select id=rptOutputType><option value="PDF" selected="selected" >PDF</option><option value="HTML">HTML</option><option value="XLS">EXCEL</option></select></td>';
+	parameterTableHtml += '<td valign="bottom"><select id=rptOutputType onChange="jQuery.stretchyReporting.showTypeChanged()"><option value="HTML" selected="selected" >Show Report</option><option value="XLS">Export Excel Format</option><option value="CSV">Export CSV Format</option><option value="PDF">PDF Format</option></select></td>';
 	parameterTableHtml += '<td valign="bottom"><select id=rptShowType onChange="jQuery.stretchyReporting.showTypeChanged()"><option value="HTML" selected="selected" >' + doI18N("Show Table") + '</option><option value="XLS">' + doI18N("Full CSV Export") + '</option></select></td>';
 	parameterTableHtml += '</tr></table>';
 
@@ -991,20 +984,7 @@ alert("needs fixing up, dont rely on data")
 return
 	var inQueryParameters =  {};
 	for (var i in inParams ) inQueryParameters["R_" + i] = inParams[i];
-	if (rptDB > "") inQueryParameters["R_rptDB"] = rptDB;
 	
-//	OAuthSimple().reset();
-//	var OAuthProcess = (new OAuthSimple()).sign({
-//		path : RESTUrl,
-//		parameters : inQueryParameters,
-//		signatures : {
-//			'consumer_key' : apiKey,
-//			'shared_secret' : sharedSecret,
-//			'access_token' : accessToken,
-//			'access_secret' : tokenSecret
-//		}
-//	});
-
 	showMsgE("getReportData IS Auth: " + inQueryParameters);
 	$.ajax({
 		url: RESTUrl,
@@ -1038,14 +1018,8 @@ function buildReportParms(inParams) {
 		if (paramCount > 1) reportParams += "&"
 		reportParams += encodeURIComponent("R_" + i) + "=" + encodeURIComponent(inParams[i]);
 		paramCount = paramCount + 1;
-	}
-	if (rptDB > "") 
-	{
-		if (paramCount > 1) reportParams += "&"
-		reportParams =  encodeURIComponent("R_rptDB") + "=" + encodeURIComponent(rptDB);
-	}
-	
-	return reportParams
+	}	
+	return reportParams;
 }
 
 function getReportDataNoAuth(rptName, inParams, successFunction, isParameterType) {
@@ -1085,13 +1059,14 @@ function getReportDataNoAuth(rptName, inParams, successFunction, isParameterType
 function getExportCSV(rptName, inParams, isParameterType) {
 
 	var inQueryParameters = buildReportParms(inParams);
-	if (inQueryParameters > "") inQueryParameters = "?" + inQueryParameters + "&exportCSV=true"
-	else inQueryParameters = "?exportCSV=true";
+	var tenantIdAndExportCSV = "tenantIdentifier=" + tenantIdentifier + "&exportCSV=true";
+	if (inQueryParameters > "") inQueryParameters = "?" + inQueryParameters + "&" + tenantIdAndExportCSV
+	else inQueryParameters = "?" + tenantIdAndExportCSV;
 	if (isParameterType == true) inQueryParameters += "&parameterType=true";
 	
-	var fullExportUrl = RESTUrl + "/" + rptName + inQueryParameters;
-	showMsg("full export url: " + fullExportUrl);
-	var loadHTML = '<iframe id=rptLoadingFrame src="' + fullExportUrl + '" frameborder="0" onload="jQuery.stretchyReporting.clearLoadingImg();" width="100%" height="600px" style="background:url(';
+	var fullUrl = RESTUrl + "/" + rptName + inQueryParameters;
+	showMsg("full export url: " + fullUrl );
+	var loadHTML = '<iframe id=rptLoadingFrame src="' + fullUrl + '" frameborder="0" onload="jQuery.stretchyReporting.clearLoadingImg();" width="100%" height="600px" style="background:url(';
 		loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50% 100px;"><p>Your browser does not support iframes.</p></iframe>';
 
 	$('#StretchyReportOutput').html(loadHTML);
@@ -1100,23 +1075,16 @@ function getExportCSV(rptName, inParams, isParameterType) {
 
 
 function getPentahoReport(rptName, inParams) {
-//todo 
-	var currentReportName = inparams.name; //remember to include this when doing pentaho example
-	var inQueryParameters =  "?output-type=" + $('#rptOutputType option:selected').val();
-	// var paramCount = 1;
-	for (var i in inParams )
-	{
-		// if (paramCount > 1) inQueryParameters += "&"
-		// else inQueryParameters += "?";
-		inQueryParameters += "&" + encodeURIComponent(i) + "=" + encodeURIComponent(inParams[i]);
-		// paramCount = paramCount + 1;
-	}
 
-	var fullReportUrl = pentahoUrl + inQueryParameters;
-	showMsg("full pentaho url: " + fullReportUrl);
+	var fullUrl =  RESTUrl + "/" + rptName + "?output-type=" + $('#rptOutputType option:selected').val() + "&tenantIdentifier=" + tenantIdentifier;
+	var inQueryParameters = buildReportParms(inParams);
+	if (inQueryParameters > "") fullUrl += "&" + inQueryParameters;
+	showMsg("full pentaho url: " + fullUrl );
+	var loadHTML = '<iframe id=rptLoadingFrame src="' + fullUrl + '" frameborder="0" onload="jQuery.stretchyReporting.clearLoadingImg();" width="100%" height="600px" style="background:url(';
+			loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50% 100px;"><p>Your browser does not support iframes.</p></iframe>';
 
-	var loadHTML = '<iframe src="' + fullReportUrl + '" frameborder="1" width="100%" height="600px" style="background:url(';
-		loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50% 100px;"><p>Your browser does not support iframes.</p></iframe>';
+	//var loadHTML = '<iframe src="' + fullUrl + '" frameborder="1" width="100%" height="600px" style="background:url(';
+	//	loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50% 100px;"><p>Your browser does not support iframes.</p></iframe>';
 
 	$('#StretchyReportOutput').html(loadHTML);
 
