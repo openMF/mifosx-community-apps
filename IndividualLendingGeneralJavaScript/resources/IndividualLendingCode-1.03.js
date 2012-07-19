@@ -96,7 +96,7 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="showILReporting();return false;">' + doI18N("link.reports") + '</a></li>';
-	htmlVar += '	<li><a href="unknown.html" onclick="return false;"><div id=tenantName>' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</div></a></li>';
+	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
 	htmlVar += '</ul>';
 	htmlVar += '<ul id="nav" class="floatright">';
 	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.culture") + '</a>';
