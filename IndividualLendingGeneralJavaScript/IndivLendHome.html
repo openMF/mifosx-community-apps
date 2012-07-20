@@ -540,7 +540,7 @@ $(document).ready(function() {
 	<!-- end of left pane content -->
 
 	<!-- placeholder for notes content -->
-	<div id="clienttabrightpane" style="float:right; max-width: 400px;"></div>
+	<div id="clienttabrightpane" style="float:right;"></div>
 </div>
 <div style="clear: both;"></div>
 </script>
@@ -804,7 +804,7 @@ $(document).ready(function() {
 				</tr>
 			</thead>
 			<tbody>
-			{{#each repaymentSchedule.periods}}
+			{{#each repaymentSchedule}}
 			<tr>
 				<td scope="row">{{=$ctx.number(period)}}</td>
 				<td>{{=$ctx.globalDate(date)}}</td>
@@ -844,9 +844,8 @@ $(document).ready(function() {
 			<thead>
 				<tr>
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.paymentdate")}}</th>
+				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.transactionType")}}</th>
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.amountpaid")}}</th>
-				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.principal.portion")}}</th>
-				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.interest.portion")}}</th>
 				{{#if actualDisbursementDate !== null}}
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.action")}}</th>
 				{{/if}}
@@ -856,9 +855,8 @@ $(document).ready(function() {
 				{{#each loanRepayments}}
 				<tr>
 				<td>{{=$ctx.globalDate(date)}}</td>
+				<td>{{=$ctx.doI18N(transactionType.code)}}</td>
 				<td>{{=$ctx.money(total)}}</td>
-				<td>{{=$ctx.money(principal)}}</td>
-				<td>{{=$ctx.money(interest)}}</td>
 				{{#if $parent.parent.data.actualDisbursementDate !== null}}
 				<td><button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment">Adjust</button></td>
 				{{/if}}
