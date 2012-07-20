@@ -1562,12 +1562,19 @@ function jsViewsRegisterHelpers() {
 			
 			money: function(monetaryObj) {
 				
+				if (undefined == monetaryObj) {
+					return "";
+				}
 				Globalize.culture().numberFormat.currency.symbol = monetaryObj.displaySymbol;
 				
 				var digits = monetaryObj.digitsAfterDecimal.toFixed(0);
 				return Globalize.format(monetaryObj.amount, "n" + digits); 
 			},
 			moneyWithCurrency: function(monetaryObj) {
+				
+				if (undefined == monetaryObj) {
+					return "";
+				}
 				
 				Globalize.culture().numberFormat.currency.symbol = monetaryObj.displaySymbol;
 				

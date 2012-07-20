@@ -61,7 +61,7 @@
 </script>
 
 <!-- This is a single Page javascript app - IndividualLendingCode.js has functions which switch functionality by replacing the html in the #container div -->
-<script type="text/javascript" src="resources/IndividualLendingCode-1.03.js"></script>
+<script type="text/javascript" src="resources/IndividualLendingCode-1.04.js"></script>
 
 </head>
 
@@ -553,7 +553,6 @@ $(document).ready(function() {
 <div id="loanactions">
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
 
-		
 		{{#if rejectAllowed}}
 		<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectloan">Reject</button>
 		{{/if}}
@@ -598,7 +597,7 @@ $(document).ready(function() {
 	<ul>
 		<li><a href="#details{{=id}}" title="details">{{=$ctx.doI18N("tab.client.account.loan.details")}}</a></li>
 		<li><a href="#schedule{{=id}}" title="schedule">{{=$ctx.doI18N("tab.client.account.loan.schedule")}}</a></li>
-		{{#if loanRepayments}}
+		{{#if loanRepayments.length > 0}}
 		<li><a href="#repayments{{=id}}" title="repayments">{{=$ctx.doI18N("tab.client.account.loan.repayments")}}</a></li>
 		{{/if}}
 	</ul>
@@ -836,7 +835,7 @@ $(document).ready(function() {
 			</tfoot>
 		</table>
 	</div>
-    {{#if loanRepayments}}
+    {{#if loanRepayments.length > 0}}
 	<!-- Third loan tab -->
 	<div id="repayments{{=id}}" style="margin-top: 5px;">
 		<table id="newrepaymentsactivity{{=id}}" class="pretty displaypayments">
