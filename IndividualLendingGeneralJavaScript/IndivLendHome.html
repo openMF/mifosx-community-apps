@@ -61,7 +61,7 @@
 </script>
 
 <!-- This is a single Page javascript app - IndividualLendingCode.js has functions which switch functionality by replacing the html in the #container div -->
-<script type="text/javascript" src="resources/IndividualLendingCode-1.04.js"></script>
+<script type="text/javascript" src="resources/IndividualLendingCode-1.05.js"></script>
 
 </head>
 
@@ -210,13 +210,13 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.expected.disbursement.date.on")}}</td>
 							<td>
-							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
+							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
 							</td>
 						</tr>
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.first.repayment.on")}}</td>
 							<td>
-							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
+							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
 							</td>
 						</tr>
 						<tr>
@@ -306,7 +306,7 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.interest.charged.from")}}</td>
 							<td>
-							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(interestCalculatedFromDate)}}" style="width:172px;"/>
+							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestCalculatedFromDate)}}" style="width:172px;"/>
 							</td>
 						</tr>
 						<tr>
@@ -540,7 +540,7 @@ $(document).ready(function() {
 	<!-- end of left pane content -->
 
 	<!-- placeholder for notes content -->
-	<div id="clienttabrightpane" style="float:right;"></div>
+	<div id="clienttabrightpane" style="float:right;max-width:400px;width:400px;"></div>
 </div>
 <div style="clear: both;"></div>
 </script>

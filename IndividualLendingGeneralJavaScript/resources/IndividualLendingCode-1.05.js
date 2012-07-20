@@ -512,6 +512,7 @@ function showILClient(clientId) {
 				});
 				
 				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
+				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
 				
 				calculateAnnualPercentageRate();
 				calculateLoanSchedule();
