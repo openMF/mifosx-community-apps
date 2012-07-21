@@ -734,10 +734,8 @@ function loadILLoan(loanId) {
 						var url = 'loans/' + loanId;
 						var width = 400; 
 						var height = 225;
-						
-						var redirectUrl = '${clientUrl}';
-						
-						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, redirectUrl);
+												
+						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0);
 					    e.preventDefault();
 				});
 				$('button.deleteloan span').text(doI18N('dialog.button.delete.loan'));
@@ -1246,7 +1244,7 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 		  }).dialog('open');
 }
 
-function popupConfirmationDialogAndPost(url, submitType, titleCode, width, height, tabIndex, redirectUrl) {
+function popupConfirmationDialogAndPost(url, submitType, titleCode, width, height, tabIndex) {
 		    var dialogDiv = $("<div id='dialog-form'><div id='formerrors'></div>" + doI18N('text.confirmation.required') + "</div>");
 		  
 		  	var confirmButton = doI18N('dialog.button.confirm');
@@ -1256,8 +1254,7 @@ function popupConfirmationDialogAndPost(url, submitType, titleCode, width, heigh
 			buttonsOpts[confirmButton] = function() {
 				var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						  			dialogDiv.dialog("close");
-					  				//$newtabs.tabs('load', tabIndex);
-									alert("should be reloaded this loan tab");
+									showILClient(currentClientId );
 					  			}
 				 
 				executeAjaxRequest(url, submitType, "", saveSuccessFunction, formErrorFunction);
