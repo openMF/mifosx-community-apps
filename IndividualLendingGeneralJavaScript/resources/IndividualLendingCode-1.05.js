@@ -284,17 +284,17 @@ setClientListingContent("content");
 //HOME list clients functionality
 	$("#tabs").tabs({
 	    select: function(event, ui) {
-	    	console.log("selected..");
+	    	//console.log("selected..");
 	    },
 	    load: function(event, ui) {
-	    	console.log("load..");
+	    	//console.log("load..");
 	    },
 	    show: function(event, ui) {
-	    	console.log("show..");
+	    	//console.log("show..");
 		var successFunction =  function(data) {
 				  			var clientObject = new Object();
 			        			clientObject.clients = data;
-			        			console.log(clientObject);
+			        			//console.log(clientObject);
 			        	
 				    			var tableHtml = $("#clientSearchTabTemplate").render(clientObject);
 							$("#searchtab").html(tableHtml);	
@@ -1137,7 +1137,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				    	});
 
 			    		var newFormData = JSON.stringify($('#entityform').serializeObject());
-			    		console.log(newFormData);
+			    		//console.log(newFormData);
 			    	
 					executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 
@@ -1211,7 +1211,7 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 		    		});
 
 			var newFormData = JSON.stringify($('#entityform').serializeObject());
-			console.log(newFormData);
+			//console.log(newFormData);
 
 			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 		};
@@ -1510,9 +1510,9 @@ function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeh
 			removeErrors(placeholderDiv);
 			
 		  	var jsonErrors = JSON.parse(jqXHR.responseText);
-		  	console.log(jsonErrors);
+		  	//console.log(jsonErrors);
 		  	var valErrors = jsonErrors.errors;
-		  	console.log(valErrors);
+		  	//console.log(valErrors);
 		  	var errorArray = new Array();
 		  	var arrayIndex = 0;
 		  	$.each(valErrors, function() {
