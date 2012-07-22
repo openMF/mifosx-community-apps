@@ -615,56 +615,54 @@ $(document).ready(function() {
 			</span>
 		</div>
 
-		{{#if submittedOnDate !== null}}
+		{{#if submittedOnDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.submitted.on")}}</span>
 			<span class="rowvalue">{{=$ctx.globalDate(submittedOnDate)}}</span>
 		</div>
 		{{/if}}
 
-		{{#if approvedOnDate !== null}}
+		{{#if approvedOnDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.approved.on")}}</span>
 			<span class="rowvalue">{{=$ctx.globalDate(approvedOnDate)}}</span>
 		</div>
 		{{/if}}
 
-		{{#if actualDisbursementDate === null}}
+		{{#if actualDisbursementDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.disbursed.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(actualDisbursementDate)}}</span>
+		</div>
+		{{#else}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.expected.disbursement.on")}}</span>
 			<span class="rowvalue">{{=$ctx.globalDate(expectedDisbursementDate)}}</span>
 		</div>
 		{{/if}}
 
-		{{#if actualDisbursementDate !== null}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.disbursed.on")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(actualDisbursementDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if expectedFirstRepaymentOnDate !== null}}
+		{{#if expectedFirstRepaymentOnDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.first.repayment.due.on")}}</span>
 			<span class="rowvalue">{{=$ctx.globalDate(expectedFirstRepaymentOnDate)}}</span>
 		</div>
 		{{/if}}
 
-		{{#if interestChargedFromDate !== null}}
+		{{#if interestChargedFromDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.interest.charged.from")}}</span>
 			<span class="rowvalue">{{=$ctx.globalDate(interestChargedFromDate)}}</span>
 		</div>
 		{{/if}}
 
-		{{#if actualDisbursementDate !== null}}
+		{{#if actualDisbursementDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.expected.maturity.on")}}</span>
 			<span class="rowvalue">{{=$ctx.globalDate(expectedMaturityDate)}}</span>
 		</div>
 		{{/if}}
 
-		{{#if closedOnDate !== null}}
+		{{#if closedOnDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.closed.on")}}</span>
 			<span class="rowvalue">{{=$ctx.globalDate(closedOnDate)}}</span>
@@ -676,7 +674,7 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=convenienceData.expectedLoanTermInMonths}} {{=$ctx.doI18N("label.months")}} / ({{=convenienceData.expectedLoanTermInDays}} {{=$ctx.doI18N("label.days")}})</span>
 		</div>
 
-		{{#if closedOnDate !== null}}
+		{{#if closedOnDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.actual.term")}}</span>
 			<span class="rowvalue">{{=convenienceData.actualLoanTermInMonths}} {{=$ctx.doI18N("label.months")}} / ({{=convenienceData.actualLoanTermInDays}} {{=$ctx.doI18N("label.days")}})</span>
