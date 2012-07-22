@@ -635,7 +635,7 @@ function showILLoan(loanId, product) {
 
 function loadILLoan(loanId) {
 
-	var loanUrl = 'loans/' + loanId + "?associations=ALL";
+	var loanUrl = 'loans/' + loanId + "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
 	        	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
