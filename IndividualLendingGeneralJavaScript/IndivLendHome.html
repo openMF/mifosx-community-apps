@@ -29,8 +29,6 @@
 <script type="text/javascript" src="resources/libs/jquery-ui-1.8.16.custom/js/i18n/jquery.ui.datepicker-pt.js"></script>
 <script type="text/javascript" src="resources/libs/jquery-ui-1.8.16.custom/js/i18n/jquery.ui.datepicker-zh.js"></script>
 
-
-
 <!-- JQuery I18N plug-in -->
 <script type="text/javascript" src="resources/libs/jquery.i18n.properties-min-1.0.9.js"></script>
 
@@ -509,9 +507,8 @@ $(document).ready(function() {
 
 <script id="clientDataTabTemplate" type="text/x-jquery-tmpl">
 <span id="toolbar" class="ui-widget-header ui-corner-all">
-    <!--
-	<button id="cashflowbtn{{=id}}" class="casflowbtn">New cashflow analysis</button>
-    -->
+    <button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
+	<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
 	<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
 	<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 </span>

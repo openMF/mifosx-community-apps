@@ -55,6 +55,11 @@ saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
 		  					showILClient(currentClientId );
 				  		};
 
+saveSuccessFunctionReloadClientListing =  function(data, textStatus, jqXHR) {
+	$("#dialog-form").dialog("close");
+	showILClientListing();
+};
+
 formErrorFunction = function(jqXHR, textStatus, errorThrown) {
 				    	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
 				};
@@ -343,7 +348,7 @@ function showILClient(clientId) {
 
 	var successFunction = function(data, status, xhr) {
 	        		currentClientId = clientId;
-				clientDirty = false; //not coded but intended to refresh client if some date on its display has changed e.g. loan status
+				    clientDirty = false; //not coded but intended to refresh client if some date on its display has changed e.g. loan status
 	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
 	            	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
 	            
@@ -355,19 +360,43 @@ function showILClient(clientId) {
 					refreshLoanSummaryInfo(clientUrl);
 					
 					// bind click listeners to buttons.
-
-					/* cashflow not in the general app
-					$('.casflowbtn').button().click(function(e) {
+					$('.deleteclientbtn').button().click(function(e) {
 						var linkId = this.id;
-						var clientId = linkId.replace("cashflowbtn", "");
-						var url = '${rootContext}portfolio/client/' + clientId + '/cashflow/new';
-						window.location.href = url;
+						var clientId = linkId.replace("deleteclientbtn", "");
+
+						var url = 'clients/' + clientId;
+						var width = 400; 
+						var height = 225;
+												
+						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
+						
+						// want to go back to client list after deleting client - need to pass in success function so? 
+						//showILClientListing();
+						
+						e.preventDefault();
+					});
+					$('button.deleteclientbtn span').text(doI18N('dialog.button.delete.client'));
+					
+					$('.editclientbtn').button().click(function(e) {
+						var linkId = this.id;
+						var clientId = linkId.replace("editclientbtn", "");
+						
+						var getUrl = 'clients/' + clientId + '?template=true';
+						var putUrl = 'clients/' + clientId;
+						var templateSelector = "#clientFormTemplate";
+						var width = 600; 
+						var height = 350;
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						  	$("#dialog-form").dialog("close");
+						  	showILClient(clientId);
+						}
+						
+						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client", templateSelector, width, height,  saveSuccessFunction);
 					    e.preventDefault();
 					});
+					$('button.editclientbtn span').text(doI18N('dialog.button.edit.client'));
 					
-					$('button.casflowbtn span').text(doI18N('dialog.button.new.cashflow.analysis'));
-					*/
-
 					$('.newloanbtn').button().click(function(e) {
 						var linkId = this.id;
 						var clientId = linkId.replace("newloanbtn", "");
@@ -733,7 +762,7 @@ function loadILLoan(loanId) {
 						var width = 400; 
 						var height = 225;
 												
-						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0);
+						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
 					    e.preventDefault();
 				});
 				$('button.deleteloan span').text(doI18N('dialog.button.delete.loan'));
@@ -1273,7 +1302,7 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 		  }).dialog('open');
 }
 
-function popupConfirmationDialogAndPost(url, submitType, titleCode, width, height, tabIndex) {
+function popupConfirmationDialogAndPost(url, submitType, titleCode, width, height, tabIndex, saveSuccessFunction) {
 		    var dialogDiv = $("<div id='dialog-form'><div id='formerrors'></div>" + doI18N('text.confirmation.required') + "</div>");
 		  
 		  	var confirmButton = doI18N('dialog.button.confirm');
@@ -1281,10 +1310,10 @@ function popupConfirmationDialogAndPost(url, submitType, titleCode, width, heigh
 			
 			var buttonsOpts = {};
 			buttonsOpts[confirmButton] = function() {
-				var saveSuccessFunction = function(data, textStatus, jqXHR) {
-						  			dialogDiv.dialog("close");
-									showILClient(currentClientId );
-					  			}
+//				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+//						  			dialogDiv.dialog("close");
+//									showILClient(currentClientId );
+//					  			}
 				 
 				executeAjaxRequest(url, submitType, "", saveSuccessFunction, formErrorFunction);
 
