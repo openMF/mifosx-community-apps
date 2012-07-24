@@ -61,7 +61,7 @@
 </script>
 
 <!-- This is a single Page javascript app - IndividualLendingCode.js has functions which switch functionality by replacing the html in the #container div -->
-<script type="text/javascript" src="resources/IndividualLendingCode-1.05.js"></script>
+<script type="text/javascript" src="resources/IndividualLendingCode-1.06.js"></script>
 
 </head>
 
@@ -1317,7 +1317,7 @@ $(document).ready(function() {
 </script>
 
 <script id="changePasswordFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
+<form id="entityform" name="changePasswordForm">
     <div id="formerrors"></div>
         <label for="password">{{=$ctx.doI18N("form.label.new.password")}}</label>
 		<input id="password" name="password" title="" type="password" value="{{=password}}" size="75"/>
@@ -1328,7 +1328,7 @@ $(document).ready(function() {
 </script>
 
 <script id="userSettingsFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
+<form id="entityform" name="changeUserSettingsForm">
     <div id="formerrors"></div>
 		<label for="username">{{=$ctx.doI18N("form.label.username")}}</label>
 		<input id="username" name="username" title="" type="text" value="{{=username}}" size="75"/>
