@@ -1090,6 +1090,7 @@ function resetBasicAuthKey()
 					currentUserName = data.username;
 					currentPwd = usePassword;
 					$("#displayUN").html(currentUserName);
+					showILAccountSettings();
 					newPassword = "";
 					newUserName = "";
 					return false;
