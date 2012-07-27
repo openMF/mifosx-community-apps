@@ -741,7 +741,7 @@ $(document).ready(function() {
 					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.interest")}}</th>
 					<td>{{=$ctx.money(summary.originalInterest)}}</td>
 					<td>{{=$ctx.money(summary.interestPaid)}}</td>
-					<td>&nbsp;</td>
+					<td>{{=$ctx.money(summary.interestWaived)}}</td>
 					<td>{{=$ctx.money(summary.interestOutstanding)}}</td>
 				</tr>
 			</tbody>
@@ -766,12 +766,12 @@ $(document).ready(function() {
 				<col>
 				<col class="righthighlightcol">
 			</colgroup>
-			<colgroup span="3">
+			<colgroup span="4">
 				<col class="lefthighlightcol">
 				<col>
 				<col class="righthighlightcol">
 			</colgroup>
-			<colgroup span="3">
+			<colgroup span="4">
 				<col class="lefthighlightcol">
 				<col>
 				<col class="righthighlightcol">
@@ -780,8 +780,8 @@ $(document).ready(function() {
 				<tr>
 					<th colspan="2" scope="colgroup" class="empty">&nbsp;</th>
 					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.principal")}}</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.interest")}}</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
+					<th colspan="4" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.interest")}}</th>
+					<th colspan="4" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
 				</tr>
 				<tr>
 					<th scope="col">#</th>
@@ -791,9 +791,11 @@ $(document).ready(function() {
 					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.heading.outstanding")}}</th>
 					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.expected")}}</th>
 					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.paid")}}</th>
+					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.summary.heading.waived")}}</th>
 					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.heading.outstanding")}}</th>
 					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.expected")}}</th>
 					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.paid")}}</th>
+					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.summary.heading.waived")}}</th>
 					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.heading.outstanding")}}</th>
 				</tr>
 			</thead>
@@ -807,9 +809,11 @@ $(document).ready(function() {
 				<td class="righthighlightcolheader">{{=$ctx.money(principalOutstanding)}}</td>
 				<td class="lefthighlightcolheader">{{=$ctx.money(interest)}}</td>
 				<td>{{=$ctx.money(interestPaid)}}</td>
+				<td>{{=$ctx.money(interestWaived)}}</td>
 				<td class="righthighlightcolheader">{{=$ctx.money(interestOutstanding)}}</td>
 				<td class="lefthighlightcolheader">{{=$ctx.money(total)}}</td>
 				<td>{{=$ctx.money(totalPaid)}}</td>
+				<td>{{=$ctx.money(totalWaived)}}</td>
 				<td class="righthighlightcolheader">{{=$ctx.money(totalOutstanding)}}</td>
 			</tr>
 			{{/each}}
@@ -822,9 +826,11 @@ $(document).ready(function() {
 					<th class="righthighlightcolheader">{{=$ctx.money(summary.principalOutstanding)}}</th>
 					<th class="lefthighlightcolheader">{{=$ctx.money(summary.originalInterest)}}</th>
 					<th>{{=$ctx.money(summary.interestPaid)}}</th>
+					<th>{{=$ctx.money(summary.interestWaived)}}</th>
 					<th class="righthighlightcolheader">{{=$ctx.money(summary.interestOutstanding)}}</th>
 					<th class="lefthighlightcolheader">{{=$ctx.money(summary.originalTotal)}}</th>
 					<th>{{=$ctx.money(summary.totalPaid)}}</th>
+					<th>{{=$ctx.money(summary.totalWaived)}}</th>
 					<th class="righthighlightcolheader">{{=$ctx.money(summary.totalOutstanding)}}</th>
 				</tr>
 			</tfoot>
