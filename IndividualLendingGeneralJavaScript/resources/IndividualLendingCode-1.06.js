@@ -98,7 +98,15 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
-	htmlVar += '	<li><a href="unknown.html" onclick="showILReporting();return false;">' + doI18N("link.reports") + '</a></li>';
+	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
+	htmlVar += '		<ul>';
+	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting();return false;">' + doI18N("link.reports.all") + '</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Client' + "'" + ');return false;">' + doI18N("link.reports.client") + '</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Loan' + "'" + ');return false;">' + doI18N("link.reports.loan") + '</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Fund' + "'" + ');return false;">' + doI18N("link.reports.fund") + '</a></li>';
+	htmlVar += '		</ul>';
+	htmlVar += '	</li>';
+
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
 	htmlVar += '</ul>';
 	htmlVar += '<ul id="nav" class="floatright">';
@@ -961,14 +969,14 @@ function loadILLoan(loanId) {
 
 /* reports code */
 
-function showILReporting() {
+function showILReporting(reportCategory) {
 	setReportingContent("content");
 
-var reportingParams = {
+//var reportingParams = {
+ reportingParams = {
 	RESTUrl: baseApiUrl + "reports",
 	basicAuthKey: base64,
 	tenantIdentifier: tenantIdentifier,
-	//jpw remove pentahoUrl: baseApiUrl + "pentahoreport",
 	initialLanguage: currentCulture,
 	bundleDir: "resources/stretchyreporting/mifosngbundle/",
 	reportsListDiv: "myListOfReports",
@@ -981,6 +989,14 @@ var reportingParams = {
 	loadingImg: "resources/stretchyreporting/dots64.gif",
 	resValue: "resources/libs/"
 };
+
+	if (reportCategory)
+	{
+		reportingParams.reportQuery = 'reportCategoryList';
+		reportingParams.reportQueryParams = {
+									"reportCategory": reportCategory
+								};
+	}
 
 	jQuery.stretchyReporting.initialise(reportingParams);
 

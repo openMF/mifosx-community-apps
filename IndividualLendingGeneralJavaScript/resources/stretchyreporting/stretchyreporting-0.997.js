@@ -158,9 +158,13 @@ function initialiseReporting(params) {
 
 
 	reportQuery = 'FullReportList';
-	if (params.reportQuery) reportQuery = params.reportQuery;
-
-	getReportData(reportQuery, {}, setupReportListSuccess, true) 
+	reportQueryParams = {};
+	if (params.reportQuery) 
+	{
+		reportQuery = params.reportQuery;
+		if (params.reportQueryParams) reportQueryParams = params.reportQueryParams;
+	}
+	getReportData(reportQuery, reportQueryParams, setupReportListSuccess, true) 
 }
 
 function setCurrentDate() {
