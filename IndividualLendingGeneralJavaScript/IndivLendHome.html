@@ -206,6 +206,21 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr>
+							<td>{{=$ctx.doI18N("form.label.loan.product.repayment.strategy")}}</td>
+							<td>
+								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
+									<option value="">{{=$ctx.doI18N("form.option.repayment.strategy.dropdown.first.choice")}}</option>
+								{{#each selectedProduct.transactionProcessingStrategyOptions}}
+									{{#if $ctx.number($parent.parent.data.selectedProduct.transactionProcessingStrategyId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+									{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+									{{/if}}
+            					{{/each}}
+								</select>
+							</td>
+						</tr>
+						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.expected.disbursement.date.on")}}</td>
 							<td>
 							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
@@ -956,7 +971,6 @@ $(document).ready(function() {
 				{{/if}}
             {{/each}}
 		</select>
-
 	</fieldset>
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.loan.product.currency")}}</legend>
@@ -1007,6 +1021,21 @@ $(document).ready(function() {
 						<td>{{=$ctx.doI18N("form.label.loan.product.numberof.repayments")}}</td>
 						<td>
 							<input id="numberOfRepayments" name="numberOfRepayments" title="" style="width: 50px;" value="{{=$ctx.number(numberOfRepayments)}}"/>
+						</td>
+					</tr>
+					<tr>
+						<td>{{=$ctx.doI18N("form.label.loan.product.repayment.strategy")}}</td>
+						<td>
+							<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
+								<option value="">{{=$ctx.doI18N("form.option.repayment.strategy.dropdown.first.choice")}}</option>
+							{{#each transactionProcessingStrategyOptions}}
+								{{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+								{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							{{/if}}
+            				{{/each}}
+							</select>
 						</td>
 					</tr>
 				</table>
