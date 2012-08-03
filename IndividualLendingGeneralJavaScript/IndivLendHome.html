@@ -947,7 +947,7 @@ $(document).ready(function() {
 <!-- admin templates below here -->
 
 
-<script id="loanproductFormTemplate" type="text/x-jquery-tmpl">
+<script id="loanprouctFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
 	<fieldset>
@@ -1185,7 +1185,7 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 	<fieldset>
-		<!-- <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" /> -->
+		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" /> 
 		<legend>{{=$ctx.doI18N("form.legend.saving.product.information")}}</legend> 
 		
 		<label for="name">{{=$ctx.doI18N("form.label.saving.product.name")}}</label>
@@ -1194,6 +1194,27 @@ $(document).ready(function() {
 		<label for="description">{{=$ctx.doI18N("form.label.saving.product.description")}}</label>
 		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
 	</fieldset>
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.saving.product.currency")}}</legend>
+		<label for="currencyCode">{{=$ctx.doI18N("form.label.saving.product.currency")}}</label>
+		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
+            	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
+			{{#each currencyOptions}}
+                		{{#if $parent.parent.data.currencyCode===code}}
+					<option value="{{=code}}" selected="selected">{{=name}}</option>
+				{{#else}}
+					<option value="{{=code}}">{{=name}}</option>
+				{{/if}}
+          		{{/each}}
+		</select>
+		<label for="digitsAfterDecimal">{{=$ctx.doI18N("form.label.saving.product.decimalplaces")}}</label>
+		<input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 300px;" value="{{=$ctx.number(digitsAfterDecimal)}}" />
+	
+		{{=$ctx.doI18N("form.label.saving.product.interestrate")}}
+		<input id="interestRate" name="interestRate" title="" style="width: 70px;" value="{{=$ctx.decimal(interestRate, 4)}}" />
+	</fieldset>
+
 </form>
 </script>
 
