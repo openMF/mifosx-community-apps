@@ -3,16 +3,15 @@ crudData = {
 		loanproduct: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
-				dialogWidth: 800,
+				dialogWidth: 850,
 				dialogHeight: 550
 			},
 		savingproduct: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
-				dialogWidth: 800,
+				dialogWidth: 850,
 				dialogHeight: 550
 			},
-
 		office: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
