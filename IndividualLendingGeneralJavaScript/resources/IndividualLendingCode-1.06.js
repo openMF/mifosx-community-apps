@@ -920,6 +920,17 @@ function loadILLoan(loanId) {
 				});
 
 				$("a.delete" + tableName).click( function(e) {
+					var linkId = this.id;
+					var entityId = linkId.replace("delete" + tableName, "");
+
+					var resourceUrl = tableName + "s/" + entityId;
+					var width = 600; 
+					var height = 350;
+					var saveSuccessFunction = function(data, textStatus, jqXHR) {
+					  	$("#dialog-form").dialog("close");
+					  	refreshTableView(tableName );
+					};
+					popupConfirmationDialogAndPost(resourceUrl, 'DELETE', 'dialog.title.confirmation.required', width, height, entityId, saveSuccessFunction);
 					showNotAvailableDialog('dialog.title.functionality.not.available');
 					e.preventDefault();
 				});
