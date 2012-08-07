@@ -567,21 +567,31 @@ function showILClient(clientId) {
 				$('#principal').change(function() {
 					calculateLoanSchedule();
 				});
+				
+				$('#loanTermFrequency').change(function() {
+					calculateLoanSchedule();
+				});
+				$('#loanTermFrequencyType').change(function() {
+					calculateLoanSchedule();
+				});
+				
+				$('#numberOfRepayments').change(function() {
+					calculateLoanSchedule();
+				});
 				$('#repaymentEvery').change(function() {
 					calculateLoanSchedule();
 				});
 				$('#repaymentFrequencyType').change(function() {
 					calculateLoanSchedule();
 				});
-				$('#numberOfRepayments').change(function() {
-					calculateLoanSchedule();
-				});
+				
 				$('#expectedDisbursementDate').change(function() {
 					calculateLoanSchedule();
 				});
 				$('#repaymentsStartingFromDate').change(function() {
 					calculateLoanSchedule();
 				});
+				
 				$('#interestRatePerPeriod').change(function() {
 					calculateAnnualPercentageRate();
 					calculateLoanSchedule();
