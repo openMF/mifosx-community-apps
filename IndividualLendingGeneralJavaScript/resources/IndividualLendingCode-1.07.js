@@ -307,6 +307,7 @@ setClientListingContent("content");
 	$("#tabs").tabs({
 	    select: function(event, ui) {
 	    	//console.log("selected..");
+		alert("selected");
 	    },
 	    load: function(event, ui) {
 	    	//console.log("load..");
@@ -352,14 +353,26 @@ setClientListingContent("content");
 
 function showILClient(clientId) {
 	var clientUrl = 'clients/' + clientId
+
 	setClientContent("content");
 	$newtabs = $("#newtabs").tabs({
+	    	select: function(event, tab) {
+				//alert("client tab selected: " + tab.index);
+				if (tab.index == 0)
+				{
+					if (clientDirty == true)
+					{
+						refreshLoanSummaryInfo(clientUrl);
+						refreshNoteWidget(clientUrl);
+						clientDirty = false;
+					}
+				}
+
+	    		},
 		"add": function( event, ui ) {
-			$newtabs.tabs('select', '#' + ui.panel.id);
-		}
-
+				$newtabs.tabs('select', '#' + ui.panel.id);
+			}
 	});
-
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
 	        	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
 	            $(anchor.hash).html("error occured while ajax loading.");
@@ -367,7 +380,7 @@ function showILClient(clientId) {
 
 	var successFunction = function(data, status, xhr) {
 	        		currentClientId = clientId;
-				    clientDirty = false; //not coded but intended to refresh client if some date on its display has changed e.g. loan status
+				clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
 	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
 	            	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
 	            
@@ -471,7 +484,6 @@ function showILClient(clientId) {
 
 	// function to retrieve and display loan summary information in it placeholder
 	function refreshLoanSummaryInfo(clientUrl) {
-
 		var successFunction =  function(data, textStatus, jqXHR) {
 				  			var tableHtml = $("#clientAccountSummariesTemplate").render(data);
 				  			$("#clientaccountssummary").html(tableHtml);
