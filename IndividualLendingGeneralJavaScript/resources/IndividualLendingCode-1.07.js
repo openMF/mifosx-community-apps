@@ -1775,7 +1775,7 @@ function jsViewsRegisterHelpers() {
 			globalDate: function(dateParts) {
 			      try {
 			    	  if (undefined != dateParts)
-				  {
+			    	  {
 			    	  	var year = dateParts[0];
 			    	  	var month = parseInt(dateParts[1]) - 1; // month is zero indexed
 			    	  	var day = dateParts[2];
@@ -1784,33 +1784,37 @@ function jsViewsRegisterHelpers() {
 			    	  	d.setFullYear(year,month,day);
 			    	  
 			    	  	return Globalize.format(d,"dd MMMM yyyy");
-				  }
-				  else return "";
+			    	  }
+			    	  else return "";
 			      } catch(e) {
 			        return "??";
 			      }
 			},
 			globalDateAsISOString: function(localDateAsISOString) {
-				
 			      try {
-			    	  var dateParts = localDateAsISOString.split("-")
-			    	  var year = dateParts[0];
-			    	  var month = parseInt(dateParts[1]) - 1; // month is zero indexed
-			    	  var day = dateParts[2];
-			    	  
-			    	  var d = new Date();
-			    	  d.setFullYear(year,month,day);
-			    	  
-			    	  return Globalize.format(d,"dd MMMM yyyy");
+			    	  if (undefined != localDateAsISOString)
+			    	  {
+				    	  var dateParts = localDateAsISOString.split("-")
+				    	  var year = dateParts[0];
+				    	  var month = parseInt(dateParts[1]) - 1; // month is zero indexed
+				    	  var day = dateParts[2];
+				    	  
+				    	  var d = new Date();
+				    	  d.setFullYear(year,month,day);
+				    	  
+				    	  return Globalize.format(d,"dd MMMM yyyy");
+			    	  } else return "";
 			      } catch(e) {
 			        return "??";
 			      }
 			},
 			globalDateTime: function(dateInMillis) {
 			      try {
-			    	  var d = new Date(dateInMillis);
-			    	  
-			    	  return Globalize.format(d,"F");
+			    	  if (undefined != dateInMillis)
+			    	  {
+				    	  var d = new Date(dateInMillis);
+				    	  return Globalize.format(d,"F");
+			    	  } else return "";
 			      } catch(e) {
 			        return "??";
 			      }
