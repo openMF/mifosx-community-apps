@@ -12,6 +12,12 @@ crudData = {
 				dialogWidth: 850,
 				dialogHeight: 550
 			},
+		depositproduct: {
+				editTemplateNeeded: true,
+				refreshListNeeded: true,
+				dialogWidth: 850,
+				dialogHeight: 550
+			},	
 		office: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
@@ -180,6 +186,7 @@ function setOrgAdminContent(divName) {
 
 	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'POST');return false;";
 	var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
+	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
@@ -193,9 +200,13 @@ function setOrgAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addProductUrl + '" id="addloanproduct">' + doI18N("administration.link.add.loan.product") + '</a>';
 	htmlVar += ' | ';
-        htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
+    htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ');return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
 	htmlVar += ' | ';
@@ -942,7 +953,7 @@ function loadILLoan(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 
@@ -983,8 +994,9 @@ function loadILLoan(loanId) {
 
 		var templateSelector = "#" + tableName + "FormTemplate";
 		var dialogTitle = "dialog.title." + tableName + ".details";
+		
 		if (submitType == "POST") dialogTitle = 'dialog.title.add.' + tableName;
-
+		
 		var genSSF = 'var saveSuccessFunction = function(data, textStatus, jqXHR) {';
 		genSSF += '$("#dialog-form").dialog("close");';
 		if (crudData[tableName].refreshListNeeded == true) genSSF += 'refreshTableView("' + tableName + '");';
