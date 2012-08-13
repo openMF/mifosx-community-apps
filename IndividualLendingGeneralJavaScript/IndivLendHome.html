@@ -1276,7 +1276,7 @@ $(document).ready(function() {
 		<legend>{{=$ctx.doI18N("form.legend.deposit.product.information")}}</legend> 
 		
 		<label for="name">{{=$ctx.doI18N("form.label.deposit.product.name")}}</label>
-		<input id="name" name="name" type="text" title="" value="{{=name}}"/>
+		<input id="name" name="name" type="text" value="{{=name}}" style="width:400px;"/>
 		
 		<label for="description">{{=$ctx.doI18N("form.label.deposit.product.description")}}</label>
 		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
@@ -1288,18 +1288,18 @@ $(document).ready(function() {
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
             	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#each currencyOptions}}
-                		{{#if $parent.parent.data.currencyCode===code}}
+                {{#if $parent.parent.data.currencyCode===code}}
 					<option value="{{=code}}" selected="selected">{{=name}}</option>
 				{{#else}}
 					<option value="{{=code}}">{{=name}}</option>
 				{{/if}}
-          		{{/each}}
+          	{{/each}}
 		</select>
 		<label for="digitsAfterDecimal">{{=$ctx.doI18N("form.label.deposit.product.decimalplaces")}}</label>
 		<input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 300px;" value="{{=$ctx.number(digitsAfterDecimal)}}" />
-
 	</fieldset>
-<fieldset>
+
+	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
 		
 		<table>
@@ -1327,18 +1327,26 @@ $(document).ready(function() {
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.deposit.product.canRenew")}}</td>
 						<td>
-							<input type="checkbox" id="canRenew" name="canRenew" title="" style="width: 125px;" value="{{=canRenew}}" onClick="validate(canRenew)" onMouseOver="updateCheckBox(canRenew)" />
+							{{#if canRenew}}
+							<input type="checkbox" id="canRenew" name="canRenew" title="" style="width: 125px;" checked=checked />
+							{{#else}}
+							<input type="checkbox" id="canRenew" name="canRenew" title="" style="width: 125px;" />
+							{{/if}}
 						</td>
 					</tr>
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.deposit.product.canPreClose")}}</td>
 						<td>
-							<input type="checkbox" id="canPreClose" name="canPreClose" title="" style="width: 125px;" value="{{=canPreClose}}"  onClick="validate(canPreClose)" onMouseOver="updateCheckBox(canPreClose)"/>
+							{{#if canPreClose}}
+							<input type="checkbox" id="canPreClose" name="canPreClose" title="" style="width: 125px;" checked=checked />
+							{{#else}}
+							<input type="checkbox" id="canPreClose" name="canPreClose" title="" style="width: 125px;" />
+							{{/if}}
 						</td>
 					</tr>
 				</table>	
 			</td>
-			<td>
+			<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
 				<table>
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.deposit.product.maturityDefaultInterestRate")}}</td>
@@ -1372,33 +1380,7 @@ $(document).ready(function() {
 	</fieldset>
 
 </form>
-
 </script>
-
-<script>
-	function updateCheckBox(chk){
-		if(chk.value == 'true'){
-			chk.checked = 1;				
-		}
-		if(chk.value == ''){
-			chk.checked = 0;				
-		}
-		
-
-	}
-
-	function validate(chk){
-		if (chk.checked == 1)
-			chk.value=true;
-		
-	    if(chk.checked == 0)
-		    chk.value=false;
-
-         alert(chk.value);
-	} 
-</script>
-
-
 
 <script id="officeListTemplate" type="text/x-jquery-tmpl">
 <table id='officestable' width='100%'>
