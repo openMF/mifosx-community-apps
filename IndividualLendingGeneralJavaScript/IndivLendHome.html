@@ -1321,26 +1321,26 @@ $(document).ready(function() {
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.deposit.product.tenureMonths")}}</td>
 						<td>
-							<input id="tenureMonths" name="tenureMonths" title="" style="width: 125px;" value="{{=$ctx.number(tenureMonths)}}"/>
+							<input id="tenureInMonths" name="tenureInMonths" title="" style="width: 125px;" value="{{=$ctx.number(tenureInMonths)}}"/>
 						</td>
 					</tr>
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.deposit.product.canRenew")}}</td>
 						<td>
-							{{#if canRenew}}
-							<input type="checkbox" id="canRenew" name="canRenew" title="" style="width: 125px;" checked=checked />
+							{{#if renewalAllowed}}
+							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" checked=checked />
 							{{#else}}
-							<input type="checkbox" id="canRenew" name="canRenew" title="" style="width: 125px;" />
+							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" />
 							{{/if}}
 						</td>
 					</tr>
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.deposit.product.canPreClose")}}</td>
 						<td>
-							{{#if canPreClose}}
-							<input type="checkbox" id="canPreClose" name="canPreClose" title="" style="width: 125px;" checked=checked />
+							{{#if preClosureAllowed}}
+							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" checked=checked />
 							{{#else}}
-							<input type="checkbox" id="canPreClose" name="canPreClose" title="" style="width: 125px;" />
+							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" />
 							{{/if}}
 						</td>
 					</tr>
@@ -1372,6 +1372,24 @@ $(document).ready(function() {
 							<input id="preClosureInterestRate" name="preClosureInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(preClosureInterestRate,4)}}"/>
 						</td>
 					</tr>
+					<!--
+					<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
+							<td>
+								<input id="interestCompoundingEvery" name="interestCompoundingEvery" title="" type="text" value="{{=$ctx.number(interestCompoundingEvery)}}" style="width: 50px;" />
+								
+								<select name="interestCompoundingEveryPeriodType" id="interestCompoundingEveryPeriodType"  title="" style="width: 121px;">
+								{{#each interestCompoundingEveryPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestCompoundingEveryPeriodType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+					</tr>
+					-->
 				</table>	
 			</td>
 		</tr>
