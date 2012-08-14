@@ -447,6 +447,18 @@ $(document).ready(function() {
 </form>	
 </script>
 
+<script id="groupSearchTabTemplate" type="text/x-jquery-tmpl">
+<form method="post" id="viewGroup" name="viewGroup" action="switchToGroup">
+	<label for="group">{{=$ctx.doI18N("label.group.search")}}</label>
+	<select name="group" id="group" onChange="showILGroup(options[selectedIndex].value);">
+		<option value="0">{{=$ctx.doI18N("option.group.search.first.choice")}}</option>
+		{{#each groups}}
+			<option value="{{=id}}">{{=name}}</option>
+        {{/each}}
+  	</select>
+</form>	
+</script>
+
 <script id="clientFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -484,6 +496,50 @@ $(document).ready(function() {
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
 	<label for="joiningDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
 	<input id="joiningDate" name="joiningDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
+</form>
+</script>
+
+<script id="groupFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td colspan="2">
+				<label for="name">{{=$ctx.doI18N("form.label.group.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2">
+				<label for="externalId">{{=$ctx.doI18N("form.label.group.externalid")}}</label>
+				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="multiselectwidget">
+					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:200px;height:125px;">
+					{{#each allowedClients}}
+						<option value="{{=id}}">{{=displayName}}</option>
+		            {{/each}}
+					</select>
+					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+				</div>
+			</td>
+			<td>
+				<div class="multiselectwidget">
+					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:200px;height:125px;">
+					{{#each clientMembers}}
+						<option value="{{=id}}">{{=displayName}}</option>
+		            {{/each}}
+					</select>
+					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
+				</div>
+			</td>
+		</tr>
+	</table>
 </form>
 </script>
 
@@ -572,6 +628,35 @@ $(document).ready(function() {
 
 	<!-- placeholder for notes content -->
 	<div id="clienttabrightpane" style="float:right;max-width:400px;width:400px;"></div>
+</div>
+<div style="clear: both;"></div>
+</script>
+
+<script id="groupDataTabTemplate" type="text/x-jquery-tmpl">
+<span id="toolbar" class="ui-widget-header ui-corner-all">
+    <button id="deletegroupbtn{{=id}}" class="deletegroupbtn">Delete group</button>
+	<button id="editgroupbtn{{=id}}" class="editgroupbtn">Edit group</button>
+</span>
+<hr/>
+
+<div id="grouptabcontent">
+	<div id="grouptableftpane" style="float:left; max-width: 700px; width: 700px;">
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.group.name")}}</span>
+			<span class="rowvalue">{{=name}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.group.externalid")}}</span>
+			<span class="rowvalue">{{=externalId}}</span>
+		</div>
+		<p><b>{{=$ctx.doI18N("heading.group.members.overview")}}</b></p>
+		{{#each clientMembers}}
+		<div class="row">
+			<span class="rowvalue">{{=displayName}}</span>
+		</div>
+		{{/each}}
+	</div>
+	<!-- end of left pane content -->
 </div>
 <div style="clear: both;"></div>
 </script>
