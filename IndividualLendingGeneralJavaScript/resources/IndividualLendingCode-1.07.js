@@ -108,6 +108,7 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
 	htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+	htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
 	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
@@ -167,6 +168,13 @@ function setClientListingContent(divName) {
 	$("#" + divName).html(htmlVar);
 }
 
+function setGroupListingContent(divName){
+	var htmlVar = '<button id="addgroup" style="clear: both;">' + doI18N("link.add.new.group") + '</button>';
+	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
+
+	$("#" + divName).html(htmlVar);
+}
+
 function setClientContent(divName) {
 
 	var htmlVar = '<div id="newtabs">	<ul><li><a href="nothing"'; 
@@ -174,6 +182,12 @@ function setClientContent(divName) {
 	$("#" + divName).html(htmlVar);
 }
 
+function setGroupContent(divName) {
+	var htmlVar = '<div id="newtabs">	<ul><li><a href="nothing"'; 
+	htmlVar += ' title="grouptab" class="topleveltab"><span id="grouptabname">' + doI18N("app.loading") + '</span></a></li></ul><div id="grouptab"></div></div>';
+	
+	$("#" + divName).html(htmlVar);
+}
 
 function setAddLoanContent(divName) {
 
@@ -358,9 +372,50 @@ setClientListingContent("content");
 	
 }	
 
+//HOME list groups functionality
+function showILGroupListing(){
 
+	setGroupListingContent("content");
 
+	$("#tabs").tabs({
+	    select: function(event, ui) {
+	    	console.log("selected..");
+			alert("selected");
+	    },
+	    load: function(event, ui) {
+	    	console.log("load..");
+	    },
+	    show: function(event, ui) {
+	    	console.log("show..");
+			var successFunction =  function(data) {
+	  			var groupObject = new Object();
+	    			groupObject.groups = data;
+	    			//console.log(groupObject);
+		    	
+				var tableHtml = $("#groupSearchTabTemplate").render(groupObject);
+				$("#searchtab").html(tableHtml);	
+	  		};
 
+	  		executeAjaxRequest('groups', 'GET', "", successFunction, formErrorFunction);
+	    }
+	});
+
+	var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
+		$('#dialog-form').dialog("close");
+		showILGroup(data.entityId);
+	}
+	$("#addgroup").button().click(function(e) {
+		var getUrl = 'groups/template';
+		var postUrl = 'groups';
+		var templateSelector = "#groupFormTemplate";
+		var width = 600; 
+		var height = 450;
+		
+		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.group', templateSelector, width, height, addGroupSuccessFunction);
+		
+	    e.preventDefault();
+	});
+}
 
 function showILClient(clientId) {
 	var clientUrl = 'clients/' + clientId
@@ -491,7 +546,67 @@ function showILClient(clientId) {
 
 }
 	
+function showILGroup(groupId){
+	var groupUrl = "groups/"+groupId;
+	setGroupContent("content");
 
+	$newtabs = $("#newtabs").tabs({
+    	select: function(event, tab) {
+		},
+		"add": function( event, ui ) {
+				$newtabs.tabs('select', '#' + ui.panel.id);
+			}
+	});
+
+	var successFunction = function(data, status, xhr) {
+		var currentGroupId = groupId;
+		var currentTabIndex = $newtabs.tabs('option', 'selected');
+    	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+		var tableHtml = $("#groupDataTabTemplate").render(data);
+
+		$("#grouptab").html(tableHtml);
+		$("#grouptabname").html(data.name);
+
+		// bind click listeners to buttons.
+		$('.deletegroupbtn').button().click(function(e) {
+			var linkId = this.id;
+			var groupId = linkId.replace("deletegroupbtn", "");
+
+			var url = 'groups/' + groupId;
+			var width = 400; 
+			var height = 225;
+									
+			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
+			
+			e.preventDefault();
+		});
+		$('.editgroupbtn').button().click(function(e) {
+			var linkId = this.id;
+			var groupId = linkId.replace("editgroupbtn", "");
+			
+			var getUrl = 'groups/' + groupId + '?template=true';
+			var putUrl = 'groups/' + groupId;
+			var templateSelector = "#groupFormTemplate";
+			var width = 600; 
+			var height = 450;
+			
+			var saveSuccessFunction = function(data, textStatus, jqXHR) {
+			  	$("#dialog-form").dialog("close");
+			  	showILGroup(groupId);
+			}
+			
+			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+		    e.preventDefault();
+		});
+	}
+
+	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
+    	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+        $(anchor.hash).html("error occured while ajax loading.");
+    };
+
+	executeAjaxRequest(groupUrl, 'GET', "", successFunction, errorFunction);
+}
 
 	// function to retrieve and display loan summary information in it placeholder
 	function refreshLoanSummaryInfo(clientUrl) {
@@ -1235,6 +1350,13 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				var buttonsOpts = {};
 				buttonsOpts[saveButton] = function() {
 					
+					$('#notSelectedClients option').each(function(i) {
+						$(this).attr("selected", "selected");
+					});
+					$('#clientMembers option').each(function(i) {
+						$(this).attr("selected", "selected");
+					});
+
 					$('#notSelectedPermissions option').each(function(i) {  
 						$(this).attr("selected", "selected");  
 					});
@@ -1289,6 +1411,13 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				  			$(this).remove();
 						},
 				  		open: function (event, ui) {
+
+					  		$('#addclientmembers').click(function() {  
+					  			return !$('#notSelectedClients option:selected').remove().appendTo('#clientMembers');  
+					  		});
+					  		$('#removeclientmembers').click(function() {  
+					  			return !$('#clientMembers option:selected').remove().appendTo('#notSelectedClients');  
+					  		}); 
 
 					  		$('#addpermissions').click(function() {  
 					  			return !$('#notSelectedPermissions option:selected').remove().appendTo('#permissions');  
@@ -1556,7 +1685,8 @@ $.fn.serializeObject = function()
 	
 	$.each(a, function() {
 		
-		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedPermissions' || this.name === 'notSelectedRoles') {
+		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedPermissions' || this.name === 'notSelectedRoles' 
+	    		|| this.name === 'notSelectedClients') {
 			// do not serialize
 		} else  {
 		    if (o[this.name] !== undefined) {
@@ -1566,7 +1696,8 @@ $.fn.serializeObject = function()
 		        o[this.name].push(this.value || '');
 		    } else {
 		    	
-		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies' || this.name === 'permissions' || this.name === 'roles') {
+		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies' || this.name === 'permissions' 
+	        		|| this.name === 'roles' || this.name === 'clientMembers') {
 		    		o[this.name] = new Array();
 		    		o[this.name].push(this.value || '');
 		    	} else {
