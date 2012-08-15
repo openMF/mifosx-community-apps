@@ -1457,15 +1457,14 @@ $(document).ready(function() {
 							<input id="preClosureInterestRate" name="preClosureInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(preClosureInterestRate,4)}}"/>
 						</td>
 					</tr>
-					<!--
 					<tr>
 							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
 							<td>
-								<input id="interestCompoundingEvery" name="interestCompoundingEvery" title="" type="text" value="{{=$ctx.number(interestCompoundingEvery)}}" style="width: 50px;" />
+								<input id="interestCompoundedEvery" name="interestCompoundedEvery" title="" type="text" value="{{=$ctx.number(interestCompoundedEvery)}}" style="width: 50px;" />
 								
-								<select name="interestCompoundingEveryPeriodType" id="interestCompoundingEveryPeriodType"  title="" style="width: 121px;">
-								{{#each interestCompoundingEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestCompoundingEveryPeriodType.id)===$ctx.number(id)}}
+								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
+								{{#each interestCompoundedEveryPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
@@ -1474,7 +1473,6 @@ $(document).ready(function() {
   								</select>
 							</td>
 					</tr>
-					-->
 				</table>	
 			</td>
 		</tr>
