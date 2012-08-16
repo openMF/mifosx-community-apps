@@ -722,7 +722,7 @@ $(document).ready(function() {
 	<div id="details{{=id}}" style="margin-top: 5px;">
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.status")}}</span>
-			<span class="rowvalue">{{=lifeCycleStatusText}} ({{=$ctx.doI18N("label.client.account.loan.status.since")}} {{=$ctx.globalDate(lifeCycleStatusDate)}})
+			<span class="rowvalue">{{=$ctx.doI18N(lifeCycleStatusText)}} ({{=$ctx.doI18N("label.client.account.loan.status.since")}} {{=$ctx.globalDate(lifeCycleStatusDate)}})
 {{#if $ctx.numberGreaterThanZero(summary.totalInArrears.amount)}}
 	{{#if actualDisbursementDate !== null}}
 		- {{=$ctx.doI18N("label.client.account.loan.status.arrears")}} {{=$ctx.moneyWithCurrency($parent.parent.data.summary.totalInArrears)}}
