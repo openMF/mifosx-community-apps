@@ -30,6 +30,12 @@ crudData = {
 				dialogWidth: 600,
 				dialogHeight: 400
 			},
+		charge: {
+				editTemplateNeeded: false,
+				refreshListNeeded: true,
+				dialogWidth: 600,
+				dialogHeight: 400
+			},
 		user: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
@@ -203,6 +209,7 @@ function setOrgAdminContent(divName) {
 	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
+	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
 
@@ -229,6 +236,10 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
 	htmlVar += ' | ';
@@ -1068,7 +1079,7 @@ function loadILLoan(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct' ||tableName === 'depositproduct') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 
