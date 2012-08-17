@@ -378,7 +378,30 @@ $(document).ready(function() {
 	<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
 	<select name="productId" id="productId">
 		<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
-{{#each allowedProducts}}
+	{{#each allowedProducts}}
+	{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+		<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+	{{#else}}
+		<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+	{{/if}}
+{{/each}}
+	</select>
+</form>	
+</script>
+
+<script id="newDepositFormTemplateMin" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	
+	<label for="clientname">{{=$ctx.doI18N("form.label.loan.applicant")}}</label>
+	<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
+
+	<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
+	<select name="productId" id="productId">
+		<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
+	{{#each allowedProducts}}
 	{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
 		<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 	{{#else}}
@@ -600,6 +623,7 @@ $(document).ready(function() {
     <button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
 	<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
 	<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
+	<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
 	<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 </span>
 <hr/>
