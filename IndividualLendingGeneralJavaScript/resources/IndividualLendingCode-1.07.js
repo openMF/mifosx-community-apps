@@ -195,6 +195,12 @@ function setAddLoanContent(divName) {
 	$("#" + divName).html(htmlVar);
 }
 
+function setAddDepositContent(divName) {
+
+	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
+	$("#" + divName).html(htmlVar);
+}
+
 
 function setOrgAdminContent(divName) {
 
@@ -503,6 +509,15 @@ function showILClient(clientId) {
 					});
 					$('button.newloanbtn span').text(doI18N('dialog.button.new.loan.application'));
 					
+					
+					$('.newdepositbtn').button().click(function(e) {
+						var linkId = this.id;
+						var clientId = linkId.replace("newdepositbtn", "");
+						addILDeposit(clientId);
+					    e.preventDefault();
+					});
+					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));					
+					
 					$('.addnotebtn').button().click(function(e) {
 						var linkId = this.id;
 						var clientId = linkId.replace("addnotebtn", "");
@@ -669,6 +684,26 @@ function showILGroup(groupId){
 			' };'
 
 	}
+	
+	function addILDeposit(clientId) {
+		setAddDepositContent("content");
+
+		eval(genAddDepositSuccessVar(clientId));
+
+  		executeAjaxRequest('depositaccounts/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	  
+	}	
+	function genAddDepositSuccessVar(clientId) {
+
+		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
+				' var formHtml = $("#newDepositFormTemplateMin").render(data);' +
+				' $("#inputarea").html(formHtml);' +
+				' $("#productId").change(function() {' +
+					' var productId = $("#productId").val();' +
+				' });' +
+			' };'
+
+	}
+	
 
 	function genSaveSuccessFunctionReloadLoan(loanId) {
 
