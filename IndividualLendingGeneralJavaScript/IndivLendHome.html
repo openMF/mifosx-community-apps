@@ -1662,7 +1662,7 @@ $(document).ready(function() {
 {{#each crudRows}}
 <tr>
 	<td>{{=name}}</td>
-	<td>{{=$ctx.number(amount)}}</td>
+	<td>{{=$ctx.decimal(amount, 2)}}</td>
 	<td>
 		<a id='editcharge{{=id}}' class='editcharge' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
 		<a id='deletecharge{{=id}}' class='deletecharge' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
@@ -1683,7 +1683,7 @@ $(document).ready(function() {
 		<label for="name">{{=$ctx.doI18N("form.label.charge.name")}}</label>
 		<input id="name" name="name" title="" type="text" value="{{=name}}" size="75"/>
 		<label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
-		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.number(amount)}}" size="75"/>
+		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="75"/>
 	</fieldset>
 </form>
 </script>
