@@ -389,6 +389,140 @@ $(document).ready(function() {
 </form>	
 </script>
 
+
+<script id="newDepositFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.deposit.information")}}</legend>
+		<div>
+			<table id="productdetails">
+				<tr>
+					<td valign="top">
+
+						<label for="clientname">{{=$ctx.doI18N("form.label.deposit.applicant")}}</label>
+						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
+
+						<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
+						<select name="productId" id="productId">
+							<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
+							{{#each productOptions}}
+							{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							{{/if}}
+							{{/each}}
+						</select>
+					</td>
+					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
+					<td valign="top">
+						<label for="commencementDate">{{=$ctx.doI18N("form.label.deposit.submitted.on")}}</label>
+						<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(commencementDate)}}" />
+						<label for="externalId">{{=$ctx.doI18N("form.label.deposit.externalId")}}</label>
+						<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
+			<table>
+			<tr>
+				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
+							<td>
+								<input id="depositAmount" name="depositAmount" title="" type="text" value="{{=$ctx.decimal(depositAmount,4)}}" style="width: 125px;" />
+								<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.tenure")}}</td>
+							<td>
+								<input id="tenureInMonths" name="tenureInMonths" title="" type="text" value="{{=$ctx.number(tenureInMonths)}}" style="width: 50px;" />
+							</td>
+						</tr>
+					</table>
+				</td>
+
+				<!-- interest details cell -->
+				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.nominal.interestrate")}}</td>
+							<td>
+								<input id="maturityInterestRate" name="maturityInterestRate" title="" type="text" value="{{=$ctx.decimal(maturityInterestRate, 4)}}" style="width: 60px;" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
+							<td>
+								<input id="interestCompoundedEvery" name="interestCompoundedEvery" title="" type="text" value="{{=$ctx.number(interestCompoundedEvery)}}" style="width: 50px;" />
+								
+								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
+								{{#each interestCompoundedEveryPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+					</tr>
+					</table>
+				</td>
+
+
+				<td>
+				<!-- Other options -->
+					<div>
+						<span id="toolbar" class="ui-widget-header ui-corner-all">
+							<button type="submit" class="submitdepositapp" id="submitdepositapp" name="_eventId_submit"  title="Submit deposit application.">Submit Deposit application</button>
+							<button type="submit" class="canceldepositapp" id="canceldepositapp" name="_eventId_cancel" title="Cancel deposit application.">Cancel</button>
+						</span>
+					</div>
+				<!-- other options -->
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+</form>
+</script>
+
+
+
+<script id="newDepositFormTemplateMin" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+
+<label for="clientname">{{=$ctx.doI18N("form.label.deposit.applicant")}}</label>
+<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
+
+<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
+<select name="productId" id="productId">
+<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
+{{#each productOptions}}
+{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+{{#else}}
+<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+{{/if}}
+{{/each}}
+</select>
+</form>
+</script>
+
 <script id="noteListViewTemplate" type="text/x-jquery-tmpl">
 {{#if notes.length > 0}}
 	<div class="ui-widget .ui-widget-content ui-corner-all notecontainer">
@@ -600,6 +734,7 @@ $(document).ready(function() {
     <button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
 	<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
 	<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
+	<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
 	<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 </span>
 <hr/>
