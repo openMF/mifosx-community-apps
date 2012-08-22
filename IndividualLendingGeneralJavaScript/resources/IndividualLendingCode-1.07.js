@@ -1862,7 +1862,6 @@ function displayListTable(tableDiv) {
 }
 
 
-
 //Error functions		
 function removeErrors(placeholderDiv) {
 		// remove error class from all input fields

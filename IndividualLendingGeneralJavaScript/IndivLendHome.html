@@ -1215,18 +1215,19 @@ $(document).ready(function() {
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.loan.product.currency")}}</legend>
 		<label for="currencyCode">{{=$ctx.doI18N("form.label.loan.product.currency")}}</label>
-		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
-            	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
+		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
+            	<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#each currencyOptions}}
                 		{{#if $parent.parent.data.principal.currencyCode===code}}
-					<option value="{{=code}}" selected="selected">{{=name}}</option>
+					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" selected="selected">{{=name}}</option>
 				{{#else}}
-					<option value="{{=code}}">{{=name}}</option>
+					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" >{{=name}}</option>
 				{{/if}}
           		{{/each}}
 		</select>
 		<label for="digitsAfterDecimal">{{=$ctx.doI18N("form.label.loan.product.decimalplaces")}}</label>
 		<input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 300px;" value="{{=$ctx.number(principal.digitsAfterDecimal)}}" />
+
 	</fieldset>
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.loan.product.loan.terms")}}</legend>
@@ -1438,13 +1439,13 @@ $(document).ready(function() {
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.saving.product.currency")}}</legend>
 		<label for="currencyCode">{{=$ctx.doI18N("form.label.saving.product.currency")}}</label>
-		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
-            	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
+		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
+            	<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#each currencyOptions}}
                 		{{#if $parent.parent.data.currencyCode===code}}
-					<option value="{{=code}}" selected="selected">{{=name}}</option>
+					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" selected="selected">{{=name}}</option>
 				{{#else}}
-					<option value="{{=code}}">{{=name}}</option>
+					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" >{{=name}}</option>
 				{{/if}}
           		{{/each}}
 		</select>
@@ -1505,13 +1506,13 @@ $(document).ready(function() {
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.deposit.product.currency")}}</legend>
 		<label for="currencyCode">{{=$ctx.doI18N("form.label.deposit.product.currency")}}</label>
-		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
-            	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
+		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
+            	<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#each currencyOptions}}
                 {{#if $parent.parent.data.currencyCode===code}}
-					<option value="{{=code}}" selected="selected">{{=name}}</option>
+					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" selected="selected">{{=name}}</option>
 				{{#else}}
-					<option value="{{=code}}">{{=name}}</option>
+					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}">{{=name}}</option>
 				{{/if}}
           	{{/each}}
 		</select>
