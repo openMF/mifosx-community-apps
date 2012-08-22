@@ -1218,16 +1218,15 @@ $(document).ready(function() {
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
             	<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#each currencyOptions}}
-                		{{#if $parent.parent.data.principal.currencyCode===code}}
+              	{{#if $parent.parent.data.currency.code===code}}
 					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" selected="selected">{{=name}}</option>
 				{{#else}}
 					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" >{{=name}}</option>
 				{{/if}}
-          		{{/each}}
+          	{{/each}}
 		</select>
 		<label for="digitsAfterDecimal">{{=$ctx.doI18N("form.label.loan.product.decimalplaces")}}</label>
-		<input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 300px;" value="{{=$ctx.number(principal.digitsAfterDecimal)}}" />
-
+		<input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 300px;" value="{{=$ctx.number(currency.decimalPlaces)}}" />
 	</fieldset>
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.loan.product.loan.terms")}}</legend>
@@ -1239,7 +1238,7 @@ $(document).ready(function() {
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.loan.product.loan.amount")}}</td>
 						<td>
-							<input id="principal" name="principal" title="" style="width: 125px;" value="{{=$ctx.money(principal)}}" />
+							<input id="principal" name="principal" title="" style="width: 125px;" value="{{=$ctx.decimal(principal, $ctx.number(currency.decimalPlaces))}}" />
 						</td>
 					</tr>
 					<tr>
@@ -1344,7 +1343,7 @@ $(document).ready(function() {
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.loan.product.arrears.tolerance")}}</td>
 						<td>
-							<input id="inArrearsTolerance" name="inArrearsTolerance" title="" style="width: 215px;" value="{{=$ctx.money(inArrearsTolerance)}}" />
+							<input id="inArrearsTolerance" name="inArrearsTolerance" title="" style="width: 215px;" value="{{=$ctx.decimal(inArrearsTolerance, $ctx.number(currency.decimalPlaces))}}" />
 						</td>
 					</tr>
 				</table>
@@ -1668,10 +1667,6 @@ $(document).ready(function() {
 				{{/if}}
             {{/each}}
 		</select>
-		{{#else}}
-            <!--
-			<input type="hidden" id="rootOffice" name="rootOffice" value="true" />
-            -->
 		{{/if}}
 
 		<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
