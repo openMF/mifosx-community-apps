@@ -182,8 +182,8 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.product.loan.amount")}}</td>
 							<td>
-								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.money(selectedProduct.principal)}}" style="width: 125px;" />
-								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=selectedProduct.principal.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(selectedProduct.currency, selectedProduct.principal)}}" style="width: 125px;" />
+								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=selectedProduct.currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
 							</td>
 						</tr>
 						<tr>
@@ -344,8 +344,8 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.product.arrears.tolerance")}}</td>
 							<td>
-								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.money(selectedProduct.inArrearsTolerance)}}" style="width: 125px;" />
-								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=selectedProduct.inArrearsTolerance.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(selectedProduct.currency, selectedProduct.inArrearsTolerance)}}" style="width: 125px;" />
+								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=selectedProduct.currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
 							</td>
 						</tr>
 					</table>

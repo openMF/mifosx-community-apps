@@ -28,7 +28,7 @@ crudData = {
 				editTemplateNeeded: false,
 				refreshListNeeded: true,
 				dialogWidth: 600,
-				dialogHeight: 400
+				dialogHeight: 275
 			},
 		charge: {
 				editTemplateNeeded: false,
@@ -1953,6 +1953,16 @@ function jsViewsRegisterHelpers() {
 				
 				var digits = monetaryObj.digitsAfterDecimal.toFixed(0);
 				return Globalize.format(monetaryObj.amount, "n" + digits); 
+			},
+			monetaryValue: function(currencyObj, bigDecimalValue) {
+				
+				if (undefined == bigDecimalValue || undefined == currencyObj) {
+					return "";
+				}
+				Globalize.culture().numberFormat.currency.symbol = currencyObj.displaySymbol;
+				
+				var digits = currencyObj.decimalPlaces.toFixed(0);
+				return Globalize.format(bigDecimalValue, "n" + digits); 
 			},
 			moneyWithCurrency: function(monetaryObj) {
 				
