@@ -626,6 +626,8 @@ $(document).ready(function() {
 			</td>
 		</tr>
 	</table>
+    <label for="externalId">{{=$ctx.doI18N("form.label.group.externalid")}}</label>
+	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
 	<label for="joiningDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
@@ -745,6 +747,12 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.name")}}</span>
 			<span class="rowvalue">{{=displayName}}</span>
 		</div>
+		{{#if externalId}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.externalid")}}</span>
+			<span class="rowvalue">{{=externalId}}</span>
+		</div>
+		{{/if}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.branch")}}</span>
 			<span class="rowvalue">{{=officeName}}</span>
