@@ -923,8 +923,8 @@ function showILGroup(groupId){
 		var accountUrl = 'depositaccounts/' + accountId;
 
 		var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
-	    	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-	        $(anchor.hash).html("error occured while ajax loading.");
+	    	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
+	        //$(anchor.hash).html("error occured while ajax loading.");
 		};
 		
 		var successFunction = function(data, status, xhr) {
@@ -955,9 +955,9 @@ function loadILLoan(loanId) {
 	var loanUrl = 'loans/' + loanId + "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
-	        	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-	            $(anchor.hash).html("error occured while ajax loading.");
-	        };
+	        	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
+	        	//$(anchor.hash).html("error occured while ajax loading.");
+	};
 
 	var successFunction = function(data, status, xhr) {
 	        	
@@ -2043,6 +2043,16 @@ function jsViewsRegisterHelpers() {
 				
 				var digits = monetaryObj.digitsAfterDecimal.toFixed(0);
 				return Globalize.format(monetaryObj.amount, "n" + digits); 
+			},
+			moneyFormatted: function(currencyObj, bigDecimalValue) {
+				
+				if (undefined == bigDecimalValue || undefined == currencyObj) {
+					return "";
+				}
+				Globalize.culture().numberFormat.currency.symbol = currencyObj.displaySymbol;
+				
+				var digits = currencyObj.decimalPlaces.toFixed(0);
+				return Globalize.format(bigDecimalValue, "c" + digits); 
 			},
 			monetaryValue: function(currencyObj, bigDecimalValue) {
 				

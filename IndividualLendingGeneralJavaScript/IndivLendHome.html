@@ -820,12 +820,63 @@ $(document).ready(function() {
 
 <script id="depositAccountDataTabTemplate" type="text/x-jquery-tmpl">
 <div id="depositaccountactions">
+    <!--
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
 		<button id="rejectbtn" class="rejectdepositaccount">Reject</button>
 	</span>
+    -->
 </div>
+<br/>
+<div>
+    <div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.status")}}</span>
+			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
+	</div>
+	{{#if submittedOnDate}}
+	<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.submitted.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(submittedOnDate)}}</span>
+	</div>
+	{{/if}}
 
-<div id="depositaccount-content">
+	{{#if approvedOnDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.approved.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(approvedOnDate)}}</span>
+		</div>
+	{{/if}}
+
+	{{#if closedOnDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.closed.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(closedOnDate)}}</span>
+		</div>
+	{{/if}}
+
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.product")}}</span>
+			<span class="rowvalue">{{=productName}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.externalid")}}</span>
+			<span class="rowvalue">{{=externalId}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
+			<span class="rowvalue">{{=currency.name}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.deposit")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, deposit)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.tenure")}}</span>
+			<span class="rowvalue">{{=tenureInMonths}} month(s)</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interest.rate.on.maturity")}}</span>
+			<span class="rowvalue">{{=$ctx.decimal(maturityInterestRate, 4)}}%</span>
+		</div>
 </div>
 </script>
 
