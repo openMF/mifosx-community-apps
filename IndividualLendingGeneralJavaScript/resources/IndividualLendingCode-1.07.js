@@ -908,7 +908,39 @@ function showILGroup(groupId){
 
 	}
 
+	
 
+	function showDepositAccount(accountId, productName) {
+		var title = productName + ": #" + accountId ;			    
+		$newtabs.tabs( "add", "no url", title);
+		loadDepositAccount(accountId);
+	}
+	
+	function loadDepositAccount(accountId) {
+		
+		var accountUrl = 'depositaccounts/' + accountId;
+
+		var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
+	    	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+	        $(anchor.hash).html("error occured while ajax loading.");
+		};
+		
+		var successFunction = function(data, status, xhr) {
+        	
+    		var currentTabIndex = $newtabs.tabs('option', 'selected');
+        	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+        	
+        	var tableHtml = $("#depositAccountDataTabTemplate").render(data);
+    		
+    		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+    		currentTab.html(tableHtml);
+
+    		var curTabID = currentTab.prop("id")
+		};
+		
+		executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
+	}
+	
 function showILLoan(loanId, product) {
 	var title = product + ": #" + loanId ;			    
 	$newtabs.tabs( "add", "no url", title);
@@ -933,7 +965,7 @@ function loadILLoan(loanId) {
 	            	var offsetToSubmittedDate = 0;
 	            	var offsetToApprovalDate = 0;
 	            	var offsetToDisbursalDate = 0;
-				var maxOffset = 0; // today
+	            	var maxOffset = 0; // today
 
 
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);

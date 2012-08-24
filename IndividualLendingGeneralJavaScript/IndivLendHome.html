@@ -680,13 +680,16 @@ $(document).ready(function() {
 </script>
 
 <script id="clientAccountSummariesTemplate" type="text/x-jquery-tmpl">
+<p><b>{{=$ctx.doI18N("heading.client.account.account.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(anyLoanCount)}}
+
+<p><b>{{=$ctx.doI18N("heading.client.account.loanaccount.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(pendingApprovalLoanCount)}}
 <div class="row">
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each pendingApprovalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=loanProductName}}');return false ;" >{{=loanProductName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -697,7 +700,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.disbursal.loans")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each awaitingDisbursalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=loanProductName}}');return false ;" >{{=loanProductName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -708,7 +711,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.active.loans")}} ({{=$ctx.number(activeLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each openLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=loanProductName}}');return false ;" >{{=loanProductName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -719,9 +722,21 @@ $(document).ready(function() {
 	<div class="longrowlabel">{{=$ctx.doI18N("label.client.account.closed.loans")}} ({{=$ctx.number(closedLoanCount)}}):</div>
 	<div class="rowvalue">
 	{{#each closedLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=loanProductName}}');return false ;" >{{=loanProductName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
 	{{/each}}
 	</div>
+</div>
+{{/if}}
+
+<p><b>{{=$ctx.doI18N("heading.client.account.depositaccount.overview")}}</b></p>
+{{#if $ctx.numberGreaterThanZero(pendingApprovalDespositAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalDespositAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each pendingApprovalDepositAccounts}}
+		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</span>
 </div>
 {{/if}}
 
@@ -762,7 +777,6 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.globalDate(joinedDate)}}</span>
 		</div>
 
-		<p><b>{{=$ctx.doI18N("heading.client.account.account.overview")}}</b></p>
 		<div id="clientaccountssummary"></div>
 
 		<div id="clientadditionaldata"></div>
@@ -804,9 +818,18 @@ $(document).ready(function() {
 <div style="clear: both;"></div>
 </script>
 
+<script id="depositAccountDataTabTemplate" type="text/x-jquery-tmpl">
+<div id="depositaccountactions">
+	<span id="toolbar" class="ui-widget-header ui-corner-all">
+		<button id="rejectbtn" class="rejectdepositaccount">Reject</button>
+	</span>
+</div>
+
+<div id="depositaccount-content">
+</div>
+</script>
+
 <script id="loanDataTabTemplate" type="text/x-jquery-tmpl">
-
-
 {{#each permissions}}
 {{#if anyActionOnLoanAllowed}}
 <div id="loanactions">
