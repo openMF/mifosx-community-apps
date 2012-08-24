@@ -523,10 +523,14 @@ function showILClient(clientId) {
 					$('.newdepositbtn').button().click(function(e) {
 						var linkId = this.id;
 						var clientId = linkId.replace("newdepositbtn", "");
+						
 						addILDeposit(clientId);
+						
+						//launchAddDepositAccountDialog(clientId);
+						
 						e.preventDefault();
-						});
-						$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));	
+					});
+					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));	
 					
 					$('.addnotebtn').button().click(function(e) {
 						var linkId = this.id;
@@ -1153,7 +1157,7 @@ function loadILLoan(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 
@@ -1174,6 +1178,26 @@ function loadILLoan(loanId) {
 				
 				$("a.deactivate"  + tableName).click( function(e) {
 					showNotAvailableDialog('dialog.title.functionality.not.available');
+					e.preventDefault();
+				});
+				
+				$("a.changepassword"  + tableName).click( function(e) {
+					var linkId = this.id;
+					var entityId = linkId.replace("changepassword" + tableName, "");
+					
+					if (tableName ==='user') {
+						var putUrl = 'users/' + entityId;
+						var templateSelector = "#changePasswordFormTemplate";
+						var width = 600; 
+						var height = 350;
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+							$("#dialog-form").dialog("close");
+							resetBasicAuthKeyWithOutSwitchingScreen();
+						}
+						
+						popupDialogWithPostOnlyFormView(putUrl, 'PUT', 'dialog.title.update.password', templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
+					}
 					e.preventDefault();
 				});
 
@@ -1379,6 +1403,38 @@ function setBasicAuthKey(logonDivName, username, password)
 	executeAjaxRequest(url, 'POST', "", successFunction, errorFunction);
 }
 
+function resetBasicAuthKeyWithOutSwitchingScreen() 
+{ 
+	base64 = "";
+	var usePassword = currentPwd;
+	if (newPassword > "") usePassword = newPassword;
+	var useUserName = currentUserName;
+	if (newUserName > "") useUserName = newUserName;
+	
+	alert("reset: currentUser: " + currentUser);
+
+	var url = "authentication?username=" + useUserName + "&password=" + usePassword;
+	var successFunction = function(data, textStatus, jqXHR) {
+		    alert("success: currentUser: " + currentUser + " >> " + data.userId);
+			if (currentUser == data.userId) {
+					base64 = data.base64EncodedAuthenticationKey; 
+					currentUser = data.userId;
+					currentUserName = data.username;
+					currentPwd = usePassword;
+					$("#displayUN").html(currentUserName);
+					newPassword = "";
+					newUserName = "";
+			}
+			return false;
+	};
+
+	var errorFunction = function(jqXHR, textStatus, errorThrown) {
+		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+		return true;
+	};
+	
+	executeAjaxRequest(url, 'POST', "", successFunction, errorFunction);
+}
 
 function resetBasicAuthKey() 
 { 
