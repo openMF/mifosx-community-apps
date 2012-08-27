@@ -62,7 +62,7 @@ crudData = {
 			},
 		officetransaction: {
 				editTemplateNeeded: true,
-				refreshListNeeded: false,
+				refreshListNeeded: true,
 				dialogWidth: 900,
 				dialogHeight: 400
 			}
@@ -235,10 +235,6 @@ function setOrgAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ');return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addOfficeUrl + '" id="addoffice">' + doI18N("administration.link.add.office") + '</a>';
-	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
@@ -246,8 +242,14 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
-	htmlVar += ' | ';
+	htmlVar += ' <br> ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
+	htmlVar += ' | ';	
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ');return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + addOfficeUrl + '" id="addoffice">' + doI18N("administration.link.add.office") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'officetransaction'" + ');return false;" id="viewofficetransactions">' + doI18N("administration.link.view.office.money.transfers") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + officeMoneyTransfer + '" id="internalTransfer">' + doI18N("administration.link.office.money.transfer") + '</a>';
 	htmlVar += '</span>';
@@ -1565,7 +1567,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					if (document.changeUserSettingsForm!=undefined) newUserName = document.changeUserSettingsForm.username.value;
 
 			    		var newFormData = JSON.stringify($('#entityform').serializeObject());
-			    		//console.log(newFormData);
+			    		console.log(newFormData);
 			    	
 					executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 

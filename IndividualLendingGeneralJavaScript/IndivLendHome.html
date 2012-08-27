@@ -1710,6 +1710,34 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="officetransactionListTemplate" type="text/x-jquery-tmpl">
+<table id='officetransactionstable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.officetransaction.transactionDate")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.officetransaction.fromOfficeName")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.officetransaction.toOfficeName")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.officetransaction.currencyCode")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.officetransaction.transactionAmount")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.officetransaction.description")}}</th>
+
+		</tr>
+	</thead>
+	<tbody>
+{{#each crudRows}}
+<tr>
+	<td>{{=$ctx.globalDate(transactionDate)}}</td>
+	<td>{{=fromOfficeName}}</td>
+	<td>{{=toOfficeName}}</td>
+	<td>{{=currencyCode}}</td>
+	<td>{{=$ctx.decimal(transactionAmount, digitsAfterDecimal)}}</td>
+	<td>{{=description}}</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
 <script id="officetransactionFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
