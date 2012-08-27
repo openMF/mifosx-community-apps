@@ -1871,9 +1871,56 @@ $(document).ready(function() {
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
 		<label for="name">{{=$ctx.doI18N("form.label.charge.name")}}</label>
-		<input id="name" name="name" title="" type="text" value="{{=name}}" size="75"/>
+		<input id="name" name="name" title="" type="text" value="{{=name}}" size="25"/>
 		<label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
-		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="75"/>
+		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
+		<label for="currencyCode">{{=$ctx.doI18N("form.label.charge.currency")}}</label>
+		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
+        	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
+			{{#each currencyOptions}}
+              	{{#if $parent.parent.data.currency.code===code}}
+					<option value="{{=code}}" selected="selected">{{=code}}</option>
+				{{#else}}
+					<option value="{{=code}}">{{=code}}</option>
+				{{/if}}
+          	{{/each}}
+		</select>
+		<label for="chargeAppliesTo">{{=$ctx.doI18N("form.label.charge.applies.to")}}</label>
+		<select id="chargeAppliesTo" name="chargeAppliesTo" title="" style="width: 300px">
+			{{#each chargeAppliesToOptions}}
+				{{#if $ctx.number($parent.parent.data.chargeAppliesTo.id)===$ctx.number(id)}}
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+				{{#else}}
+					<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+				{{/if}}
+			{{/each}}
+		</select>
+		<label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
+		<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 300px">
+			{{#each chargeTimeTypeOptions}}
+				{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+				{{#else}}
+					<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+				{{/if}}
+			{{/each}}
+		</select>
+		<label for="chargeCalculationType">{{=$ctx.doI18N("form.label.charge.calculation.type")}}</label>
+		<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 300px">
+			{{#each chargeCalculationTypeOptions}}
+				{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+				{{#else}}
+					<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+				{{/if}}
+			{{/each}}
+		</select>
+		<label for="active">{{=$ctx.doI18N("form.label.charge.active")}}</label>
+		{{#if active}}
+			<input type="checkbox" id="active" name="active" title="" style="width: 125px;" checked=checked />
+		{{#else}}
+			<input type="checkbox" id="active" name="active" title="" style="width: 125px;" />
+		{{/if}}
 	</fieldset>
 </form>
 </script>
