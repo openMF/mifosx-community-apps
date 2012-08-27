@@ -242,7 +242,7 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
-	htmlVar += ' <br> ';
+	htmlVar += ' <br><br> ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
 	htmlVar += ' | ';	
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ');return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
@@ -252,9 +252,9 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'officetransaction'" + ');return false;" id="viewofficetransactions">' + doI18N("administration.link.view.office.money.transfers") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + officeMoneyTransfer + '" id="internalTransfer">' + doI18N("administration.link.office.money.transfer") + '</a>';
+	htmlVar += ' <br><br> ';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
-	htmlVar += '<br><br>';
 	htmlVar += '<div id="listplaceholder" ></div>';
 	$("#" + divName).html(htmlVar);
 }
