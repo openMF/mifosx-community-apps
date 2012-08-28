@@ -1893,43 +1893,70 @@ $(document).ready(function() {
 		<label for="currencyCode">{{=$ctx.doI18N("form.label.charge.currency")}}</label>
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
         	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
-			{{#each currencyOptions}}
-              	{{#if $parent.parent.data.currency.code===code}}
-					<option value="{{=code}}" selected="selected">{{=name}}</option>
-				{{#else}}
+			{{#if currency}}
+				{{#each currencyOptions}}
+	              	{{#if $parent.parent.data.currency.code===code}}
+						<option value="{{=code}}" selected="selected">{{=name}}</option>
+					{{#else}}
+						<option value="{{=code}}">{{=name}}</option>
+					{{/if}}
+				{{/each}}
+			{{#else}}
+				{{#each currencyOptions}}
 					<option value="{{=code}}">{{=name}}</option>
-				{{/if}}
-          	{{/each}}
+				{{/each}}
+			{{/if}}
 		</select>
 		<label for="chargeAppliesTo">{{=$ctx.doI18N("form.label.charge.applies.to")}}</label>
 		<select id="chargeAppliesTo" name="chargeAppliesTo" title="" style="width: 300px">
-			{{#each chargeAppliesToOptions}}
-				{{#if $ctx.number($parent.parent.data.chargeAppliesTo.id)===$ctx.number(id)}}
-					<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-				{{#else}}
+			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+			{{#if chargeAppliesTo}}
+				{{#each chargeAppliesToOptions}}
+	              	{{#if $ctx.number($parent.parent.data.chargeAppliesTo.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+					{{/if}}
+				{{/each}}
+			{{#else}}
+				{{#each chargeAppliesToOptions}}
 					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-				{{/if}}
-			{{/each}}
+				{{/each}}
+			{{/if}}
 		</select>
 		<label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
 		<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 300px">
-			{{#each chargeTimeTypeOptions}}
-				{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-					<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-				{{#else}}
+			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+			{{#if chargeTimeType}}
+				{{#each chargeTimeTypeOptions}}
+	              	{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+					{{/if}}
+				{{/each}}
+			{{#else}}
+				{{#each chargeTimeTypeOptions}}
 					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-				{{/if}}
-			{{/each}}
+				{{/each}}
+			{{/if}}
 		</select>
 		<label for="chargeCalculationType">{{=$ctx.doI18N("form.label.charge.calculation.type")}}</label>
 		<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 300px">
-			{{#each chargeCalculationTypeOptions}}
-				{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-					<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-				{{#else}}
+			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+			{{#if chargeCalculationType}}
+				{{#each chargeCalculationTypeOptions}}
+	              	{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+					{{/if}}
+				{{/each}}
+			{{#else}}
+				{{#each chargeCalculationTypeOptions}}
 					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-				{{/if}}
-			{{/each}}
+				{{/each}}
+			{{/if}}
 		</select>
 		<label for="active">{{=$ctx.doI18N("form.label.charge.active")}}</label>
 		{{#if active}}
