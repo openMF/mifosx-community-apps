@@ -1844,7 +1844,12 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.charge.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.charge.currency")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.charge.amount")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.charge.chargeAppliesTo")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.charge.chargeCalculationType")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.charge.chargeTimeType")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.charge.active")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -1852,7 +1857,18 @@ $(document).ready(function() {
 {{#each crudRows}}
 <tr>
 	<td>{{=name}}</td>
-	<td>{{=$ctx.decimal(amount, 2)}}</td>
+	<td>{{=currency.displayLabel}}</td>
+	<td>{{=$ctx.decimal(amount, currency.decimalPlaces)}}</td>
+	<td>{{=$ctx.doI18N(chargeAppliesTo.code)}}</td>
+	<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
+	<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
+	<td>
+		{{#if active}} 
+			{{=$ctx.doI18N("boolean.true")}}
+		{{#else}}
+			{{=$ctx.doI18N("boolean.false")}}
+		{{/if}}
+	</td>
 	<td>
 		<a id='editcharge{{=id}}' class='editcharge' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
 		<a id='deletecharge{{=id}}' class='deletecharge' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
@@ -1879,9 +1895,9 @@ $(document).ready(function() {
         	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#each currencyOptions}}
               	{{#if $parent.parent.data.currency.code===code}}
-					<option value="{{=code}}" selected="selected">{{=code}}</option>
+					<option value="{{=code}}" selected="selected">{{=name}}</option>
 				{{#else}}
-					<option value="{{=code}}">{{=code}}</option>
+					<option value="{{=code}}">{{=name}}</option>
 				{{/if}}
           	{{/each}}
 		</select>
@@ -1889,9 +1905,9 @@ $(document).ready(function() {
 		<select id="chargeAppliesTo" name="chargeAppliesTo" title="" style="width: 300px">
 			{{#each chargeAppliesToOptions}}
 				{{#if $ctx.number($parent.parent.data.chargeAppliesTo.id)===$ctx.number(id)}}
-					<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
 				{{#else}}
-					<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
 				{{/if}}
 			{{/each}}
 		</select>
@@ -1899,9 +1915,9 @@ $(document).ready(function() {
 		<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 300px">
 			{{#each chargeTimeTypeOptions}}
 				{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-					<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
 				{{#else}}
-					<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
 				{{/if}}
 			{{/each}}
 		</select>
@@ -1909,9 +1925,9 @@ $(document).ready(function() {
 		<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 300px">
 			{{#each chargeCalculationTypeOptions}}
 				{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-					<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
 				{{#else}}
-					<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
 				{{/if}}
 			{{/each}}
 		</select>
