@@ -31,10 +31,10 @@ crudData = {
 				dialogHeight: 275
 			},
 		charge: {
-				editTemplateNeeded: false,
+				editTemplateNeeded: true,
 				refreshListNeeded: true,
 				dialogWidth: 600,
-				dialogHeight: 400
+				dialogHeight: 450
 			},
 		user: {
 				editTemplateNeeded: true,
