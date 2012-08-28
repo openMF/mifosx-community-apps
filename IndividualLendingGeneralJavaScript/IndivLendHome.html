@@ -1717,7 +1717,7 @@ $(document).ready(function() {
 			<th>{{=$ctx.doI18N("table.heading.officetransaction.transactionDate")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.officetransaction.fromOfficeName")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.officetransaction.toOfficeName")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.officetransaction.currencyCode")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.officetransaction.currency")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.officetransaction.transactionAmount")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.officetransaction.description")}}</th>
 
@@ -1729,8 +1729,8 @@ $(document).ready(function() {
 	<td>{{=$ctx.globalDate(transactionDate)}}</td>
 	<td>{{=fromOfficeName}}</td>
 	<td>{{=toOfficeName}}</td>
-	<td>{{=currencyCode}}</td>
-	<td align="right">{{=$ctx.decimal(transactionAmount, digitsAfterDecimal)}}</td>
+	<td>{{=currency.displayLabel}}</td>
+	<td align="right">{{=$ctx.decimal(transactionAmount, currency.decimalPlaces)}}</td>
 	<td>{{=description}}</td>
 </tr>
 {{/each}}
