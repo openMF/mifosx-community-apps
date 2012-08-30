@@ -740,6 +740,17 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
+{{#if $ctx.numberGreaterThanZero(approvedDespositAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedDespositAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each approvedDepositAccounts}}
+		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
 {{#else}}
 <div>
 	{{=$ctx.doI18N("label.client.account.no.loans.exist")}}</div>
