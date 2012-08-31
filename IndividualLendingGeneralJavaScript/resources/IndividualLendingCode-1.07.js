@@ -1532,6 +1532,13 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 						$(this).attr("selected", "selected");
 					});
 
+					$('#notSelectedCharges option').each(function(i) {
+						$(this).attr("selected", "selected");
+					});
+					$('#charges option').each(function(i) {
+						$(this).attr("selected", "selected");
+					});
+
 					$('#notSelectedPermissions option').each(function(i) {  
 						$(this).attr("selected", "selected");  
 					});
@@ -1592,7 +1599,14 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					  		});
 					  		$('#removeclientmembers').click(function() {  
 					  			return !$('#clientMembers option:selected').remove().appendTo('#notSelectedClients');  
-					  		}); 
+					  		});
+
+					  		$('#addcharges').click(function() {  
+					  			return !$('#notSelectedCharges option:selected').remove().appendTo('#charges');  
+					  		});
+					  		$('#removecharges').click(function() {  
+					  			return !$('#charges option:selected').remove().appendTo('#notSelectedCharges');  
+					  		});  
 
 					  		$('#addpermissions').click(function() {  
 					  			return !$('#notSelectedPermissions option:selected').remove().appendTo('#permissions');  
@@ -1861,7 +1875,7 @@ $.fn.serializeObject = function()
 	$.each(a, function() {
 		
 		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedPermissions' || this.name === 'notSelectedRoles' 
-	    		|| this.name === 'notSelectedClients') {
+	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges') {
 			// do not serialize
 		} else  {
 		    if (o[this.name] !== undefined) {
@@ -1872,7 +1886,7 @@ $.fn.serializeObject = function()
 		    } else {
 		    	
 		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies' || this.name === 'permissions' 
-	        		|| this.name === 'roles' || this.name === 'clientMembers') {
+	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges') {
 		    		o[this.name] = new Array();
 		    		o[this.name].push(this.value || '');
 		    	} else {
