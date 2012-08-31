@@ -1543,41 +1543,49 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 						$(this).attr("selected", "selected");  
 					});
 				    	
-				    	$('#permissions option').each(function(i) {  
-				    	   	$(this).attr("selected", "selected");  
-				    	});
+			    	$('#permissions option').each(function(i) {  
+			    	   	$(this).attr("selected", "selected");  
+			    	});
 
-
-				    	$('#notSelectedRoles option').each(function(i) {  
+				    $('#notSelectedRoles option').each(function(i) {  
 						$(this).attr("selected", "selected");  
 					});
-				    	$('#roles option').each(function(i) {  
-				    	   	$(this).attr("selected", "selected");  
-				    	});
-					
+				    
+			    	$('#roles option').each(function(i) {  
+			    	   	$(this).attr("selected", "selected");  
+			    	});
 
 					$('#notSelectedItems option').each(function(i) {  
 				    	   $(this).attr("selected", "selected");  
-				    	});
-			    		$('#selectedItems option').each(function(i) {  
-			    	   		$(this).attr("selected", "selected");  
-			    		});
-			    	
+				    });
+					
+		    		$('#selectedItems option').each(function(i) {  
+		    	   		$(this).attr("selected", "selected");  
+		    		});
 
 					$('#notSelectedCurrencies option').each(function(i) {  
 					    	   	$(this).attr("selected", "selected");  
 					});
-				    	$('#currencies option').each(function(i) {  
-				    	   		$(this).attr("selected", "selected");  
-				    	});
+					
+			    	$('#currencies option').each(function(i) {  
+			    	   		$(this).attr("selected", "selected");  
+			    	});
 
-					if (document.changeUserSettingsForm!=undefined) newUserName = document.changeUserSettingsForm.username.value;
+					if (document.changeUserSettingsForm!=undefined) {
+						newUserName = document.changeUserSettingsForm.username.value;
+					}
 
-			    		var newFormData = JSON.stringify($('#entityform').serializeObject());
-			    		console.log(newFormData);
-			    	
+					var serializedArray = {};
+					serializedArray = $('#entityform').serializeObject();
+					
+					if (!serializedArray["charges"] && postUrl.substring(0, 13) == "loanproducts/") {
+						serializedArray["charges"] = new Array();
+					} else {
+						alert(postUrl.substring(0, 13) + ": charges exist");
+					}
+					
+			    	var newFormData = JSON.stringify(serializedArray);
 					executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
-
 				};
 				
 				buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
@@ -1628,7 +1636,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				  			$('#remove').click(function() {  
 				  				return !$('#selectedItems option:selected').remove().appendTo('#notSelectedItems');  
 				  			});
-				  			
 
 					  		$('#addcurrencies').click(function() {  
 					  			return !$('#notSelectedCurrencies option:selected').remove().appendTo('#currencies');  
@@ -1636,7 +1643,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					  		$('#removecurrencies').click(function() {  
 					  			return !$('#currencies option:selected').remove().appendTo('#notSelectedCurrencies');  
 					  		});
-
 
 				  			$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'dd MM yy'});
 				  			
