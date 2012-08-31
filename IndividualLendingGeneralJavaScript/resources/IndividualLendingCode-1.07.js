@@ -1580,8 +1580,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					
 					if (!serializedArray["charges"] && postUrl.substring(0, 13) == "loanproducts/") {
 						serializedArray["charges"] = new Array();
-					} else {
-						alert(postUrl.substring(0, 13) + ": charges exist");
 					}
 					
 			    	var newFormData = JSON.stringify(serializedArray);
