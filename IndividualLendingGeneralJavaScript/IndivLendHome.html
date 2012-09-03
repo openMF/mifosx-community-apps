@@ -1930,6 +1930,43 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="employeeListTemplate" type="text/x-jquery-tmpl">
+<table id='employeestable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.employee.displayname")}}</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+{{#each crudRows}}
+<tr>
+	<td>{{=displayName}}</td>
+	<td>
+		<a id='editemployee{{=id}}' class='editemployee' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='deleteemployee{{=id}}' class='deleteemployee' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+	</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
+<script id="employeeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.employee.details")}}</legend>
+		<label for="firstname">{{=$ctx.doI18N("form.label.employee.firstname")}}</label>
+		<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}" size="75"/>
+		<label for="lastname">{{=$ctx.doI18N("form.label.employee.lastname")}}</label>
+		<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}" size="75"/>
+	</fieldset>
+</form>
+</script>
+
+
 <script id="chargeListTemplate" type="text/x-jquery-tmpl">
 <table id='chargestable' width='100%'>
 	<thead>
