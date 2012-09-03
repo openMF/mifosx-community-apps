@@ -30,6 +30,12 @@ crudData = {
 				dialogWidth: 600,
 				dialogHeight: 275
 			},
+		employee: {
+				editTemplateNeeded: false,
+				refreshListNeeded: true,
+				dialogWidth: 600,
+				dialogHeight: 275
+			},
 		charge: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
@@ -215,6 +221,7 @@ function setOrgAdminContent(divName) {
 	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
+	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
 	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
@@ -238,6 +245,10 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'employee'" + ');return false;" id="viewemployees">' + doI18N("administration.link.view.employees") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + addEmployeeUrl + '" id="addemployee">' + doI18N("administration.link.add.employee") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
 	htmlVar += ' | ';
@@ -1185,6 +1196,9 @@ function loadILLoan(loanId) {
 					var entityId = linkId.replace("edit" + tableName, "");
 
 					var resourceUrl = tableName + "s/" + entityId;
+					if(tableName == 'employee'){
+						resourceUrl = "staff" + "/" + entityId;
+					}
 					maintainTable(tableName, resourceUrl, 'PUT');
 					e.preventDefault();
 				});
@@ -1238,7 +1252,11 @@ function loadILLoan(loanId) {
 				var oTable = displayListTable(tableName + "stable");
 			  };
 		
-  		executeAjaxRequest(tableName + 's', 'GET', "", successFunction, formErrorFunction);
+		if(tableName=="employee"){
+			executeAjaxRequest('staff', 'GET', "", successFunction, formErrorFunction);
+		}else{
+  			executeAjaxRequest(tableName + 's', 'GET', "", successFunction, formErrorFunction);
+  		}
 	}
 	
 
