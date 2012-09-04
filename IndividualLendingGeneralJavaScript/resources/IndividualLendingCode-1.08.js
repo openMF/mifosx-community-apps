@@ -370,19 +370,38 @@ setClientListingContent("content");
 	    show: function(event, ui) {
 	    	//console.log("show..");
 		var successFunction =  function(data) {
-				  			var clientObject = new Object();
-			        			clientObject.clients = data;
-			        			//console.log(clientObject);
-			        	
-				    			var tableHtml = $("#clientSearchTabTemplate").render(clientObject);
-							$("#searchtab").html(tableHtml);	
-				  		};
+  			var clientObject = new Object();
+    		clientObject.clients = data;
+    		//console.log(clientObject);
+    	
+    		var tableHtml = $("#clientSearchTabTemplate").render(clientObject);
+			$("#searchtab").html(tableHtml);
+			
+			//search client functionality
+			var searchSuccessFunction =  function(data) {
+				var clientSearchObject = new Object();
+			    clientSearchObject.crudRows = data;
+				var tableHtml = $("#clientsTableTemplate").render(clientSearchObject);
+				$("#clientTableDiv").html(tableHtml);
+			    var oTable=displayListTable("clientstable");
+			
+				
+		  	};
+							
+			$("#searchClientBtn").button({
+				icons: {
+	                primary: "ui-icon-search"
+	            }
+	         }).click(function(e){
+			executeAjaxRequest("clients?sqlSearch=display_name like '%" + $("#clientSearchInput").val() + "%'", 'GET', "", searchSuccessFunction, formErrorFunction);	 
+		   	e.preventDefault(); 
+		   	});
+		};
 
   		executeAjaxRequest('clients', 'GET', "", successFunction, formErrorFunction);
 	    }
 	});
 	
-
 
 	var addClientSuccessFunction = function(data, textStatus, jqXHR) {
 		  $('#dialog-form').dialog("close");
