@@ -570,15 +570,54 @@ $(document).ready(function() {
 </script>
 
 <script id="clientSearchTabTemplate" type="text/x-jquery-tmpl">
-<form method="post" id="viewClient" name="viewClient" action="switchToClient">
-	<label for="client">{{=$ctx.doI18N("label.client.search")}}</label>
-	<select name="client" id="client" onChange="showILClient(options[selectedIndex].value);">
-		<option value="0">{{=$ctx.doI18N("option.client.search.first.choice")}}</option>
-		{{#each clients}}
-			<option value="{{=id}}">{{=displayName}}&nbsp;-&nbsp;({{=officeName}})</option>
-        {{/each}}
-  	</select>
-</form>	
+<div>	
+	<form method="post" id="viewClient" name="viewClient" action="switchToClient">
+		<div style="width:100%">
+			<h1 align="center">{{=$ctx.doI18N("tab.search.title")}}</h1>
+		</div>
+		
+		<div style="height: 80px">
+			<div style="float: left">
+					<label for="client">{{=$ctx.doI18N("label.client.search.by.name")}}</label>
+					<input type="text" maxlength="30" id="clientSearchInput"/>
+					<button id="searchClientBtn" style="clear: both;" style="height:10px">Search</button>
+			</div>
+			
+			<div style="float: right">
+					<label for="client">{{=$ctx.doI18N("label.client.search")}}</label>
+					
+					<select name="client" id="client" onChange="showILClient(options[selectedIndex].value);">
+						<option value="0">{{=$ctx.doI18N("option.client.search.first.choice")}}</option>
+						{{#each clients}}
+							<option value="{{=id}}">{{=displayName}}&nbsp;-&nbsp;({{=officeName}})</option>
+				        {{/each}}
+				  	</select>
+			</div>
+		</div>
+		<div id="clientTableDiv">
+		</div>
+	</form>	
+</div>
+</script>
+
+<!--Client search results table-->
+<script id="clientsTableTemplate" type="text/x-jquery-tmpl">
+	<table id='clientstable' width='100%'>
+		<thead>
+			<tr>
+				<th>{{=$ctx.doI18N("client.search.table.header.office")}}</th>
+				<th>{{=$ctx.doI18N("client.search.table.header.displayname")}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each crudRows}}
+			<tr>
+				<td>{{=officeName}}</td>
+				<td><a id='navigateToClient{{=id}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=id}});">{{=displayName}}</a></td>				
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
 </script>
 
 <script id="groupSearchTabTemplate" type="text/x-jquery-tmpl">
