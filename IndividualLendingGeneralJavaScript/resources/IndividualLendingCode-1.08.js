@@ -2105,9 +2105,6 @@ function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeh
 		}
 }
 
-
-
-
 // these helpers are registered for the jsViews and jsRender functionality to fix bug with display zero! 
 // plus some utility functions are added also for doI18N and currentLocale
 function jsViewsRegisterHelpers() {
