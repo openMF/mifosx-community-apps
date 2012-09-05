@@ -710,6 +710,24 @@ function showILGroup(groupId){
 			  ' };'
 	}
 
+	function modifyILLoan(loanId) {
+		setAddLoanContent("content");
+		
+		eval(genModifyLoanSuccessVar(loanId));
+		
+		executeAjaxRequest('loans/' + loanId + '?template=true', 'GET', "", successFunction, formErrorFunction);	 
+	}
+	
+	function genModifyLoanSuccessVar(loanId) {
+
+		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
+				' var formHtml = $("#modifyLoanApplicationFormTemplate").render(data);' +
+				' $("#inputarea").html(formHtml);' +
+				' $("#productId").change(function() {' +
+					' var productId = $("#productId").val();' +
+				' });' +
+			' };'
+	}
 	
 	function addILLoan(clientId) {
 		setAddLoanContent("content");
@@ -718,6 +736,7 @@ function showILGroup(groupId){
 
   		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	  
 	}
+	
 	function genAddLoanSuccessVar(clientId) {
 
 		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
@@ -728,7 +747,6 @@ function showILGroup(groupId){
 					' repopulateFullForm(' + clientId + ', productId);' +
 				' });' +
 			' };'
-
 	}
 
 	function genSaveSuccessFunctionReloadLoan(loanId) {
@@ -1044,9 +1062,16 @@ function loadILLoan(loanId) {
 					    e.preventDefault();
 				});
 				$('button.withdrawnbyapplicantloan span').text(doI18N('dialog.button.withdrawn.by.client.loan'));
+				
+				$('.modifyloan').button().click(function(e) {
+					var linkId = this.id;
+					var loanId = linkId.replace("modifybtn", "");
+					modifyILLoan(loanId);
+				    e.preventDefault();
+				});
+				$('button.approveloan span').text(doI18N('dialog.button.modify'));
 					
 				$('.approveloan').button().click(function(e) {
-						
 						var linkId = this.id;
 						var loanId = linkId.replace("approvebtn", "");
 						var postUrl = 'loans/' + loanId + '?command=approve';
@@ -1061,7 +1086,6 @@ function loadILLoan(loanId) {
 				$('button.approveloan span').text(doI18N('dialog.button.approve.loan'));
 					
 				$('.undoapproveloan').button().click(function(e) {
-						
 						var linkId = this.id;
 						var loanId = linkId.replace("undoapprovebtn", "");
 						var postUrl = 'loans/' + loanId + '?command=undoapproval';
