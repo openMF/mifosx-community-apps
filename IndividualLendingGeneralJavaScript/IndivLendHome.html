@@ -1179,6 +1179,7 @@ $(document).ready(function() {
 		{{/if}}
 		
 		{{#if disbursalAllowed}}
+		<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
 		<button id="disbursebtn{{=$parent.parent.parent.data.id}}" class="disburseloan">Disburse</button>
 		{{/if}}
 		
@@ -1187,6 +1188,7 @@ $(document).ready(function() {
 		{{/if}}
 		
 		{{#if makeRepaymentAllowed}}
+		<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
 		<button id="repaymentbtn{{=$parent.parent.parent.data.id}}" class="repaymentloan">Make Repayment</button>
 		{{/if}}
 
@@ -1246,20 +1248,6 @@ $(document).ready(function() {
 		</div>
 		{{/if}}
 
-		{{#if repaymentsStartingFromDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.first.repayment.due.on")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(repaymentsStartingFromDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if interestChargedFromDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.interest.charged.from")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(interestChargedFromDate)}}</span>
-		</div>
-		{{/if}}
-
 		{{#if actualDisbursementDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.expected.maturity.on")}}</span>
@@ -1287,6 +1275,19 @@ $(document).ready(function() {
 		{{/if}}
 
 		<br/>
+		{{#if repaymentsStartingFromDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.first.repayment.due.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(repaymentsStartingFromDate)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if interestChargedFromDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.interest.charged.from")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(interestChargedFromDate)}}</span>
+		</div>
+		{{/if}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.product")}}</span>
 			<span class="rowvalue">{{=loanProductName}}</span>
@@ -1302,7 +1303,7 @@ $(document).ready(function() {
 		<br/>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
-			<span class="rowvalue">{{=currency.defaultName}}</span>
+			<span class="rowvalue">{{=currency.name}}</span>
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.principal")}}</span>
