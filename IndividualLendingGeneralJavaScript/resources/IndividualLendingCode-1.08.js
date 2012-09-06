@@ -393,7 +393,10 @@ setClientListingContent("content");
 	                primary: "ui-icon-search"
 	            }
 	         }).click(function(e){
-			executeAjaxRequest("clients?sqlSearch=display_name like '%" + $("#clientSearchInput").val() + "%'", 'GET', "", searchSuccessFunction, formErrorFunction);	 
+			var searchValue = $("#clientSearchInput").val();
+			searchValue = searchValue.replace("'", "''");
+			var sqlSearchValue = "display_name like '%" + searchValue + "%'"; 
+			executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
 		   	e.preventDefault(); 
 		   	});
 		};
