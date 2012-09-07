@@ -150,8 +150,8 @@ $(document).ready(function() {
 						<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
 						<select name="productId" id="productId">
 							<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
-						{{#each allowedProducts}}
-							{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+						{{#each productOptions}}
+							{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 							{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
@@ -159,7 +159,7 @@ $(document).ready(function() {
         				{{/each}}
   						</select>
 						<label for="description">{{=$ctx.doI18N("form.label.loan.product.description")}}</label>
-						<textarea id="description" rows="2" cols="50" draggable="false" disabled="disabled">{{=selectedProduct.description}}</textarea>
+						<textarea id="description" rows="2" cols="50" draggable="false" disabled="disabled">{{=loanProductDescription}}</textarea>
 					</td>
 					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
 					<td valign="top">
@@ -182,18 +182,18 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.product.loan.amount")}}</td>
 							<td>
-								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(selectedProduct.currency, selectedProduct.principal)}}" style="width: 125px;" />
-								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=selectedProduct.currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 125px;" />
+								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
 							</td>
 						</tr>
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.product.loanterm")}}</td>
 							<td>
-								<input id="loanTermFrequency" name="loanTermFrequency" title="" type="text" value="{{=$ctx.number(selectedProduct.loanTermFrequency)}}" style="width: 50px;" />
+								<input id="loanTermFrequency" name="loanTermFrequency" title="" type="text" value="{{=$ctx.number(termFrequency)}}" style="width: 50px;" />
 								
 								<select name="loanTermFrequencyType" id="loanTermFrequencyType"  title="" style="width: 121px;">
-								{{#each selectedProduct.loanTermFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.selectedProduct.loanTermFrequencyType.id)===$ctx.number(id)}}
+								{{#each termFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.termPeriodFrequencyType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
@@ -205,17 +205,17 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.product.numberof.repayments")}}</td>
 							<td>
-								<input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(selectedProduct.numberOfRepayments)}}" style="width: 50px;" />
+								<input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
 							</td>
 						</tr>
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.product.repaidevery")}}</td>
 							<td>
-								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(selectedProduct.repaymentEvery)}}" style="width: 50px;" />
+								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 50px;" />
 								
 								<select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 121px;">
-								{{#each selectedProduct.repaymentFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.selectedProduct.repaymentFrequencyType.id)===$ctx.number(id)}}
+								{{#each repaymentFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.repaymentFrequencyType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
@@ -229,8 +229,8 @@ $(document).ready(function() {
 							<td>
 								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
 									<option value="">{{=$ctx.doI18N("form.option.repayment.strategy.dropdown.first.choice")}}</option>
-								{{#each selectedProduct.transactionProcessingStrategyOptions}}
-									{{#if $ctx.number($parent.parent.data.selectedProduct.transactionProcessingStrategyId)===$ctx.number(id)}}
+								{{#each repaymentStrategyOptions}}
+									{{#if $ctx.number($parent.parent.data.transactionStrategyId)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 									{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
@@ -256,8 +256,8 @@ $(document).ready(function() {
 							<td>
 								<select id="fundId" name="fundId" title="">
 									<option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
-								{{#each selectedProduct.fundOptions}}
-									{{#if $ctx.number($parent.parent.data.selectedProduct.fundId)===$ctx.number(id)}}
+								{{#each fundOptions}}
+									{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
 										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 									{{#else}}
 										<option value="{{=$ctx.number(id)}}">{{=name}}</option>
@@ -274,11 +274,11 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.product.nominal.interestrate")}}</td>
 							<td>
-								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(selectedProduct.interestRatePerPeriod, 4)}}" style="width: 60px;" />
+								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 60px;" />
 								
 								<select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 115px;">
-								{{#each selectedProduct.interestRateFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.selectedProduct.interestRateFrequencyType.id)===$ctx.number(id)}}
+								{{#each interestRateFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
@@ -291,8 +291,8 @@ $(document).ready(function() {
 							<td>{{=$ctx.doI18N("form.label.loan.product.amortization")}}</td>
 							<td>
 								<select name="amortizationType" id="amortizationType"  title="" style="width: 178px;">
-								{{#each selectedProduct.amortizationTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.selectedProduct.amortizationType.id)===$ctx.number(id)}}
+								{{#each amortizationTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.amortizationType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
@@ -305,8 +305,8 @@ $(document).ready(function() {
 							<td>{{=$ctx.doI18N("form.label.loan.product.interest.method")}}</td>
 							<td>
 								<select name="interestType" id="interestType"  title="" style="width: 180px;">
-								{{#each selectedProduct.interestTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.selectedProduct.interestType.id)===$ctx.number(id)}}
+								{{#each interestTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
@@ -319,8 +319,8 @@ $(document).ready(function() {
 							<td>{{=$ctx.doI18N("form.label.loan.product.interest.rate.calcutated.in.period")}}</td>
 							<td>
 							<select id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" style="width: 220px;">
-								{{#each selectedProduct.interestCalculationPeriodTypeOptions}}
-                                 	{{#if $ctx.number($parent.parent.data.selectedProduct.interestCalculationPeriodType.id)===$ctx.number(id)}}
+								{{#each interestCalculationPeriodTypeOptions}}
+                                 	{{#if $ctx.number($parent.parent.data.interestCalculationPeriodType.id)===$ctx.number(id)}}
 										<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
 									{{#else}}
 										<option value="{{=$ctx.number(id)}}">{{=value}}</option>
@@ -332,14 +332,14 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.interest.charged.from")}}</td>
 							<td>
-							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestCalculatedFromDate)}}" style="width:172px;"/>
+							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" style="width:172px;"/>
 							</td>
 						</tr>
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.product.arrears.tolerance")}}</td>
 							<td>
-								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(selectedProduct.currency, selectedProduct.inArrearsTolerance)}}" style="width: 125px;" />
-								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=selectedProduct.currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" style="width: 125px;" />
+								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
 							</td>
 						</tr>
 					</table>
@@ -372,13 +372,13 @@ $(document).ready(function() {
 	<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
 	<select name="productId" id="productId">
 		<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
-{{#each allowedProducts}}
-	{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+	{{#each productOptions}}
+		{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
 		<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-	{{#else}}
+		{{#else}}
 		<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-	{{/if}}
-{{/each}}
+		{{/if}}
+	{{/each}}
 	</select>
 </form>	
 </script>
