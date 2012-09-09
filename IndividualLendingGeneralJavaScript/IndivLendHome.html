@@ -163,6 +163,18 @@ $(document).ready(function() {
 					</td>
 					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
 					<td valign="top">
+						<label for"loanOfficerId">{{=$ctx.doI18N("label.loan.officer")}}</label>
+						<select name="loanOfficerId" id="loanOfficerId">
+							<option value="">{{=$ctx.doI18N("form.option.loanOfficer.dropdown.first.choice")}}</option>
+						{{#each loanOfficerOptions}}
+							{{#if $ctx.number($parent.parent.data.loanOfficerId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							{{/if}}
+        				{{/each}}
+  						</select>
+						
 						<label for="submittedOnDate">{{=$ctx.doI18N("form.label.loan.submitted.on")}}</label>
 						<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
 
@@ -1228,6 +1240,13 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.globalDate(submittedOnDate)}}</span>
 		</div>
 		{{/if}}
+		
+		{{#if loanOfficerName}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.loan.officer")}}</span>
+			<span class="rowvalue">{{=loanOfficerName}}</span>
+		</div>
+		{{/if}}
 
 		{{#if approvedOnDate}}
 		<div class="row">
@@ -2194,14 +2213,24 @@ $(document).ready(function() {
 <table id='employeestable' width='100%'>
 	<thead>
 		<tr>
+			<th>{{=$ctx.doI18N("table.heading.office.name")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.employee.displayname")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
 	<tbody>
 {{#each crudRows}}
 <tr>
+	<td>{{=officeName}}</td>
 	<td>{{=displayName}}</td>
+	<td>
+		{{#if loanOfficerFlag}}
+			Yes
+		{{#else}}
+			No
+		{{/if}}
+	</td>
 	<td>
 		<a id='editemployee{{=id}}' class='editemployee' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
 		<a id='deleteemployee{{=id}}' class='deleteemployee' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
@@ -2218,10 +2247,85 @@ $(document).ready(function() {
 	</div>
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.employee.details")}}</legend>
-		<label for="firstname">{{=$ctx.doI18N("form.label.employee.firstname")}}</label>
-		<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}" size="75"/>
-		<label for="lastname">{{=$ctx.doI18N("form.label.employee.lastname")}}</label>
-		<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}" size="75"/>
+		<table cellspacing="4px" cellpadding="8px">
+			<tr>
+				<td colspan="2">
+					<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+					<select id="officeId" name="officeId" title="">
+						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+						{{#each crudRows}}
+							{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							{{/if}}
+				        {{/each}}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="firstname">{{=$ctx.doI18N("form.label.employee.firstname")}}</label>
+					<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}" size="15"/>
+				</td>
+				<td>	
+					<label for="lastname">{{=$ctx.doI18N("form.label.employee.lastname")}}</label>
+					<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}" size="15"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<label for="loanOfficerFlag">{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</label>
+					<input id="loanOfficerFlag" name="loanOfficerFlag" type="checkbox" value="{{=loanOfficerFlag}}"/>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+</form>
+</script>
+
+<script id="employeeFormEditTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<table cellspacing="4px" cellpadding="8px">
+			<tr>
+				<td colspan="2">
+					<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+					<select id="officeId" name="officeId" title="">
+						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+						{{#each allowedOffices}}
+							{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							{{/if}}
+				        {{/each}}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="firstname">{{=$ctx.doI18N("form.label.employee.firstname")}}</label>
+					<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}" size="15"/>
+				</td>
+				<td>	
+					<label for="lastname">{{=$ctx.doI18N("form.label.employee.lastname")}}</label>
+					<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}" size="15"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<label for="loanOfficerFlag">{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</label>
+					{{#if loanOfficerFlag}}
+						<input id="loanOfficerFlag" name="loanOfficerFlag" type="checkbox" value="{{=loanOfficerFlag}}" checked="true"/>
+					{{#else}}
+						<input id="loanOfficerFlag" name="loanOfficerFlag" type="checkbox" value="{{=loanOfficerFlag}}"/>
+					{{/if}}
+				</td>
+			</tr>
+		</table>
 	</fieldset>
 </form>
 </script>

@@ -30,10 +30,10 @@ crudData = {
 				dialogHeight: 275
 			},
 		employee: {
-				editTemplateNeeded: false,
+				editTemplateNeeded: true,
 				refreshListNeeded: true,
 				dialogWidth: 600,
-				dialogHeight: 275
+				dialogHeight: 325
 			},
 		charge: {
 				editTemplateNeeded: true,
@@ -1019,7 +1019,7 @@ function showILGroup(groupId){
 				$('button#cancelloanapp span').text(doI18N('dialog.button.cancel'));
 			};
 			  		
-		executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
+		executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId+ '&fields=loanOfficerOptions', 'GET', "", successFunction, formErrorFunction);	  
 
 	}
 	
@@ -1157,7 +1157,7 @@ function showILLoan(loanId, product) {
 
 function loadILLoan(loanId) {
 
-	var loanUrl = 'loans/' + loanId + "?associations=all";
+	var loanUrl = 'loans/' + loanId + "?associations=all&fields=loanOfficerName";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
 	        	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
@@ -1487,7 +1487,12 @@ function loadILLoan(loanId) {
 		{
 			if (crudData[tableName].editTemplateNeeded == true) //needs to read data to populate dialog form
 			{
-				getUrl = resourceUrl + '/template';
+				if(tableName== "employee"){
+					getUrl = "offices" 
+				}else{
+					getUrl = resourceUrl + '/template';
+				}
+				
 				popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
 			}
 			else popupDialogWithPostOnlyFormView(putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction, 0, 0, 0);
@@ -1726,7 +1731,17 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 
 		var successFunction = function(data, textStatus, jqXHR) {
 				//console.log(data);
-				popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+				if(templateSelector == "#employeeFormTemplate" && submitType!= "PUT"){
+					var officesObject = new Object();
+			    	officesObject.crudRows = data;
+					popupDialogWithFormViewData(officesObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+				}else if(templateSelector == "#employeeFormTemplate" && submitType == "PUT") {
+					templateSelector = "#employeeFormEditTemplate";
+					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+				}
+				else{
+					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+		  		}
 		  	};
 		
 		if (getUrl == "") popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
