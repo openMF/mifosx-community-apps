@@ -585,6 +585,9 @@ function showILClient(clientId) {
 					$('button.addnotebtn span').text(doI18N('dialog.button.add.note'));
 
 					refreshNoteWidget(clientUrl);
+
+					showRelatedDataTableInfo(clientId, "Additional.Client.Data"); 
+
 					
 					// retrieve additional info
 					var additionalFieldsParams = {
@@ -1118,6 +1121,33 @@ function showILGroup(groupId){
 		executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
 	}
 	
+
+function showRelatedDataTableInfo(id, label) {	    
+	$newtabs.tabs( "add", "no url", label);
+	var currentTabIndex = $newtabs.tabs('option', 'selected');
+	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+	            
+	//var htmlVar = $("#loanDataTabTemplate").render(data);
+var htmlVar = '<div id="m_clientAdditionalData">'
+htmlVar += '	<ul>';
+htmlVar += '         <li><a href="unknown.html" onclick="alert(' + "'" + 'A' + "'" + ');return false;"><span>Content A</span></a></li>';
+htmlVar += '         <li><a href="unknown.html" onclick="alert(' + "'" + 'B' + "'" + ');return false;"><span>Content B</span></a></li>';
+htmlVar += '         <li><a href="unknown.html" onclick="alert(' + "'" + 'C' + "'" + ');return false;"><span>Content C</span></a></li>';
+htmlVar += '     </ul>';
+htmlVar += '</div>';
+	        		
+	        		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+	        		currentTab.html(htmlVar);
+
+    $("#m_clientAdditionalData").tabs();
+
+	$newtabs.tabs('select', 0);
+
+
+}
+
+
+
 function showILLoan(loanId, product) {
 	var title = product + ": #" + loanId ;			    
 	$newtabs.tabs( "add", "no url", title);
