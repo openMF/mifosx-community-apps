@@ -1127,25 +1127,24 @@ function showILGroup(groupId){
 	}
 	
 
-function showRelatedDataTableInfo(datatableName, id, label) {	   
+function showRelatedDataTableInfo(appTableName, id, label) {	   
 
 
-	var url = 'datatables?appTable=' + datatableName;
+	var url = 'datatables?appTable=' + appTableName;
 
 
 	var successFunction = function(data, status, xhr) {
-			xxxxx = data;
 			if (data.length > 0)
 			{
 				$newtabs.tabs( "add", "no url", label);
 				var currentTabIndex = $newtabs.tabs('option', 'selected');
 				var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
-				var additionalDataIdName = datatableName + "AdditionalData";
+				var additionalDataIdName = appTableName + "AdditionalData";
 
 				var htmlVar = '<div id="' + additionalDataIdName + '"><ul>';
 				for (var i in data) 
 				{
-					htmlVar += '<li><a href="unknown.html" onclick="alert(' + "'" + i + "'" + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
+					htmlVar += '<li><a href="unknown.html" onclick="showDataTable(' + "'" + data[i].registeredTableName + "'" + ', ' + id + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
 				}
 				htmlVar += '</ul></div>';
 	        		
@@ -1163,6 +1162,11 @@ function showRelatedDataTableInfo(datatableName, id, label) {
 }
 
 
+function showDataTable(datatableName, id) {	   
+
+alert("datatableName: " + datatableName + "    Id: " + id);
+
+}
 
 function showILLoan(loanId, product) {
 	var title = product + ": #" + loanId ;			    
