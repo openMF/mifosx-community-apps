@@ -88,6 +88,11 @@ formErrorFunction = function(jqXHR, textStatus, errorThrown) {
 				};
 
 
+generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
+alert("complete after  - for when an error is got but not on a create/update form");
+				    	//handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+				};
+
 
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
 
@@ -586,7 +591,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfo(clientId, "Additional.Client.Data"); 
+					showRelatedDataTableInfo("m_client", clientId, "Additional.Client.Data"); 
 
 					
 					// retrieve additional info
@@ -1122,27 +1127,38 @@ function showILGroup(groupId){
 	}
 	
 
-function showRelatedDataTableInfo(id, label) {	    
-	$newtabs.tabs( "add", "no url", label);
-	var currentTabIndex = $newtabs.tabs('option', 'selected');
-	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
-	            
-	//var htmlVar = $("#loanDataTabTemplate").render(data);
-var htmlVar = '<div id="m_clientAdditionalData">'
-htmlVar += '	<ul>';
-htmlVar += '         <li><a href="unknown.html" onclick="alert(' + "'" + 'A' + "'" + ');return false;"><span>Content A</span></a></li>';
-htmlVar += '         <li><a href="unknown.html" onclick="alert(' + "'" + 'B' + "'" + ');return false;"><span>Content B</span></a></li>';
-htmlVar += '         <li><a href="unknown.html" onclick="alert(' + "'" + 'C' + "'" + ');return false;"><span>Content C</span></a></li>';
-htmlVar += '     </ul>';
-htmlVar += '</div>';
+function showRelatedDataTableInfo(datatableName, id, label) {	   
+
+
+	var url = 'datatables?appTable=' + datatableName;
+
+
+	var successFunction = function(data, status, xhr) {
+			xxxxx = data;
+			if (data.length > 0)
+			{
+				$newtabs.tabs( "add", "no url", label);
+				var currentTabIndex = $newtabs.tabs('option', 'selected');
+				var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+				var additionalDataIdName = datatableName + "AdditionalData";
+
+				var htmlVar = '<div id="' + additionalDataIdName + '"><ul>';
+				for (var i in data) 
+				{
+					htmlVar += '<li><a href="unknown.html" onclick="alert(' + "'" + i + "'" + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
+				}
+				htmlVar += '</ul></div>';
 	        		
 	        		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		currentTab.html(htmlVar);
 
-    $("#m_clientAdditionalData").tabs();
+    				$("#" + additionalDataIdName ).tabs();
 
-	$newtabs.tabs('select', 0);
+				$newtabs.tabs('select', 0); //back to main tab
+			}
+		};
 
+	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
 
 }
 
