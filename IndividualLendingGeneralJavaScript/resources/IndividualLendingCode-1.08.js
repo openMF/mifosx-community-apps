@@ -1142,9 +1142,10 @@ function showRelatedDataTableInfo(appTableName, id, label) {
 				var additionalDataIdName = appTableName + "AdditionalData";
 
 				var htmlVar = '<div id="' + additionalDataIdName + '"><ul>';
+				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
 				for (var i in data) 
 				{
-					htmlVar += '<li><a href="unknown.html" onclick="showDataTable(' + "'" + data[i].registeredTableName + "'" + ', ' + id + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
+					htmlVar += '<li><a href="unknown.html" onclick="showDataTable(' + "'" + additionalDataIdName + "', '" + data[i].registeredTableName + "'" + ', ' + id + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
 				}
 				htmlVar += '</ul></div>';
 	        		
@@ -1162,9 +1163,21 @@ function showRelatedDataTableInfo(appTableName, id, label) {
 }
 
 
-function showDataTable(datatableName, id) {	   
+function showDataTable(tabName, datatableName, id) {	   
 
-alert("datatableName: " + datatableName + "    Id: " + id);
+	var url = 'datatables/' + datatableName + "/" + id;
+
+	var successFunction = function(data, status, xhr) {
+				var currentTabIndex = $("#" + tabName).tabs('option', 'selected');
+				var currentTabAnchor = $("#" + tabName).data('tabs').anchors[currentTabIndex];
+
+				var htmlVar = "tabName: " + tabName + "    datatableName: " + datatableName + "    Id: " + id;
+
+	        		var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
+	        		currentTab.html(htmlVar);
+		};
+
+	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
 
 }
 
