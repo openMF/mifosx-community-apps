@@ -15,7 +15,8 @@
 		var successFunction = function(data, status, xhr) {
 			if (data.length > 0)
 			{
-				$(params.appendTo).tabs( "add", "no url", params.appTableLabel);
+				params.appendTo.tabs( "add", "no url", params.appTableLabel);
+
 				//var currentTabIndex = $(params.appendTo).tabs('option', 'selected');
 				//var currentTabAnchor = $(params.appendTo).data('tabs').anchors[currentTabIndex];
 				var additionalDataIdName = params.appTableName + "AdditionalData";

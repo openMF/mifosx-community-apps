@@ -591,7 +591,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfo("m_client", clientId, "Additional.Client.Data"); 
+					showRelatedDataTableInfo($newtabs, "newtabs", "m_client", clientId, "Additional.Client.Data"); 
 
 					
 					// retrieve additional info
@@ -1127,8 +1127,9 @@ function showILGroup(groupId){
 	}
 	
 
-function showRelatedDataTableInfo(appTableName, appTablePKValue, appTableLabel) {	   
+function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKValue, appTableLabel) {	   
 
+//JPW - yep can make it not so focused on an existing tab structure later
 	// retrieve additional info for application table
 	var additionalInfoParams = {
 						url: baseApiUrl,
@@ -1137,8 +1138,8 @@ function showRelatedDataTableInfo(appTableName, appTablePKValue, appTableLabel) 
 						appTableName: appTableName,
 						appTableLabel: appTableLabel,
 						appTablePKValue: appTablePKValue,
-						appendTo: newtabs,
-						appendToDiv: "newtabs",
+						appendTo: tabVariable,
+						appendToDiv: tabDiv,
 
 
 						headingPrefix: "", 
