@@ -1127,38 +1127,29 @@ function showILGroup(groupId){
 	}
 	
 
-function showRelatedDataTableInfo(appTableName, id, label) {	   
+function showRelatedDataTableInfo(appTableName, appTablePKValue, appTableLabel) {	   
+
+	// retrieve additional info for application table
+	var additionalInfoParams = {
+						url: baseApiUrl,
+						basicAuthKey: base64,
+						tenantIdentifier: tenantIdentifier,
+						appTableName: appTableName,
+						appTableLabel: appTableLabel,
+						appTablePKValue: appTablePKValue,
+						appendTo: newtabs,
+						appendToDiv: "newtabs",
 
 
-	var url = 'datatables?appTable=' + appTableName;
-
-
-	var successFunction = function(data, status, xhr) {
-			if (data.length > 0)
-			{
-				$newtabs.tabs( "add", "no url", label);
-				var currentTabIndex = $newtabs.tabs('option', 'selected');
-				var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
-				var additionalDataIdName = appTableName + "AdditionalData";
-
-				var htmlVar = '<div id="' + additionalDataIdName + '"><ul>';
-				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
-				for (var i in data) 
-				{
-					htmlVar += '<li><a href="unknown.html" onclick="showDataTable(' + "'" + additionalDataIdName + "', '" + data[i].registeredTableName + "'" + ', ' + id + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
-				}
-				htmlVar += '</ul></div>';
-	        		
-	        		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
-	        		currentTab.html(htmlVar);
-
-    				$("#" + additionalDataIdName ).tabs();
-
-				$newtabs.tabs('select', 0); //back to main tab
-			}
-		};
-
-	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
+						headingPrefix: "", 
+						headingClass: "", 
+						labelClass: "longrowlabel",
+						valueClass:	"rowvalue",
+						editLabel: doI18N("link.edit"),	
+						saveLabel: doI18N("dialog.button.save"),	
+						cancelLabel: doI18N("dialog.button.cancel")				
+					};
+	jQuery.stretchyTableData.displayAdditionalInfo(additionalInfoParams);
 
 }
 
