@@ -7,6 +7,10 @@
 		displayAdditionalInfo(params);
 	};
 
+	$.stretchyTableData.showDataTable= function(tabName, datatableName, id) {
+		showDataTable(tabName, datatableName, id);   
+	};
+
 
 	function displayAdditionalInfo(params) {
 
@@ -15,7 +19,7 @@
 		var successFunction = function(data, status, xhr) {
 			if (data.length > 0)
 			{
-				params.appendTo.tabs( "add", "no url", params.appTableLabel);
+				params.appendTo.tabs( "add", "no url", doI18N(params.appTableLabel));
 
 				//var currentTabIndex = $(params.appendTo).tabs('option', 'selected');
 				//var currentTabAnchor = $(params.appendTo).data('tabs').anchors[currentTabIndex];
@@ -25,7 +29,7 @@
 				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
 				for (var i in data) 
 				{
-					htmlVar += '<li><a href="unknown.html" onclick="showDataTable(' + "'" + additionalDataIdName + "', '" + data[i].registeredTableName + "'" + ', ' + params.appTablePKValue + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
+					htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'" + additionalDataIdName + "', '" + data[i].registeredTableName + "'" + ', ' + params.appTablePKValue + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
 				}
 				htmlVar += '</ul></div>';
 	        		
@@ -34,7 +38,7 @@
 
     				$("#" + additionalDataIdName ).tabs();
 
-				//$(params.appendTo).tabs('select', 0); //back to main tab
+				$(params.appendTo).tabs('select', 0); //back to main tab
 			}
 		};
 
@@ -47,6 +51,24 @@ alert("complete after  - for when an error is got but not on a create/update for
 				    	//handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
 				};
 
+
+function showDataTable(tabName, datatableName, id) {	   
+
+	var url = 'datatables/' + datatableName + "/" + id;
+
+	var successFunction = function(data, status, xhr) {
+				var currentTabIndex = $("#" + tabName).tabs('option', 'selected');
+				var currentTabAnchor = $("#" + tabName).data('tabs').anchors[currentTabIndex];
+
+				var htmlVar = "tabName: " + tabName + "    datatableName: " + datatableName + "    Id: " + id;
+
+	        		var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
+	        		currentTab.html(htmlVar);
+		};
+
+	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
+
+}
 
 
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
@@ -610,15 +632,7 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 	}
 
 	function doI18N(xlateStr, params) {
-		/*
-		 * if (I18N_Needed == "Y") { if (highlightMissingXlations == "Y") return
-		 * jQuery.i18n.prop(xlateStr, params) else { var xlated =
-		 * jQuery.i18n.prop(xlateStr, params); if (xlated.substr(0,1) == "[" &&
-		 * xlated.substr(xlated.length - 1, 1) == "]") return xlated.substr(1,
-		 * xlated.length - 2) else return xlated; } } else { var retStr =
-		 * xlateStr; if (retStr == 'rpt_select_one') retStr = 'Select One'; if
-		 * (retStr == 'rpt_select_all') retStr = 'Select All'; return retStr; }
-		 */
+ //can inject a function to re-use main doI18N if required or just take this one out (bit more risky though)
 		return xlateStr;
 	}
 

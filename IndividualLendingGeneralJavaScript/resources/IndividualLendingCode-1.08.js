@@ -1136,8 +1136,8 @@ function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKV
 						basicAuthKey: base64,
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
-						appTableLabel: appTableLabel,
-						appTablePKValue: appTablePKValue,
+						appTableLabel: doI18N(appTableLabel),
+						appTablePKValue: appTablePKValue, 
 						appendTo: tabVariable,
 						appendToDiv: tabDiv,
 
@@ -1154,24 +1154,6 @@ function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKV
 
 }
 
-
-function showDataTable(tabName, datatableName, id) {	   
-
-	var url = 'datatables/' + datatableName + "/" + id;
-
-	var successFunction = function(data, status, xhr) {
-				var currentTabIndex = $("#" + tabName).tabs('option', 'selected');
-				var currentTabAnchor = $("#" + tabName).data('tabs').anchors[currentTabIndex];
-
-				var htmlVar = "tabName: " + tabName + "    datatableName: " + datatableName + "    Id: " + id;
-
-	        		var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
-	        		currentTab.html(htmlVar);
-		};
-
-	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
-
-}
 
 function showILLoan(loanId, product) {
 	var title = product + ": #" + loanId ;			    
