@@ -93,10 +93,12 @@ function showDataTable(tabName, datatableName, id) {
 	var url = 'datatables/' + datatableName + "/" + id;
 
 	var successFunction = function(data, status, xhr) {
-				var currentTabIndex = $("#" + tabName).tabs('option', 'selected');
-				var currentTabAnchor = $("#" + tabName).data('tabs').anchors[currentTabIndex];
+				//var currentTabIndex = $("#" + tabName).tabs('option', 'selected');
+				//var currentTabAnchor = $("#" + tabName).data('tabs').anchors[currentTabIndex];
 
-				var htmlVar = "tabName: " + tabName + "    datatableName: " + datatableName + "    Id: " + id;
+				var htmlVar = "tabName: " + tabName + "    datatableName: " + datatableName + "    Id: " + id + '<br><br>';
+
+				htmlVar += showDataTableDisplay(data);
 
 	        		var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		currentTab.html(htmlVar);
@@ -105,6 +107,48 @@ function showDataTable(tabName, datatableName, id) {
 	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
 
 }
+
+	function showDataTableDisplay(data, dsnDivName) {
+
+		var dataLength = data.data.length;
+		var extraDataViewVar = '<table width="100%"><tr>';
+
+		var colsPerRow = 2;
+		var colsPerRowCount = 0;
+		var labelClassStr = "";
+		var valueClassStr = "";
+		if (tabledataParams.labelClass > "")
+			labelClassStr = ' class="' + tabledataParams.labelClass + '" ';
+		if (tabledataParams.valueClass > "")
+			valueClassStr = ' class="' + tabledataParams.valueClass + '" ';
+
+		for ( var i in data.columnHeaders) {
+			if (!(data.columnHeaders[i].columnName == "client_id")) {//TODO
+				colsPerRowCount += 1;
+				if (colsPerRowCount > colsPerRow) {
+					extraDataViewVar += '</tr><tr>';
+					colsPerRowCount = 1;
+				}
+				var colVal = "";
+				if (dataLength > 0)
+					colVal = data.data[0].row[i];
+				if (colVal == null)
+					colVal = "";
+//TODO validate column types
+				if (colVal > "" && data.columnHeaders[i].columnType == "text")
+					colVal = '<textarea rows="3" cols="40" readonly="readonly">'
+							+ colVal + '</textarea>';
+				extraDataViewVar += '<td valign="top"><span ' + labelClassStr
+						+ '>' + doI18N(data.columnHeaders[i].columnName)
+						+ ':</span></td><td valign="top"><span '
+						+ valueClassStr + '>' + colVal + '</span></td>';
+			}
+		}
+		extraDataViewVar += '</tr></table>';
+
+		return extraDataViewVar;
+		//$('#' + dsnDivName).html(extraDataViewVar); 
+	}
 
 
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
@@ -133,63 +177,12 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 
 
 	$.stretchyTableData.displayAllExtraData = function(params) {
-
-		if (!(params.url)) {
-			alert(doI18N("reportingInitError - url parameter"));
-			return;
-		}
-		if (!(params.basicAuthKey)) {
-			alert(doI18N("reportingInitError - basicAuthKey parameter"));
-			return;
-		}
-		if (!(params.datasetType)) {
-			alert(doI18N("reportingInitError - datasetType parameter"));
-			return;
-		}
-		if (!(params.datasetPKValue)) {
-			alert(doI18N("reportingInitError - datasetPKValue parameter"));
-			return;
-		}
-		if (!(params.datasetTypeDiv)) {
-			alert(doI18N("reportingInitError - datasetTypeDiv parameter"));
-			return;
-		}
-
-
-		base64 = "";
-		if (params.basicAuthKey)
-			base64 = params.basicAuthKey;
-
-		tenantIdentifier = "";
-		if (params.tenantIdentifier)
-			tenantIdentifier = params.tenantIdentifier ;
-
-		editLabel = "Edit";	
-		if (params.editLabel) editLabel = params.editLabel;
-
-		saveLabel = "Save";
-		if (params.saveLabel) saveLabel = params.saveLabel;
-
-		cancelLabel = "Cancel";		
-		if (params.cancelLabel) cancelLabel = params.cancelLabel;
-
-
-		var headingPrefix = "";
-		if (params.headingPrefix)
-			headingPrefix = params.headingPrefix;
-		var headingClass = "";
-		if (params.headingClass)
-			headingClass = params.headingClass;
-		var labelClass = "";
-		if (params.labelClass)
-			labelClass = params.labelClass;
-		var valueClass = "";
-		if (params.valueClass)
-			valueClass = params.valueClass;
 		displayAllExtraData(params.url, params.basicAuthKey, params.datasetType,
 				params.datasetPKValue, params.datasetTypeDiv, headingPrefix,
 				headingClass, labelClass, valueClass);
 	};
+
+
 
 	$.stretchyTableData.popupEditDialog = function(url, basicAuthKey, datasetType, datasetName, datasetPKValue, dsnDivName, title, width, height) {
 		popupEditDialog(url, basicAuthKey, datasetType, datasetName, datasetPKValue, dsnDivName, title, width, height);
