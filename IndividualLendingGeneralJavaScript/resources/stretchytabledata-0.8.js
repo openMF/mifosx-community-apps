@@ -2,14 +2,50 @@
 
 	$.stretchyTableData = {};
 
-
 	$.stretchyTableData.displayAdditionalInfo = function(params) {
+
+		if (!(params.baseApiUrl)) {
+			alert(doI18N("Table Data Initialisation Error - baseApiUrl parameter"));
+			return;
+		}
+		if (!(params.base64)) {
+			alert(doI18N("Table Data Initialisation Error - base64 parameter"));
+			return;
+		}
+		if (!(params.tenantIdentifier)) {
+			alert(doI18N("Table Data Initialisation Error - tenantIdentifier parameter"));
+			return;
+		}
+		if (!(params.appTableName)) {
+			alert(doI18N("Table Data Initialisation Error - appTableName parameter"));
+			return;
+		}
+		if (!(params.appTableLabel)) {
+			alert(doI18N("Table Data Initialisation Error - appTableLabel parameter"));
+			return;
+		}
+		if (!(params.appTablePKValue)) {
+			alert(doI18N("Table Data Initialisation Error - appTablePKValue parameter"));
+			return;
+		}
+		if (!(params.appendTo)) {
+			alert(doI18N("Table Data Initialisation Error - appendTo parameter"));
+			return;
+		}
+		if (!(params.appendToDiv)) {
+			alert(doI18N("Table Data Initialisation Error - appendToDiv parameter"));
+			return;
+		}
+
+		tabledataParams = params;
 		displayAdditionalInfo(params);
 	};
 
 	$.stretchyTableData.showDataTable= function(tabName, datatableName, id) {
 		showDataTable(tabName, datatableName, id);   
 	};
+
+
 
 
 	function displayAdditionalInfo(params) {
@@ -74,15 +110,15 @@ function showDataTable(tabName, datatableName, id) {
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
 
 	var jqxhr = $.ajax({ 
-				url : baseApiUrl + url, 
+				url : tabledataParams.baseApiUrl + url, 
 				type : verbType, //POST, GET, PUT or DELETE 
 				contentType : "application/json; charset=utf-8", 
 				dataType : 'json', 
 				data : jsonData, 
 				cache : false, 
 				beforeSend : function(xhr) { 
-						if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
-						if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
+						if (tabledataParams.tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tabledataParams.tenantIdentifier); 
+						if (tabledataParams.base64 > "") xhr.setRequestHeader("Authorization", "Basic " + tabledataParams.base64); 
 					}, 
 				success : successFunction, 
 				error : errorFunction 

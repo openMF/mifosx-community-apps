@@ -1132,8 +1132,8 @@ function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKV
 //JPW - yep can make it not so focused on an existing tab structure later
 	// retrieve additional info for application table
 	var additionalInfoParams = {
-						url: baseApiUrl,
-						basicAuthKey: base64,
+						baseApiUrl : baseApiUrl,
+						base64: base64,
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
 						appTableLabel: doI18N(appTableLabel),
