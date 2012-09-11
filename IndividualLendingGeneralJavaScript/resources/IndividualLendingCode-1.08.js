@@ -436,14 +436,15 @@ function showILGroupListing(){
 
 	$("#tabs").tabs({
 	    select: function(event, ui) {
-	    	console.log("selected..");
-			alert("selected");
+	    	// comment out console.logs as dont work across all browsers.
+//	    	console.log("selected..");
+//			alert("selected");
 	    },
 	    load: function(event, ui) {
-	    	console.log("load..");
+//	    	console.log("load..");
 	    },
 	    show: function(event, ui) {
-	    	console.log("show..");
+//	    	console.log("show..");
 			var successFunction =  function(data) {
 	  			var groupObject = new Object();
 	    			groupObject.groups = data;
