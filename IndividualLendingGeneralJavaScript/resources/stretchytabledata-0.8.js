@@ -163,8 +163,7 @@ function showDataTableOneToOne(fkName, data) {
 
 				 	if (colType == "INTEGER") {
 				 		if (data.columnHeaders[i].columnValuesNew.length > 0) {
-							alert("are new values: " + data.columnHeaders[i].columnName + "   " + colVal)
-							
+							colVal = getDropdownValue(colVal, data.columnHeaders[i].columnValuesNew);							
 						}
 					}
 				}
@@ -180,19 +179,15 @@ function showDataTableOneToOne(fkName, data) {
 		return extraDataViewVar;
 }
 
-function getFKName(appTableName) {	 
-	return appTableName.substring(2) + "_id";
-}
 
-function getTableCardinality(fkName, columnHeaders) {	 
 
-	for ( var i in columnHeaders) {
-		if (columnHeaders[i].columnName == fkName) {
-			if (columnHeaders[i].isColumnPrimaryKey == true) return "PRIMARY"
-			else return "FOREIGN"; 	
-		}
+
+function getDropdownValue(inColVal, columnValues) {	 
+
+	for ( var i in columnValues) {
+		if (inColVal == columnValues[i].id) return columnValues[i].value;
 	}
-	return "Column: " + fkName + " - NOT FOUND";
+	return "Err";
 }
 
 function getColumnType(inColType) {	 
@@ -226,6 +221,21 @@ function getColumnType(inColType) {
 
 }
 
+function getFKName(appTableName) {	 
+	return appTableName.substring(2) + "_id";
+}
+
+function getTableCardinality(fkName, columnHeaders) {	 
+
+	for ( var i in columnHeaders) {
+		if (columnHeaders[i].columnName == fkName) {
+			if (columnHeaders[i].isColumnPrimaryKey == true) return "PRIMARY"
+			else return "FOREIGN"; 	
+		}
+	}
+	return "Column: " + fkName + " - NOT FOUND";
+}
+
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
 
 	var jqxhr = $.ajax({ 
@@ -248,7 +258,7 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 
 
 
-	function doI18Na(xlateStr, params) {
+	function doI18N(xlateStr, params) {
  //can inject a function to re-use main doI18N if required or just take this one out (bit more risky but done here)
 		return xlateStr;
 	}
