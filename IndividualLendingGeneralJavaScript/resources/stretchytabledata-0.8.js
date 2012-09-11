@@ -41,8 +41,8 @@
 		displayAdditionalInfo(params);
 	};
 
-	$.stretchyTableData.showDataTable= function(tabName, datatableName, id) {
-		showDataTable(tabName, datatableName, id);   
+	$.stretchyTableData.showDataTable= function(tabName, datatableName, id, fkName) {
+		showDataTable(tabName, datatableName, id, fkName);   
 	};
 
 
@@ -65,10 +65,13 @@
 				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
 				for (var i in data) 
 				{
-					htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'" + additionalDataIdName + "', '" + data[i].registeredTableName + "'" + ', ' + params.appTablePKValue + ');return false;"><span>' + data[i].registeredTableLabel + '</span></a></li>';
+					htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'" 
+					htmlVar += additionalDataIdName + "', '" + data[i].registeredTableName + "'" + ', ' 
+					htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "'" + ');return false;"><span>' 
+					htmlVar += data[i].registeredTableLabel + '</span></a></li>';
 				}
 				htmlVar += '</ul></div>';
-	        		
+
 	        		var currentTab = $("#" + params.appendToDiv).children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		currentTab.html(htmlVar);
 
@@ -82,35 +85,53 @@
 
 	}
 
+
 generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
 alert("complete after  - for when an error is got but not on a create/update form");
 				    	//handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
 				};
 
 
-function showDataTable(tabName, datatableName, id) {	   
+function showDataTable(tabName, datatableName, id, fkName) {	 
 
 	var url = 'datatables/' + datatableName + "/" + id;
 
 	var successFunction = function(data, status, xhr) {
-				//var currentTabIndex = $("#" + tabName).tabs('option', 'selected');
-				//var currentTabAnchor = $("#" + tabName).data('tabs').anchors[currentTabIndex];
-
-				var htmlVar = "tabName: " + tabName + "    datatableName: " + datatableName + "    Id: " + id + '<br><br>';
-
-				htmlVar += showDataTableDisplay(data);
-
 	        		var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
-	        		currentTab.html(htmlVar);
+	        		currentTab.html(showDataTableDisplay(fkName, data));
 		};
 
 	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
 
 }
 
-	function showDataTableDisplay(data, dsnDivName) {
+function showDataTableDisplay(fkName, data) {
+
+	var cardinalityVar = getTableCardinality(fkName, data.columnHeaders);
+	switch (cardinalityVar) {
+	case "PRIMARY":
+		return showDataTableOneToOne(fkName, data);
+	case "FOREIGN":
+		return showDataTableOneToMany(fkName, data);
+	default:
+		alert(cardinalityVar);
+		return;
+	}
+}
+
+
+
+
+function showDataTableOneToMany(fkName, data) {
+	alert("one to  many");
+
+}
+
+	function showDataTableOneToOne(fkName, data) {
 
 		var dataLength = data.data.length;
+
+
 		var extraDataViewVar = '<table width="100%"><tr>';
 
 		var colsPerRow = 2;
@@ -150,6 +171,22 @@ function showDataTable(tabName, datatableName, id) {
 		//$('#' + dsnDivName).html(extraDataViewVar); 
 	}
 
+function getFKName(appTableName) {	 
+	return appTableName.substring(2) + "_id";
+}
+
+function getTableCardinality(fkName, columnHeaders) {	 
+
+	for ( var i in columnHeaders) {
+		if (columnHeaders[i].columnName == fkName) {
+			if (columnHeaders[i].isColumnPrimaryKey == true) return "PRIMARY"
+			else return "FOREIGN"; 	
+		}
+	}
+
+	return "Column: " + fkName + " - NOT FOUND";
+}
+
 
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
 
@@ -171,7 +208,7 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 
 
 
-
+//////////////
 
 
 
