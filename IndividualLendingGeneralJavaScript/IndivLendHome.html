@@ -1003,8 +1003,11 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
+<!--
 <p><b>{{=$ctx.doI18N("heading.client.account.depositaccount.overview")}}</b></p>
+-->
 {{#if $ctx.numberGreaterThanZero(pendingApprovalDespositAccountsCount)}}
+<!--
 <div class="row">
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalDespositAccountsCount)}}):</span>
 	<span class="rowvalue">
@@ -1013,9 +1016,11 @@ $(document).ready(function() {
 	{{/each}}
 	</span>
 </div>
+-->
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(approvedDespositAccountsCount)}}
+<!--
 <div class="row">
 	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedDespositAccountsCount)}}):</span>
 	<span class="rowvalue">
@@ -1024,6 +1029,7 @@ $(document).ready(function() {
 	{{/each}}
 	</span>
 </div>
+-->
 {{/if}}
 
 {{#else}}
@@ -1037,7 +1043,7 @@ $(document).ready(function() {
     <button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
 	<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
 	<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
-	<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
+	<!-- <button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button> -->
 	<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 </span>
 <hr/>
@@ -1725,35 +1731,6 @@ $(document).ready(function() {
 			</td>
 		</tr>
 		</table>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.loan.product.charges")}}</legend>
-		<table>
-			<tr>
-				<td>
-					<div class="multiselectwidget">
-						<label for="notSelectedCharges">{{=$ctx.doI18N("form.label.loan.product.available.charges")}}</label>
-						<select id="notSelectedCharges" name="notSelectedCharges" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:200px;height:125px;">
-						{{#each chargeOptions}}
-							<option value="{{=id}}">{{=name}}, {{=currency.code}}</option>
-			            {{/each}}
-						</select>
-						<a href="#" id="addcharges" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
-					</div>
-				</td>
-				<td>
-					<div class="multiselectwidget">
-						<label for="charges">{{=$ctx.doI18N("form.label.loan.product.selected.charges")}}</label>
-						<select id="charges" name="charges" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:200px;height:125px;">
-						{{#each charges}}
-							<option value="{{=id}}">{{=name}}, {{=currency.code}}</option>
-			            {{/each}}
-						</select>
-						<a href="#" id="removecharges" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
-					</div>
-				</td>
-			</tr>
-		</table>	
 	</fieldset>
 </form>
 </script>

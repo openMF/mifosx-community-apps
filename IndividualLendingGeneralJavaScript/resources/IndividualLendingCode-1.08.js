@@ -257,7 +257,8 @@ function setOrgAdminContent(divName) {
 //	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
 //	htmlVar += ' | ';
 //	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
-	htmlVar += ' <br><br> ';
+//	htmlVar += ' <br><br> ';
+	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
 	htmlVar += ' | ';	
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ');return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
