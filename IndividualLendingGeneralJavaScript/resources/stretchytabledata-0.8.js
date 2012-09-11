@@ -204,7 +204,7 @@ function getColumnType(inColType) {
 		case "bigint":
 			return "INTEGER";
 		case "bit":
-			return "BOOLEAN";
+			return "STRING";
 		case "date":
 			return "DATE";
 		//case "datetime":
@@ -220,7 +220,7 @@ function getColumnType(inColType) {
 		case "text":
 			return "TEXT";
 		case "tinyint":
-			return "BOOLEAN";
+			return "STRING";
 		case "varchar":
 			return "STRING";
 		default:
@@ -306,7 +306,16 @@ dataTableDef = {
 
 function createTable(data) {
 
-	rowsDisplayable = 0;
+	var tableColumns = getTableColumns(data);
+	var tableData = getTableData(data, tableColumns);
+	
+	dataTableDef.aaData = tableData;
+	dataTableDef.aoColumns= tableColumns;
+	dataTableDef.aaSorting = [];								
+}
+
+function getTableColumns(data) {
+
 	var tableColumns = [];
 	for (var i in data.columnHeaders)
 	{
@@ -336,6 +345,10 @@ function createTable(data) {
 					"sClass": tmpSClass
 					});
 	}
+	return tableColumns;
+}
+
+function getTableData(data, tableColumns) {
 
 	var convNum = "";
 	var tmpVal;
@@ -371,16 +384,7 @@ function createTable(data) {
 		}
 		tableData.push(tmpArr);
 	}
-	
-	dataTableDef.aaData = tableData;
-	dataTableDef.aoColumns= tableColumns;
-	dataTableDef.aaSorting = [];
-	/*dataTableDef.fnDrawCallback = function() {
-      						showMsg( 'DataTables has redrawn the table' );
-							if (isNewTable == false) applyFilterRules()
-							else isNewTable = false;
-    						};*/
-								
+	return tableData;
 }
 
 function showTableReport() {
