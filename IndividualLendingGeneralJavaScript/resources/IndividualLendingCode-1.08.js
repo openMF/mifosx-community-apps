@@ -963,6 +963,23 @@ function showILGroup(groupId){
 				calculateAnnualPercentageRate();
 				calculateLoanSchedule();
 				
+				// attaching charges logic
+		  		$('#addloancharges').click(function() {  
+	  				var chargeId = $('#chargeOptions option:selected').val();
+		  			if (chargeId && chargeId > 0){
+			  			var chargeRow = $('#notSelectedLoanCharges').find("#charge"+chargeId);
+			  			$('#chargeOptions option:selected').remove();
+			  			$('#selectedLoanCharges').append(chargeRow);
+		  			}  
+		  		});
+		  		$('.removeloancharges').click(function() {  
+		  			var chargeId, chargeName;
+		  			chargeId = $(this).closest('.row.charge').find('.chargeId').val();
+		  			chargeName = $(this).closest('.row.charge').find('.chargeName').text(); 	
+		  			$('#chargeOptions').append($('<option>', { value : chargeId }).text(chargeName));
+		  			$(this).closest('.row.charge').remove().appendTo('#notSelectedLoanCharges'); 
+		  		});    
+
 				// change detection
 				$('#principal').change(function() {
 					calculateLoanSchedule();
@@ -1853,7 +1870,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					  		});
 					  		$('#removecharges').click(function() {  
 					  			return !$('#charges option:selected').remove().appendTo('#notSelectedCharges');  
-					  		});  
+					  		});
 
 					  		$('#addpermissions').click(function() {  
 					  			return !$('#notSelectedPermissions option:selected').remove().appendTo('#permissions');  
@@ -2116,12 +2133,27 @@ $.fn.serializeObject = function()
 {
 	var o = {};
 	var a = this.serializeArray({ checkboxesAsBools: true});
-	
+	var arrayName, propertyName, index;
+
 	$.each(a, function() {
 		
 		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedPermissions' || this.name === 'notSelectedRoles' 
 	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges') {
 			// do not serialize
+		} else if (this.name.indexOf('[') !== -1) { //serialize as separate object
+			arrayName = this.name.substring(0, this.name.indexOf("["));
+			if (o[arrayName] === undefined){
+				o[arrayName] = [];				
+			}
+			index = parseInt(this.name.substring(this.name.indexOf("[") + 1, this.name.indexOf("]")));
+			if (index > 0){
+				index -= 1;
+			}
+			if (o[arrayName][index] === undefined){
+				o[arrayName][index] = {};
+			}
+			propertyName = this.name.substring(this.name.lastIndexOf("[") + 1, this.name.lastIndexOf("]"));
+			o[arrayName][index][propertyName] = this.value || '';
 		} else  {
 		    if (o[this.name] !== undefined) {
 		        if (!o[this.name].push) {
@@ -2141,6 +2173,13 @@ $.fn.serializeObject = function()
 		}
 	});
 	
+	//clean serialized arrays - remove nulls 
+	$.each(o, function(key, value){
+		if (value instanceof Array){
+			o[key] = value.filter(function(e){return e}); 
+		}
+	})
+
 	return o;
 };
 
