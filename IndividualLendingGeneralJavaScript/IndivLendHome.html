@@ -751,7 +751,7 @@ $(document).ready(function() {
 					</td>
 					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
 					<td valign="top">
-						<label for="commencementDate">{{=$ctx.doI18N("form.label.deposit.submitted.on")}}</label>
+						<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
 						<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(commencementDate)}}" />
 						<label for="externalId">{{=$ctx.doI18N("form.label.deposit.externalId")}}</label>
 						<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
@@ -1198,12 +1198,10 @@ $(document).ready(function() {
 </script>
 
 <script id="depositAccountDataTabTemplate" type="text/x-jquery-tmpl">
-
 {{#each permissions}}
-{{#if anyActionOnDepositAllowed}}
+{{#if anyActionOnAccountAllowed}}
 <div id="depositaccountactions">
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
-
 		{{#if rejectAllowed}}
 		<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectdepositapplication">Reject</button>
 		{{/if}}
@@ -1300,8 +1298,8 @@ $(document).ready(function() {
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
-	<label for="commencementDate">{{=$ctx.doI18N("form.label.deposit.submitted.on")}}</label>
-	<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(commencementDate)}}" />
+	<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
+	<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(projectedCommencementDate)}}" />
 
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
@@ -1329,7 +1327,7 @@ $(document).ready(function() {
 							
 								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
 								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
+								{{#if $ctx.number($parent.parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
@@ -1343,7 +1341,6 @@ $(document).ready(function() {
 			</tr>
 		</table>
 	</fieldset>
-
 </form>
 </script>
 

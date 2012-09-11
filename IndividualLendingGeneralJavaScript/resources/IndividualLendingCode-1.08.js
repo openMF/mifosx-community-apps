@@ -1171,7 +1171,7 @@ function showILGroup(groupId){
     			var templateSelector = "#stateTransitionDepositFormTemplateForApprove";
     			var width = 500; 
     			var height = 350;
-    			var getUrl = 'depositaccounts/' + depositAccountId ;
+    			var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
     			
     			eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
     			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.approve.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
@@ -1193,7 +1193,7 @@ function showILGroup(groupId){
 			    
 				e.preventDefault();
 			});
-    		$('button.undoapprovedepositapplication span').text(doI18N('dialog.title.undo.deposit.approval'));
+    		$('button.undoapprovedepositapplication span').text(doI18N('label.undo.approval'));
     		
     		$('.withdrawnbyapplicant').button().click(function(e) {
 				var linkId = this.id;
