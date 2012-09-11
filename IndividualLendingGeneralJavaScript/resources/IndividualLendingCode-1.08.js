@@ -893,6 +893,15 @@ function showILGroup(groupId){
 							' clientDirty = true;' +
 						'};';
 	}
+	
+	function genSaveSuccessFunctionReloadDeposit(depositAccountId) {
+
+		return 'var saveSuccessFunctionReloadDeposit = function(data, textStatus, jqXHR) { ' + 
+						  	' $("#dialog-form").dialog("close");' +
+							' loadDepositAccount(' + depositAccountId + ');' +
+							' clientDirty = true;' +
+						'};';
+	}
 
 	function addILDeposit(clientId) {
 		setAddDepositContent("content");
@@ -1121,7 +1130,7 @@ function showILGroup(groupId){
 	
 	function loadDepositAccount(accountId) {
 		
-		var accountUrl = 'depositaccounts/' + accountId;
+		var accountUrl = 'depositaccounts/' + accountId + "?associations=all";
 
 		var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
 	    	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
@@ -1134,11 +1143,82 @@ function showILGroup(groupId){
         	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
         	
         	var tableHtml = $("#depositAccountDataTabTemplate").render(data);
+        	
+        	var data = new Object();
     		
     		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
     		currentTab.html(tableHtml);
 
-    		var curTabID = currentTab.prop("id")
+    		var curTabID = currentTab.prop("id");
+    		
+    		$('.rejectdepositapplication').button().click(function(e) {
+				var linkId = this.id;
+				var depositAccountId = linkId.replace("rejectbtn", "");
+				var postUrl = 'depositaccounts/' + depositAccountId + '?command=reject';
+				var templateSelector = "#stateTransitionDepositFormTemplate";
+				var width = 400; 
+				var height = 250;
+
+				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.button.reject.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadClient);
+			    e.preventDefault();
+			});
+    		$('button.rejectdepositapplication span').text(doI18N('dialog.button.reject.depositAccount'));
+    		
+    		$('.approvedepositapplication').button().click(function(e) {
+    			var linkId = this.id;
+    			var depositAccountId = linkId.replace("approvebtn", "");
+    			var postUrl = 'depositaccounts/' + depositAccountId + '?command=approve';
+    			var templateSelector = "#stateTransitionDepositFormTemplateForApprove";
+    			var width = 500; 
+    			var height = 350;
+    			var getUrl = 'depositaccounts/' + depositAccountId ;
+    			
+    			eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
+    			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.approve.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
+    		    
+    			e.preventDefault();
+    		});
+    		$('button.approvedepositapplication span').text(doI18N('dialog.title.approve.depositAccount'));
+
+    		$('.undoapprovedepositapplication').button().click(function(e) {
+				var linkId = this.id;
+				var depositAccountId = linkId.replace("undoapprovebtn", "");
+				var postUrl = 'depositaccounts/' + depositAccountId + '?command=undoapproval';
+				var templateSelector = "#stateTransitionDepositFormTemplate";
+				var width = 400; 
+				var height = 250;
+
+				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
+				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.deposit.approval', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
+			    
+				e.preventDefault();
+			});
+    		$('button.undoapprovedepositapplication span').text(doI18N('dialog.title.undo.deposit.approval'));
+    		
+    		$('.withdrawnbyapplicant').button().click(function(e) {
+				var linkId = this.id;
+				var depositAccountId = linkId.replace("withdrawnbyapplicantloanbtn", "");
+				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrewbyclient';
+				var templateSelector = "#stateTransitionDepositFormTemplate";
+				var width = 400; 
+				var height = 250;
+
+				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.loan.withdrawn.by.client', templateSelector, width, height, saveSuccessFunctionReloadClient);
+			    e.preventDefault();
+			});
+    		$('button.withdrawnbyapplicant span').text(doI18N('dialog.title.loan.withdrawn.by.client'));
+    		
+    		$('.deletedepositapplication').button().click(function(e) {
+				var linkId = this.id;
+				var depositAccountId = linkId.replace("deletebtn", "");
+				var url = 'depositaccounts/' + depositAccountId;
+				var width = 400; 
+				var height = 225;
+										
+				popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
+			    e.preventDefault();
+		});
+		$('button.deletedepositapplication span').text(doI18N('dialog.button.delete.loan'));
 		};
 		
 		executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
@@ -2454,4 +2534,54 @@ function jsViewsRegisterHelpers() {
 			      }
 			}
 	});
+	
+	function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var data = new Object();
+		var formHtml = $(templateSelector).render(data);
+		dialogDiv.append(formHtml);
+		
+		var saveButton = doI18N('dialog.button.save');
+		var cancelButton = doI18N('dialog.button.cancel');
+		var buttonsOpts = {};		
+		buttonsOpts[saveButton] = function() {
+			$('.multiSelectedItems option').each(function(i) {  
+		    	   		$(this).attr("selected", "selected");  
+		    		});
+
+			if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
+
+			var newFormData = JSON.stringify($('#entityform').serializeObject());
+			//console.log(newFormData);
+
+			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
+		};
+		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+		
+		dialogDiv.dialog({
+		  		title: doI18N(titleCode), 
+		  		width: width, 
+		  		height: height, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+		  			$(this).remove();
+				},
+		  		open: function (event, ui) {
+		  			$('.multiadd').click(function() {  
+		  			     return !$('.multiNotSelectedItems option:selected').remove().appendTo('#selectedItems');  
+		  			});
+		  			
+		  			$('.multiremove').click(function() {  
+		  				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedItems');  
+		  			});
+		  			
+		  			$('.datepickerfield').datepicker({constrainInput: true, dateFormat: 'dd MM yy'});
+		  			
+		  			$("#entityform textarea").first().focus();
+		  			$('#entityform input').first().focus();
+		  		}
+		  }).dialog('open');
+}
 }

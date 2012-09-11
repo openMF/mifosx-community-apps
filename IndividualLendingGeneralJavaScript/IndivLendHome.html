@@ -1198,13 +1198,36 @@ $(document).ready(function() {
 </script>
 
 <script id="depositAccountDataTabTemplate" type="text/x-jquery-tmpl">
+
+{{#each permissions}}
+{{#if anyActionOnDepositAllowed}}
 <div id="depositaccountactions">
-    <!--
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
-		<button id="rejectbtn" class="rejectdepositaccount">Reject</button>
+
+		{{#if rejectAllowed}}
+		<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectdepositapplication">Reject</button>
+		{{/if}}
+		
+		{{#if withdrawnByApplicantAllowed}}
+		<button id="withdrawnbyapplicantloanbtn{{=$parent.parent.parent.data.id}}" class="withdrawnbyapplicant">Withdrawn By Applicant</button>
+		{{/if}}
+		
+		{{#if pendingApproval}}
+		<button id="approvebtn{{=$parent.parent.parent.data.id}}" class="approvedepositapplication">Approve</button>
+		{{/if}}
+		
+		{{#if pendingApproval}}
+		<button id="deletebtn{{=$parent.parent.parent.data.id}}" class="deletedepositapplication">Delete</button>
+		{{/if}}
+		
+		{{#if undoApprovalAllowed}}
+		<button id="undoapprovebtn{{=$parent.parent.parent.data.id}}" class="undoapprovedepositapplication">Undo Approval</button>
+		{{/if}}
 	</span>
-    -->
 </div>
+{{/if}}
+{{/each}}
+
 <br/>
 <div>
     <div class="row">
@@ -1257,6 +1280,71 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.decimal(maturityInterestRate, 4)}}%</span>
 		</div>
 </div>
+</script>
+
+<script id="stateTransitionDepositFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<label for="eventDate">{{=$ctx.doI18N("label.loan.on")}}</label>
+	<input id="eventDate" name="eventDate" title="" class="datepickerfield" />
+
+</form>
+</script>
+
+<script id="stateTransitionDepositFormTemplateForApprove" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<label for="commencementDate">{{=$ctx.doI18N("form.label.deposit.submitted.on")}}</label>
+	<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(commencementDate)}}" />
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
+		<table>
+			<tr>
+				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
+							<td>
+								<input id="deposit" name="deposit" title="" type="text" value="{{=$ctx.decimal(deposit,2)}}" style="width: 125px;" />
+								<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr> 
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.tenure")}}</td>
+							<td>
+								<input id="tenureInMonths" name="tenureInMonths" title="" type="text" value="{{=$ctx.number(tenureInMonths)}}" style="width: 50px;" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
+							<td>
+								<input id="interestCompoundedEvery" name="interestCompoundedEvery" title="" type="text" value="{{=$ctx.number(interestCompoundedEvery)}}" style="width: 50px;" />
+							
+								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
+								{{#each interestCompoundedEveryPeriodTypeOptions}}
+								{{#if $ctx.number($parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+
+</form>
 </script>
 
 <script id="loanDataTabTemplate" type="text/x-jquery-tmpl">
