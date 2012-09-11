@@ -372,7 +372,100 @@ $(document).ready(function() {
 			</tr>
 		</table>
 	</fieldset>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.loan.charges")}}</legend>
+		<div>
+			<table id="chargesdetails">
+				<tr>
+					<td valign="top">
+						<label for="chargeOptions">{{=$ctx.doI18N("form.label.loan.charge.dropdown")}}</label>
+						<select id="chargeOptions">
+							<option value="-1">{{=$ctx.doI18N("form.option.charge.dropdown.first.choice")}}</option>
+						{{#each chargeOptions}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+        				{{/each}}
+  						</select>
+						<a href="#" id="addloancharges">{{=$ctx.doI18N("widget.charges.select.button.add")}}</a> 
+					</td>
+				</tr>
+				<tr>
+					<td id="selectedLoanCharges">
+					{{#each charges}}
+						<div id="charge{{=id}}" class="row charge">
+							<span class="rowvalue chargeName">{{=name}}</span>
+							<input id="charges[{{=id}}][id]" name="charges[{{=id}}][id]" class ="chargeId" title="" type="hidden" value="{{=id}}" />
+							<span class="rowvalue">
+								<input id="charges[{{=id}}][amount]" name="charges[{{=id}}][amount]" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+							</span>
+							<span class="rowvalue">
+								<select id="charges[{{=id}}][chargeCalculationType]" name="charges[{{=id}}][chargeCalculationType]" title="" style="width: 180px">
+									{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
+										{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+										{{#else}}
+											<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+										{{/if}}
+									{{/each}}
+								</select>
+							</span>
+							<span class="rowvalue">
+								<select id="charges[{{=id}}][chargeTimeType]" name="charges[{{=id}}][chargeTimeType]" title="" style="width: 180px">
+									{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
+										{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+										{{#else}}
+											<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+										{{/if}}
+									{{/each}}
+								</select>
+							</span>
+							<span class="rowvalue">
+								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
+							</span>
+						</div>
+					{{/each}}
+					</td>	
+				</tr>
+			</table>
+		</div>
+	</fieldset>
 </form>
+<div id="notSelectedLoanCharges" style="display: none;">
+{{#each chargeOptions}}
+	<div id="charge{{=id}}" class="row charge">
+		<span class="rowvalue chargeName">{{=name}}</span>
+		<input id="charges[{{=id}}][id]" name="charges[{{=id}}][id]" class ="chargeId" title="" type="hidden" value="{{=id}}" />
+		<span class="rowvalue">
+			<input id="charges[{{=id}}][amount]" name="charges[{{=id}}][amount]" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+		</span>
+		<span class="rowvalue">
+			<select id="charges[{{=id}}][chargeCalculationType]" name="charges[{{=id}}][chargeCalculationType]" title="" style="width: 180px">
+				{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
+					{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+					{{/if}}
+				{{/each}}
+			</select>
+		</span>
+		<span class="rowvalue">
+			<select id="charges[{{=id}}][chargeTimeType]" name="charges[{{=id}}][chargeTimeType]" title="" style="width: 180px">
+				{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
+					{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+					{{/if}}
+				{{/each}}
+			</select>
+		</span>
+		<span class="rowvalue">
+			<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
+		</span>
+	</div>
+{{/each}}	
+</div>
 </script>
 
 <script id="newLoanFormTemplateMin" type="text/x-jquery-tmpl">
