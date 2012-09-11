@@ -36,6 +36,7 @@
 			alert(doI18N("Table Data Initialisation Error - appendToDiv parameter"));
 			return;
 		}
+		initialiseDataTableDef();
 
 		tabledataParams = params;
 		displayAdditionalInfo(params);
@@ -98,23 +99,30 @@ function showDataTable(tabName, datatableName, id, fkName) {
 
 	var successFunction = function(data, status, xhr) {
 	        		var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
-	        		currentTab.html(showDataTableDisplay(fkName, data));
+	        		//currentTab.html(showDataTableDisplay(fkName, data));
+
+	        		showDataTableDisplay(fkName, data, currentTab);
+
 		};
 
 	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
 
 }
 
-function showDataTableDisplay(fkName, data) {
+function showDataTableDisplay(fkName, data, currTab) {
 
 	var cardinalityVar = getTableCardinality(fkName, data.columnHeaders);
 	switch (cardinalityVar) {
 	case "PRIMARY":
-		return showDataTableOneToOne(fkName, data);
+		currTab.html(showDataTableOneToOne(fkName, data));
+		break;
 	case "FOREIGN":
-		return showDataTableOneToMany(fkName, data);
+		var oneToManyOuter = '<div id="dt_example"><div id=StretchyReportOutput></div></div>';
+		currTab.html(oneToManyOuter);
+		showDataTableOneToMany(fkName, data);
+		break;
 	default:
-		return cardinalityVar;
+		currTab.html(cardinalityVar);
 	}
 }
 
@@ -122,8 +130,8 @@ function showDataTableDisplay(fkName, data) {
 
 
 function showDataTableOneToMany(fkName, data) {
-	alert("one to  many");
-
+	createTable(data);
+	showTableReport();
 }
 
 function showDataTableOneToOne(fkName, data) {
@@ -252,6 +260,184 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 				success : successFunction, 
 				error : errorFunction 
 			}); 
+}
+
+
+
+function initialiseDataTableDef() {
+dataTableDef = {
+		// "sDom": 'lfTip<"top"<"clear">>rtlfTip<"bottom"<"clear">>',
+		"sDom": 'lfTip<"top"<"clear">>rt',
+		"oTableTools": {
+				"aButtons": [{	"sExtends": "copy",
+							"sButtonText": doI18N("Copy to Clipboard")
+									}, 
+						{	"sExtends": "xls",
+							"sButtonText": doI18N("Save to CSV")
+						}
+						],
+				"sSwfPath": "resValue/" + "DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
+			        },
+			        
+		"aaData": [],
+		"aoColumns": [],
+		"sPaginationType": "full_numbers",
+		"oLanguage": {
+					"sEmptyTable": doI18N("rpt.no.entries"),
+					"sZeroRecords": doI18N("rpt.no.matching.entries"),
+					"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
+					"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
+        				"oPaginate": {
+            						"sFirst"    : doI18N("rpt.first"),
+            						"sLast"     : doI18N("rpt.last"),
+            						"sNext"     : doI18N("rpt.next"),
+            						"sPrevious" : doI18N("rpt.previous")
+        						},
+					"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
+					"sSearch": doI18N("rpt.search")
+				},
+		"bDeferRender": true,
+		"bProcessing": true,
+		"aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]]
+	}
+
+}
+
+
+function createTable(data) {
+
+	rowsDisplayable = 0;
+	var tableColumns = [];
+	for (var i in data.columnHeaders)
+	{
+		var tmpSType;
+		var tmpSClass = "";
+		var colType = getColumnType(data.columnHeaders[i].columnType);
+
+		switch(colType)
+		{
+			case "STRING":
+  				tmpSType = 'string';
+  				break;
+			case "DECIMAL":
+  				tmpSType = 'title-numeric';
+				tmpSClass = "rptAlignRight";
+				break;
+			case "INTEGER":
+  				tmpSType = 'numeric';
+				tmpSClass = "rptAlignRight";
+  				break;
+			default:
+  				tmpSType = 'string';
+		}
+		tableColumns.push({ "sTitle": doI18N(data.columnHeaders[i].columnName), 
+					"sOriginalHeading": data.columnHeaders[i].columnName,
+					"sType": tmpSType,
+					"sClass": tmpSClass
+					});
+	}
+
+	var convNum = "";
+	var tmpVal;
+	var tableData = [];
+	for (var i in data.data )
+	{
+		var tmpArr = [];
+		for (var j in data.data[i].row)
+		{
+			tmpVal = data.data[i].row[j];
+			switch(tableColumns[j].sType)
+			{
+			case "string":
+				if (tmpVal == null) tmpVal = "";
+				tmpVal = convertCRtoBR(tmpVal);
+  				break;
+			case "numeric":
+				if (tmpVal == null) tmpVal = ""
+				else tmpVal = parseInt(tmpVal);
+  				break;
+			case "title-numeric":
+				if (tmpVal == null) tmpVal = '<span title="' + nullTitleValue  + '"></span>' + "";
+				else
+				{
+					convNum = formatNumber(parseFloat(tmpVal));//TODO
+					tmpVal = '<span title="' + tmpVal + '"></span>' + convNum;
+				}
+  				break;
+			default:
+  				alert("System Error - Type not Found: " + tableColumns[j].sType);
+			}
+			tmpArr.push(tmpVal);
+		}
+		tableData.push(tmpArr);
+	}
+	
+	dataTableDef.aaData = tableData;
+	dataTableDef.aoColumns= tableColumns;
+	dataTableDef.aaSorting = [];
+	/*dataTableDef.fnDrawCallback = function() {
+      						showMsg( 'DataTables has redrawn the table' );
+							if (isNewTable == false) applyFilterRules()
+							else isNewTable = false;
+    						};*/
+								
+}
+
+function showTableReport() {
+	//isNewTable = true;
+	$('#StretchyReportOutput').html( '<table cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable" width=100%></table>' );
+	oTable = $('#RshowTable').dataTable(dataTableDef);	
+	oSettings = oTable.fnSettings();
+
+	//showMsg("1st recs displayed is: " + fnRecordsDisplay());
+	//applyFilterRules();
+}
+
+function convertCRtoBR(str) {
+    return str.replace(/(\r\n|[\r\n])/g, "<br />");
+}
+
+function formatNumber(nStr)
+{ 
+decimalsNo = 2;//TODO
+indianFormat = false;
+separatorChar = ",";
+dbDecimalChar = ".";
+decimalChar = ".";
+
+
+
+// format no. of decimal places
+	var mainNum;
+	if (decimalsNo < 0)
+	{
+		mainNum = (nStr / Math.pow(10, Math.abs(decimalsNo))).toFixed(0);
+	}
+	else mainNum = nStr.toFixed(decimalsNo);
+
+	if (indianFormat == true) return indianFormatNumber(mainNum)
+	else return generalFormatNumber(mainNum);
+}
+
+function generalFormatNumber(inNum) {
+
+	var mainNum = inNum + '';
+	if (separatorChar != "")
+	{
+		var dpos = mainNum.indexOf(dbDecimalChar);
+		var nStrEnd = '';
+		if (dpos != -1) {
+			nStrEnd = decimalChar + mainNum.substring(dpos + 1, mainNum.length);
+			mainNum = mainNum.substring(0, dpos);
+		}
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(mainNum)) {
+			mainNum = mainNum.replace(rgx, '$1' + separatorChar + '$2');
+		}
+		return mainNum + nStrEnd;
+	}
+	else return mainNum; // no separator format
+
 }
 
 
