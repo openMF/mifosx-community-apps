@@ -1405,13 +1405,13 @@ $(document).ready(function() {
 <div id="loantabs{{=id}}" class="loantabs">
 	<ul>
 		<li><a href="#details{{=id}}" title="details">{{=$ctx.doI18N("tab.client.account.loan.details")}}</a></li>
-		{{#each charges}}
+		{{#if charges}}
 		<li><a href="#charges{{=id}}" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
-		{{/each}}
+		{{/if}}
 		<li><a href="#schedule{{=id}}" title="schedule">{{=$ctx.doI18N("tab.client.account.loan.schedule")}}</a></li>
-		{{#each loanRepayments}}
+		{{#if loanRepayments}}
 		<li><a href="#repayments{{=id}}" title="repayments">{{=$ctx.doI18N("tab.client.account.loan.repayments")}}</a></li>
-		{{/each}}
+		{{/if}}
 	</ul>
     <!-- first loan tab -->
 
@@ -1537,7 +1537,7 @@ $(document).ready(function() {
 		<div id="loanadditionaldata{{=id}}"></div>
 	</div>
 
-	{{#each charges}}
+	{{#if charges}}
 	<div id="charges{{=id}}" style="margin-top: 5px;">
 		<table id="loancharges{{=id}}" class="pretty displaypayments">
 		<caption>{{=$ctx.doI18N("table.caption.loan.charges")}}</caption>
@@ -1553,6 +1553,7 @@ $(document).ready(function() {
 				</tr>
 			</thead>
 			<tbody>
+				{{#each charges}}
 				<tr>
 					<td>????</td>
 					<td>{{=name}}</td>
@@ -1562,6 +1563,7 @@ $(document).ready(function() {
 					<td>????</td>
 					<td>Remove/Waive/Pay</td>
 				</tr>
+				{{/each}}
 			</tbody>
 		</table>
 	</div>
@@ -1686,7 +1688,7 @@ $(document).ready(function() {
 			</tfoot>
 		</table>
 	</div>
-    {{#if loanRepayments.length > 0}}
+    {{#if loanRepayments}}
 	<!-- Third loan tab -->
 	<div id="repayments{{=id}}" style="margin-top: 5px;">
 		<table id="newrepaymentsactivity{{=id}}" class="pretty displaypayments">
