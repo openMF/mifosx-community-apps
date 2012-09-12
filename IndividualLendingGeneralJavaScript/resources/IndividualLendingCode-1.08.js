@@ -1032,7 +1032,7 @@ function showILGroup(groupId){
 				$('button#cancelloanapp span').text(doI18N('dialog.button.cancel'));
 			};
 			  		
-		executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId+ '&fields=loanOfficerOptions', 'GET', "", successFunction, formErrorFunction);	  
+		executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
 
 	}
 	
@@ -1242,7 +1242,7 @@ function showILLoan(loanId, product) {
 
 function loadILLoan(loanId) {
 
-	var loanUrl = 'loans/' + loanId + "?associations=all&fields=loanOfficerName";
+	var loanUrl = 'loans/' + loanId + "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
 	        	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
