@@ -522,6 +522,18 @@ $(document).ready(function() {
 					</td>
 					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
 					<td valign="top">
+						<label for"loanOfficerId">{{=$ctx.doI18N("label.loan.officer")}}</label>
+						<select name="loanOfficerId" id="loanOfficerId">
+							<option value="">{{=$ctx.doI18N("form.option.loanOfficer.dropdown.first.choice")}}</option>
+						{{#each loanOfficerOptions}}
+							{{#if $ctx.number($parent.parent.data.loanOfficerId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							{{/if}}
+        				{{/each}}
+  						</select>
+  						
 						<label for="submittedOnDate">{{=$ctx.doI18N("form.label.loan.submitted.on")}}</label>
 						<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
 
