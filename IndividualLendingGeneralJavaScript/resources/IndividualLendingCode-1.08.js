@@ -722,27 +722,6 @@ function showILGroup(groupId){
 			  ' };'
 	}
 	
-	function modifyILLoan(loanId) {
-		setAddLoanContent("content");
-		
-		eval(genModifyLoanSuccessVar(loanId));
-		
-		executeAjaxRequest('loans/' + loanId + '?template=true', 'GET', "", successFunction, formErrorFunction);	 
-	}
-	
-	function genModifyLoanSuccessVar(loanId) {
-
-		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
-				' var formHtml = $("#modifyLoanApplicationFormTemplate").render(data);' +
-				' $("#inputarea").html(formHtml);' +
-				'repopulateLoanApplicationForm(data.clientId, data.loanProductId,' + loanId + ');' + 
-				' $("#productId").change(function() {' +
-					' var productId = $("#productId").val();' +
-					'repopulateLoanApplicationForm(data.clientId, data.loanProductId,' + loanId + ');' + 
-				' });' +
-			' };'
-	}
-	
 	function repopulateSavingAccountForm(clientId, productId){
 		successFunction = function(data, textStatus, jqXHR) {
 			var formHtml = $("#newDepositFormTemplate").render(data);
@@ -772,87 +751,89 @@ function showILGroup(groupId){
 		executeAjaxRequest('depositaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);
 	}
 	
-	function repopulateLoanApplicationForm(clientId, productId, loanId) {
-		successFunction =  function(data, textStatus, jqXHR) {
+	function modifyILLoan(loanId) {
+		setAddLoanContent("content");
+		
+		var successFunction =  function(data, textStatus, jqXHR) {
 			
-				var formHtml = $("#modifyLoanApplicationFormTemplate").render(data);
+			var clientId = data.clientId;
 			
-				$("#inputarea").html(formHtml);
+			var formHtml = $("#modifyLoanApplicationFormTemplate").render(data);
+			
+			$("#inputarea").html(formHtml);
 
-				$('#productId').change(function() {
-					var productId = $('#productId').val();
-					repopulateLoanApplicationForm(clientId, productId, loanId);
-				});
-				
-				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
-				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
-				
-				$('#cancelloanapp').button().click(function(e) {
-		  			showILClient(clientId);
-				    e.preventDefault();
-				});
-				$('button#cancelloanapp span').text(doI18N('dialog.button.cancel'));
-				
+			$('#productId').change(function() {
+				var productId = $('#productId').val();
+				// dont do anything for now when users switches product during modify
+			});
+			
+			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
+			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+			
+			$('#cancelloanapp').button().click(function(e) {
+	  			showILClient(clientId);
+			    e.preventDefault();
+			});
+			$('button#cancelloanapp span').text(doI18N('dialog.button.cancel'));
+			
+			calculateLoanSchedule();
+			
+			$('#modifyloanapp').button().click(function(e) {
+				modifyLoanApplication(clientId, loanId);
+			    e.preventDefault();
+			});
+			$('button#modifyloanapp span').text(doI18N('dialog.button.modify'));
+			
+			// change detection
+			$('#principal').change(function() {
 				calculateLoanSchedule();
-				
-				$('#modifyloanapp').button().click(function(e) {
-					modifyLoanApplication(clientId, loanId);
-				    e.preventDefault();
-				});
-				$('button#modifyloanapp span').text(doI18N('dialog.button.modify'));
-				
-				// change detection
-				$('#principal').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#loanTermFrequency').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#loanTermFrequencyType').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#numberOfRepayments').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#repaymentEvery').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#repaymentFrequencyType').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#expectedDisbursementDate').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#repaymentsStartingFromDate').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#interestRatePerPeriod').change(function() {
-					calculateAnnualPercentageRate();
-					calculateLoanSchedule();
-				});
-				$('#interestRateFrequencyType').change(function() {
-					calculateAnnualPercentageRate();
-					calculateLoanSchedule();
-				});
-				$('#amortizationType').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#interestType').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#interestCalculationPeriodType').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#interestChargedFromDate').change(function() {
-					calculateLoanSchedule();
-				});
-			};
-			  		
-		executeAjaxRequest('loans/' + loanId + '?template=true&clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
+			});
+			
+			$('#loanTermFrequency').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#loanTermFrequencyType').change(function() {
+				calculateLoanSchedule();
+			});
+			
+			$('#numberOfRepayments').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#repaymentEvery').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#repaymentFrequencyType').change(function() {
+				calculateLoanSchedule();
+			});
+			
+			$('#expectedDisbursementDate').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#repaymentsStartingFromDate').change(function() {
+				calculateLoanSchedule();
+			});
+			
+			$('#interestRatePerPeriod').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#interestRateFrequencyType').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#amortizationType').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#interestType').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#interestCalculationPeriodType').change(function() {
+				calculateLoanSchedule();
+			});
+			$('#interestChargedFromDate').change(function() {
+				calculateLoanSchedule();
+			});
+		};
+		
+		executeAjaxRequest('loans/' + loanId + '?template=true', 'GET', "", successFunction, formErrorFunction);	 
 	}
 	
 	function modifyLoanApplication(clientId, loanId) {
@@ -961,7 +942,7 @@ function showILGroup(groupId){
 				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
 				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
 				
-				calculateAnnualPercentageRate();
+//				calculateAnnualPercentageRate();
 				calculateLoanSchedule();
 				
 				// change detection
@@ -994,11 +975,11 @@ function showILGroup(groupId){
 				});
 				
 				$('#interestRatePerPeriod').change(function() {
-					calculateAnnualPercentageRate();
+//					calculateAnnualPercentageRate();
 					calculateLoanSchedule();
 				});
 				$('#interestRateFrequencyType').change(function() {
-					calculateAnnualPercentageRate();
+//					calculateAnnualPercentageRate();
 					calculateLoanSchedule();
 				});
 				$('#amortizationType').change(function() {
@@ -1032,7 +1013,6 @@ function showILGroup(groupId){
 	
 
 	function calculateAnnualPercentageRate() {
-	//	alert('calculating interest');
 		var periodInterestRate = parseFloat($('#nominalInterestRate').val());
 		if (isNaN(periodInterestRate)) {
 			periodInterestRate = 0;
