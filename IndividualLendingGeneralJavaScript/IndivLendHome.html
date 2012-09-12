@@ -874,6 +874,9 @@ $(document).ready(function() {
 					{{#if noteType.id === 300}}
 					<span>{{=$ctx.doI18N("widget.notes.label.loan.transaction.note")}}</span>
 					{{/if}}
+					{{#if noteType.id === 400}}
+					<span>{{=$ctx.doI18N("widget.notes.label.deposit.transaction.note")}}</span>
+					{{/if}}
 					<span><a href="#" class="editclientnote" id="editclientnotelink{{=id}}">{{=$ctx.doI18N("link.edit")}}</a></span>
 				</div>
 				<div class="notecontent">{{=note}}</div>
@@ -1288,6 +1291,9 @@ $(document).ready(function() {
 	<label for="eventDate">{{=$ctx.doI18N("label.loan.on")}}</label>
 	<input id="eventDate" name="eventDate" title="" class="datepickerfield" />
 
+	<label for="note">{{=$ctx.doI18N("label.loan.action.note")}}</label>
+	<textarea rows="3" cols="40" id="note" name="note"></textarea>
+
 </form>
 </script>
 
@@ -1300,6 +1306,9 @@ $(document).ready(function() {
 
 	<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
 	<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(projectedCommencementDate)}}" />
+
+	<label for="note">{{=$ctx.doI18N("label.loan.action.note")}}</label>
+	<textarea rows="3" cols="53" id="note" name="note"></textarea>
 
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
