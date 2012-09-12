@@ -1405,10 +1405,13 @@ $(document).ready(function() {
 <div id="loantabs{{=id}}" class="loantabs">
 	<ul>
 		<li><a href="#details{{=id}}" title="details">{{=$ctx.doI18N("tab.client.account.loan.details")}}</a></li>
+		{{#each charges}}
+		<li><a href="#charges{{=id}}" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
+		{{/each}}
 		<li><a href="#schedule{{=id}}" title="schedule">{{=$ctx.doI18N("tab.client.account.loan.schedule")}}</a></li>
-		{{#if loanRepayments.length > 0}}
+		{{#each loanRepayments}}
 		<li><a href="#repayments{{=id}}" title="repayments">{{=$ctx.doI18N("tab.client.account.loan.repayments")}}</a></li>
-		{{/if}}
+		{{/each}}
 	</ul>
     <!-- first loan tab -->
 
@@ -1532,9 +1535,38 @@ $(document).ready(function() {
 		</div>
 
 		<div id="loanadditionaldata{{=id}}"></div>
-	</div>		
+	</div>
 
-	<!-- second loan tab -->
+	{{#each charges}}
+	<div id="charges{{=id}}" style="margin-top: 5px;">
+		<table id="loancharges{{=id}}" class="pretty displaypayments">
+		<caption>{{=$ctx.doI18N("table.caption.loan.charges")}}</caption>
+			<thead>
+				<tr>
+				<th>{{=$ctx.doI18N("table.heading.loan.charges.added")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loan.charges.name")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loan.charges.paymentdueat")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loan.charges.calculationtype")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loan.charges.amount")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loan.charges.paid")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loan.charges.actions")}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>????</td>
+					<td>{{=name}}</td>
+					<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
+					<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
+					<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
+					<td>????</td>
+					<td>Remove/Waive/Pay</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	{{/if}}
+
 	<div id="schedule{{=id}}" style="margin-top: 5px;">
 		<table id="summarytable{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.summary.caption")}}</caption>
