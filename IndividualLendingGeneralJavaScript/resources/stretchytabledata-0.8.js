@@ -170,15 +170,19 @@ function showDataTableOneToOne(fkName, data) {
 
 				if (colVal > "")
 				{
-					var colType = getColumnType(data.columnHeaders[i].columnType);
-				 	if (colType == "TEXT")
-						colVal = '<textarea rows="3" cols="40" readonly="readonly">'
-							+ colVal + '</textarea>';
-
-				 	if (colType == "INTEGER") {
+					switch (getColumnType(data.columnHeaders[i].columnType)) {
+					case "TEXT":
+						colVal = '<textarea rows="3" cols="40" readonly="readonly">' + colVal + '</textarea>';
+						break;
+					case "INTEGER":
 				 		if (data.columnHeaders[i].columnValuesNew.length > 0) {
 							colVal = getDropdownValue(colVal, data.columnHeaders[i].columnValuesNew);							
 						}
+
+						break;
+					case "DATE":
+						colVal = globalDateAsISOString(colVal);
+						break;
 					}
 				}
 
@@ -216,6 +220,8 @@ function getColumnType(inColType) {
 		//case "datetime":
 		//	return "STRING";
 		case "decimal":
+			return "DECIMAL";
+		case "double":
 			return "DECIMAL";
 		case "int":
 			return "INTEGER";
@@ -452,7 +458,14 @@ function generalFormatNumber(inNum) {
 
 
 
+//// helper functions under here
 
+	function globalDateAsISOString(isoDate) {
+		if (globaliseFunctions > "") {
+			return globaliseFunctions.globalDateAsISOString(isoDate);
+		}
+		else return isoDate;
+	}
 
 	function doI18N(xlateStr, params) {
 		if (globaliseFunctions > "") {

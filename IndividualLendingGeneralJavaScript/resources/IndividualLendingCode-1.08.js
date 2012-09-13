@@ -1219,9 +1219,6 @@ function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKV
 						globaliseFunctions: helperFunctions,
 						resValue: "resources/libs/",
 
-
-
-
 						appendTo: tabVariable,
 						appendToDiv: tabDiv,
 
