@@ -8,6 +8,8 @@
 		if (params.globaliseFunctions) globaliseFunctions = params.globaliseFunctions;
 		tabledataParams = params;
 		defaultDecimalPlaces = 4;
+		nullTitleValue = "-99999999";
+
 
 		if (!(params.baseApiUrl)) {
 			alert(doI18N("Table Data Initialisation Error - baseApiUrl parameter"));
@@ -329,12 +331,14 @@ function showDataTableOneToMany(fkName, data) {
 function getTableColumns(fkName, data) {
 
 	var tableColumns = [];
+	var tmpSType = "";
+	var tmpSClass = "";
 	for (var i in data.columnHeaders)
 	{
-		var tmpSType;
 		var tmpSClass = "";
 		var colType = getColumnType(data.columnHeaders[i].columnType);
 
+		
 		switch(colType)
 		{
 			case "STRING":
@@ -345,16 +349,20 @@ function getTableColumns(fkName, data) {
 				tmpSClass = "rptAlignRight";
 				break;
 			case "INTEGER":
-  				tmpSType = 'numeric';
+  				tmpSType = 'title-numeric';
 				tmpSClass = "rptAlignRight";
+  				break;
+			case "DATE":
+  				tmpSType = 'title-string';
   				break;
 			default:
   				tmpSType = 'string';
 		}
 		tableColumns.push({ "sTitle": doI18N(data.columnHeaders[i].columnName), 
-					"sOriginalHeading": data.columnHeaders[i].columnName,
+					//"sOriginalHeading": data.columnHeaders[i].columnName,
 					"sType": tmpSType,
-					"sClass": tmpSClass
+					"sClass": tmpSClass,
+					"dbColType": colType
 					});
 	}
 	return tableColumns;
@@ -374,20 +382,20 @@ function getTableData(fkName, data, tableColumns) {
 			tmpVal = data.data[i].row[j];
 			switch(tableColumns[j].sType)
 			{
+			case "title-string":
+				if (tmpVal == null) tmpVal = '<span title=" "></span>' + "";
+				else tmpVal = '<span title="' + tmpVal + '"></span>' + globalDateAsISOString(tmpVal);
 			case "string":
-				if (tmpVal == null) tmpVal = "";
-				tmpVal = convertCRtoBR(tmpVal);
-  				break;
-			case "numeric":
 				if (tmpVal == null) tmpVal = ""
-				else tmpVal = parseInt(tmpVal);
+				else tmpVal = convertCRtoBR(tmpVal);
   				break;
 			case "title-numeric":
 				if (tmpVal == null) tmpVal = '<span title="' + nullTitleValue  + '"></span>' + "";
 				else
 				{
-					//convNum = formatNumber(parseFloat(tmpVal));//TODO
-					convNum = formatNumber(parseFloat(tmpVal));//TODO
+					if (tableColumns[j].dbColType == "INTEGER") convNum = globalNumber(parseInt(tmpVal))
+					else convNum = globalDecimal(parseFloat(tmpVal), defaultDecimalPlaces);
+
 					tmpVal = '<span title="' + tmpVal + '"></span>' + convNum;
 				}
   				break;
@@ -421,48 +429,6 @@ function convertCRtoBR(str) {
     return str.replace(/(\r\n|[\r\n])/g, "<br />");
 }
 
-function formatNumber(nStr)
-{ 
-decimalsNo = 2;//TODO
-indianFormat = false;
-separatorChar = ",";
-dbDecimalChar = ".";
-decimalChar = ".";
-
-
-
-// format no. of decimal places
-	var mainNum;
-	if (decimalsNo < 0)
-	{
-		mainNum = (nStr / Math.pow(10, Math.abs(decimalsNo))).toFixed(0);
-	}
-	else mainNum = nStr.toFixed(decimalsNo);
-
-	if (indianFormat == true) return indianFormatNumber(mainNum)
-	else return generalFormatNumber(mainNum);
-}
-
-function generalFormatNumber(inNum) {
-
-	var mainNum = inNum + '';
-	if (separatorChar != "")
-	{
-		var dpos = mainNum.indexOf(dbDecimalChar);
-		var nStrEnd = '';
-		if (dpos != -1) {
-			nStrEnd = decimalChar + mainNum.substring(dpos + 1, mainNum.length);
-			mainNum = mainNum.substring(0, dpos);
-		}
-		var rgx = /(\d+)(\d{3})/;
-		while (rgx.test(mainNum)) {
-			mainNum = mainNum.replace(rgx, '$1' + separatorChar + '$2');
-		}
-		return mainNum + nStrEnd;
-	}
-	else return mainNum; // no separator format
-
-}
 
 
 
