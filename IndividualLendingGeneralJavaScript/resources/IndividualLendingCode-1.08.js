@@ -783,6 +783,23 @@ function showILGroup(groupId){
 			});
 			$('button#modifyloanapp span').text(doI18N('dialog.button.modify'));
 			
+			// attaching charges logic
+	  		$('#addloancharges').click(function() {  
+  				var chargeId = $('#chargeOptions option:selected').val();
+	  			if (chargeId && chargeId > 0){
+		  			var chargeRow = $('#notSelectedLoanCharges').find("#charge"+chargeId);
+		  			$('#chargeOptions option:selected').remove();
+		  			$('#selectedLoanCharges').append(chargeRow);
+	  			}  
+	  		});
+	  		$('.removeloancharges').click(function() {  
+	  			var chargeId, chargeName;
+	  			chargeId = $(this).closest('.row.charge').find('.chargeId').val();
+	  			chargeName = $(this).closest('.row.charge').find('.chargeName').text(); 	
+	  			$('#chargeOptions').append($('<option>', { value : chargeId }).text(chargeName));
+	  			$(this).closest('.row.charge').remove().appendTo('#notSelectedLoanCharges'); 
+	  		});
+
 			// change detection
 			$('#principal').change(function() {
 				calculateLoanSchedule();
@@ -832,7 +849,7 @@ function showILGroup(groupId){
 			});
 		};
 		
-		executeAjaxRequest('loans/' + loanId + '?template=true', 'GET', "", successFunction, formErrorFunction);	 
+		executeAjaxRequest('loans/' + loanId + '?template=true&associations=charges', 'GET', "", successFunction, formErrorFunction);	 
 	}
 	
 	function modifyLoanApplication(clientId, loanId) {
