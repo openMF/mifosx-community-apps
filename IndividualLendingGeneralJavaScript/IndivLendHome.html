@@ -1012,7 +1012,8 @@ $(document).ready(function() {
 		<div style="width:100%">
 			<h1 align="center">{{=$ctx.doI18N("tab.search.title")}}</h1>
 		</div>
-		
+		<div id="officesInScopeDiv">
+		</div>
 		<div style="height: 80px">
 			<div style="float: left">
 					<label for="client">{{=$ctx.doI18N("label.client.search.by.name")}}</label>
@@ -1021,14 +1022,8 @@ $(document).ready(function() {
 			</div>
 			
 			<div style="float: right">
-					<label for="client">{{=$ctx.doI18N("label.client.search")}}</label>
-					
-					<select name="client" id="client" onChange="showILClient(options[selectedIndex].value);">
-						<option value="0">{{=$ctx.doI18N("option.client.search.first.choice")}}</option>
-						{{#each clients}}
-							<option value="{{=id}}">{{=displayName}}&nbsp;-&nbsp;({{=officeName}})</option>
-				        {{/each}}
-				  	</select>
+				<div id="clientsInScopeDiv">
+				</div>
 			</div>
 		</div>
 		<div id="clientTableDiv">
@@ -1036,6 +1031,40 @@ $(document).ready(function() {
 	</form>	
 </div>
 </script>
+
+
+<!-- All Clients Dropdown-->
+<script id="allClientsDropdownTemplate" type="text/x-jquery-tmpl">
+	<label for="client">{{=$ctx.doI18N("label.client.search")}}</label>
+	
+	<select name="client" id="client" onChange="showILClient(options[selectedIndex].value);">
+		<option value="0">{{=$ctx.doI18N("option.client.search.first.choice")}}</option>
+		{{#each crudRows}}
+			<option value="{{=id}}">{{=displayName}}&nbsp;-&nbsp;({{=officeName}})</option>
+	    {{/each}}
+	</select>
+	
+</script>
+
+<!--Applicable Offices-->
+<script id="officesDropdownTemplate" type="text/x-jquery-tmpl">
+	{{#if crudRows.length > 1 }}
+		<div style="width:100%">
+				<label for="office">{{=$ctx.doI18N("label.data.scope")}}</label>
+				<select id="officeId" name="officeId" onChange="applyClientSearchFilter(options[selectedIndex].value);">
+					{{#each crudRows}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=hierarchy}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=hierarchy}}">{{=nameDecorated}}</option>
+						{{/if}}
+			        {{/each}}
+				</select>
+		</div>
+		<hr/>
+	{{/if}}
+</script>
+
 
 <!--Client search results table-->
 <script id="clientsTableTemplate" type="text/x-jquery-tmpl">
