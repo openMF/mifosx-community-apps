@@ -132,13 +132,6 @@ function showDataTableDisplay(fkName, data, currTab) {
 }
 
 
-
-
-function showDataTableOneToMany(fkName, data) {
-	createTable(data);
-	showTableReport();
-}
-
 function showDataTableOneToOne(fkName, data) {
 
 		var dataLength = data.data.length;
@@ -154,7 +147,7 @@ function showDataTableOneToOne(fkName, data) {
 			valueClassStr = ' class="' + tabledataParams.valueClass + '" ';
 
 		for ( var i in data.columnHeaders) {
-			if (!(data.columnHeaders[i].columnName == "client_id")) {
+			if (!(data.columnHeaders[i].columnName == fkName)) {
 				colsPerRowCount += 1;
 				if (colsPerRowCount > colsPerRow) {
 					extraDataViewVar += '</tr><tr>';
@@ -237,7 +230,7 @@ function getColumnType(inColType) {
 		case "text":
 			return "TEXT";
 		case "tinyint":
-			return "STRING";
+			return "INTEGER";
 		case "varchar":
 			return "STRING";
 		default:
@@ -321,17 +314,19 @@ dataTableDef = {
 }
 
 
-function createTable(data) {
+function showDataTableOneToMany(fkName, data) {
 
-	var tableColumns = getTableColumns(data);
-	var tableData = getTableData(data, tableColumns);
+	var tableColumns = getTableColumns(fkName, data);
+	var tableData = getTableData(fkName, data, tableColumns);
 	
 	dataTableDef.aaData = tableData;
 	dataTableDef.aoColumns= tableColumns;
-	dataTableDef.aaSorting = [];								
+	dataTableDef.aaSorting = [];	
+
+	showTableReport(fkName, data.columnHeaders);							
 }
 
-function getTableColumns(data) {
+function getTableColumns(fkName, data) {
 
 	var tableColumns = [];
 	for (var i in data.columnHeaders)
@@ -365,7 +360,7 @@ function getTableColumns(data) {
 	return tableColumns;
 }
 
-function getTableData(data, tableColumns) {
+function getTableData(fkName, data, tableColumns) {
 
 	var convNum = "";
 	var tmpVal;
@@ -373,6 +368,7 @@ function getTableData(data, tableColumns) {
 	for (var i in data.data )
 	{
 		var tmpArr = [];
+		var displayColIndex = 0;
 		for (var j in data.data[i].row)
 		{
 			tmpVal = data.data[i].row[j];
@@ -405,11 +401,17 @@ function getTableData(data, tableColumns) {
 	return tableData;
 }
 
-function showTableReport() {
+function showTableReport(fkName, origTableColumns) {
 	//isNewTable = true;
 	$('#StretchyReportOutput').html( '<table cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable" width=100%></table>' );
 	oTable = $('#RshowTable').dataTable(dataTableDef);	
 	oSettings = oTable.fnSettings();
+
+	for (var i in origTableColumns)
+	{
+	  	if ((origTableColumns[i].isColumnPrimaryKey == true) || (origTableColumns[i].columnName == fkName)) oTable.fnSetColumnVis( i, false );
+	}
+
 
 	//showMsg("1st recs displayed is: " + fnRecordsDisplay());
 	//applyFilterRules();
