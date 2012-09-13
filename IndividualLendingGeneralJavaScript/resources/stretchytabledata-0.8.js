@@ -1,7 +1,5 @@
 (function($) {
 
-	//globaliseFunctions = "";
-
 	$.stretchyTableData = {};
 
 	$.stretchyTableData.displayAdditionalInfo = function(params) {
@@ -9,6 +7,7 @@
 		globaliseFunctions = "";
 		if (params.globaliseFunctions) globaliseFunctions = params.globaliseFunctions;
 		tabledataParams = params;
+		defaultDecimalPlaces = 4;
 
 		if (!(params.baseApiUrl)) {
 			alert(doI18N("Table Data Initialisation Error - baseApiUrl parameter"));
@@ -178,10 +177,16 @@ function showDataTableOneToOne(fkName, data) {
 				 		if (data.columnHeaders[i].columnValuesNew.length > 0) {
 							colVal = getDropdownValue(colVal, data.columnHeaders[i].columnValuesNew);							
 						}
-
+						else
+						{
+							colVal = globalNumber(parseInt(colVal));
+						}
 						break;
 					case "DATE":
 						colVal = globalDateAsISOString(colVal);
+						break;
+					case "DECIMAL":
+						colVal = globalDecimal(parseFloat(colVal), defaultDecimalPlaces);
 						break;
 					}
 				}
@@ -385,6 +390,7 @@ function getTableData(data, tableColumns) {
 				if (tmpVal == null) tmpVal = '<span title="' + nullTitleValue  + '"></span>' + "";
 				else
 				{
+					//convNum = formatNumber(parseFloat(tmpVal));//TODO
 					convNum = formatNumber(parseFloat(tmpVal));//TODO
 					tmpVal = '<span title="' + tmpVal + '"></span>' + convNum;
 				}
@@ -459,6 +465,20 @@ function generalFormatNumber(inNum) {
 
 
 //// helper functions under here
+
+	function globalDecimal(val, decs) {
+		if (globaliseFunctions > "") {
+			return globaliseFunctions.decimal(val, decs);
+		}
+		else return val;
+	}
+
+	function globalNumber(val) {
+		if (globaliseFunctions > "") {
+			return globaliseFunctions.number(val);
+		}
+		else return val;
+	}
 
 	function globalDateAsISOString(isoDate) {
 		if (globaliseFunctions > "") {
