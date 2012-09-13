@@ -1,8 +1,14 @@
 (function($) {
 
+	//globaliseFunctions = "";
+
 	$.stretchyTableData = {};
 
 	$.stretchyTableData.displayAdditionalInfo = function(params) {
+
+		globaliseFunctions = "";
+		if (params.globaliseFunctions) globaliseFunctions = params.globaliseFunctions;
+		tabledataParams = params;
 
 		if (!(params.baseApiUrl)) {
 			alert(doI18N("Table Data Initialisation Error - baseApiUrl parameter"));
@@ -36,9 +42,9 @@
 			alert(doI18N("Table Data Initialisation Error - appendToDiv parameter"));
 			return;
 		}
-		initialiseDataTableDef();
 
-		tabledataParams = params;
+		initialiseDataTableDef();
+		
 		displayAdditionalInfo(params);
 	};
 
@@ -276,7 +282,7 @@ dataTableDef = {
 							"sButtonText": doI18N("Save to CSV")
 						}
 						],
-				"sSwfPath": "resValue/" + "DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
+				"sSwfPath": tabledataParams.resValue + "DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
 			        },
 			        
 		"aaData": [],
@@ -449,8 +455,10 @@ function generalFormatNumber(inNum) {
 
 
 	function doI18N(xlateStr, params) {
- //can inject a function to re-use main doI18N if required or just take this one out (bit more risky but done here)
-		return xlateStr;
+		if (globaliseFunctions > "") {
+			return globaliseFunctions.doI18N(xlateStr, params);
+		}
+		else return xlateStr;
 	}
 
 })(jQuery);

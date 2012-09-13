@@ -1214,8 +1214,14 @@ function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKV
 						base64: base64,
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
-						appTableLabel: doI18N(appTableLabel),
+						appTableLabel: appTableLabel,
 						appTablePKValue: appTablePKValue, 
+						globaliseFunctions: helperFunctions,
+						resValue: "resources/libs/",
+
+
+
+
 						appendTo: tabVariable,
 						appendToDiv: tabDiv,
 
@@ -2066,7 +2072,7 @@ function signOut(containerDivName) {
 
 //utility functions
 
-highlightMissingXlations = "Y";
+highlightMissingXlations = "N";
 function doI18N(xlateStr, params) { 
 	if (highlightMissingXlations == "Y") return jQuery.i18n.prop(xlateStr, params)
 	else
@@ -2387,7 +2393,11 @@ function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeh
 // these helpers are registered for the jsViews and jsRender functionality to fix bug with display zero! 
 // plus some utility functions are added also for doI18N and currentLocale
 function jsViewsRegisterHelpers() {
-	$.views.registerHelpers({
+	$.views.registerHelpers(helperFunctions);
+}
+
+
+	helperFunctions = {
 			
 			money: function(monetaryObj) {
 				
@@ -2513,7 +2523,7 @@ function jsViewsRegisterHelpers() {
 			        return xlateStr;
 			      }
 			}
-	});
+	};
 	
 	function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {
 		var dialogDiv = $("<div id='dialog-form'></div>");
@@ -2563,5 +2573,4 @@ function jsViewsRegisterHelpers() {
 		  			$('#entityform input').first().focus();
 		  		}
 		  }).dialog('open');
-}
 }
