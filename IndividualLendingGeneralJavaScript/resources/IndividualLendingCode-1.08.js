@@ -373,40 +373,63 @@ setClientListingContent("content");
 	    },
 	    show: function(event, ui) {
 	    	//console.log("show..");
-		var successFunction =  function(data) {
-  			var clientObject = new Object();
-    		clientObject.clients = data;
-    		//console.log(clientObject);
-    	
-    		var tableHtml = $("#clientSearchTabTemplate").render(clientObject);
+		var initClientSearch =  function() {
+			//render page markup
+			var tableHtml = $("#clientSearchTabTemplate").render();
 			$("#searchtab").html(tableHtml);
 			
-			//search client functionality
+			//fetch all Offices 
+			var officeSearchSuccessFunction =  function(data) {
+				var officeSearchObject = new Object();
+			    officeSearchObject.crudRows = data;
+				var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
+				$("#officesInScopeDiv").html(tableHtml);
+		  	};
+		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
+			
+			//render client drop down data
+			var clientSearchSuccessFunction =  function(data) {
+				var clientSearchObject = new Object();
+			    clientSearchObject.crudRows = data;
+				var tableHtml = $("#allClientsDropdownTemplate").render(clientSearchObject);
+				$("#clientsInScopeDiv").html(tableHtml);
+		  	};
+			executeAjaxRequest('clients', 'GET', "", clientSearchSuccessFunction, formErrorFunction);
+  			    	
+    		//search client functionality
 			var searchSuccessFunction =  function(data) {
 				var clientSearchObject = new Object();
 			    clientSearchObject.crudRows = data;
 				var tableHtml = $("#clientsTableTemplate").render(clientSearchObject);
 				$("#clientTableDiv").html(tableHtml);
 			    var oTable=displayListTable("clientstable");
-			
-				
 		  	};
-							
+			
+			//initialize search button				
 			$("#searchClientBtn").button({
 				icons: {
 	                primary: "ui-icon-search"
 	            }
 	         }).click(function(e){
-			var searchValue = $("#clientSearchInput").val();
-			searchValue = searchValue.replace("'", "''");
-			var sqlSearchValue = "display_name like '%" + searchValue + "%'"; 
-			executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
-		   	e.preventDefault(); 
+	         	//get selected office
+	         	var officeHierarchy = $("#officeId").val();
+	         	//get search parameter
+				var searchValue = $("#clientSearchInput").val();
+				searchValue = searchValue.replace("'", "''");
+				//office hierarchy dropdown does not appear for branch users
+				var sqlSearchValue = "display_name like '%" + searchValue + "%'"; 
+				if(officeHierarchy){
+					executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue)+ "&underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", searchSuccessFunction, formErrorFunction);
+				}else{
+					executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
+				}
+			   	e.preventDefault(); 
 		   	});
-		};
-
-  		executeAjaxRequest('clients', 'GET', "", successFunction, formErrorFunction);
-	    }
+	    };
+	  	  //initialize the client search tab
+		 initClientSearch();
+	 }
+	 
 	});
 	
 
@@ -427,6 +450,19 @@ setClientListingContent("content");
 	});
 	
 }	
+
+//set scope for client search
+function applyClientSearchFilter(officeHierarchy) {
+	//re-render client drop down data
+	var clientSearchSuccessFunction =  function(data) {
+		var clientSearchObject = new Object();
+	    clientSearchObject.crudRows = data;
+		var tableHtml = $("#allClientsDropdownTemplate").render(clientSearchObject);
+		$("#clientsInScopeDiv").html(tableHtml);
+	};
+	var sqlSearchValue = "o.hierarchy like '"+ officeHierarchy +"%'";
+	executeAjaxRequest("clients?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", clientSearchSuccessFunction, formErrorFunction);
+}
 
 //HOME list groups functionality
 function showILGroupListing(){
