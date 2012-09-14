@@ -366,7 +366,7 @@ setClientListingContent("content");
 	$("#tabs").tabs({
 	    select: function(event, ui) {
 	    	//console.log("selected..");
-		alert("selected");
+		//alert("selected");
 	    },
 	    load: function(event, ui) {
 	    	//console.log("load..");
@@ -1809,11 +1809,11 @@ function resetBasicAuthKeyWithOutSwitchingScreen()
 	var useUserName = currentUserName;
 	if (newUserName > "") useUserName = newUserName;
 	
-	alert("reset: currentUser: " + currentUser);
+	//alert("reset: currentUser: " + currentUser);
 
 	var url = "authentication?username=" + useUserName + "&password=" + usePassword;
 	var successFunction = function(data, textStatus, jqXHR) {
-		    alert("success: currentUser: " + currentUser + " >> " + data.userId);
+		    //alert("success: currentUser: " + currentUser + " >> " + data.userId);
 			if (currentUser == data.userId) {
 					base64 = data.base64EncodedAuthenticationKey; 
 					currentUser = data.userId;
@@ -2446,19 +2446,8 @@ function jsViewsRegisterHelpers() {
 	$.views.registerHelpers(helperFunctions);
 }
 
-
 	helperFunctions = {
 			
-			money: function(monetaryObj) {
-				
-				if (undefined == monetaryObj) {
-					return "";
-				}
-				Globalize.culture().numberFormat.currency.symbol = monetaryObj.displaySymbol;
-				
-				var digits = monetaryObj.digitsAfterDecimal.toFixed(0);
-				return Globalize.format(monetaryObj.amount, "n" + digits); 
-			},
 			moneyFormatted: function(currencyObj, bigDecimalValue) {
 				
 				if (undefined == bigDecimalValue || undefined == currencyObj) {
@@ -2478,17 +2467,6 @@ function jsViewsRegisterHelpers() {
 				
 				var digits = currencyObj.decimalPlaces.toFixed(0);
 				return Globalize.format(bigDecimalValue, "n" + digits); 
-			},
-			moneyWithCurrency: function(monetaryObj) {
-				
-				if (undefined == monetaryObj) {
-					return "";
-				}
-				
-				Globalize.culture().numberFormat.currency.symbol = monetaryObj.displaySymbol;
-				
-				var digits = monetaryObj.digitsAfterDecimal.toFixed(0);
-				return Globalize.format(monetaryObj.amount, "c" + digits); 
 			},
 			decimal: function(number, digits) {
 		      try {
