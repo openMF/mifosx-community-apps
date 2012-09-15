@@ -95,8 +95,8 @@
 
 
 generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
-alert("complete after  - for when an error is got but not on a create/update form");
-				    	//handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+// for when an error is got but not on a create/update form - 
+					alert(jqXHR.responseText);
 				};
 
 
@@ -137,12 +137,18 @@ function showDataTableDisplay(fkName, data, currTab) {
 function showDataTableOneToOne(fkName, data) {
 
 		var dataLength = data.data.length;
+
+		if (dataLength == 0) return doI18N("No.Data.Found");
+
+
+
 		var extraDataViewVar = '<table width="100%"><tr>';
 
 		var colsPerRow = 2;
 		var colsPerRowCount = 0;
 		var labelClassStr = "";
 		var valueClassStr = "";
+		var colVal;
 		if (tabledataParams.labelClass > "")
 			labelClassStr = ' class="' + tabledataParams.labelClass + '" ';
 		if (tabledataParams.valueClass > "")
@@ -155,9 +161,8 @@ function showDataTableOneToOne(fkName, data) {
 					extraDataViewVar += '</tr><tr>';
 					colsPerRowCount = 1;
 				}
-				var colVal = "";
-				if (dataLength > 0)
-					colVal = data.data[0].row[i];
+
+				colVal = data.data[0].row[i];
 				if (colVal == null)
 					colVal = "";
 

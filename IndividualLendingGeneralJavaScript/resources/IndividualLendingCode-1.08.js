@@ -628,7 +628,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfo($newtabs, "newtabs", "m_client", clientId, "Additional.Client.Data"); 
+					showRelatedDataTableInfo($newtabs, "newtabs", "m_client", clientId, "Additional.Data"); 
 
 					
 					// retrieve additional info
