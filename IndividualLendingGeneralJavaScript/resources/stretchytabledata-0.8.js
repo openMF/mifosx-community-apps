@@ -10,7 +10,6 @@
 		defaultDecimalPlaces = 4;
 		nullTitleValue = "-99999999";
 
-
 		if (!(params.baseApiUrl)) {
 			alert(doI18N("Table Data Initialisation Error - baseApiUrl parameter"));
 			return;
@@ -108,7 +107,7 @@ function showDataTable(tabName, datatableName, id, fkName) {
 	        		var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		//currentTab.html(showDataTableDisplay(fkName, data));
 
-	        		showDataTableDisplay(fkName, data, currentTab);
+	        		showDataTableDisplay(fkName, data, url, currentTab);
 
 		};
 
@@ -116,17 +115,17 @@ function showDataTable(tabName, datatableName, id, fkName) {
 
 }
 
-function showDataTableDisplay(fkName, data, currTab) {
+function showDataTableDisplay(fkName, data, url, currTab) {
 
 	var cardinalityVar = getTableCardinality(fkName, data.columnHeaders);
 	switch (cardinalityVar) {
 	case "PRIMARY":
-		currTab.html(showDataTableOneToOne(fkName, data));
+		currTab.html(showDataTableOneToOne(fkName, data, url));
 		break;
 	case "FOREIGN":
 		var oneToManyOuter = '<div id="dt_example"><div id=StretchyReportOutput></div></div>';
 		currTab.html(oneToManyOuter);
-		showDataTableOneToMany(fkName, data);
+		showDataTableOneToMany(fkName, data, url);
 		break;
 	default:
 		currTab.html(cardinalityVar);
@@ -134,16 +133,21 @@ function showDataTableDisplay(fkName, data, currTab) {
 }
 
 
-function showDataTableOneToOne(fkName, data) {
+function showDataTableOneToOne(fkName, data, url) {
 
 		var dataLength = data.data.length;
 
-		if (dataLength == 0) return doI18N("No.Data.Found");
+		if (dataLength == 0)
+		{
+			var noDataHtml = doI18N("No.Data.Found") + '<br>';
+			noDataHtml += '<button onclick="alert(' + "'" + url + "'" + ');">' + doI18N("Datatables.Add") + '</button>';
+
+			return noDataHtml ;
+		}
 
 
 
 		var extraDataViewVar = '<table width="100%"><tr>';
-
 		var colsPerRow = 2;
 		var colsPerRowCount = 0;
 		var labelClassStr = "";
@@ -197,7 +201,9 @@ function showDataTableOneToOne(fkName, data) {
 						+ valueClassStr + '>' + colVal + '</span></td>';
 			}
 		}
-		extraDataViewVar += '</tr></table>';
+		extraDataViewVar += '</tr></table><br>';
+		extraDataViewVar += '<button onclick="alert(' + "'" + url + "'" + ');">' + doI18N("Datatables.Edit") + '</button>';
+		extraDataViewVar += '<button onclick="alert(' + "'" + url + "'" + ');">' + doI18N("Datatables.Delete") + '</button>';
 
 		return extraDataViewVar;
 }
@@ -321,16 +327,34 @@ dataTableDef = {
 }
 
 
-function showDataTableOneToMany(fkName, data) {
+function showDataTableOneToMany(fkName, data, url) {
 
 	var tableColumns = getTableColumns(fkName, data);
 	var tableData = getTableData(fkName, data, tableColumns);
-	
+
+	var editDeleteButtons = true;
+	var idColIndex = -1
+	for (var i in data.columnHeaders)
+	{
+		if (data.columnHeaders[i].isColumnPrimaryKey == true) idColIndex = i;
+	}
+
+	tableColumns.unshift({ "sTitle": "",
+					"sType": "",
+					"sClass": "",
+					"dbColType": ""
+					});
+	for (var i in data.data)
+	{
+		var buttonFunctions = '<button onclick="alert(' + "'" + url + "/" + data.data[i].row[idColIndex] + "'" + ');">' + doI18N("Datatables.Edit") + '</button>';
+		buttonFunctions += '<button onclick="alert(' + "'" + url  + "/" + data.data[i].row[idColIndex] + "'" + ');">' + doI18N("Datatables.Delete") + '</button>';
+		tableData[i].unshift(buttonFunctions);
+	}
 	dataTableDef.aaData = tableData;
 	dataTableDef.aoColumns= tableColumns;
 	dataTableDef.aaSorting = [];	
 
-	showTableReport(fkName, data.columnHeaders);							
+	showTableReport(fkName, data.columnHeaders, url, editDeleteButtons);							
 }
 
 function getTableColumns(fkName, data) {
@@ -414,20 +438,27 @@ function getTableData(fkName, data, tableColumns) {
 	return tableData;
 }
 
-function showTableReport(fkName, origTableColumns) {
-	//isNewTable = true;
-	$('#StretchyReportOutput').html( '<table cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable" width=100%></table>' );
+function showTableReport(fkName, origTableColumns, url, editDeleteButtons) {
+
+	var adjustTableColumnIndex = 0;
+	//if edit/delete functionality added in column 1 
+	if (editDeleteButtons == true) adjustTableColumnIndex = 1;
+
+	var htmlVar = '<button onclick="alert(' + "'" + url + "'" + ');">' + doI18N("Datatables.Add") + '</button><br>';
+	htmlVar += '<table cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable" width=100%></table>';
+
+	$('#StretchyReportOutput').html(htmlVar);
 	oTable = $('#RshowTable').dataTable(dataTableDef);	
 	oSettings = oTable.fnSettings();
 
 	for (var i in origTableColumns)
 	{
-	  	if ((origTableColumns[i].isColumnPrimaryKey == true) || (origTableColumns[i].columnName == fkName)) oTable.fnSetColumnVis( i, false );
+	  	if ((origTableColumns[i].isColumnPrimaryKey == true) || (origTableColumns[i].columnName == fkName))
+		{
+			oTable.fnSetColumnVis( (parseInt(i) + adjustTableColumnIndex) , false );
+		}
 	}
 
-
-	//showMsg("1st recs displayed is: " + fnRecordsDisplay());
-	//applyFilterRules();
 }
 
 function convertCRtoBR(str) {
