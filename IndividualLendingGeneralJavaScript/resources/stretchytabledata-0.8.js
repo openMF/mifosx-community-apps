@@ -597,7 +597,7 @@ function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
 			});
 
 			var form_data = JSON.stringify($('#entityform').serializeObject());
-
+/*
 			updatedData = $('#entityform').serializeObject();
 			var j;
 			for (i in updatedData)
@@ -606,7 +606,7 @@ function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
 				currentTableDataInfo.data.data[updateRowIndex].row[j] = updatedData[i];
 			}
 	        	showDataTableDisplay();
-
+*/
 
 			var successFunction = function(data, textStatus, jqXHR) {
 						alert("successful save");
@@ -695,7 +695,83 @@ $.fn.serializeObject = function() {
 	return o;
 };
 
+	
+//Error functions		
+function removeErrors(placeholderDiv) {
+		// remove error class from all input fields
+		var $inputs = $('#entityform :input');
+		
+	    $inputs.each(function() {
+	        $(this).removeClass("ui-state-error");
+	    });
+		
+	  	$(placeholderDiv).html("");
+}
 
+function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeholderDiv) {
+
+alert("here"); 
+
+	  	if (jqXHR.status === 0) {
+		    alert('No connection. Verify application is running.');
+	  	} else if (jqXHR.status == 401) {
+			alert('Unauthorized. [401]');
+		} else if (jqXHR.status == 404) {
+		    alert('Requested page not found. [404]');
+		} else if (jqXHR.status == 405) {
+			alert('HTTP verb not supported [405]: ' + errorThrown);
+		} else if (jqXHR.status == 500) {
+		    alert('Internal Server Error [500].');
+		} else if (errorThrown === 'parsererror') {
+		    alert('Requested JSON parse failed.');
+		} else if (errorThrown === 'timeout') {
+		    alert('Time out error.');
+		} else if (errorThrown === 'abort') {
+		    alert('Ajax request aborted.');
+		} else {
+			
+			removeErrors(placeholderDiv);
+			
+		  	var jsonErrors = JSON.parse(jqXHR.responseText);
+		  	console.log(jsonErrors);
+		  	var valErrors = jsonErrors.errors;
+		  	console.log(valErrors);
+		  	var errorArray = new Array();
+		  	var arrayIndex = 0;
+		  	$.each(valErrors, function() {
+		  	  var fieldId = '#' + this.parameterName;
+		  	  $(fieldId).addClass("ui-state-error");
+		  	  
+		  	  var errorObj = new Object();
+		  	  errorObj.field = this.parameterName;
+		  	  errorObj.code = this.userMessageGlobalisationCode;
+		  	  
+		  	  var argArray = new Array();
+		  	  var argArrayIndex = 0;
+		  	  $.each(this.args, function() {
+		  		argArray[argArrayIndex] = this.value;
+		  		argArrayIndex++;
+		  	  });
+		  	  // hardcoded support for six arguments
+		  	  errorObj.message = doI18N(this.userMessageGlobalisationCode, argArray[0], argArray[1], argArray[2], argArray[3], argArray[4], argArray[5]);
+		  	  errorObj.value = this.value;
+		  	  
+		  	  errorArray[arrayIndex] = errorObj;
+		  	  arrayIndex++
+		  	});
+		  	alert("and here");
+		  	var templateArray = new Array();
+		  	var templateErrorObj = new Object();
+		  	templateErrorObj.title = doI18N('error.msg.header');
+		  	templateErrorObj.errors = errorArray;
+		  	
+		  	templateArray[0] = templateErrorObj;
+		  	
+		  	var formErrorsHtml = $(templateSelector).render(templateArray);
+		  	
+		  	$(placeholderDiv).append(formErrorsHtml);
+		}
+}
 
 
 
