@@ -10,6 +10,13 @@
 		defaultDecimalPlaces = 4;
 		nullTitleValue = "-99999999";
 
+		saveLabel = "Save";
+		if (params.saveLabel) saveLabel = params.saveLabel;
+
+		cancelLabel = "Cancel";		
+		if (params.cancelLabel) cancelLabel = params.cancelLabel;
+
+
 		if (!(params.baseApiUrl)) {
 			alert(doI18N("Table Data Initialisation Error - baseApiUrl parameter"));
 			return;
@@ -48,8 +55,16 @@
 		displayAdditionalInfo(params);
 	};
 
-	$.stretchyTableData.showDataTable= function(tabName, datatableName, id, fkName) {
+	$.stretchyTableData.showDataTable = function(tabName, datatableName, id, fkName) {
 		showDataTable(tabName, datatableName, id, fkName);   
+	};
+
+	$.stretchyTableData.popupAddUpdateDialog = function(requestType, postOrPutUrl, updateRowIndex) {
+		popupAddUpdateDialog(requestType, postOrPutUrl, updateRowIndex);   
+	};
+
+	$.stretchyTableData.popupDeleteDialog = function(deleteUrl) {
+		popupDeleteDialog(deleteUrl);   
 	};
 
 
@@ -64,8 +79,6 @@
 			{
 				params.appendTo.tabs( "add", "no url", doI18N(params.appTableLabel));
 
-				//var currentTabIndex = $(params.appendTo).tabs('option', 'selected');
-				//var currentTabAnchor = $(params.appendTo).data('tabs').anchors[currentTabIndex];
 				var additionalDataIdName = params.appTableName + "AdditionalData";
 
 				var htmlVar = '<div id="' + additionalDataIdName + '"><ul>';
@@ -104,28 +117,31 @@ function showDataTable(tabName, datatableName, id, fkName) {
 	var url = 'datatables/' + datatableName + "/" + id;
 
 	var successFunction = function(data, status, xhr) {
-	        		var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
-	        		//currentTab.html(showDataTableDisplay(fkName, data));
+				currentTableDataInfo = {
+								fkName: fkName,
+								data: data,
+								url: url
+								};
 
-	        		showDataTableDisplay(fkName, data, url, currentTab);
-
+				var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
+	        		showDataTableDisplay(currentTab);
 		};
 
 	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
 
 }
 
-function showDataTableDisplay(fkName, data, url, currTab) {
+function showDataTableDisplay(currTab) {
 
-	var cardinalityVar = getTableCardinality(fkName, data.columnHeaders);
+	var cardinalityVar = getTableCardinality();
 	switch (cardinalityVar) {
 	case "PRIMARY":
-		currTab.html(showDataTableOneToOne(fkName, data, url));
+		currTab.html(showDataTableOneToOne());
 		break;
 	case "FOREIGN":
 		var oneToManyOuter = '<div id="dt_example"><div id=StretchyReportOutput></div></div>';
 		currTab.html(oneToManyOuter);
-		showDataTableOneToMany(fkName, data, url);
+		showDataTableOneToMany();
 		break;
 	default:
 		currTab.html(cardinalityVar);
@@ -133,18 +149,16 @@ function showDataTableDisplay(fkName, data, url, currTab) {
 }
 
 
-function showDataTableOneToOne(fkName, data, url) {
+function showDataTableOneToOne() {
 
-		var dataLength = data.data.length;
+		var dataLength = currentTableDataInfo.data.data.length;
 
 		if (dataLength == 0)
 		{
 			var noDataHtml = doI18N("No.Data.Found") + '<br>';
-			noDataHtml += '<button onclick="alert(' + "'" + url + "'" + ');">' + doI18N("Datatables.Add") + '</button>';
-
+			noDataHtml += '<button onclick="' + genAddEditPopupClick("POST", currentTableDataInfo.url) + '">' + doI18N("Datatables.Add") + '</button>';
 			return noDataHtml ;
 		}
-
 
 
 		var extraDataViewVar = '<table width="100%"><tr>';
@@ -158,28 +172,28 @@ function showDataTableOneToOne(fkName, data, url) {
 		if (tabledataParams.valueClass > "")
 			valueClassStr = ' class="' + tabledataParams.valueClass + '" ';
 
-		for ( var i in data.columnHeaders) {
-			if (!(data.columnHeaders[i].columnName == fkName)) {
+		for ( var i in currentTableDataInfo.data.columnHeaders) {
+			if (!(currentTableDataInfo.data.columnHeaders[i].columnName == currentTableDataInfo.fkName)) {
 				colsPerRowCount += 1;
 				if (colsPerRowCount > colsPerRow) {
 					extraDataViewVar += '</tr><tr>';
 					colsPerRowCount = 1;
 				}
 
-				colVal = data.data[0].row[i];
+				colVal = currentTableDataInfo.data.data[0].row[i];
 				if (colVal == null)
 					colVal = "";
 
 
 				if (colVal > "")
 				{
-					switch (getColumnType(data.columnHeaders[i].columnType)) {
+					switch (getColumnType(currentTableDataInfo.data.columnHeaders[i].columnType)) {
 					case "TEXT":
 						colVal = '<textarea rows="3" cols="40" readonly="readonly">' + colVal + '</textarea>';
 						break;
 					case "INTEGER":
-				 		if (data.columnHeaders[i].columnValuesNew.length > 0) {
-							colVal = getDropdownValue(colVal, data.columnHeaders[i].columnValuesNew);							
+				 		if (currentTableDataInfo.data.columnHeaders[i].columnValuesNew.length > 0) {
+							colVal = getDropdownValue(colVal, currentTableDataInfo.data.columnHeaders[i].columnValuesNew);							
 						}
 						else
 						{
@@ -196,14 +210,14 @@ function showDataTableOneToOne(fkName, data, url) {
 				}
 
 				extraDataViewVar += '<td valign="top"><span ' + labelClassStr
-						+ '>' + doI18N(data.columnHeaders[i].columnName)
+						+ '>' + doI18N(currentTableDataInfo.data.columnHeaders[i].columnName)
 						+ ':</span></td><td valign="top"><span '
 						+ valueClassStr + '>' + colVal + '</span></td>';
 			}
 		}
 		extraDataViewVar += '</tr></table><br>';
-		extraDataViewVar += '<button onclick="alert(' + "'" + url + "'" + ');">' + doI18N("Datatables.Edit") + '</button>';
-		extraDataViewVar += '<button onclick="alert(' + "'" + url + "'" + ');">' + doI18N("Datatables.Delete") + '</button>';
+		extraDataViewVar += '<button onclick="' + genAddEditPopupClick("PUT", currentTableDataInfo.url, 0) + '">' + doI18N("Datatables.Edit") + '</button>';
+		extraDataViewVar += '<button onclick="' + genDeletePopupClick(currentTableDataInfo.url) + '">' + doI18N("Datatables.Delete") + '</button>';
 
 		return extraDataViewVar;
 }
@@ -256,15 +270,15 @@ function getFKName(appTableName) {
 	return appTableName.substring(2) + "_id";
 }
 
-function getTableCardinality(fkName, columnHeaders) {	 
+function getTableCardinality() {	 
 
-	for ( var i in columnHeaders) {
-		if (columnHeaders[i].columnName == fkName) {
-			if (columnHeaders[i].isColumnPrimaryKey == true) return "PRIMARY"
+	for ( var i in currentTableDataInfo.data.columnHeaders) {
+		if (currentTableDataInfo.data.columnHeaders[i].columnName == currentTableDataInfo.fkName) {
+			if (currentTableDataInfo.data.columnHeaders[i].isColumnPrimaryKey == true) return "PRIMARY"
 			else return "FOREIGN"; 	
 		}
 	}
-	return "Column: " + fkName + " - NOT FOUND";
+	return "Column: " + currentTableDataInfo.fkName + " - NOT FOUND";
 }
 
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
@@ -327,16 +341,16 @@ dataTableDef = {
 }
 
 
-function showDataTableOneToMany(fkName, data, url) {
+function showDataTableOneToMany() {
 
-	var tableColumns = getTableColumns(fkName, data);
-	var tableData = getTableData(fkName, data, tableColumns);
+	var tableColumns = getTableColumns(currentTableDataInfo.fkName, currentTableDataInfo.data);
+	var tableData = getTableData(currentTableDataInfo.fkName, currentTableDataInfo.data, tableColumns);
 
 	var editDeleteButtons = true;
 	var idColIndex = -1
-	for (var i in data.columnHeaders)
+	for (var i in currentTableDataInfo.data.columnHeaders)
 	{
-		if (data.columnHeaders[i].isColumnPrimaryKey == true) idColIndex = i;
+		if (currentTableDataInfo.data.columnHeaders[i].isColumnPrimaryKey == true) idColIndex = i;
 	}
 
 	tableColumns.unshift({ "sTitle": "",
@@ -344,17 +358,18 @@ function showDataTableOneToMany(fkName, data, url) {
 					"sClass": "",
 					"dbColType": ""
 					});
-	for (var i in data.data)
+	for (var i in currentTableDataInfo.data.data)
 	{
-		var buttonFunctions = '<button onclick="alert(' + "'" + url + "/" + data.data[i].row[idColIndex] + "'" + ');">' + doI18N("Datatables.Edit") + '</button>';
-		buttonFunctions += '<button onclick="alert(' + "'" + url  + "/" + data.data[i].row[idColIndex] + "'" + ');">' + doI18N("Datatables.Delete") + '</button>';
+		var putUrl = currentTableDataInfo.url + "/" + currentTableDataInfo.data.data[i].row[idColIndex];
+		var buttonFunctions = '<button onclick="' + genAddEditPopupClick("PUT", putUrl, i) + '">' + doI18N("Datatables.Edit") + '</button>';
+		buttonFunctions += '<button onclick="' + genDeletePopupClick(putUrl) + '">' + doI18N("Datatables.Delete") + '</button>';
 		tableData[i].unshift(buttonFunctions);
 	}
 	dataTableDef.aaData = tableData;
 	dataTableDef.aoColumns= tableColumns;
 	dataTableDef.aaSorting = [];	
 
-	showTableReport(fkName, data.columnHeaders, url, editDeleteButtons);							
+	showTableReport(editDeleteButtons);							
 }
 
 function getTableColumns(fkName, data) {
@@ -438,22 +453,22 @@ function getTableData(fkName, data, tableColumns) {
 	return tableData;
 }
 
-function showTableReport(fkName, origTableColumns, url, editDeleteButtons) {
+function showTableReport(editDeleteButtons) {
 
 	var adjustTableColumnIndex = 0;
 	//if edit/delete functionality added in column 1 
 	if (editDeleteButtons == true) adjustTableColumnIndex = 1;
 
-	var htmlVar = '<button onclick="alert(' + "'" + url + "'" + ');">' + doI18N("Datatables.Add") + '</button><br>';
+	var htmlVar = '<button onclick="' + genAddEditPopupClick("POST", currentTableDataInfo.url) + '">' + doI18N("Datatables.Add") + '</button><br>';
 	htmlVar += '<table cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable" width=100%></table>';
 
 	$('#StretchyReportOutput').html(htmlVar);
 	oTable = $('#RshowTable').dataTable(dataTableDef);	
 	oSettings = oTable.fnSettings();
 
-	for (var i in origTableColumns)
+	for (var i in currentTableDataInfo.data.columnHeaders)
 	{
-	  	if ((origTableColumns[i].isColumnPrimaryKey == true) || (origTableColumns[i].columnName == fkName))
+	  	if ((currentTableDataInfo.data.columnHeaders[i].isColumnPrimaryKey == true) || (currentTableDataInfo.data.columnHeaders[i].columnName == currentTableDataInfo.fkName))
 		{
 			oTable.fnSetColumnVis( (parseInt(i) + adjustTableColumnIndex) , false );
 		}
@@ -464,6 +479,212 @@ function showTableReport(fkName, origTableColumns, url, editDeleteButtons) {
 function convertCRtoBR(str) {
     return str.replace(/(\r\n|[\r\n])/g, "<br />");
 }
+
+
+
+
+//Update Related Functions
+
+popupAddUpdateErrorFunction = function(jqXHR, textStatus, errorThrown) {
+		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+};
+
+function popupAddUpdateDialog(requestType, postOrPutUrl, updateRowIndex) {
+
+	dialogDiv = $("<div id='dialog-form'></div>");
+	dialogDiv.append(addUpdateBuildTemplate(requestType, updateRowIndex));
+	addUpdateOpenDialog(requestType, postOrPutUrl);
+	$('.datepickerfield').datepicker({constrainInput: true, changeMonth : true, changeYear : true, dateFormat: 'dd MM yy'});
+
+	//alert("requestType: " + requestType + "    postOrPutUrl: " + postOrPutUrl + "    updateRowIndex: " + updateRowIndex);
+}
+
+function addUpdateBuildTemplate(requestType, updateRowIndex) {
+
+	var htmlVar = '<form id="entityform">    <div id="formerrors"></div>';
+	htmlVar += '<table width="100%"><tr>';
+
+	var colsPerRow = 2;
+	var colsPerRowCount = 0;
+
+	for ( var i in currentTableDataInfo.data.columnHeaders) {
+	  	if (!((currentTableDataInfo.data.columnHeaders[i].isColumnPrimaryKey == true) || (currentTableDataInfo.data.columnHeaders[i].columnName == currentTableDataInfo.fkName)))
+		{
+			colsPerRowCount += 1;
+			if (colsPerRowCount > colsPerRow) {
+				htmlVar += '</tr><tr>';
+				colsPerRowCount = 1;
+			}
+			var colVal = "";
+			if (requestType == "PUT")
+				colVal = currentTableDataInfo.data.data[updateRowIndex].row[i];
+			htmlVar += addUpdateColDisplayHTML(currentTableDataInfo.data.columnHeaders[i], colVal);
+		}
+	}
+	htmlVar += '</tr>';
+	return htmlVar += '</table></form>';
+}
+
+function addUpdateColDisplayHTML(columnHeader, colVal) {
+
+		var displayHTML = '<td valign="top"><label>' + columnHeader.columnName
+				+ ':</label></td><td valign="top">';
+
+		var colNameUnderscore = spaceToUnderscore(columnHeader.columnName);
+		var defaultStringLength = 40;
+
+		var displayVal = "";
+		if (colVal != null) displayVal = colVal;
+
+		var colType = getColumnType(columnHeader.columnType);
+		switch (colType) {
+		case "STRING":
+			var colLength = columnHeader.columnLength;
+			if (colLength > defaultStringLength) colLength = defaultStringLength;
+			displayHTML += getTextHTML(colNameUnderscore, displayVal, colLength);
+			break;
+		case "INTEGER":
+			if (displayVal > "") displayVal = globalNumber(parseInt(displayVal));
+			displayHTML += getTextHTML(colNameUnderscore, displayVal, 20);
+			break;
+		case "DATE":
+			if (displayVal > "") displayVal = globalDateAsISOString(displayVal);
+			displayHTML += getDateHTML(colNameUnderscore, displayVal, 20);
+			break;
+		case "DECIMAL":
+			if (displayVal > "") displayVal = globalDecimal(parseFloat(displayVal), defaultDecimalPlaces);
+			displayHTML += getTextHTML(colNameUnderscore, displayVal, 20);
+			break;
+		case "TEXT":
+			displayHTML += '<textarea id="' + colNameUnderscore + '" name="'
+					+ colNameUnderscore + '" rows="4" cols="40">' + displayVal 
+					+ '</textarea>';
+			break;
+		default:
+			displayHTML += "'" + colType + "'";
+
+		}
+
+		displayHTML += '</td>';
+		return displayHTML;
+}
+
+function spaceToUnderscore(str) {
+	return str.replace(/ /g, "_")
+}
+
+function getDateHTML(colName, colVal, textSize) {
+	return '<input id="' + colName + '" name="' + colName+ '" size="' + textSize + '" class="datepickerfield" ' + setValueAttr(colVal) + ' type="text"/>';
+}
+
+function getTextHTML(colName, colVal, textSize) {
+	return '<input id="' + colName + '" name="' + colName+ '" size="' + textSize + '" ' + setValueAttr(colVal) + ' type="text"/>';
+}
+
+function setValueAttr(str) {
+	if (str > "") return 'value="' + str.replace(/"/g, "&quot;") + '"';
+	return "";
+}
+
+function addUpdateOpenDialog(requestType, saveUrl) {
+
+		var saveButton = saveLabel;
+		var cancelButton = cancelLabel;
+
+		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			$('.multiSelectedItems option').each(function(i) {
+				$(this).attr("selected", "selected");
+			});
+
+			var form_data = JSON.stringify($('#entityform').serializeObject());
+
+			var successFunction = function(data, textStatus, jqXHR) {
+						alert("successful save");
+						$(this).dialog("close");
+
+						//dialogDiv.dialog("close");
+					/*viewExtraData(currentEditPopup.baseUrl, basicAuthKey, 
+							currentEditPopup.datasetType,
+							currentEditPopup.datasetName,
+							currentEditPopup.datasetPKValue,
+							currentEditPopup.dsnDivName)*/
+					};
+
+			executeAjaxRequest(saveUrl, requestType, form_data, successFunction, popupAddUpdateErrorFunction);	
+		};
+
+		buttonsOpts[cancelButton] = function() {
+			$(this).dialog("close");
+		};
+
+		dialogDiv.dialog(
+					{
+							title : "my title", //currentEditPopup.title,
+							width : 1000,
+							height : 500,
+							modal : true,
+							buttons : buttonsOpts,
+							close : function() {
+								// if i dont do this, theres a problem with
+								// errors being appended to dialog view second
+								// time round
+								$(this).remove();
+							},
+							open : function(event, ui) {
+								$('.multiadd')
+										.click(
+												function() {
+													return !$(
+															'.multiNotSelectedItems option:selected')
+															.remove()
+															.appendTo(
+																	'#selectedItems');
+												});
+
+								$('.multiremove')
+										.click(
+												function() {
+													return !$(
+															'.multiSelectedItems option:selected')
+															.remove()
+															.appendTo(
+																	'#notSelectedItems');
+												});
+							}
+					}).dialog('open');
+}
+
+function popupDeleteDialog(deleteUrl) {
+
+	alert("deleteUrl: " + deleteUrl);
+}
+
+function genAddEditPopupClick(requestType , postOrPutUrl, updateRowIndex) {
+	return "jQuery.stretchyTableData.popupAddUpdateDialog('" + requestType + "', '" + postOrPutUrl + "', " + updateRowIndex + ");";
+}
+
+function genDeletePopupClick(deleteUrl) {
+	return "jQuery.stretchyTableData.popupDeleteDialog('" + deleteUrl + "');";
+}
+
+$.fn.serializeObject = function() {
+	var o = {};
+	var a = this.serializeArray();
+	$.each(a, function() {
+		if (o[this.name] !== undefined) {
+			if (!o[this.name].push) {
+				o[this.name] = [ o[this.name] ];
+			}
+			o[this.name].push(this.value || '');
+		} else {
+			o[this.name] = this.value || '';
+		}
+	});
+	return o;
+};
+
+
 
 
 
