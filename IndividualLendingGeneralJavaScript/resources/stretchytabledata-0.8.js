@@ -609,8 +609,9 @@ function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
 */
 
 			var successFunction = function(data, textStatus, jqXHR) {
-						alert("successful save");
-						$(this).dialog("close");
+						currentTableDataInfo.data = data;
+						dialogDiv.dialog("close");
+	        				showDataTableDisplay();
 					};
 
 			executeAjaxRequest(saveUrl, requestType, form_data, successFunction, popupAddUpdateErrorFunction);	
