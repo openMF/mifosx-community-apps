@@ -120,31 +120,30 @@ function showDataTable(tabName, datatableName, id, fkName) {
 				currentTableDataInfo = {
 								fkName: fkName,
 								data: data,
-								url: url
+								url: url,
+								currentTab: $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide")
 								};
-
-				var currentTab = $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide");
-	        		showDataTableDisplay(currentTab);
+	        		showDataTableDisplay();
 		};
 
 	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
 
 }
 
-function showDataTableDisplay(currTab) {
+function showDataTableDisplay() {
 
 	var cardinalityVar = getTableCardinality();
 	switch (cardinalityVar) {
 	case "PRIMARY":
-		currTab.html(showDataTableOneToOne());
+		currentTableDataInfo.currentTab.html(showDataTableOneToOne());
 		break;
 	case "FOREIGN":
 		var oneToManyOuter = '<div id="dt_example"><div id=StretchyReportOutput></div></div>';
-		currTab.html(oneToManyOuter);
+		currentTableDataInfo.currentTab.html(oneToManyOuter);
 		showDataTableOneToMany();
 		break;
 	default:
-		currTab.html(cardinalityVar);
+		currentTableDataInfo.currTab.html(cardinalityVar);
 	}
 }
 
@@ -493,7 +492,7 @@ function popupAddUpdateDialog(requestType, postOrPutUrl, updateRowIndex) {
 
 	dialogDiv = $("<div id='dialog-form'></div>");
 	dialogDiv.append(addUpdateBuildTemplate(requestType, updateRowIndex));
-	addUpdateOpenDialog(requestType, postOrPutUrl);
+	addUpdateOpenDialog(requestType, postOrPutUrl, updateRowIndex);
 	$('.datepickerfield').datepicker({constrainInput: true, changeMonth : true, changeYear : true, dateFormat: 'dd MM yy'});
 
 	//alert("requestType: " + requestType + "    postOrPutUrl: " + postOrPutUrl + "    updateRowIndex: " + updateRowIndex);
@@ -586,7 +585,7 @@ function setValueAttr(str) {
 	return "";
 }
 
-function addUpdateOpenDialog(requestType, saveUrl) {
+function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
 
 		var saveButton = saveLabel;
 		var cancelButton = cancelLabel;
@@ -599,16 +598,19 @@ function addUpdateOpenDialog(requestType, saveUrl) {
 
 			var form_data = JSON.stringify($('#entityform').serializeObject());
 
+			updatedData = $('#entityform').serializeObject();
+			var j;
+			for (i in updatedData)
+			{
+				j = getColumnIndex(i);
+				currentTableDataInfo.data.data[updateRowIndex].row[j] = updatedData[i];
+			}
+	        	showDataTableDisplay();
+
+
 			var successFunction = function(data, textStatus, jqXHR) {
 						alert("successful save");
 						$(this).dialog("close");
-
-						//dialogDiv.dialog("close");
-					/*viewExtraData(currentEditPopup.baseUrl, basicAuthKey, 
-							currentEditPopup.datasetType,
-							currentEditPopup.datasetName,
-							currentEditPopup.datasetPKValue,
-							currentEditPopup.dsnDivName)*/
 					};
 
 			executeAjaxRequest(saveUrl, requestType, form_data, successFunction, popupAddUpdateErrorFunction);	
@@ -653,6 +655,15 @@ function addUpdateOpenDialog(requestType, saveUrl) {
 												});
 							}
 					}).dialog('open');
+}
+
+function getColumnIndex(colName) {
+
+	for ( var ci in currentTableDataInfo.data.columnHeaders)
+			if (currentTableDataInfo.data.columnHeaders[ci].columnName == colName) return ci;
+
+	alert("Column: " + colName + " Not Found");
+	return -1;
 }
 
 function popupDeleteDialog(deleteUrl) {
