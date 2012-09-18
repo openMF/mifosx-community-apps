@@ -55,8 +55,8 @@
 		displayAdditionalInfo(params);
 	};
 
-	$.stretchyTableData.showDataTable = function(tabName, datatableName, id, fkName) {
-		showDataTable(tabName, datatableName, id, fkName);   
+	$.stretchyTableData.showDataTable = function(tabName, datatableName, id, fkName, datatableLabel) {
+		showDataTable(tabName, datatableName, id, fkName, datatableLabel);   
 	};
 
 	$.stretchyTableData.popupAddUpdateDialog = function(requestType, postOrPutUrl, updateRowIndex) {
@@ -87,7 +87,7 @@
 				{
 					htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'" 
 					htmlVar += additionalDataIdName + "', '" + data[i].registeredTableName + "'" + ', ' 
-					htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "'" + ');return false;"><span>' 
+					htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "', '" + data[i].registeredTableLabel + "'" + ');return false;"><span>' 
 					htmlVar += data[i].registeredTableLabel + '</span></a></li>';
 				}
 				htmlVar += '</ul></div>';
@@ -112,16 +112,20 @@ generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
 				};
 
 
-function showDataTable(tabName, datatableName, id, fkName) {	 
+function showDataTable(tabName, datatableName, id, fkName, datatableLabel) {	 
 
 	var url = 'datatables/' + datatableName + "/" + id;
 
 	var successFunction = function(data, status, xhr) {
 				currentTableDataInfo = {
-								fkName: fkName,
 								data: data,
+								currentTab: $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide"),
 								url: url,
-								currentTab: $("#" + tabName).children(".ui-tabs-panel").not(".ui-tabs-hide")
+								tabName: tabName,
+								datatableName: datatableName,
+								id: id,
+								fkName: fkName,
+								datatableLabel: datatableLabel
 								};
 	        		showDataTableDisplay();
 		};
@@ -143,7 +147,7 @@ function showDataTableDisplay() {
 		showDataTableOneToMany();
 		break;
 	default:
-		currentTableDataInfo.currTab.html(cardinalityVar);
+		currentTableDataInfo.currentTab.html(cardinalityVar);
 	}
 }
 
@@ -484,7 +488,7 @@ function convertCRtoBR(str) {
 
 //Update Related Functions
 
-popupAddUpdateErrorFunction = function(jqXHR, textStatus, errorThrown) {
+popupErrorFunction = function(jqXHR, textStatus, errorThrown) {
 		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
 };
 
@@ -587,17 +591,18 @@ function setValueAttr(str) {
 
 function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
 
-		var saveButton = saveLabel;
-		var cancelButton = cancelLabel;
+	var saveButton = saveLabel;
+	var cancelButton = cancelLabel;
 
-		var buttonsOpts = {};
-		buttonsOpts[saveButton] = function() {
+	var buttonsOpts = {};
+	buttonsOpts[saveButton] = function() {
 			$('.multiSelectedItems option').each(function(i) {
 				$(this).attr("selected", "selected");
 			});
 
 			var form_data = JSON.stringify($('#entityform').serializeObject());
-/*
+
+/* could update with current data rather than refetching it.  would be less multi-user but that might not matter.
 			updatedData = $('#entityform').serializeObject();
 			var j;
 			for (i in updatedData)
@@ -609,53 +614,51 @@ function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
 */
 
 			var successFunction = function(data, textStatus, jqXHR) {
-						currentTableDataInfo.data = data;
 						dialogDiv.dialog("close");
-	        				showDataTableDisplay();
+						showDataTable(currentTableDataInfo.tabName, currentTableDataInfo.datatableName, 
+										currentTableDataInfo.id, currentTableDataInfo.fkName, currentTableDataInfo.datatableLabel);
 					};
 
-			executeAjaxRequest(saveUrl, requestType, form_data, successFunction, popupAddUpdateErrorFunction);	
+			executeAjaxRequest(saveUrl, requestType, form_data, successFunction, popupErrorFunction);	
 		};
 
-		buttonsOpts[cancelButton] = function() {
-			$(this).dialog("close");
-		};
+	buttonsOpts[cancelButton] = function() {
+				$(this).dialog("close");
+			};
+	
+	var requestDisplay = "Datatables.Add";
+	if (requestType == "PUT") requestDisplay = "Datatables.Edit";
 
-		dialogDiv.dialog(
-					{
-							title : "my title", //currentEditPopup.title,
-							width : 1000,
-							height : 500,
-							modal : true,
-							buttons : buttonsOpts,
-							close : function() {
-								// if i dont do this, theres a problem with
-								// errors being appended to dialog view second
-								// time round
-								$(this).remove();
+	dialogDiv.dialog(
+			{
+				title : doI18N(requestDisplay) + ": " + doI18N(currentTableDataInfo.datatableLabel),
+				width : 1000,
+				height : 500,
+				modal : true,
+				buttons : buttonsOpts,
+				close : function() {
+							$(this).remove();
 							},
-							open : function(event, ui) {
-								$('.multiadd')
-										.click(
-												function() {
-													return !$(
-															'.multiNotSelectedItems option:selected')
-															.remove()
-															.appendTo(
-																	'#selectedItems');
-												});
+				open : function(event, ui) {
+							$('.multiadd')
+								.click(
+									function() {
+											return !$(
+												'.multiNotSelectedItems option:selected')
+												.remove()
+												.appendTo('#selectedItems');
+											});
 
-								$('.multiremove')
-										.click(
-												function() {
-													return !$(
-															'.multiSelectedItems option:selected')
-															.remove()
-															.appendTo(
-																	'#notSelectedItems');
-												});
-							}
-					}).dialog('open');
+							$('.multiremove')
+								.click(
+									function() {
+											return !$(
+												'.multiSelectedItems option:selected')
+												.remove()
+												.appendTo('#notSelectedItems');
+											});
+						}
+			}).dialog('open');
 }
 
 function getColumnIndex(colName) {
@@ -669,7 +672,35 @@ function getColumnIndex(colName) {
 
 function popupDeleteDialog(deleteUrl) {
 
-	alert("deleteUrl: " + deleteUrl);
+	var dialogDiv = $("<div id='dialog-form'><div id='formerrors'></div>" + doI18N('text.confirmation.required') + "</div>");
+		  
+	var confirmButton = doI18N('dialog.button.confirm');
+	var cancelButton = doI18N('dialog.button.cancel');
+			
+	var buttonsOpts = {};
+	buttonsOpts[confirmButton] = function() {
+				var successFunction= function(data, textStatus, jqXHR) {
+							dialogDiv.dialog("close");
+							showDataTable(currentTableDataInfo.tabName, currentTableDataInfo.datatableName, 
+										currentTableDataInfo.id, currentTableDataInfo.fkName, currentTableDataInfo.datatableLabel);
+						}
+				 
+				executeAjaxRequest(deleteUrl, 'DELETE', "", successFunction, popupErrorFunction);
+			};
+			
+	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};	  
+		  
+	dialogDiv.dialog({
+		  		title: doI18N('dialog.title.delete.confirmation.required'), 
+		  		width: 300, 
+		  		height: 150, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  				$(this).remove();
+					},
+		  		open: function (event, ui) {}
+			}).dialog('open');
 }
 
 function genAddEditPopupClick(requestType , postOrPutUrl, updateRowIndex) {
