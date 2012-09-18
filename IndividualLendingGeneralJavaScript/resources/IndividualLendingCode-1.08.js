@@ -820,21 +820,23 @@ function showILGroup(groupId){
 			$('button#modifyloanapp span').text(doI18N('dialog.button.modify'));
 			
 			// attaching charges logic
+	  		var index = data["charges"].length;
 	  		$('#addloancharges').click(function() {  
   				var chargeId = $('#chargeOptions option:selected').val();
-	  			if (chargeId && chargeId > 0){
-		  			var chargeRow = $('#notSelectedLoanCharges').find("#charge"+chargeId);
-		  			$('#chargeOptions option:selected').remove();
-		  			$('#selectedLoanCharges').append(chargeRow);
-	  			}  
+  				var addLoanChargeSuccess = function (chargeData) {
+  					index++;
+					chargeData["index"] = index;	  					
+  					var loanChargeHtml = $("#addNewLoanChargeFormTemplate").render(chargeData);
+  					$("#selectedLoanCharges").append(loanChargeHtml);
+			  		$('.removeloancharges').click(function() {  
+	  					$(this).closest('.row.charge').remove();
+	  				}); 
+  				}
+  				executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
 	  		});
 	  		$('.removeloancharges').click(function() {  
-	  			var chargeId, chargeName;
-	  			chargeId = $(this).closest('.row.charge').find('.chargeId').val();
-	  			chargeName = $(this).closest('.row.charge').find('.chargeName').text(); 	
-	  			$('#chargeOptions').append($('<option>', { value : chargeId }).text(chargeName));
-	  			$(this).closest('.row.charge').remove().appendTo('#notSelectedLoanCharges'); 
-	  		});
+	  			$(this).closest('.row.charge').remove();
+	  		}); 
 
 			// change detection
 			$('#principal').change(function() {
@@ -1007,20 +1009,22 @@ function showILGroup(groupId){
 				calculateLoanSchedule();
 				
 				// attaching charges logic
+		  		var index = data["charges"].length;
 		  		$('#addloancharges').click(function() {  
 	  				var chargeId = $('#chargeOptions option:selected').val();
-		  			if (chargeId && chargeId > 0){
-			  			var chargeRow = $('#notSelectedLoanCharges').find("#charge"+chargeId);
-			  			$('#chargeOptions option:selected').remove();
-			  			$('#selectedLoanCharges').append(chargeRow);
-		  			}  
+	  				var addLoanChargeSuccess = function (chargeData) {
+	  					index++;
+						chargeData["index"] = index;	  					
+	  					var loanChargeHtml = $("#addNewLoanChargeFormTemplate").render(chargeData);
+	  					$("#selectedLoanCharges").append(loanChargeHtml);
+				  		$('.removeloancharges').click(function() {  
+		  					$(this).closest('.row.charge').remove();
+		  				}); 
+	  				}
+	  				executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
 		  		});
 		  		$('.removeloancharges').click(function() {  
-		  			var chargeId, chargeName;
-		  			chargeId = $(this).closest('.row.charge').find('.chargeId').val();
-		  			chargeName = $(this).closest('.row.charge').find('.chargeName').text(); 	
-		  			$('#chargeOptions').append($('<option>', { value : chargeId }).text(chargeName));
-		  			$(this).closest('.row.charge').remove().appendTo('#notSelectedLoanCharges'); 
+		  			$(this).closest('.row.charge').remove();
 		  		});    
 
 				// change detection
