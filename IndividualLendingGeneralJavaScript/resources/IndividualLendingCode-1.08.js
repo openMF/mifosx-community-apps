@@ -560,10 +560,6 @@ function showILClient(clientId) {
 						var height = 225;
 												
 						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
-						
-						// want to go back to client list after deleting client - need to pass in success function so? 
-						//showILClientListing();
-						
 						e.preventDefault();
 					});
 					$('button.deleteclientbtn span').text(doI18N('dialog.button.delete.client'));
@@ -2028,6 +2024,56 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				  	}).dialog('open');
 }
 
+// used by deposit account functionality
+function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {
+var dialogDiv = $("<div id='dialog-form'></div>");
+var data = new Object();
+var formHtml = $(templateSelector).render(data);
+dialogDiv.append(formHtml);
+
+var saveButton = doI18N('dialog.button.save');
+var cancelButton = doI18N('dialog.button.cancel');
+var buttonsOpts = {};		
+buttonsOpts[saveButton] = function() {
+	$('.multiSelectedItems option').each(function(i) {  
+    	   		$(this).attr("selected", "selected");  
+    		});
+
+	if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
+
+	var newFormData = JSON.stringify($('#entityform').serializeObject());
+	//console.log(newFormData);
+
+	executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
+};
+buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+
+dialogDiv.dialog({
+  		title: doI18N(titleCode), 
+  		width: width, 
+  		height: height, 
+  		modal: true,
+  		buttons: buttonsOpts,
+  		close: function() {
+  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+  			$(this).remove();
+		},
+  		open: function (event, ui) {
+  			$('.multiadd').click(function() {  
+  			     return !$('.multiNotSelectedItems option:selected').remove().appendTo('#selectedItems');  
+  			});
+  			
+  			$('.multiremove').click(function() {  
+  				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedItems');  
+  			});
+  			
+  			$('.datepickerfield').datepicker({constrainInput: true, dateFormat: 'dd MM yy'});
+  			
+  			$("#entityform textarea").first().focus();
+  			$('#entityform input').first().focus();
+  		}
+  }).dialog('open');
+}
 
 function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction, minOffset, defaultOffset, maxOffset) {
 		var dialogDiv = $("<div id='dialog-form'></div>");
@@ -2046,8 +2092,6 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 			if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
 
 			var newFormData = JSON.stringify($('#entityform').serializeObject());
-			//console.log(newFormData);
-
 			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 		};
 		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
@@ -2087,17 +2131,10 @@ function popupConfirmationDialogAndPost(url, submitType, titleCode, width, heigh
 			
 			var buttonsOpts = {};
 			buttonsOpts[confirmButton] = function() {
-//				var saveSuccessFunction = function(data, textStatus, jqXHR) {
-//						  			dialogDiv.dialog("close");
-//									showILClient(currentClientId );
-//					  			}
-				 
 				executeAjaxRequest(url, submitType, "", saveSuccessFunction, formErrorFunction);
-
 			};
 			
 			buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
-		  
 		  
 		  dialogDiv.dialog({
 		  		title: doI18N(titleCode), 
@@ -2121,9 +2158,6 @@ function signOut(containerDivName) {
 	$("#" + containerDivName).html("");
 	alert("Close the Browser for a Complete Sign Out");
 }
-
-
-
 //utility functions
 
 highlightMissingXlations = "N";
@@ -2575,53 +2609,3 @@ function jsViewsRegisterHelpers() {
 			      }
 			}
 	};
-	
-	function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {
-		var dialogDiv = $("<div id='dialog-form'></div>");
-		var data = new Object();
-		var formHtml = $(templateSelector).render(data);
-		dialogDiv.append(formHtml);
-		
-		var saveButton = doI18N('dialog.button.save');
-		var cancelButton = doI18N('dialog.button.cancel');
-		var buttonsOpts = {};		
-		buttonsOpts[saveButton] = function() {
-			$('.multiSelectedItems option').each(function(i) {  
-		    	   		$(this).attr("selected", "selected");  
-		    		});
-
-			if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
-
-			var newFormData = JSON.stringify($('#entityform').serializeObject());
-			//console.log(newFormData);
-
-			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
-		};
-		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
-		
-		dialogDiv.dialog({
-		  		title: doI18N(titleCode), 
-		  		width: width, 
-		  		height: height, 
-		  		modal: true,
-		  		buttons: buttonsOpts,
-		  		close: function() {
-		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
-		  			$(this).remove();
-				},
-		  		open: function (event, ui) {
-		  			$('.multiadd').click(function() {  
-		  			     return !$('.multiNotSelectedItems option:selected').remove().appendTo('#selectedItems');  
-		  			});
-		  			
-		  			$('.multiremove').click(function() {  
-		  				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedItems');  
-		  			});
-		  			
-		  			$('.datepickerfield').datepicker({constrainInput: true, dateFormat: 'dd MM yy'});
-		  			
-		  			$("#entityform textarea").first().focus();
-		  			$('#entityform input').first().focus();
-		  		}
-		  }).dialog('open');
-}
