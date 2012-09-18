@@ -1122,12 +1122,12 @@ function showILGroup(groupId){
 				  		removeErrors("#formerrors");
 				  		var loanScheduleHtml = $("#newLoanScheduleTemplate").render(data);
 				  		$("#schedulearea").html(loanScheduleHtml);
-			  		};
+		};
 		
 		var errorFunction = function(jqXHR, textStatus, errorThrown) {
 						 $("#schedulearea").html("");
-						handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-					};
+						 handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+		};
 		executeAjaxRequest('loans?command=calculateLoanSchedule', "POST", newFormData, successFunction, errorFunction);	  
 	}
 
