@@ -89,56 +89,82 @@ $(document).ready(function() {
 
 <!-- portfolio templates -->
 <script id="newLoanScheduleTemplate" type="text/x-jquery-tmpl">
-<table id="repaymentschedule" class="pretty displayschedule">
-	<caption>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.repaymentschedule.caption")}}</caption>
-	<thead>
-		<tr>
-			<th>#</th>
-			<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.date")}}</th>
-			<th># Days</th>
-			<th>Disbursed</th>
-			<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.principal")}}</th>
-			<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.heading.outstanding")}}</th>
-			<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.interest")}}</th>
-			<!--
-			<th>Charges</th>
-			-->
-			<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{#each periods}}
-		<tr>
-			<td>{{=$ctx.number(period)}}</td>
-			<td>{{=$ctx.globalDate(dueDate)}}</td>
-			<td>{{=$ctx.number(daysInPeriod)}}</td>
-			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDisbursed)}}</td>
-			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDue)}}</td>
-			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalTotalBalanceOutstanding)}}</td>
-			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, interestDue)}}</td>
-			<!--
-			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, chargesDue)}}</td>
-			-->
-			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalDueForPeriod)}}</td>
-		</tr>
-		{{/each}}
-	</tbody>
-	<tfoot class="ui-widget-header">
-		<tr class="ui-widget-header">
-			<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
-			<th>&nbsp;</th>
-			<th>{{=$ctx.number(loanTermInDays)}}</th>
-			<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDisbursed)}}</th>
-			<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</th>
-			<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalOutstanding)}}</th>
-			<th>{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
-			<!--
-			<th>{{=$ctx.monetaryValue(currency, cumulativeChargesToDate)}}</th>
-			-->
-			<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
-		</tr>
-	</tfoot>
-</table>
+		<table id="repaymentschedule" class="pretty displayschedule">
+			<caption>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.repaymentschedule.caption")}}</caption>
+			<colgroup span="3"></colgroup>
+			<colgroup span="3">
+				<col class="lefthighlightcol">
+				<col>
+				<col class="righthighlightcol">
+			</colgroup>
+			<colgroup span="2">
+				<col class="lefthighlightcol">
+				<col class="righthighlightcol">
+			</colgroup>
+			<colgroup span="3"></colgroup>
+
+			<thead>
+				<tr>
+					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+					<th colspan="3" scope="colgroup" class="highlightcol">Loan Amount and Balance</th>
+					<th colspan="2" scope="colgroup" class="highlightcol">Total Cost of Loan</th>
+					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+				</tr>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.date")}}</th>
+					<th scope="col"># Days</th>
+					
+					<th scope="col" class="lefthighlightcolheader">Disbursement</th>
+					<th scope="col">Principal Repayment</th>
+					<th scope="col" class="righthighlightcolheader">Balance of Loan</th>
+
+					<th scope="col" class="lefthighlightcolheader">Interest Repayment</th>
+					<th scope="col" class="righthighlightcolheader">Charges</th>
+
+					<th scope="col">Total Repayment Due</th>
+					<th scope="col">Total Paid</th>
+					<th scope="col">Total Outstanding</th>
+				</tr>
+			</thead>
+			<tbody>
+			{{#each periods}}
+			<tr>
+				<td scope="row">{{=$ctx.number(period)}}</td>
+				<td>{{=$ctx.globalDate(dueDate)}}</td>
+				<td>{{=$ctx.number(daysInPeriod)}}</td>
+
+				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalDisbursed)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
+
+				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, chargesDue)}}</td>
+
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOutstandingForPeriod)}}</td>
+			</tr>
+			{{/each}}
+			</tbody>
+			<tfoot class="ui-widget-header">
+				<tr>
+					<th colspan="2">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
+					<th>{{=$ctx.number(loanTermInDays)}}</th>
+
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePrincipalDisbursed)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</th>
+					<th class="righthighlightcolheader">&nbsp;</th>
+
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
+					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeChargesToDate)}}</th>
+
+					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
+				</tr>
+			</tfoot>
+		</table>
 </script>
 
 <script id="newLoanFormTemplate" type="text/x-jquery-tmpl">
@@ -1518,7 +1544,9 @@ $(document).ready(function() {
 		{{#if charges}}
 		<li><a href="#charges{{=id}}" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
 		{{/if}}
+		{{#each repaymentSchedule}}
 		<li><a href="#schedule{{=id}}" title="schedule">{{=$ctx.doI18N("tab.client.account.loan.schedule")}}</a></li>
+        {{/each}}
 		{{#if loanRepayments}}
 		<li><a href="#repayments{{=id}}" title="repayments">{{=$ctx.doI18N("tab.client.account.loan.repayments")}}</a></li>
 		{{/if}}
@@ -1529,9 +1557,9 @@ $(document).ready(function() {
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.status")}}</span>
 			<span class="rowvalue">{{=$ctx.doI18N(status.code)}} ({{=$ctx.doI18N("label.client.account.loan.status.since")}} {{=$ctx.globalDate(lifeCycleStatusDate)}})
-{{#if $ctx.numberGreaterThanZero(repaymentSchedule.summary.totalInArrears)}}
+{{#if $ctx.numberGreaterThanZero(repaymentSchedule.totalInArrears)}}
 	{{#if actualDisbursementDate !== null}}
-		- {{=$ctx.doI18N("label.client.account.loan.status.arrears")}} {{=$ctx.moneyFormatted($parent.parent.data.repaymentSchedule.summary.currency, $parent.parent.data.repaymentSchedule.summary.totalInArrears)}}
+		- {{=$ctx.doI18N("label.client.account.loan.status.arrears")}} {{=$ctx.moneyFormatted($parent.parent.data.repaymentSchedule.currency, $parent.parent.data.repaymentSchedule.totalInArrears)}}
 	{{/if}}
 {{/if}}
 			</span>
@@ -1679,8 +1707,8 @@ $(document).ready(function() {
 	</div>
 	{{/if}}
 
+	{{#each repaymentSchedule}}
 	<div id="schedule{{=id}}" style="margin-top: 5px;">
-		{{#each repaymentSchedule.summary}}
 		<table id="summarytable{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.summary.caption")}}</caption>
 			<thead>
@@ -1695,113 +1723,120 @@ $(document).ready(function() {
 			<tbody>
 				<tr>
 					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.principal")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, originalPrincipal)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, principalPaid)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalPaid)}}</td>
 					<td>&nbsp;</td>
-					<td>{{=$ctx.monetaryValue(currency, principalOutstanding)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalOutstanding)}}</td>
 				</tr>
 				<tr>
 					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.interest")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, originalInterest)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, interestPaid)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, interestWaived)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, interestOutstanding)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestPaid)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWaived)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestOutstanding)}}</td>
 				</tr>
+				{{#if cumulativeChargesToDate}}
+				<tr>
+					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.charges")}}</th>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesToDate)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesPaid)}}</td>
+					<td>&nbsp;</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesOutstanding)}}</td>
+				</tr>
+				{{/if}}
 			</tbody>
-			<tfoot>
+			<tfoot class="ui-widget-header">
 				<tr>
 					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
-					<th>{{=$ctx.monetaryValue(currency, originalTotal)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalPaid)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalWaived)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalWaivedToDate)}}</th>
 					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
 				</tr>
 			</tfoot>
 		</table>
-		{{/each}}
-		
+
 		<br/>
 
-		{{#each repaymentSchedule}}
 		<table id="repaymentschedule_todate{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.repaymentschedule.caption")}}</caption>
-			<colgroup span="2"></colgroup>
+			<colgroup span="3"></colgroup>
 			<colgroup span="3">
 				<col class="lefthighlightcol">
 				<col>
 				<col class="righthighlightcol">
 			</colgroup>
-			<colgroup span="4">
+			<colgroup span="2">
 				<col class="lefthighlightcol">
-				<col>
 				<col class="righthighlightcol">
 			</colgroup>
-			<colgroup span="4">
-				<col class="lefthighlightcol">
-				<col>
-				<col class="righthighlightcol">
-			</colgroup>
+			<colgroup span="3"></colgroup>
+
 			<thead>
 				<tr>
-					<th colspan="2" scope="colgroup" class="empty">&nbsp;</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.principal")}}</th>
-					<th colspan="4" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.interest")}}</th>
-					<th colspan="4" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
+					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+					<th colspan="3" scope="colgroup" class="highlightcol">Loan Amount and Balance</th>
+					<th colspan="2" scope="colgroup" class="highlightcol">Total Cost of Loan</th>
+					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
 				</tr>
 				<tr>
 					<th scope="col">#</th>
 					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.date")}}</th>
-					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.expected")}}</th>
-					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.paid")}}</th>
-					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.heading.outstanding")}}</th>
-					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.expected")}}</th>
-					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.paid")}}</th>
-					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.summary.heading.waived")}}</th>
-					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.heading.outstanding")}}</th>
-					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.expected")}}</th>
-					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.paid")}}</th>
-					<th scope="col">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.summary.heading.waived")}}</th>
-					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.heading.outstanding")}}</th>
+					<th scope="col"># Days</th>
+					
+					<th scope="col" class="lefthighlightcolheader">Disbursement</th>
+					<th scope="col">Principal Repayment</th>
+					<th scope="col" class="righthighlightcolheader">Balance of Loan</th>
+
+					<th scope="col" class="lefthighlightcolheader">Interest Repayment</th>
+					<th scope="col" class="righthighlightcolheader">Charges</th>
+
+					<th scope="col">Total Repayment Due</th>
+					<th scope="col">Total Paid</th>
+					<th scope="col">Total Outstanding</th>
 				</tr>
 			</thead>
 			<tbody>
-			{{#each repaymentPeriods}}
+			{{#each periods}}
 			<tr>
 				<td scope="row">{{=$ctx.number(period)}}</td>
-				<td>{{=$ctx.globalDate(date)}}</td>
-				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principal)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalPaid)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalOutstanding)}}</td>
-				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interest)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, interestPaid)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, interestWaived)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOutstanding)}}</td>
-				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, total)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaid)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalWaived)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, totalOutstanding)}}</td>
+				<td>{{=$ctx.globalDate(dueDate)}}</td>
+				<td>{{=$ctx.number(daysInPeriod)}}</td>
+
+				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalDisbursed)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
+
+				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, chargesDue)}}</td>
+
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOutstandingForPeriod)}}</td>
 			</tr>
 			{{/each}}
 			</tbody>
-			<tfoot>
+			<tfoot class="ui-widget-header">
 				<tr>
 					<th colspan="2">{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(summary.currency, summary.originalPrincipal)}}</th>
-					<th>{{=$ctx.monetaryValue(summary.currency, summary.principalPaid)}}</th>
-					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(summary.currency, summary.principalOutstanding)}}</th>
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(summary.currency, summary.originalInterest)}}</th>
-					<th>{{=$ctx.monetaryValue(summary.currency, summary.interestPaid)}}</th>
-					<th>{{=$ctx.monetaryValue(summary.currency, summary.interestWaived)}}</th>
-					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(summary.currency, summary.interestOutstanding)}}</th>
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(summary.currency, summary.originalTotal)}}</th>
-					<th>{{=$ctx.monetaryValue(summary.currency, summary.totalPaid)}}</th>
-					<th>{{=$ctx.monetaryValue(summary.currency, summary.totalWaived)}}</th>
-					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(summary.currency, summary.totalOutstanding)}}</th>
+					<th>{{=$ctx.number(loanTermInDays)}}</th>
+
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePrincipalDisbursed)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</th>
+					<th class="righthighlightcolheader">&nbsp;</th>
+
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
+					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeChargesToDate)}}</th>
+
+					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
 				</tr>
 			</tfoot>
 		</table>
-		{{/each}}
 	</div>
+	{{/each}}
+
     {{#if loanRepayments}}
 	<!-- Third loan tab -->
 	<div id="repayments{{=id}}" style="margin-top: 5px;">
