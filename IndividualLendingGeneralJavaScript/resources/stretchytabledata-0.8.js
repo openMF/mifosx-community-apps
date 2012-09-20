@@ -164,7 +164,7 @@ function showDataTableOneToOne() {
 		}
 
 
-		var extraDataViewVar = '<table width="100%"><tr>';
+		var htmlVar = '<table width="100%"><tr>';
 		var colsPerRow = 2;
 		var colsPerRowCount = 0;
 		var labelClassStr = "";
@@ -179,7 +179,7 @@ function showDataTableOneToOne() {
 			if (!(currentTableDataInfo.data.columnHeaders[i].columnName == currentTableDataInfo.fkName)) {
 				colsPerRowCount += 1;
 				if (colsPerRowCount > colsPerRow) {
-					extraDataViewVar += '</tr><tr>';
+					htmlVar += '</tr><tr>';
 					colsPerRowCount = 1;
 				}
 
@@ -190,18 +190,13 @@ function showDataTableOneToOne() {
 
 				if (colVal > "")
 				{
-					switch (getColumnType(currentTableDataInfo.data.columnHeaders[i].columnType)) {
+					switch (getColumnType(currentTableDataInfo.data.columnHeaders[i])) 
+					{
 					case "TEXT":
 						colVal = '<textarea rows="3" cols="40" readonly="readonly">' + colVal + '</textarea>';
 						break;
 					case "INTEGER":
-				 		if (currentTableDataInfo.data.columnHeaders[i].columnValuesNew.length > 0) {
-							colVal = getDropdownValue(colVal, currentTableDataInfo.data.columnHeaders[i].columnValuesNew);							
-						}
-						else
-						{
-							colVal = globalNumber(parseInt(colVal));
-						}
+						colVal = globalNumber(parseInt(colVal));
 						break;
 					case "DATE":
 						colVal = globalDateAsISOString(colVal);
@@ -209,20 +204,23 @@ function showDataTableOneToOne() {
 					case "DECIMAL":
 						colVal = globalDecimal(parseFloat(colVal), defaultDecimalPlaces);
 						break;
+					case "CODELOOKUP":
+						colVal = getDropdownValue(colVal, currentTableDataInfo.data.columnHeaders[i].columnValuesNew);			
+						break;
 					}
 				}
 
-				extraDataViewVar += '<td valign="top"><span ' + labelClassStr
+				htmlVar += '<td valign="top"><span ' + labelClassStr
 						+ '>' + doI18N(currentTableDataInfo.data.columnHeaders[i].columnName)
 						+ ':</span></td><td valign="top"><span '
 						+ valueClassStr + '>' + colVal + '</span></td>';
 			}
 		}
-		extraDataViewVar += '</tr></table><br>';
-		extraDataViewVar += '<button onclick="' + genAddEditPopupClick("PUT", currentTableDataInfo.url, 0) + '">' + doI18N("Datatables.Edit") + '</button>';
-		extraDataViewVar += '<button onclick="' + genDeletePopupClick(currentTableDataInfo.url) + '">' + doI18N("Datatables.Delete") + '</button>';
+		htmlVar += '</tr></table><br>';
+		htmlVar += '<button onclick="' + genAddEditPopupClick("PUT", currentTableDataInfo.url, 0) + '">' + doI18N("Datatables.Edit") + '</button>';
+		htmlVar += '<button onclick="' + genDeletePopupClick(currentTableDataInfo.url) + '">' + doI18N("Datatables.Delete") + '</button>';
 
-		return extraDataViewVar;
+		return htmlVar;
 }
 
 
@@ -236,36 +234,53 @@ function getDropdownValue(inColVal, columnValues) {
 	return "Err";
 }
 
-function getColumnType(inColType) {	 
+function getColumnType(inCol) {	 
 
-		switch (inColType) {
+	var colType;
+
+		switch (inCol.columnType) {
 		case "bigint":
-			return "INTEGER";
+			colType = "INTEGER";
+			break;
 		case "bit":
-			return "STRING";
+			colType = "STRING";
+			break;
 		case "date":
-			return "DATE";
+			colType = "DATE";
+			break;
 		//case "datetime":
-		//	return "STRING";
+		//	colType = "STRING";
+		//	break;
 		case "decimal":
-			return "DECIMAL";
+			colType = "DECIMAL";
+			break;
 		case "double":
-			return "DECIMAL";
+			colType = "DECIMAL";
+			break;
 		case "int":
-			return "INTEGER";
+			colType = "INTEGER";
+			break;
 		case "mediumtext":
-			return "TEXT";
+			colType = "TEXT";
+			break;
 		case "smallint":
-			return "INTEGER";
+			colType = "INTEGER";
+			break;
 		case "text":
-			return "TEXT";
+			colType = "TEXT";
+			break;
 		case "tinyint":
-			return "INTEGER";
+			colType = "INTEGER";
+			break;
 		case "varchar":
-			return "STRING";
+			colType = "STRING";
+			break;
 		default:
 			return "Column Type: " + inColType + " - Not Catered For";
 		}
+
+	if (colType == "INTEGER" && (inCol.columnValuesNew.length > 0)) colType = "CODELOOKUP";
+	return colType;
 
 }
 
@@ -382,14 +397,12 @@ function getTableColumns(fkName, data) {
 	var tmpSClass = "";
 	for (var i in data.columnHeaders)
 	{
-		var tmpSClass = "";
-		var colType = getColumnType(data.columnHeaders[i].columnType);
-
-		
+		var colType = getColumnType(data.columnHeaders[i]);
 		switch(colType)
 		{
 			case "STRING":
   				tmpSType = 'string';
+				tmpSClass = "";
   				break;
 			case "DECIMAL":
   				tmpSType = 'title-numeric';
@@ -401,12 +414,17 @@ function getTableColumns(fkName, data) {
   				break;
 			case "DATE":
   				tmpSType = 'title-string';
+				tmpSClass = "";
+  				break;
+			case "CODELOOKUP":
+  				tmpSType = 'string';
+				tmpSClass = "";
   				break;
 			default:
   				tmpSType = 'string';
+				tmpSClass = "";
 		}
 		tableColumns.push({ "sTitle": doI18N(data.columnHeaders[i].columnName), 
-					//"sOriginalHeading": data.columnHeaders[i].columnName,
 					"sType": tmpSType,
 					"sClass": tmpSClass,
 					"dbColType": colType
@@ -434,15 +452,18 @@ function getTableData(fkName, data, tableColumns) {
 				else tmpVal = '<span title="' + tmpVal + '"></span>' + globalDateAsISOString(tmpVal);
 			case "string":
 				if (tmpVal == null) tmpVal = ""
-				else tmpVal = convertCRtoBR(tmpVal);
+				else 
+				{
+					if (tableColumns[j].dbColType == "CODELOOKUP") tmpVal = getDropdownValue(tmpVal, data.columnHeaders[j].columnValuesNew)					
+					tmpVal = convertCRtoBR(tmpVal);
+				}
   				break;
 			case "title-numeric":
 				if (tmpVal == null) tmpVal = '<span title="' + nullTitleValue  + '"></span>' + "";
 				else
 				{
-					if (tableColumns[j].dbColType == "INTEGER") convNum = globalNumber(parseInt(tmpVal))
+					if (tableColumns[j].dbColType == "INTEGER") convNum = globalNumber(parseInt(tmpVal));
 					else convNum = globalDecimal(parseFloat(tmpVal), defaultDecimalPlaces);
-
 					tmpVal = '<span title="' + tmpVal + '"></span>' + convNum;
 				}
   				break;
@@ -539,7 +560,7 @@ function addUpdateColDisplayHTML(columnHeader, colVal) {
 		var displayVal = "";
 		if (colVal != null) displayVal = colVal;
 
-		var colType = getColumnType(columnHeader.columnType);
+		var colType = getColumnType(columnHeader);
 		switch (colType) {
 		case "STRING":
 			var colLength = columnHeader.columnLength;
@@ -742,7 +763,7 @@ function removeErrors(placeholderDiv) {
 
 function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeholderDiv) {
 
-alert("here"); 
+alert("textStatus: " + textStatus + "     errorThrown: " + errorThrown);
 
 	  	if (jqXHR.status === 0) {
 		    alert('No connection. Verify application is running.');
