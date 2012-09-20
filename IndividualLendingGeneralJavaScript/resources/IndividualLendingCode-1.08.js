@@ -817,23 +817,48 @@ function showILGroup(groupId){
 			
 			// attaching charges logic
 	  		var index = data["charges"].length;
-	  		$('#addloancharges').click(function() {  
+	  		$('#addloancharges').click(function(e) { 
+	  			
   				var chargeId = $('#chargeOptions option:selected').val();
+  				chargeId = chargeId.replace("-1", "");
+  				
   				var addLoanChargeSuccess = function (chargeData) {
   					index++;
 					chargeData["index"] = index;	  					
   					var loanChargeHtml = $("#addNewLoanChargeFormTemplate").render(chargeData);
+  					
   					$("#selectedLoanCharges").append(loanChargeHtml);
-			  		$('.removeloancharges').click(function() {  
+			  		
+  					$('.removeloancharges').click(function(e) {  
 	  					$(this).closest('.row.charge').remove();
-	  				}); 
+	  					calculateLoanSchedule();
+	  					e.preventDefault();
+	  				});
+  					
+  					$('.chargeAmount').change(function() {  
+  			  			calculateLoanSchedule();
+  			  		});
+			  		
+			  		calculateLoanSchedule();
   				}
-  				executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
+  				
+  				if (chargeId) {
+  					executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
+  				}
+  				
+  				e.preventDefault();
 	  		});
-	  		$('.removeloancharges').click(function() {  
+	  		
+	  		$('.removeloancharges').click(function(e) {  
 	  			$(this).closest('.row.charge').remove();
-	  		}); 
-
+	  			calculateLoanSchedule();
+	  			e.preventDefault();
+	  		});
+	  		
+	  		$('.chargeAmount').change(function() {  
+	  			calculateLoanSchedule();
+	  		});
+	  		
 			// change detection
 			$('#principal').change(function() {
 				calculateLoanSchedule();
@@ -1001,28 +1026,52 @@ function showILGroup(groupId){
 				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
 				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
 				
-//				calculateAnnualPercentageRate();
 				calculateLoanSchedule();
 				
 				// attaching charges logic
 		  		var index = data["charges"].length;
-		  		$('#addloancharges').click(function() {  
+		  		$('#addloancharges').click(function(e) { 
+		  			
 	  				var chargeId = $('#chargeOptions option:selected').val();
+	  				chargeId = chargeId.replace("-1", "");
+	  				
 	  				var addLoanChargeSuccess = function (chargeData) {
 	  					index++;
 						chargeData["index"] = index;	  					
 	  					var loanChargeHtml = $("#addNewLoanChargeFormTemplate").render(chargeData);
+	  					
 	  					$("#selectedLoanCharges").append(loanChargeHtml);
-				  		$('.removeloancharges').click(function() {  
+				  		
+	  					$('.removeloancharges').click(function(e) {  
 		  					$(this).closest('.row.charge').remove();
-		  				}); 
+		  					calculateLoanSchedule();
+		  					e.preventDefault();
+		  				});
+	  					
+	  					$('.chargeAmount').change(function() {  
+	  			  			calculateLoanSchedule();
+	  			  		});
+				  		
+				  		calculateLoanSchedule();
 	  				}
-	  				executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
+	  				
+	  				if (chargeId) {
+	  					executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
+	  				}
+	  				
+	  				e.preventDefault();
 		  		});
-		  		$('.removeloancharges').click(function() {  
+		  		
+		  		$('.removeloancharges').click(function(e) {  
 		  			$(this).closest('.row.charge').remove();
-		  		});    
-
+		  			calculateLoanSchedule();
+		  			e.preventDefault();
+		  		});
+		  		
+		  		$('.chargeAmount').change(function() {  
+		  			calculateLoanSchedule();
+		  		});
+		  		
 				// change detection
 				$('#principal').change(function() {
 					calculateLoanSchedule();
@@ -1053,11 +1102,10 @@ function showILGroup(groupId){
 				});
 				
 				$('#interestRatePerPeriod').change(function() {
-//					calculateAnnualPercentageRate();
 					calculateLoanSchedule();
 				});
+				
 				$('#interestRateFrequencyType').change(function() {
-//					calculateAnnualPercentageRate();
 					calculateLoanSchedule();
 				});
 				$('#amortizationType').change(function() {

@@ -430,9 +430,9 @@ $(document).ready(function() {
 							{{#if id}}
 							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class ="id" title="" type="hidden" value="{{=id}}" />
 							{{/if}}
-							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class ="chargeId" title="" type="hidden" value="{{=chargeId}}" />
+							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=chargeId}}" />
 							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
 							</span>
 							<span class="rowvalue">
 								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px">
@@ -473,9 +473,9 @@ $(document).ready(function() {
 <script id="addNewLoanChargeFormTemplate" type="text/x-jquery-tmpl">
 <div class="row charge">
 	<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
-	<input id="charges[{{=index}}][chargeId]" name="charges[{{=index}}][chargeId]" class ="chargeId" title="" type="hidden" value="{{=id}}" />
+	<input id="charges[{{=index}}][chargeId]" name="charges[{{=index}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=id}}" />
 	<span class="rowvalue">
-		<input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+		<input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
 	</span>
 	<span class="rowvalue">
 		<select id="charges[{{=index}}][chargeCalculationType]" name="charges[{{=index}}][chargeCalculationType]" title="" style="width: 180px">
