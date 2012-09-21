@@ -505,6 +505,59 @@ $(document).ready(function() {
 </div>
 </script>
 
+<!-- Template rendered when attaching new charge to loan through popup (along with loanChargeDetailsPartialFormTemplate) -->
+<script id="loanChargeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<div>
+			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
+			<label for="chargeOptions">{{=$ctx.doI18N("form.label.loan.charge.dropdown")}}</label>
+			<select id="chargeOptions" name="chargeId">
+				<option value="-1">{{=$ctx.doI18N("form.option.charge.dropdown.first.choice")}}</option>
+				{{#each chargeOptions}}
+					{{#if $ctx.number($parent.parent.data.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}, {{=currency.displaySymbol}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=name}}, {{=currency.displaySymbol}}</option>
+					{{/if}}
+				{{/each}}
+			</select>
+			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+		</div>
+		<div id="loanChargeDetails">
+			{{each $parent.data tmpl="#loanChargeDetailsPartialFormTemplate"}}
+		</div>
+	</fieldset>
+</form>
+</script>
+
+<script id="loanChargeDetailsPartialFormTemplate" type="text/x-jquery-tmpl">
+<label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
+<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+<label for="chargeCalculationType">{{=$ctx.doI18N("form.label.charge.calculation.type")}}</label>
+<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 180px">
+	{{#each chargeCalculationTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+</select>
+<label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
+<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 180px">
+	{{#each chargeTimeTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+</select>
+</script> 
+
 <script id="newLoanFormTemplateMin" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -789,7 +842,7 @@ $(document).ready(function() {
 							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class ="id" title="" type="hidden" value="{{=id}}" />
 							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class ="chargeId" title="" type="hidden" value="{{=chargeId}}" />
 							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
 							</span>
 							<span class="rowvalue">
 								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px">
@@ -1495,6 +1548,8 @@ $(document).ready(function() {
 <div id="loanactions">
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
 
+		<button id="addloanchargebtn{{=$parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
+
 		{{#if rejectAllowed}}
 		<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectloan">Reject</button>
 		{{/if}}
@@ -1699,7 +1754,7 @@ $(document).ready(function() {
 					<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
 					<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
 					<td>????</td>
-					<td>Remove/Waive/Pay</td>
+					<td><a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Remove</a>/Waive/Pay</td>
 				</tr>
 				{{/each}}
 			</tbody>

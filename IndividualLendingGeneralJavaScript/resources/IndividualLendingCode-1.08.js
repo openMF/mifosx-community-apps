@@ -816,9 +816,11 @@ function showILGroup(groupId){
 			$('button#modifyloanapp span').text(doI18N('dialog.button.modify'));
 			
 			// attaching charges logic
-	  		var index = data["charges"].length;
-	  		$('#addloancharges').click(function(e) { 
-	  			
+			var index = 0;
+			if (data["charges"]) {
+				index = data["charges"].length;
+			}
+	  		$('#addloancharges').click(function() {  
   				var chargeId = $('#chargeOptions option:selected').val();
   				chargeId = chargeId.replace("-1", "");
   				
@@ -930,6 +932,18 @@ function showILGroup(groupId){
   		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	  
 	}
 	
+	function removeLoanCharge(loanId, loanChargeId){
+
+		var successFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			loadILLoan(loanId);
+		};
+
+		popupConfirmationDialogAndPost('loans/' + loanId +'/charges/' + loanChargeId, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
+
+		return false;
+	}
+
 	function genAddLoanSuccessVar(clientId) {
 
 		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
@@ -1544,7 +1558,24 @@ function loadILLoan(loanId) {
 					    e.preventDefault();
 				});
 				$('button.adjustloanrepayment span').text(doI18N('dialog.button.adjust.loan.repayment'));
-					
+				
+				$('.addloancharge').button().click(function(e){
+
+						var linkId = this.id;
+						var loanId = linkId.replace("addloanchargebtn", "");
+						var postUrl = 'loans/' + loanId + '/charges';
+						var getUrl = 'loans/' + loanId + '/charges/template';
+
+						var templateSelector = "#loanChargeFormTemplate";
+						var width = 450; 
+						var height = 300;
+
+						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.button.add.loan.charge", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
+					    e.preventDefault();
+				});
+				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
+
 				// additional data
 				var additionalFieldsParams = {
 							url: baseApiUrl,
@@ -2021,6 +2052,17 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				  			$(this).remove();
 						},
 				  		open: function (event, ui) {
+
+				  			//attaching charges to loan from popup
+				  			$('#chargeOptions').change(function(e) {
+								if ($(this).val() > 0){
+									var selectChargeForLoanSuccess = function(chargeData, textStatus, jqXHR){
+										var partialFormHtml = $("#loanChargeDetailsPartialFormTemplate").render(chargeData);
+										$("#loanChargeDetails").html(partialFormHtml);
+									}
+									executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForLoanSuccess, formErrorFunction);    	
+								}
+					    	})
 
 					  		$('#addclientmembers').click(function() {  
 					  			return !$('#notSelectedClients option:selected').remove().appendTo('#clientMembers');  
