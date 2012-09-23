@@ -190,10 +190,12 @@ function showDataTableOneToOne() {
 
 				if (colVal > "")
 				{
-					switch (getColumnType(currentTableDataInfo.data.columnHeaders[i])) 
+					colType = currentTableDataInfo.data.columnHeaders[i].columnDisplayTypeNew;
+					switch (colType) 
 					{
-					case "TEXT":
-						colVal = '<textarea rows="3" cols="40" readonly="readonly">' + colVal + '</textarea>';
+					case "STRING":
+						break;
+					case "CODEVALUE":
 						break;
 					case "INTEGER":
 						colVal = globalNumber(parseInt(colVal));
@@ -207,6 +209,12 @@ function showDataTableOneToOne() {
 					case "CODELOOKUP":
 						colVal = getDropdownValue(colVal, currentTableDataInfo.data.columnHeaders[i].columnValuesNew);			
 						break;
+					case "TEXT":
+						colVal = '<textarea rows="3" cols="40" readonly="readonly">' + colVal + '</textarea>';
+						break;
+					default:
+						invalidColumnTypeMessage(data.columnHeaders[i].columnName, colType);
+						return "";
 					}
 				}
 
@@ -233,56 +241,6 @@ function getDropdownValue(inColVal, columnValues) {
 		if (inColVal == columnValues[i].id) return columnValues[i].value;
 	}
 	return "Err";
-}
-
-function getColumnType(inCol) {	 
-
-	var colType;
-
-		switch (inCol.columnType) {
-		case "bigint":
-			colType = "INTEGER";
-			break;
-		case "bit":
-			colType = "STRING";
-			break;
-		case "date":
-			colType = "DATE";
-			break;
-		//case "datetime":
-		//	colType = "STRING";
-		//	break;
-		case "decimal":
-			colType = "DECIMAL";
-			break;
-		case "double":
-			colType = "DECIMAL";
-			break;
-		case "int":
-			colType = "INTEGER";
-			break;
-		case "mediumtext":
-			colType = "TEXT";
-			break;
-		case "smallint":
-			colType = "INTEGER";
-			break;
-		case "text":
-			colType = "TEXT";
-			break;
-		case "tinyint":
-			colType = "INTEGER";
-			break;
-		case "varchar":
-			colType = "STRING";
-			break;
-		default:
-			return "Column Type: " + inColType + " - Not Catered For";
-		}
-
-	if (colType == "INTEGER" && (inCol.columnValuesNew.length > 0)) colType = "CODELOOKUP";
-	return colType;
-
 }
 
 function getFKName(appTableName) {	 
@@ -398,32 +356,33 @@ function getTableColumns(fkName, data) {
 	var tmpSClass = "";
 	for (var i in data.columnHeaders)
 	{
-		var colType = getColumnType(data.columnHeaders[i]);
+  		tmpSType = 'string';
+		tmpSClass = "";
+		var colType = data.columnHeaders[i].columnDisplayTypeNew;
 		switch(colType)
 		{
 			case "STRING":
-  				tmpSType = 'string';
-				tmpSClass = "";
   				break;
-			case "DECIMAL":
-  				tmpSType = 'title-numeric';
-				tmpSClass = "rptAlignRight";
-				break;
 			case "INTEGER":
   				tmpSType = 'title-numeric';
 				tmpSClass = "rptAlignRight";
   				break;
 			case "DATE":
   				tmpSType = 'title-string';
-				tmpSClass = "";
   				break;
+			case "DECIMAL":
+  				tmpSType = 'title-numeric';
+				tmpSClass = "rptAlignRight";
+				break;
 			case "CODELOOKUP":
-  				tmpSType = 'string';
-				tmpSClass = "";
+  				break;
+			case "CODEVALUE":
+  				break;
+			case "TEXT":
   				break;
 			default:
-  				tmpSType = 'string';
-				tmpSClass = "";
+				invalidColumnTypeMessage(data.columnHeaders[i].columnName, colType);
+				return "";
 		}
 		tableColumns.push({ "sTitle": doI18N(data.columnHeaders[i].columnName), 
 					"sType": tmpSType,
@@ -566,15 +525,13 @@ function addUpdateColDisplayHTML(columnHeader, colVal) {
 		var displayVal = "";
 		if (colVal != null) displayVal = colVal;
 
-		var colType = getColumnType(columnHeader);
+		var colLength = columnHeader.columnLength;
+		if (colLength > defaultStringLength) colLength = defaultStringLength;
+
+		var colType = columnHeader.columnDisplayTypeNew;
 		switch (colType) {
 		case "STRING":
-			var colLength = columnHeader.columnLength;
-			if (colLength > defaultStringLength) colLength = defaultStringLength;
-			
-			if (columnHeader.columnValuesNew.length > 0)
-				displayHTML += getSelectHTMLValue(colNameUnderscore, columnHeader.columnValuesNew, colVal);	
-			else displayHTML += getTextHTML(colNameUnderscore, displayVal, colLength);
+			displayHTML += getTextHTML(colNameUnderscore, displayVal, colLength);
 			break;
 		case "INTEGER":
 			if (displayVal > "") displayVal = globalNumber(parseInt(displayVal));
@@ -588,18 +545,20 @@ function addUpdateColDisplayHTML(columnHeader, colVal) {
 			if (displayVal > "") displayVal = globalDecimal(parseFloat(displayVal), defaultDecimalPlaces);
 			displayHTML += getTextHTML(colNameUnderscore, displayVal, 20);
 			break;
+		case "CODELOOKUP":
+			displayHTML += getSelectHTML(colNameUnderscore, columnHeader.columnValuesNew, colVal);		
+			break;
+		case "CODEVALUE":
+			displayHTML += getSelectHTMLValue(colNameUnderscore, columnHeader.columnValuesNew, colVal);		
+			break;
 		case "TEXT":
 			displayHTML += '<textarea id="' + colNameUnderscore + '" name="'
 					+ colNameUnderscore + '" rows="4" cols="40">' + displayVal 
 					+ '</textarea>';
 			break;
-		case "CODELOOKUP":
-			displayHTML += getSelectHTML(colNameUnderscore, columnHeader.columnValuesNew, colVal);		
-			break;
-
 		default:
-			displayHTML += "'" + colType + "'";
-
+			invalidColumnTypeMessage(columnHeader.columnName, colType);
+			return "";
 		}
 
 		displayHTML += '</td>';
@@ -889,6 +848,9 @@ alert("textStatus: " + textStatus + "     errorThrown: " + errorThrown);
 		}
 }
 
+function invalidColumnTypeMessage(columnName, columnType) {
+	alert("System Error - Column Type: " + columnType + " - Not Catered For - Column Name: " + columnName);
+}
 
 
 
