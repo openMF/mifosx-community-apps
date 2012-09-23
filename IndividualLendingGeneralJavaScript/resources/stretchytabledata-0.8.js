@@ -528,6 +528,10 @@ function popupAddUpdateDialog(requestType, postOrPutUrl, updateRowIndex) {
 function addUpdateBuildTemplate(requestType, updateRowIndex) {
 
 	var htmlVar = '<form id="entityform">    <div id="formerrors"></div>';
+//hidden fields for validating date and number formats.
+	htmlVar += '<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />';
+	htmlVar += '<input type="hidden" id="locale" name="locale" value="' + currentLocale() + '" />';
+
 	htmlVar += '<table width="100%"><tr>';
 
 	var colsPerRow = 2;
@@ -894,28 +898,35 @@ alert("textStatus: " + textStatus + "     errorThrown: " + errorThrown);
 		if (globaliseFunctions > "") {
 			return globaliseFunctions.decimal(val, decs);
 		}
-		else return val;
+		return val;
 	}
 
 	function globalNumber(val) {
 		if (globaliseFunctions > "") {
 			return globaliseFunctions.number(val);
 		}
-		else return val;
+		return val;
 	}
 
 	function globalDateAsISOString(isoDate) {
 		if (globaliseFunctions > "") {
 			return globaliseFunctions.globalDateAsISOString(isoDate);
 		}
-		else return isoDate;
+		return isoDate;
+	}
+
+	function currentLocale() {
+		if (globaliseFunctions > "") {
+			return globaliseFunctions.currentLocale();
+		}
+		return isoDate;
 	}
 
 	function doI18N(xlateStr, params) {
 		if (globaliseFunctions > "") {
 			return globaliseFunctions.doI18N(xlateStr, params);
 		}
-		else return xlateStr;
+		return xlateStr;
 	}
 
 })(jQuery);
