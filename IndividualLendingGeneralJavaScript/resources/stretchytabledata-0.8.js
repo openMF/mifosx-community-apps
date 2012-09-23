@@ -567,7 +567,10 @@ function addUpdateColDisplayHTML(columnHeader, colVal) {
 		case "STRING":
 			var colLength = columnHeader.columnLength;
 			if (colLength > defaultStringLength) colLength = defaultStringLength;
-			displayHTML += getTextHTML(colNameUnderscore, displayVal, colLength);
+			
+			if (columnHeader.columnValuesNew.length > 0)
+				displayHTML += getSelectHTMLValue(colNameUnderscore, columnHeader.columnValuesNew, colVal);	
+			else displayHTML += getTextHTML(colNameUnderscore, displayVal, colLength);
 			break;
 		case "INTEGER":
 			if (displayVal > "") displayVal = globalNumber(parseInt(displayVal));
@@ -586,6 +589,10 @@ function addUpdateColDisplayHTML(columnHeader, colVal) {
 					+ colNameUnderscore + '" rows="4" cols="40">' + displayVal 
 					+ '</textarea>';
 			break;
+		case "CODELOOKUP":
+			displayHTML += getSelectHTML(colNameUnderscore, columnHeader.columnValuesNew, colVal);		
+			break;
+
 		default:
 			displayHTML += "'" + colType + "'";
 
@@ -597,6 +604,56 @@ function addUpdateColDisplayHTML(columnHeader, colVal) {
 
 function spaceToUnderscore(str) {
 	return str.replace(/ /g, "_")
+}
+
+function getSelectHTML(colName, columnValues, colVal) {
+
+		var selectedVal = "";
+		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
+
+		if ((colVal == null) || (colVal == ""))
+			selectedVal = ' selected="selected" '
+		else
+			selectedVal = "";
+		selectHtml += '<option value=""' + selectedVal + '></option>';
+
+		for ( var i in columnValues) {
+			if (colVal == columnValues[i].id)
+				selectedVal = ' selected="selected" '
+			else
+				selectedVal = "";
+			selectHtml += '<option value="' + columnValues[i].id + '"'
+					+ selectedVal + '>' + columnValues[i].value + '</option>';
+		}
+
+		selectHtml += '</select>';
+		// alert(selectHtml);
+		return selectHtml;
+}
+
+function getSelectHTMLValue(colName, columnValues, colVal) {
+
+		var selectedVal = "";
+		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
+
+		if ((colVal == null) || (colVal == ""))
+			selectedVal = ' selected="selected" '
+		else
+			selectedVal = "";
+		selectHtml += '<option value=""' + selectedVal + '></option>';
+
+		for ( var i in columnValues) {
+			if (colVal == columnValues[i].value)
+				selectedVal = ' selected="selected" '
+			else
+				selectedVal = "";
+			selectHtml += '<option value="' + columnValues[i].value + '"'
+					+ selectedVal + '>' + columnValues[i].value + '</option>';
+		}
+
+		selectHtml += '</select>';
+		// alert(selectHtml);
+		return selectHtml;
 }
 
 function getDateHTML(colName, colVal, textSize) {
