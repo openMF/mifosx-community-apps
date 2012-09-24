@@ -85,10 +85,13 @@
 				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
 				for (var i in data) 
 				{
-					htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'";
-					htmlVar += additionalDataIdName + "', '" + data[i].registeredTableName + "', ";
-					htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "'" + ');return false;"><span>';
-					htmlVar += doI18N(data[i].registeredTableName) + '</span></a></li>';
+					if (datatableExcluded(data[i].registeredTableName) == false)
+					{
+						htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'";
+						htmlVar += additionalDataIdName + "', '" + data[i].registeredTableName + "', ";
+						htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "'" + ');return false;"><span>';
+						htmlVar += doI18N(data[i].registeredTableName) + '</span></a></li>';
+					}
 				}
 				htmlVar += '</ul></div>';
 				//alert(params.appendToDiv);
@@ -751,6 +754,18 @@ function genAddEditPopupClick(requestType , postOrPutUrl, updateRowIndex) {
 
 function genDeletePopupClick(deleteUrl) {
 	return "jQuery.stretchyTableData.popupDeleteDialog('" + deleteUrl + "');";
+}
+
+function datatableExcluded(datatableName) {
+
+	if (!(tabledataParams.ignoreDatatableArray)) return false;
+
+	var datatableNameLower = datatableName.toLowerCase();
+	for (var i in tabledataParams.ignoreDatatableArray) 
+	{
+		if (tabledataParams.ignoreDatatableArray[i].toLowerCase() == datatableNameLower) return true;
+	}
+	return false;
 }
 
 $.fn.serializeObject = function() {
