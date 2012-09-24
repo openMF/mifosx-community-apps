@@ -624,7 +624,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfo($newtabs, "newtabs", "m_client", clientId, "Additional.Data"); 
+					showRelatedDataTableInfo($newtabs, "newtabs", "m_client", clientId, "Additional.Data", ["one_to_one_x"]); 
 
 					
 					// retrieve additional info
@@ -1320,7 +1320,7 @@ function showILGroup(groupId){
 	}
 	
 
-function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKValue, appTableLabel) {	   
+function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKValue, appTableLabel, ignoreDatatableArray) {	   
 
 //JPW - yep can make it not so focused on an existing tab structure later
 	// retrieve additional info for application table
@@ -1329,8 +1329,9 @@ function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKV
 						base64: base64,
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
-						appTableLabel: appTableLabel,
 						appTablePKValue: appTablePKValue, 
+						appTableLabel: appTableLabel,
+						ignoreDatatableArray: ignoreDatatableArray,
 						globaliseFunctions: helperFunctions,
 						resValue: "resources/libs/",
 
@@ -1575,6 +1576,8 @@ function loadILLoan(loanId) {
 					    e.preventDefault();
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
+
+				// to be updated showRelatedDataTableInfo($loantabs, "loantabs" + loanId, "m_loan", loanId, "Additional.Data", []); 
 
 				// additional data
 				var additionalFieldsParams = {

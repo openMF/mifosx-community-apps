@@ -55,8 +55,8 @@
 		displayAdditionalInfo(params);
 	};
 
-	$.stretchyTableData.showDataTable = function(tabName, datatableName, id, fkName, datatableLabel) {
-		showDataTable(tabName, datatableName, id, fkName, datatableLabel);   
+	$.stretchyTableData.showDataTable = function(tabName, datatableName, id, fkName) {
+		showDataTable(tabName, datatableName, id, fkName);   
 	};
 
 	$.stretchyTableData.popupAddUpdateDialog = function(requestType, postOrPutUrl, updateRowIndex) {
@@ -85,13 +85,13 @@
 				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
 				for (var i in data) 
 				{
-					htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'" 
-					htmlVar += additionalDataIdName + "', '" + data[i].registeredTableName + "'" + ', ' 
-					htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "', '" + data[i].registeredTableLabel + "'" + ');return false;"><span>' 
-					htmlVar += data[i].registeredTableLabel + '</span></a></li>';
+					htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'";
+					htmlVar += additionalDataIdName + "', '" + data[i].registeredTableName + "', ";
+					htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "'" + ');return false;"><span>';
+					htmlVar += doI18N(data[i].registeredTableName) + '</span></a></li>';
 				}
 				htmlVar += '</ul></div>';
-
+				//alert(params.appendToDiv);
 	        		var currentTab = $("#" + params.appendToDiv).children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		currentTab.html(htmlVar);
 
@@ -112,7 +112,7 @@ generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
 				};
 
 
-function showDataTable(tabName, datatableName, id, fkName, datatableLabel) {	 
+function showDataTable(tabName, datatableName, id, fkName) {	 
 
 	var url = 'datatables/' + datatableName + "/" + id;
 
@@ -124,8 +124,7 @@ function showDataTable(tabName, datatableName, id, fkName, datatableLabel) {
 								tabName: tabName,
 								datatableName: datatableName,
 								id: id,
-								fkName: fkName,
-								datatableLabel: datatableLabel
+								fkName: fkName
 								};
 	        		showDataTableDisplay();
 		};
@@ -659,7 +658,7 @@ function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
 			var successFunction = function(data, textStatus, jqXHR) {
 						dialogDiv.dialog("close");
 						showDataTable(currentTableDataInfo.tabName, currentTableDataInfo.datatableName, 
-										currentTableDataInfo.id, currentTableDataInfo.fkName, currentTableDataInfo.datatableLabel);
+										currentTableDataInfo.id, currentTableDataInfo.fkName);
 					};
 
 			executeAjaxRequest(saveUrl, requestType, form_data, successFunction, popupErrorFunction);	
@@ -674,7 +673,7 @@ function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
 
 	dialogDiv.dialog(
 			{
-				title : doI18N(requestDisplay) + ": " + doI18N(currentTableDataInfo.datatableLabel),
+				title : doI18N(requestDisplay) + ": " + doI18N(currentTableDataInfo.datatableName),
 				width : 1000,
 				height : 500,
 				modal : true,
@@ -725,7 +724,7 @@ function popupDeleteDialog(deleteUrl) {
 				var successFunction= function(data, textStatus, jqXHR) {
 							dialogDiv.dialog("close");
 							showDataTable(currentTableDataInfo.tabName, currentTableDataInfo.datatableName, 
-										currentTableDataInfo.id, currentTableDataInfo.fkName, currentTableDataInfo.datatableLabel);
+										currentTableDataInfo.id, currentTableDataInfo.fkName);
 						}
 				 
 				executeAjaxRequest(deleteUrl, 'DELETE', "", successFunction, popupErrorFunction);
