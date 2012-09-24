@@ -1190,6 +1190,7 @@ $(document).ready(function() {
 	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="joiningDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
 	<input id="joiningDate" name="joiningDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
 </form>
@@ -1477,6 +1478,7 @@ $(document).ready(function() {
     <div id="formerrors"></div>
 
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="eventDate">{{=$ctx.doI18N("label.loan.on")}}</label>
 	<input id="eventDate" name="eventDate" title="" class="datepickerfield" />
 
@@ -1930,6 +1932,7 @@ $(document).ready(function() {
     <div id="formerrors"></div>
 
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="eventDate">{{=$ctx.doI18N("label.loan.on")}}</label>
 	<input id="eventDate" name="eventDate" title="" class="datepickerfield" />
 
@@ -2499,6 +2502,7 @@ $(document).ready(function() {
 		{{/if}}
 
 		<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		<label for="openingDate">{{=$ctx.doI18N("form.label.office.openedon")}}</label>
 		<input id="openingDate" name="openingDate" title="" type="text" value="{{=$ctx.globalDate(openingDate)}}" size="75" class="datepickerfield" />
 
