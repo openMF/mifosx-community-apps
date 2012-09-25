@@ -1528,17 +1528,24 @@ $(document).ready(function() {
 	</div>
 	{{/if}}
 
-	{{#if approvedOnDate}}
+	{{#if actualCommencementDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.approved.on")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(approvedOnDate)}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(actualCommencementDate)}}</span>
 		</div>
 	{{/if}}
 
-	{{#if closedOnDate}}
+	{{#if maturedOn}}
 		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.closed.on")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(closedOnDate)}}</span>
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.deposit.matured.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(maturedOn)}}</span>
+		</div>
+	{{/if}}
+
+	{{#if closedonDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.deposit.closed.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(closedonDate)}}</span>
 		</div>
 	{{/if}}
 
@@ -1557,6 +1564,18 @@ $(document).ready(function() {
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.deposit")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, deposit)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.actualInterestAccrued")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, actualInterestAccrued)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interestPaid")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, interestPaid)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.actualMaturityAmount")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, actualMaturityAmount)}}</span>
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.tenure")}}</span>
@@ -1620,7 +1639,7 @@ $(document).ready(function() {
 		<tr>
 			<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
 			<td>
-			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount,2)}}" style="width: 125px;" />
+			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(availableInterestForWithdrawal,2)}}" style="width: 125px;" />
 			<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
 			</td>
 		</tr> 

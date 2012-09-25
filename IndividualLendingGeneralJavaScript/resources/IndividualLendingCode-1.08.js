@@ -1310,10 +1310,10 @@ function showILGroup(groupId){
 				var height = 250;
 
 				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.undo.deposit.approval', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
+				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdraw.interest.amount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
 				e.preventDefault();
 			});
-    		$('button.undoapprovedepositapplication span').text(doI18N('label.undo.approval'));
+    		$('button.withdrawinterestamount span').text(doI18N('label.withdraw.interest.amount'));
 
 			$('.withdrawdepositamount').button().click(function(e) {
 				var linkId = this.id;
@@ -1324,11 +1324,11 @@ function showILGroup(groupId){
 				var height = 280;
 
 				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.deposit.approval', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
+				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.withdraw.deposit.amount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
 			    
 				e.preventDefault();
 			});
-    		$('button.undoapprovedepositapplication span').text(doI18N('label.undo.approval'));
+    		$('button.withdrawdepositamount span').text(doI18N('label.withdraw.deposit.amount'));
 
     		
     		$('.undoapprovedepositapplication').button().click(function(e) {
