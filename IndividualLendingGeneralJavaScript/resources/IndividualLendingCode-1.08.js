@@ -70,7 +70,14 @@ crudData = {
 				refreshListNeeded: true,
 				dialogWidth: 900,
 				dialogHeight: 400
+			},
+		datatable: {
+				editTemplateNeeded: false,
+				refreshListNeeded: true,
+				dialogWidth: 900,
+				dialogHeight: 300
 			}
+
 		};
 
 saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
@@ -309,7 +316,7 @@ function setSysAdminContent(divName) {
 	htmlVar += '<span style="float: left">';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listusers">' + doI18N("administration.link.view.datatables") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + registerDatatableUrl + '" id="adduser">' + doI18N("administration.link.register.datatable") + '</a>';
+	htmlVar += '	<a href="unknown.html" onclick="' + registerDatatableUrl + '" id="registerdatatable">' + doI18N("administration.link.register.datatable") + '</a>';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
@@ -1695,8 +1702,7 @@ function loadILLoan(loanId) {
 						var linkId = this.id;
 						var entityId = linkId.replace("deregister" + tableName, "");
 
-						var resourceUrl = tableName + "s/" + entityId + "/deregister";
-alert(resourceUrl )
+						var resourceUrl = tableName + "s/deregister/" + entityId;
 						var width = 400; 
 						var height = 150;
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
@@ -1729,14 +1735,24 @@ alert(resourceUrl )
 
 		var templateSelector = "#" + tableName + "FormTemplate";
 		var dialogTitle = "dialog.title." + tableName + ".details";
-		
 		if (submitType == "POST") dialogTitle = 'dialog.title.add.' + tableName;
+
 		
 		var genSSF = 'var saveSuccessFunction = function(data, textStatus, jqXHR) {';
 		genSSF += '$("#dialog-form").dialog("close");';
 		if (crudData[tableName].refreshListNeeded == true) genSSF += 'refreshTableView("' + tableName + '");';
 		genSSF += '}';
 		eval(genSSF);
+
+//datatable specific code
+		if (tableName == "datatable") 
+		{
+			dialogTitle = 'dialog.title.register.datatable';
+			popupRegisterDatatableDialog('dialog.title.register.datatable', templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction, 0, 0, 0);
+			return false;
+		}
+//end datatable specific code
+alert("should have ended");
 
 		var getUrl = ''; 
 		var putPostUrl = resourceUrl;
@@ -2152,6 +2168,43 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				  		}
 				  	}).dialog('open');
 }
+
+
+function popupRegisterDatatableDialog(titleCode, templateSelector, width, height, saveSuccessFunction) {
+
+var dialogDiv = $("<div id='dialog-form'></div>");
+var data = new Object();
+var formHtml = $(templateSelector).render(data);
+dialogDiv.append(formHtml);
+
+var saveButton = doI18N('dialog.button.save');
+var cancelButton = doI18N('dialog.button.cancel');
+var buttonsOpts = {};		
+
+buttonsOpts[saveButton] = function() {
+	var registerUrl = "datatables/register/" + document.registerDatatableForm.registeredTableName.value + "/" + document.registerDatatableForm.applicationTableName.value;
+	alert(registerUrl )
+	executeAjaxRequest(registerUrl, "POST", {}, saveSuccessFunction, formErrorFunction);
+};
+buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+
+dialogDiv.dialog({
+  		title: doI18N(titleCode), 
+  		width: width, 
+  		height: height, 
+  		modal: true,
+  		buttons: buttonsOpts,
+  		close: function() {
+  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+  			$(this).remove();
+		},
+  		open: function (event, ui) {  			
+  			$("#entityform textarea").first().focus();
+  			$('#entityform input').first().focus();
+  		}
+  }).dialog('open');
+}
+
 
 // used by deposit account functionality
 function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {

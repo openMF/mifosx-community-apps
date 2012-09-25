@@ -3209,6 +3209,17 @@ $(document).ready(function() {
 </script>
 
 
+<script id="datatableFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" name="registerDatatableForm">
+    <div id="formerrors"></div>
+	<label for="registeredTableName">{{=$ctx.doI18N("form.label.registeredTableName")}}</label>
+	<input id="registeredTableName" name="registeredTableName" title="" type="text" value="{{=registeredTableName}}" size="75"/>
+
+       <label for="applicationTableName">{{=$ctx.doI18N("form.label.applicationTableName")}}</label>
+	<input id="applicationTableName" name="applicationTableName" title="" type="text" value="{{=applicationTableName}}" size="75"/>
+</form>
+</script>
+
 <!-- end of admin templates -->
 
 
