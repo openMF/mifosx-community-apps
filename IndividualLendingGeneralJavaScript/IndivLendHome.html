@@ -3185,6 +3185,30 @@ $(document).ready(function() {
 </script>
 
 
+<script id="datatableListTemplate" type="text/x-jquery-tmpl">
+<table id='datatablestable' width='100%'>
+<thead>
+	<tr>
+		<th>{{=$ctx.doI18N("table.heading.application.table")}}</th>
+		<th>{{=$ctx.doI18N("table.heading.registered.datatable")}}</th>
+		<th>&nbsp;</th>
+	</tr>
+</thead>
+<tbody>
+{{#each crudRows}}
+<tr>
+	<td>{{=applicationTableName}}</td>
+	<td>{{=registeredTableName}}</td>
+	<td>
+		<a id='deregisterdatatable{{=registeredTableName}}' class='deregisterdatatable' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deregister")}}</a>
+	</td>
+</tr>
+{{/each}}
+</tbody>
+</table>
+</script>
+
+
 <!-- end of admin templates -->
 
 

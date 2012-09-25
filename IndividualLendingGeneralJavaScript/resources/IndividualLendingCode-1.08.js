@@ -127,6 +127,7 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
+	htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
 	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
 	htmlVar += '		<ul>';
 	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting();return false;">' + doI18N("link.reports.all") + '</a></li>';
@@ -292,6 +293,23 @@ function setUserAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="' + addRoleUrl + '" id="addrole">' + doI18N("administration.link.add.role") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'permission'" + ');return false;" id="listpermissions">' + doI18N("administration.link.view.permissions") + '</a>';
+	htmlVar += '</span>';
+	htmlVar += '</div>';
+	htmlVar += '<br><br>';
+	htmlVar += '<div id="listplaceholder" ></div>';
+	$("#" + divName).html(htmlVar);
+}
+
+function setSysAdminContent(divName) {
+
+	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST');return false;";
+	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
+
+	var htmlVar = '<div>';
+	htmlVar += '<span style="float: left">';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listusers">' + doI18N("administration.link.view.datatables") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + registerDatatableUrl + '" id="adduser">' + doI18N("administration.link.register.datatable") + '</a>';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
@@ -1670,6 +1688,24 @@ function loadILLoan(loanId) {
 						popupDialogWithPostOnlyFormView(putUrl, 'PUT', 'dialog.title.update.password', templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
 					}
 					e.preventDefault();
+				});
+
+				$("a.deregister" + tableName).click( function(e) {
+					
+						var linkId = this.id;
+						var entityId = linkId.replace("deregister" + tableName, "");
+
+						var resourceUrl = tableName + "s/" + entityId + "/deregister";
+alert(resourceUrl )
+						var width = 400; 
+						var height = 150;
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						  	$("#dialog-form").dialog("close");
+						  	refreshTableView(tableName);
+						};
+						popupConfirmationDialogAndPost(resourceUrl, 'POST', 'dialog.title.confirmation.required', width, height, entityId, saveSuccessFunction);
+					
+						e.preventDefault();
 				});
 
 				var oTable = displayListTable(tableName + "stable");
