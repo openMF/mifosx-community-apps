@@ -1240,6 +1240,18 @@ $(document).ready(function() {
 <script id="groupFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
+	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+	<select id="officeId" name="officeId" title="">
+		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+		{{#each allowedOffices}}
+			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			{{/if}}
+        {{/each}}
+	</select>
+
 	<table>
 		<tr>
 			<td colspan="2">
@@ -1463,6 +1475,10 @@ $(document).ready(function() {
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.group.externalid")}}</span>
 			<span class="rowvalue">{{=externalId}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.branch")}}</span>
+			<span class="rowvalue">{{=officeName}}</span>
 		</div>
 		<p><b>{{=$ctx.doI18N("heading.group.members.overview")}}</b></p>
 		{{#each clientMembers}}
