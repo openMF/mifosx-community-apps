@@ -117,7 +117,7 @@ generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
 
 function showDataTable(tabName, datatableName, id, fkName) {	 
 
-	var url = 'datatables/' + datatableName + "/" + id + "?genericResultSet=true";
+	var url = 'datatables/' + datatableName + "/" + id;
 
 	var successFunction = function(data, status, xhr) {
 				currentTableDataInfo = {
@@ -132,7 +132,7 @@ function showDataTable(tabName, datatableName, id, fkName) {
 	        		showDataTableDisplay();
 		};
 
-	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
+	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction, "?genericResultSet=true" );	
 
 }
 
@@ -260,10 +260,13 @@ function getTableCardinality() {
 	return "Column: " + currentTableDataInfo.fkName + " - NOT FOUND";
 }
 
-function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
+function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction, queryParams) { 
 
+	var execUrl = tabledataParams.baseApiUrl + url;
+	if (queryParams) execUrl += queryParams;
+alert(execUrl )
 	var jqxhr = $.ajax({ 
-				url : tabledataParams.baseApiUrl + url, 
+				url : execUrl, 
 				type : verbType, //POST, GET, PUT or DELETE 
 				contentType : "application/json; charset=utf-8", 
 				dataType : 'json', 
