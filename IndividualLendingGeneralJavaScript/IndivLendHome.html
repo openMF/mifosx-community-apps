@@ -1917,24 +1917,29 @@ $(document).ready(function() {
 		<caption>{{=$ctx.doI18N("table.caption.loan.charges")}}</caption>
 			<thead>
 				<tr>
-				<th>{{=$ctx.doI18N("table.heading.loan.charges.added")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.name")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.paymentdueat")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.calculationtype")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.loan.charges.amount")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.loan.charges.paid")}}</th>
+				<th>Due</th>
+				<th>Paid</th>
+				<th>Outstanding</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.actions")}}</th>
 				</tr>
 			</thead>
 			<tbody>
 				{{#each charges}}
 				<tr>
-					<td>????</td>
 					<td>{{=name}}</td>
 					<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
+
+				{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
+					<td>{{=$ctx.doI18N(chargeCalculationType.code)}} - {{=$ctx.decimal(percentage, 4)}}% of {{=$ctx.moneyFormatted(currency, amountPercentageAppliedTo)}}</td>
+				{{#else}}
 					<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
+				{{/if}}
 					<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
-					<td>????</td>
+					<td>{{=$ctx.moneyFormatted(currency, amountPaid)}}</td>
+					<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
 					<td><a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Remove</a>/Waive/Pay</td>
 				</tr>
 				{{/each}}

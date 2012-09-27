@@ -1779,7 +1779,7 @@ function loadILLoan(loanId) {
 			return false;
 		}
 //end datatable specific code
-alert("should have ended");
+//alert("should have ended");
 
 		var getUrl = ''; 
 		var putPostUrl = resourceUrl;
