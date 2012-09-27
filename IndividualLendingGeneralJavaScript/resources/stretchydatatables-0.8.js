@@ -1,8 +1,8 @@
 (function($) {
 
-	$.stretchyTableData = {};
+	$.stretchyDataTables = {};
 
-	$.stretchyTableData.displayAdditionalInfo = function(params) {
+	$.stretchyDataTables.displayAdditionalInfo = function(params) {
 
 		globaliseFunctions = "";
 		if (params.globaliseFunctions) globaliseFunctions = params.globaliseFunctions;
@@ -55,15 +55,15 @@
 		displayAdditionalInfo(params);
 	};
 
-	$.stretchyTableData.showDataTable = function(tabName, datatableName, id, fkName) {
+	$.stretchyDataTables.showDataTable = function(tabName, datatableName, id, fkName) {
 		showDataTable(tabName, datatableName, id, fkName);   
 	};
 
-	$.stretchyTableData.popupAddUpdateDialog = function(requestType, postOrPutUrl, updateRowIndex) {
+	$.stretchyDataTables.popupAddUpdateDialog = function(requestType, postOrPutUrl, updateRowIndex) {
 		popupAddUpdateDialog(requestType, postOrPutUrl, updateRowIndex);   
 	};
 
-	$.stretchyTableData.popupDeleteDialog = function(deleteUrl) {
+	$.stretchyDataTables.popupDeleteDialog = function(deleteUrl) {
 		popupDeleteDialog(deleteUrl);   
 	};
 
@@ -87,7 +87,7 @@
 				{
 					if (datatableExcluded(data[i].registeredTableName) == false)
 					{
-						htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyTableData.showDataTable(' + "'";
+						htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyDataTables.showDataTable(' + "'";
 						htmlVar += additionalDataIdName + "', '" + data[i].registeredTableName + "', ";
 						htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "'" + ');return false;"><span>';
 						htmlVar += doI18N(data[i].registeredTableName) + '</span></a></li>';
@@ -117,7 +117,7 @@ generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
 
 function showDataTable(tabName, datatableName, id, fkName) {	 
 
-	var url = 'datatables/' + datatableName + "/" + id;
+	var url = 'datatables/' + datatableName + "/" + id + "?genericResultSet=true";
 
 	var successFunction = function(data, status, xhr) {
 				currentTableDataInfo = {
@@ -749,11 +749,11 @@ function popupDeleteDialog(deleteUrl) {
 }
 
 function genAddEditPopupClick(requestType , postOrPutUrl, updateRowIndex) {
-	return "jQuery.stretchyTableData.popupAddUpdateDialog('" + requestType + "', '" + postOrPutUrl + "', " + updateRowIndex + ");";
+	return "jQuery.stretchyDataTables.popupAddUpdateDialog('" + requestType + "', '" + postOrPutUrl + "', " + updateRowIndex + ");";
 }
 
 function genDeletePopupClick(deleteUrl) {
-	return "jQuery.stretchyTableData.popupDeleteDialog('" + deleteUrl + "');";
+	return "jQuery.stretchyDataTables.popupDeleteDialog('" + deleteUrl + "');";
 }
 
 function datatableExcluded(datatableName) {

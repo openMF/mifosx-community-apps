@@ -1394,16 +1394,12 @@ function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKV
 						appendTo: tabVariable,
 						appendToDiv: tabDiv,
 
-
-						headingPrefix: "", 
-						headingClass: "", 
-						labelClass: "longrowlabel",
-						valueClass:	"rowvalue",
-						editLabel: doI18N("link.edit"),	
+						labelClass: "datatableLabel ",
+						valueClass:	"",
 						saveLabel: doI18N("dialog.button.save"),	
 						cancelLabel: doI18N("dialog.button.cancel")				
 					};
-	jQuery.stretchyTableData.displayAdditionalInfo(additionalInfoParams);
+	jQuery.stretchyDataTables.displayAdditionalInfo(additionalInfoParams);
 
 }
 
