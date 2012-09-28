@@ -33,20 +33,12 @@
 			alert(doI18N("Table Data Initialisation Error - appTableName parameter"));
 			return;
 		}
-		if (!(params.appTableLabel)) {
-			alert(doI18N("Table Data Initialisation Error - appTableLabel parameter"));
-			return;
-		}
 		if (!(params.appTablePKValue)) {
 			alert(doI18N("Table Data Initialisation Error - appTablePKValue parameter"));
 			return;
 		}
-		if (!(params.appendTo)) {
-			alert(doI18N("Table Data Initialisation Error - appendTo parameter"));
-			return;
-		}
-		if (!(params.appendToDiv)) {
-			alert(doI18N("Table Data Initialisation Error - appendToDiv parameter"));
+		if (!(params.datatablesDiv)) {
+			alert(doI18N("Table Data Initialisation Error - datatablesDiv parameter"));
 			return;
 		}
 
@@ -77,30 +69,25 @@
 		var successFunction = function(data, status, xhr) {
 			if (data.length > 0)
 			{
-				params.appendTo.tabs( "add", "no url", doI18N(params.appTableLabel));
 
-				var additionalDataIdName = params.appTableName + "AdditionalData";
+				var additionalDataInnerDiv = params.datatablesDiv+ "_x";
 
-				var htmlVar = '<div id="' + additionalDataIdName + '"><ul>';
+				var htmlVar = '<div id="' + additionalDataInnerDiv + '"><ul>';
 				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
 				for (var i in data) 
 				{
 					if (datatableExcluded(data[i].registeredTableName) == false)
 					{
 						htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyDataTables.showDataTable(' + "'";
-						htmlVar += additionalDataIdName + "', '" + data[i].registeredTableName + "', ";
+						htmlVar += additionalDataInnerDiv + "', '" + data[i].registeredTableName + "', ";
 						htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "'" + ');return false;"><span>';
 						htmlVar += doI18N(data[i].registeredTableName) + '</span></a></li>';
 					}
 				}
 				htmlVar += '</ul></div>';
-				//alert(params.appendToDiv);
-	        		var currentTab = $("#" + params.appendToDiv).children(".ui-tabs-panel").not(".ui-tabs-hide");
-	        		currentTab.html(htmlVar);
+	        		$("#" + params.datatablesDiv).html(htmlVar);
 
-    				$("#" + additionalDataIdName ).tabs();
-
-				$(params.appendTo).tabs('select', 0); //back to main tab
+    				$("#" + additionalDataInnerDiv ).tabs();
 			}
 		};
 

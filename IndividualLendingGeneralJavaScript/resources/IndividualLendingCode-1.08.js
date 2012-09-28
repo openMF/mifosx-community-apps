@@ -649,7 +649,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfo($newtabs, "newtabs", "m_client", clientId, "Additional.Data", ["dummy excluded table1", "dummy excluded table2"]); 
+					showRelatedDataTableInfo($newtabs, "m_client", clientId, ["dummy excluded table1", "dummy excluded table2"]); 
 
 					
 					// retrieve additional info
@@ -1376,24 +1376,23 @@ function showILGroup(groupId){
 	}
 	
 
-function showRelatedDataTableInfo(tabVariable, tabDiv, appTableName, appTablePKValue, appTableLabel, ignoreDatatableArray) {	   
+function showRelatedDataTableInfo(tabVar, appTableName, appTablePKValue, ignoreDatatableArray) {	 
+  
+	var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
+	tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
+	tabVar.tabs('select', 0); //back to main tab
 
-//JPW - yep can make it not so focused on an existing tab structure later
-	// retrieve additional info for application table
 	var additionalInfoParams = {
 						baseApiUrl : baseApiUrl,
 						base64: base64,
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
 						appTablePKValue: appTablePKValue, 
-						appTableLabel: appTableLabel,
 						ignoreDatatableArray: ignoreDatatableArray,
 						globaliseFunctions: helperFunctions,
 						resValue: "resources/libs/",
 
-						appendTo: tabVariable,
-						appendToDiv: tabDiv,
-
+						datatablesDiv: datatablesDiv,
 						labelClass: "datatableLabel ",
 						valueClass:	"",
 						saveLabel: doI18N("dialog.button.save"),	
@@ -1629,7 +1628,7 @@ function loadILLoan(loanId) {
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
 
-				// to be updated when sort out UI bits (JPW) showRelatedDataTableInfo($loantabs, "loantabs" + loanId, "m_loan", loanId, "Additional.Data", []); 
+				showRelatedDataTableInfo($loantabs, "m_loan", loanId, []); 
 
 				// additional data
 				var additionalFieldsParams = {
