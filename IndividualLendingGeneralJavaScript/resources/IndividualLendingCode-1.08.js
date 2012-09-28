@@ -1778,7 +1778,6 @@ function loadILLoan(loanId) {
 			return false;
 		}
 //end datatable specific code
-//alert("should have ended");
 
 		var getUrl = ''; 
 		var putPostUrl = resourceUrl;
@@ -2209,7 +2208,7 @@ var buttonsOpts = {};
 
 buttonsOpts[saveButton] = function() {
 	var registerUrl = "datatables/register/" + document.registerDatatableForm.registeredTableName.value + "/" + document.registerDatatableForm.applicationTableName.value;
-	//alert(registerUrl )
+	// alert(registerUrl )
 	executeAjaxRequest(registerUrl, "POST", {}, saveSuccessFunction, formErrorFunction);
 };
 buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
@@ -2736,7 +2735,13 @@ function jsViewsRegisterHelpers() {
 			},
 			decimal: function(number, digits) {
 		      try {
-		    	return Globalize.format(number, "n" + digits); 
+		    	var parsed = parseFloat(number.toFixed(digits));
+		    	var parsedStr = "" + parsed;
+		    	var nonZeroDigitsAfterDecimal = 0;
+		    	if (parsedStr.indexOf('.') > 0) {
+		    		nonZeroDigitsAfterDecimal = (parsedStr.length-1) - parsedStr.indexOf('.');
+		    	}
+		    	return Globalize.format(parsed, "n" + nonZeroDigitsAfterDecimal); 
 		      } catch(e) {
 		        return number +"(NaN)";
 		      }

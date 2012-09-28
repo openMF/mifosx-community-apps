@@ -839,10 +839,10 @@ $(document).ready(function() {
 					{{#each charges}}
 						<div class="row charge">
 							<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
-							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class ="id" title="" type="hidden" value="{{=id}}" />
+							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
 							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class ="chargeId" title="" type="hidden" value="{{=chargeId}}" />
 							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amountOrPercentage, 2)}}" style="width: 125px;"/>
 							</span>
 							<span class="rowvalue">
 								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px">

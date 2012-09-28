@@ -251,7 +251,7 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 
 	var execUrl = tabledataParams.baseApiUrl + url;
 	if (queryParams) execUrl += queryParams;
-
+//alert(execUrl )
 	var jqxhr = $.ajax({ 
 				url : execUrl, 
 				type : verbType, //POST, GET, PUT or DELETE 
