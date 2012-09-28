@@ -668,7 +668,7 @@ function showILClient(clientId) {
 							saveLabel: doI18N("dialog.button.save"),	
 							cancelLabel: doI18N("dialog.button.cancel")				
 					};
-					jQuery.stretchyData.displayAllExtraData(additionalFieldsParams);
+					//will fully delete after (JPW) jQuery.stretchyData.displayAllExtraData(additionalFieldsParams);
 	        };
 	    
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);	  
@@ -1629,7 +1629,7 @@ function loadILLoan(loanId) {
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
 
-				// to be updated showRelatedDataTableInfo($loantabs, "loantabs" + loanId, "m_loan", loanId, "Additional.Data", []); 
+				// to be updated when sort out UI bits (JPW) showRelatedDataTableInfo($loantabs, "loantabs" + loanId, "m_loan", loanId, "Additional.Data", []); 
 
 				// additional data
 				var additionalFieldsParams = {
@@ -1647,7 +1647,7 @@ function loadILLoan(loanId) {
 							saveLabel: doI18N("dialog.button.save"),	
 							cancelLabel: doI18N("dialog.button.cancel")						
 				};
-				jQuery.stretchyData.displayAllExtraData(additionalFieldsParams)
+				//will fully delete after (JPW) jQuery.stretchyData.displayAllExtraData(additionalFieldsParams)
 	        };
 	    
 		executeAjaxRequest(loanUrl, 'GET', "", successFunction, errorFunction);	  
@@ -2210,7 +2210,7 @@ var buttonsOpts = {};
 
 buttonsOpts[saveButton] = function() {
 	var registerUrl = "datatables/register/" + document.registerDatatableForm.registeredTableName.value + "/" + document.registerDatatableForm.applicationTableName.value;
-	alert(registerUrl )
+	//alert(registerUrl )
 	executeAjaxRequest(registerUrl, "POST", {}, saveSuccessFunction, formErrorFunction);
 };
 buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
