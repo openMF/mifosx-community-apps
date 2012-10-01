@@ -1360,16 +1360,33 @@ function showILGroup(groupId){
 			});
     		$('button.withdrawinterestamount span').text(doI18N('label.withdraw.interest.amount'));
 
+    		
+    		$('.renewdepositaccount').button().click(function(e) {
+				var linkId = this.id;
+				var depositAccountId = linkId.replace("renewbtn", "");
+				var postUrl = 'depositaccounts/' + depositAccountId + '?command=renew';
+				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
+				var templateSelector = "#renewDepositFormTemplate";
+				var width = 850; 
+				var height = 450;
+
+				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
+				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.renew.deposit.account', templateSelector, width, height, saveSuccessFunctionReloadClient);
+				e.preventDefault();
+			});
+    		$('button.renewdepositaccount span').text(doI18N('label.renew.deposit.account'));
+ 
 			$('.withdrawdepositamount').button().click(function(e) {
 				var linkId = this.id;
 				var depositAccountId = linkId.replace("withdrawbtn", "");
 				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrawal';
+				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
 				var templateSelector = "#withdrawAmountFormTemplate";
 				var width = 400; 
 				var height = 280;
 
 				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.withdraw.deposit.amount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
+				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdraw.deposit.amount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
 			    
 				e.preventDefault();
 			});
