@@ -1378,11 +1378,17 @@ function showILGroup(groupId){
 
 function showRelatedDataTableInfo(tabVar, appTableName, appTablePKValue, ignoreDatatableArray) {	 
   
-	var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
-	tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
-	tabVar.tabs('select', 0); //back to main tab
+		var url = 'datatables?appTable=' + appTableName;
 
-	var additionalInfoParams = {
+		var successFunction =  function(data, textStatus, jqXHR) {
+				
+				if (data.length > 0)
+				{
+					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
+					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
+					tabVar.tabs('select', 0); //back to main tab
+
+					var additionalInfoParams = {
 						baseApiUrl : baseApiUrl,
 						base64: base64,
 						tenantIdentifier: tenantIdentifier,
@@ -1398,8 +1404,12 @@ function showRelatedDataTableInfo(tabVar, appTableName, appTablePKValue, ignoreD
 						saveLabel: doI18N("dialog.button.save"),	
 						cancelLabel: doI18N("dialog.button.cancel")				
 					};
-	jQuery.stretchyDataTables.displayAdditionalInfo(additionalInfoParams);
+					jQuery.stretchyDataTables.displayAdditionalInfo(additionalInfoParams);
 
+				}
+			  };
+
+		executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction);	
 }
 
 
