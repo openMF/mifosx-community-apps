@@ -926,7 +926,7 @@ $(document).ready(function() {
 					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
 					<td valign="top">
 						<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
-						<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(commencementDate)}}" />
+						<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(projectedCommencementDate)}}" />
 						<label for="externalId">{{=$ctx.doI18N("form.label.deposit.externalId")}}</label>
 						<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
 					</td>
@@ -980,11 +980,11 @@ $(document).ready(function() {
 						</td>
 						<td>
 							{{#if interestCompoundingAllowed}}
-							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" checked=checked /><br /><br />
-							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" />
+							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" checked=checked onClick="updateCheckbox()"/><br /><br />
+							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" disabled="disabled"/>
 							{{#else}}
-							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" /><br /><br />
-							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" checked=checked />
+							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" onClick="updateCheckbox()"/><br /><br />
+							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" checked=checked disabled="disabled"/>
 							{{/if}}
 						</td>
 					</tr>
@@ -1064,6 +1064,143 @@ $(document).ready(function() {
 {{/if}}
 {{/each}}
 </select>
+</form>
+</script>
+
+<script id="renewDepositFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.deposit.information")}}</legend>
+		<div>
+			<table id="productdetails">
+				<tr>
+					<td valign="top">
+
+						<label for="clientname">{{=$ctx.doI18N("form.label.deposit.applicant")}}</label>
+						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
+
+						<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
+						<select name="productId" id="productId">
+							<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
+							{{#each productOptions}}
+							{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							{{/if}}
+							{{/each}}
+						</select>
+					</td>
+					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
+					<td valign="top">
+						<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
+						<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(maturedOn)}}" />
+						<label for="externalId">{{=$ctx.doI18N("form.label.deposit.externalId")}}</label>
+						<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
+			<table>
+			<tr>
+				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
+							<td>
+								<input id="deposit" name="deposit" title="" type="text" value="{{=$ctx.decimal(actualMaturityAmount, currency.decimalPlaces)}}" style="width: 125px;" />
+								<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.tenure")}}</td>
+							<td>
+								<input id="tenureInMonths" name="tenureInMonths" title="" type="text" value="{{=$ctx.number(tenureInMonths)}}" style="width: 50px;" />
+							</td>
+						</tr>
+					<tr>
+						<td>{{=$ctx.doI18N("form.label.deposit.product.canRenew")}}</td>
+						<td>
+							{{#if renewalAllowed}}
+							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" checked=checked />
+							{{#else}}
+							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" />
+							{{/if}}
+						</td>
+					</tr>
+					<tr>
+						<td>{{=$ctx.doI18N("form.label.deposit.product.canPreClose")}}</td>
+						<td>
+							{{#if preClosureAllowed}}
+							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" checked=checked />
+							{{#else}}
+							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" />
+							{{/if}}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{{=$ctx.doI18N("form.label.deposit.product.isCompoundingAllowed")}}<br/><br />
+							{{=$ctx.doI18N("form.label.deposit.product.isInterestWithdrawable")}}
+						</td>
+						<td>
+							{{#if interestCompoundingAllowed}}
+							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" checked=checked onClick="updateCheckbox()"/><br /><br />
+							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" disabled="disabled"/>
+							{{#else}}
+							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" onClick="updateCheckbox()"/><br /><br />
+							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" checked=checked disabled="disabled"/>
+							{{/if}}
+						</td>
+					</tr>
+					</table>
+				</td>
+
+				<!-- interest details cell -->
+				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.nominal.interestrate")}}</td>
+							<td>
+								<input id="maturityInterestRate" name="maturityInterestRate" title="" type="text" value="{{=$ctx.decimal(maturityInterestRate, 4)}}" style="width: 60px;" />
+							</td>
+						</tr>
+					<tr>
+						<td>{{=$ctx.doI18N("form.label.deposit.product.preClosureInterestRate")}}</td>
+						<td>
+							<input id="preClosureInterestRate" name="preClosureInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(preClosureInterestRate,4)}}"/>
+						</td>
+					</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
+							<td>
+								<input id="interestCompoundedEvery" name="interestCompoundedEvery" title="" type="text" value="{{=$ctx.number(interestCompoundedEvery)}}" style="width: 50px;" />
+								
+								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
+								{{#each interestCompoundedEveryPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
 </form>
 </script>
 
@@ -1379,6 +1516,16 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
+{{#if $ctx.numberGreaterThanZero(maturedDepositAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.matured")}} ({{=$ctx.number(maturedDepositAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each maturedDepositAccounts}}
+		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
 {{#if $ctx.numberGreaterThanZero(closedDepositAccountsCount)}}
 <div class="row">
 	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedDepositAccountsCount)}}):</span>
@@ -1596,6 +1743,11 @@ $(document).ready(function() {
 		{{/if}}
 		{{/if}}
 
+		{{#if undoApprovalAllowed}}
+		{{#if renewelAllowed}}
+		<button id="renewbtn{{=$parent.parent.parent.parent.data.id}}" class="renewdepositaccount">Renew </button>
+		{{/if}}
+		{{/if}}
 		{{#if pendingApproval}}
 		<button id="deletebtn{{=$parent.parent.parent.data.id}}" class="deletedepositapplication">Delete</button>
 		{{/if}}
@@ -1646,10 +1798,13 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.product")}}</span>
 			<span class="rowvalue">{{=productName}}</span>
 		</div>
+
+	{{#if externalId}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.externalid")}}</span>
 			<span class="rowvalue">{{=externalId}}</span>
 		</div>
+	{{/if}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
 			<span class="rowvalue">{{=currency.name}}</span>
@@ -1658,17 +1813,40 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.deposit")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, deposit)}}</span>
 		</div>
+	{{#if projectedInterestAccrued}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.projectedInterestAccrued")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, projectedInterestAccrued)}}</span>
+		</div>
+	{{/if}}
+	{{#if actualInterestAccrued}}
+	{{#if closedonDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.actualInterestAccrued")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, actualInterestAccrued)}}</span>
 		</div>
+	{{/if}}
+	{{/if}}
+	{{#if $ctx.decimal(interestPaid, 2)>0}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.interestPaid")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, interestPaid)}}</span>
 		</div>
+	{{/if}}
+	{{#if actualMaturityAmount}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.actualMaturityAmount")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, actualMaturityAmount)}}</span>
+		</div>
+	{{#else}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.actualMaturityAmount")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, projectedMaturityAmount)}}</span>
+		</div>
+	{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interestcompoundevery")}}</span>
+			<span class="rowvalue">{{=interestCompoundedEvery}} month(s)</span>
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.tenure")}}</span>
@@ -1677,6 +1855,10 @@ $(document).ready(function() {
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.interest.rate.on.maturity")}}</span>
 			<span class="rowvalue">{{=$ctx.decimal(maturityInterestRate, 4)}}%</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interest.rate.on.preclose")}}</span>
+			<span class="rowvalue">{{=$ctx.decimal(preClosureInterestRate, 4)}}%</span>
 		</div>
 </div>
 </script>
@@ -1703,16 +1885,22 @@ $(document).ready(function() {
 
 	<table>
 		<tr>
-			<td>{{=$ctx.doI18N("form.label.deposit.product.canRenew")}}</td>
-			<td>
-				<input type="checkbox" id="renewAccount" name="renewAccount" title="" style="width: 125px;" />
-			</td>
-		</tr>	
-	
-		<tr>
 			<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
 			<td>
-			<input id="deposit" name="deposit" title="" type="text" value="{{=$ctx.decimal(actualMaturityAmount, 2)}}" style="width: 125px;" />
+			<input title="" type="text" value="{{=$ctx.decimal(deposit, 2)}}" style="width: 125px;"  disabled="disabled"/>
+			</td>
+		</tr>
+
+		<tr>
+			<td>{{=$ctx.doI18N("form.label.deposit.interest.amount")}}</td>
+			<td>
+			<input type="text" value="{{=$ctx.decimal(actualInterestAccrued, 2)}}" style="width: 125px;"  disabled="disabled"/>
+			</td>
+		</tr>
+		<tr>
+			<td>{{=$ctx.doI18N("form.label.deposit.withdraw.amount")}}</td>
+			<td>
+			<input type="text" value="{{=$ctx.decimal(availableWithdrawalAmount, 2)}}" style="width: 125px;"  disabled="disabled"/>
 			</td>
 		</tr>
 	</table>	
@@ -1730,7 +1918,7 @@ $(document).ready(function() {
 
 	<table>
 		<tr>
-			<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
+			<td>{{=$ctx.doI18N("form.label.deposit.account.interest.withdraw.amount")}}</td>
 			<td>
 			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(availableInterestForWithdrawal,2)}}" style="width: 125px;" />
 			<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
@@ -3492,7 +3680,15 @@ $(document).ready(function() {
 </script>
 
 <!-- end of admin templates -->
-
+<script type="text/javascript">
+function updateCheckbox(){
+	    var other = $('#interestCompoundingAllowed:checked').val();
+		//alert(other);
+	    if (other == undefined) $("#isInterestWithdrawable").prop("checked", true);
+	    else $("#isInterestWithdrawable").prop("checked", false);
+	
+}
+</script>
 
 </body>
 </html>
