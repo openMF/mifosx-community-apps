@@ -735,7 +735,8 @@ function showILClient(clientId) {
 							saveLabel: doI18N("dialog.button.save"),	
 							cancelLabel: doI18N("dialog.button.cancel")				
 					};
-					//will fully delete after (JPW) jQuery.stretchyData.displayAllExtraData(additionalFieldsParams);
+					//will fully delete after (JPW) 
+					jQuery.stretchyData.displayAllExtraData(additionalFieldsParams);
 	        };
 	    
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);	  
@@ -1937,7 +1938,8 @@ function loadILLoan(loanId) {
 							saveLabel: doI18N("dialog.button.save"),	
 							cancelLabel: doI18N("dialog.button.cancel")						
 				};
-				//will fully delete after (JPW) jQuery.stretchyData.displayAllExtraData(additionalFieldsParams)
+				//will fully delete after (JPW) 
+				jQuery.stretchyData.displayAllExtraData(additionalFieldsParams)
 	        };
 	    
 		executeAjaxRequest(loanUrl, 'GET', "", successFunction, errorFunction);	  
