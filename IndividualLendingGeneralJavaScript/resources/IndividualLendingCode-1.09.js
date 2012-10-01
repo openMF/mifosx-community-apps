@@ -681,6 +681,12 @@ function showILGroup(groupId){
 
 	$newtabs = $("#newtabs").tabs({
     	select: function(event, tab) {
+			if (tab.index == 0){
+				if (groupDirty == true){
+					refreshGroupLoanSummaryInfo(groupUrl);
+					groupDirty = false;
+				}
+			}
 		},
 		"add": function( event, ui ) {
 				$newtabs.tabs('select', '#' + ui.panel.id);
@@ -692,9 +698,12 @@ function showILGroup(groupId){
 		var currentTabIndex = $newtabs.tabs('option', 'selected');
     	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
 		var tableHtml = $("#groupDataTabTemplate").render(data);
+		groupDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
 
 		$("#grouptab").html(tableHtml);
 		$("#grouptabname").html(data.name);
+
+		refreshGroupLoanSummaryInfo(groupUrl);
 
 		// bind click listeners to buttons.
 		$('.deletegroupbtn').button().click(function(e) {
@@ -727,6 +736,13 @@ function showILGroup(groupId){
 			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
 		    e.preventDefault();
 		});
+		$('.newloanbtn').button().click(function(e) {
+			var linkId = this.id;
+			var groupId = linkId.replace("newloanbtn", "");
+			addILGroupLoan(groupId);
+		    e.preventDefault();
+		});
+		$('button.newloanbtn span').text(doI18N('dialog.button.new.loan.application'));
 	}
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
@@ -746,7 +762,14 @@ function showILGroup(groupId){
   		executeAjaxRequest(clientUrl + '/loans', 'GET', "", successFunction, formErrorFunction);	  	
 	}
 	
-
+	// function to retrieve and display group loan summary information in it placeholder
+	function refreshGroupLoanSummaryInfo(groupUrl) {
+		var successFunction =  function(data, textStatus, jqXHR) {
+				  			var tableHtml = $("#groupAccountSummariesTemplate").render(data);
+				  			$("#groupaccountssummary").html(tableHtml);
+			  			}
+  		executeAjaxRequest(groupUrl + '/loans', 'GET', "", successFunction, formErrorFunction);	  	
+	}
 
 	function refreshNoteWidget(clientUrl) {
 			  	
@@ -956,6 +979,14 @@ function showILGroup(groupId){
 
   		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	  
 	}
+
+	function addILGroupLoan(groupId) {
+		setAddLoanContent("content");
+
+		eval(genAddLoanSuccessVar(null, groupId));
+
+		executeAjaxRequest('loans/template?groupId=' + groupId, 'GET', "", successFunction, formErrorFunction);		
+	}
 	
 	function removeLoanCharge(loanId, loanChargeId){
 
@@ -969,14 +1000,14 @@ function showILGroup(groupId){
 		return false;
 	}
 
-	function genAddLoanSuccessVar(clientId) {
+	function genAddLoanSuccessVar(clientId, groupId) {
 
 		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
 				' var formHtml = $("#newLoanFormTemplateMin").render(data);' +
 				' $("#inputarea").html(formHtml);' +
 				' $("#productId").change(function() {' +
 					' var productId = $("#productId").val();' +
-					' repopulateFullForm(' + clientId + ', productId);' +
+					' repopulateFullForm(' + clientId + ', ' + groupId + ', productId);' +
 				' });' +
 			' };'
 	}
@@ -987,6 +1018,7 @@ function showILGroup(groupId){
 						  	' $("#dialog-form").dialog("close");' +
 							' loadILLoan(' + loanId + ');' +
 							' clientDirty = true;' +
+							' groupDirty = true;' +
 						'};';
 	}
 	
@@ -1049,7 +1081,7 @@ function showILGroup(groupId){
 	}	
 
 
-	function repopulateFullForm(clientId, productId) {
+	function repopulateFullForm(clientId, groupId, productId) {
 				
 		successFunction =  function(data, textStatus, jqXHR) {
 			
@@ -1160,19 +1192,28 @@ function showILGroup(groupId){
 					calculateLoanSchedule();
 				});
 				$('#submitloanapp').button().click(function(e) {
-					submitLoanApplication(clientId);
+					submitLoanApplication(clientId, groupId);
 				    e.preventDefault();
 				});
 				$('button#submitloanapp span').text(doI18N('dialog.button.submit'));
 				
 				$('#cancelloanapp').button().click(function(e) {
-		  			showILClient(clientId);
+		  			if (clientId){
+		  				showILClient(clientId);
+		  			} else {
+		  				showILGroup(groupId);
+		  			}
 				    e.preventDefault();
 				});
 				$('button#cancelloanapp span').text(doI18N('dialog.button.cancel'));
 			};
-			  		
-		executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
+		
+		if (clientId){
+			executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
+		} else {
+			executeAjaxRequest('loans/template?groupId=' + groupId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
+		}	  		
+		
 
 	}
 	
@@ -1215,13 +1256,17 @@ function showILGroup(groupId){
 	}
 
 
-	function submitLoanApplication(clientId) {
+	function submitLoanApplication(clientId, groupId) {
 		
 		var newFormData = JSON.stringify($('#entityform').serializeObject());
     	
 		var successFunction =  function(data, textStatus, jqXHR) {
-		  				showILClient(clientId);
-			  };
+			if (clientId){
+				showILClient(clientId);
+			} else {
+				showILGroup(groupId);
+			}
+		};
 		
 		executeAjaxRequest('loans', "POST", newFormData, successFunction, formErrorFunction);	  
 
