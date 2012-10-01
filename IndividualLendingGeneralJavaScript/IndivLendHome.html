@@ -417,66 +417,6 @@ $(document).ready(function() {
 			</tr>
 		</table>
 	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.loan.charges")}}</legend>
-		<div>
-			<table id="chargesdetails">
-				<tr>
-					<td valign="top">
-						<label for="chargeOptions">{{=$ctx.doI18N("form.label.loan.charge.dropdown")}}</label>
-						<select id="chargeOptions">
-							<option value="-1">{{=$ctx.doI18N("form.option.charge.dropdown.first.choice")}}</option>
-						{{#each chargeOptions}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-        				{{/each}}
-  						</select>
-						<a href="#" id="addloancharges">{{=$ctx.doI18N("widget.charges.select.button.add")}}</a> 
-					</td>
-				</tr>
-				<tr>
-					<td id="selectedLoanCharges">
-						{{#each charges}}
-						<div class="row charge">
-							<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
-							{{#if id}}
-							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class ="id" title="" type="hidden" value="{{=id}}" />
-							{{/if}}
-							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=chargeId}}" />
-							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
-							</span>
-							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px">
-								{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
-									{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-										<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-									{{#else}}
-										<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-									{{/if}}
-								{{/each}}
-								</select>
-							</span>
-							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px">
-								{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
-									{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-										<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-									{{#else}}
-										<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-									{{/if}}
-								{{/each}}
-								</select>
-							</span>
-							<span class="rowvalue">
-								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
-							</span>
-						</div>
-						{{/each}}
-					</td>	
-				</tr>
-			</table>
-		</div>
-	</fieldset>
 </form>
 </script>
 
@@ -835,64 +775,6 @@ $(document).ready(function() {
 				</td>
 			</tr>
 		</table>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.loan.charges")}}</legend>
-		<div>
-			<table id="chargesdetails">
-				<tr>
-					<td valign="top">
-						<label for="chargeOptions">{{=$ctx.doI18N("form.label.loan.charge.dropdown")}}</label>
-						<select id="chargeOptions">
-							<option value="-1">{{=$ctx.doI18N("form.option.charge.dropdown.first.choice")}}</option>
-						{{#each chargeOptions}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-        				{{/each}}
-  						</select>
-						<a href="#" id="addloancharges">{{=$ctx.doI18N("widget.charges.select.button.add")}}</a> 
-					</td>
-				</tr>
-				<tr>
-					<td id="selectedLoanCharges">
-					{{#each charges}}
-						<div class="row charge">
-							<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
-							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
-							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class ="chargeId" title="" type="hidden" value="{{=chargeId}}" />
-							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amountOrPercentage, 2)}}" style="width: 125px;"/>
-							</span>
-							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px">
-									{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
-										{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-										{{#else}}
-											<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-										{{/if}}
-									{{/each}}
-								</select>
-							</span>
-							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px">
-									{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
-										{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-										{{#else}}
-											<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-										{{/if}}
-									{{/each}}
-								</select>
-							</span>
-							<span class="rowvalue">
-								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
-							</span>
-						</div>
-					{{/each}}
-					</td>	
-				</tr>
-			</table>
-		</div>
 	</fieldset>
 </form>
 </script>
@@ -1642,84 +1524,6 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
-<p><b>{{=$ctx.doI18N("heading.client.account.depositaccount.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(pendingApprovalDespositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalDespositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each pendingApprovalDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(approvedDespositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedDespositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each approvedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(maturedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.matured")}} ({{=$ctx.number(maturedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each maturedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-{{#if $ctx.numberGreaterThanZero(closedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each closedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(preclosedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.preClosed")}} ({{=$ctx.number(preclosedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each preclosedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(rejectedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.rejected")}} ({{=$ctx.number(rejectedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each rejectedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(withdrawnByClientDespositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawnbyclient")}} ({{=$ctx.number(withdrawnByClientDespositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each withdrawnByClientDespositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-
 {{#else}}
 <div>
 	{{=$ctx.doI18N("label.client.account.no.loans.exist")}}</div>
@@ -1730,11 +1534,6 @@ $(document).ready(function() {
 <span id="toolbar" class="ui-widget-header ui-corner-all">
 	<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
 	<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
-
-{{#if $ctx.showIt("DepositCreate")}}
-	<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
-{{/if}}
-
 	<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 	<button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
 </span>
@@ -3059,35 +2858,6 @@ $(document).ready(function() {
 			</td>
 		</tr>
 		</table>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.loan.product.charges")}}</legend>
-		<table>
-			<tr>
-				<td>
-					<div class="multiselectwidget">
-						<label for="notSelectedCharges">{{=$ctx.doI18N("form.label.loan.product.available.charges")}}</label>
-						<select id="notSelectedCharges" name="notSelectedCharges" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:200px;height:125px;">
-						{{#each chargeOptions}}
-							<option value="{{=id}}">{{=name}}, {{=currency.code}}</option>
-			            {{/each}}
-						</select>
-						<a href="#" id="addcharges" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
-					</div>
-				</td>
-				<td>
-					<div class="multiselectwidget">
-						<label for="charges">{{=$ctx.doI18N("form.label.loan.product.selected.charges")}}</label>
-						<select id="charges" name="charges" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:200px;height:125px;">
-						{{#each charges}}
-							<option value="{{=id}}">{{=name}}, {{=currency.code}}</option>
-			            {{/each}}
-						</select>
-						<a href="#" id="removecharges" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
-					</div>
-				</td>
-			</tr>
-		</table>	
 	</fieldset>
 </form>
 </script>

@@ -130,12 +130,9 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '</div>';
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
-
-	if (jQuery.MifosXUI.showIt("ClientSearch") == true)
-		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
-
-	if (jQuery.MifosXUI.showIt("GroupSearch") == true)
-		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
+	if (jQuery.MifosXUI.showIt("ClientSearch") == true) {
+		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';		
+	}
 
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 
@@ -240,11 +237,11 @@ function setOrgAdminContent(divName) {
 
 	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'POST');return false;";
 	//var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
-	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
+//	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
-	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
-	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
+//	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
+//	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
 
@@ -259,23 +256,23 @@ function setOrgAdminContent(divName) {
 //  htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
 //	htmlVar += ' | ';
 //	htmlVar += '	<a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
+//	htmlVar += ' | ';
+//	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
+//	htmlVar += ' | ';
+//	htmlVar += '	<a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'employee'" + ');return false;" id="viewemployees">' + doI18N("administration.link.view.employees") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addEmployeeUrl + '" id="addemployee">' + doI18N("administration.link.add.employee") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
-	htmlVar += ' <br><br> ';
+//	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'employee'" + ');return false;" id="viewemployees">' + doI18N("administration.link.view.employees") + '</a>';
+//	htmlVar += ' | ';
+//	htmlVar += '	<a href="unknown.html" onclick="' + addEmployeeUrl + '" id="addemployee">' + doI18N("administration.link.add.employee") + '</a>';
+//	htmlVar += ' | ';
+//	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
+//	htmlVar += ' | ';
+//	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
+//	htmlVar += ' <br><br> ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
 	htmlVar += ' | ';	
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'office'" + ');return false;" id="viewoffices">' + doI18N("administration.link.view.offices") + '</a>';
