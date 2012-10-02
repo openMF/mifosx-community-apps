@@ -1422,7 +1422,7 @@ $(document).ready(function() {
 					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
 					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:200px;height:125px;">
 					{{#each allowedClients}}
-						<option value="{{=id}}">{{=displayName}}</option>
+						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
 		            {{/each}}
 					</select>
 					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
@@ -1433,7 +1433,11 @@ $(document).ready(function() {
 					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
 					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:200px;height:125px;">
 					{{#each clientMembers}}
-						<option value="{{=id}}">{{=displayName}}</option>
+						{{#if officeName}}
+							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            	{{else}}
+		            		<option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
+		            	{{/if}}
 		            {{/each}}
 					</select>
 					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
