@@ -130,7 +130,11 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '</div>';
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
-	htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+
+	if (jQuery.MifosXUI.showIt("clientSearch") == true)
+		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+
+
 	htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
@@ -384,6 +388,13 @@ function setAccountSettingsContent(divName) {
 //all the code for the various functions
 
 function showILClientListing() {
+
+	if (jQuery.MifosXUI.showIt("clientSearch") == false)
+	{
+		alert(doI18N("client.search.not.allowed"));
+		return;
+	}
+
 
 setClientListingContent("content");
 
