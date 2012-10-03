@@ -2019,6 +2019,9 @@ function setBasicAuthKey(logonDivName, username, password)
 					currentUser = data.userId;
 					currentUserName = data.username;
 					currentPwd = password;
+
+					jQuery.MifosXUI.initialise(data.permissions, "Individual Lending", tenantIdentifier );
+
 					showMainContainer(logonDivName, username);
 					showILClientListing();
 					return false;

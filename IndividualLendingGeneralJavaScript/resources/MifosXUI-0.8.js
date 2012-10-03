@@ -2,14 +2,20 @@
 
 	$.MifosXUI = {};
 
-	$.MifosXUI.Init = function(userPermissions, applicationName, tenantName) {
+	$.MifosXUI.initialise = function(userPermissions, applicationName, tenantName) {
 
 		mUserPermissions = userPermissions;
 		mApplicationName = applicationName;
 		mTenantName = tenantName;
+
+		//for (var i in mUserPermissions) alert("Perm: " + i + " is " + mUserPermissions[i]);
+
+		//alert("app: " + mApplicationName );
+
+		//alert("tenant: " + mTenantName );
 	};
 
-	$.MifosXUI.showIt function(functionalityName) {
+	$.MifosXUI.showIt = function(functionalityName) {
 		return showIt(functionalityName);   
 	};
 
