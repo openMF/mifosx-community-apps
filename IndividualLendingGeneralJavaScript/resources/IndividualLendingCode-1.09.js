@@ -2031,7 +2031,7 @@ function setBasicAuthKey(logonDivName, username, password)
 					currentUserName = data.username;
 					currentPwd = password;
 
-					jQuery.MifosXUI.initialise(data.permissions, "Individual Lending", tenantIdentifier );
+					jQuery.MifosXUI.initialise(data.permissions, applicationProfile, tenantIdentifier );
 
 					showMainContainer(logonDivName, username);
 					showILClientListing();
@@ -2476,6 +2476,9 @@ function initialiseAndShowILLogon() {
 	baseApiUrl = "https://ec2-46-137-62-163.eu-west-1.compute.amazonaws.com:8443/mifosng-provider/api/v1/";
 	if (QueryParameters["baseApiUrl"]) baseApiUrl = QueryParameters["baseApiUrl"];
 
+
+	applicationProfile = "ALL";
+	if (QueryParameters["applicationProfile"]) applicationProfile = QueryParameters["applicationProfile"];
 
 	tenantIdentifier = "";
 	if (QueryParameters["tenantIdentifier"]) tenantIdentifier= QueryParameters["tenantIdentifier"];
