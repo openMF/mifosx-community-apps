@@ -2143,8 +2143,6 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 }
 function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)  {
 				var dialogDiv = $("<div id='dialog-form'></div>");
-				var formHtml = $(templateSelector).render(data);
-				dialogDiv.append(formHtml);
 				var saveButton = doI18N('dialog.button.save');
 				var cancelButton = doI18N('dialog.button.cancel');
 				
@@ -2225,68 +2223,89 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				  			$(this).remove();
 						},
 				  		open: function (event, ui) {
-
-				  			//attaching charges to loan from popup
-				  			$('#chargeOptions').change(function(e) {
-								if ($(this).val() > 0){
-									var selectChargeForLoanSuccess = function(chargeData, textStatus, jqXHR){
-										var partialFormHtml = $("#loanChargeDetailsPartialFormTemplate").render(chargeData);
-										$("#loanChargeDetails").html(partialFormHtml);
-									}
-									executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForLoanSuccess, formErrorFunction);    	
-								}
-					    	})
-
-					  		$('#addclientmembers').click(function() {  
-					  			return !$('#notSelectedClients option:selected').remove().appendTo('#clientMembers');  
-					  		});
-					  		$('#removeclientmembers').click(function() {  
-					  			return !$('#clientMembers option:selected').remove().appendTo('#notSelectedClients');  
-					  		});
-
-					  		$('#addcharges').click(function() {  
-					  			return !$('#notSelectedCharges option:selected').remove().appendTo('#charges');  
-					  		});
-					  		$('#removecharges').click(function() {  
-					  			return !$('#charges option:selected').remove().appendTo('#notSelectedCharges');  
-					  		});
-
-					  		$('#addpermissions').click(function() {  
-					  			return !$('#notSelectedPermissions option:selected').remove().appendTo('#permissions');  
-					  		});
-					  		$('#removepermissions').click(function() {  
-					  			return !$('#permissions option:selected').remove().appendTo('#notSelectedPermissions');  
-					  		}); 
-
-				  			$('#addroles').click(function() {  
-					  			return !$('#notSelectedRoles option:selected').remove().appendTo('#roles');  
-					  		});	
-					  		$('#removeroles').click(function() {  
-					  			return !$('#roles option:selected').remove().appendTo('#notSelectedRoles');  
-					  		}); 
-
-				  			$('#add').click(function() {  
-				  			     return !$('#notSelectedItems option:selected').remove().appendTo('#selectedItems');  
-				  			});
-				  			$('#remove').click(function() {  
-				  				return !$('#selectedItems option:selected').remove().appendTo('#notSelectedItems');  
-				  			});
-
-					  		$('#addcurrencies').click(function() {  
-					  			return !$('#notSelectedCurrencies option:selected').remove().appendTo('#currencies');  
-					  		});
-					  		$('#removecurrencies').click(function() {  
-					  			return !$('#currencies option:selected').remove().appendTo('#notSelectedCurrencies');  
-					  		});
-
-				  			$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'dd MM yy'});
-				  			
-				  			$("#entityform textarea").first().focus();
-				  			$('#entityform input').first().focus();
+				  			repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 				  		}
 				  	}).dialog('open');
 }
 
+function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction){
+	var dialogDiv = $("#dialog-form");
+	var formHtml = $(templateSelector).render(data);
+	dialogDiv.html(formHtml);
+
+	//attaching charges to loan from popup
+	$('#chargeOptions').change(function(e) {
+		if ($(this).val() > 0){
+			var selectChargeForLoanSuccess = function(chargeData, textStatus, jqXHR){
+				var partialFormHtml = $("#loanChargeDetailsPartialFormTemplate").render(chargeData);
+				$("#loanChargeDetails").html(partialFormHtml);
+			}
+			executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForLoanSuccess, formErrorFunction);    	
+		}
+	})
+
+	if (templateSelector === "#groupFormTemplate"){
+		$("#officeId").change(function(e){
+			var selectedOfficeId = $(this).val();
+			var officeIdChangeSuccess = function(groupData, textStatus, jqXHR){
+				groupData['officeId'] = selectedOfficeId;
+				repopulateOpenPopupDialogWithFormViewData(groupData, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
+			}
+			if (data['id']){
+				executeAjaxRequest("groups/" + data['id'] + "?template=true&officeId=" + $(this).val(), "GET", "", officeIdChangeSuccess, formErrorFunction);	
+			} else {
+				executeAjaxRequest("groups/template?officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
+			}
+		})
+	}
+
+	$('#addclientmembers').click(function() {  
+		return !$('#notSelectedClients option:selected').remove().appendTo('#clientMembers');  
+	});
+	$('#removeclientmembers').click(function() {  
+		return !$('#clientMembers option:selected').remove().appendTo('#notSelectedClients');  
+	});
+
+	$('#addcharges').click(function() {  
+		return !$('#notSelectedCharges option:selected').remove().appendTo('#charges');  
+	});
+	$('#removecharges').click(function() {  
+		return !$('#charges option:selected').remove().appendTo('#notSelectedCharges');  
+	});
+
+	$('#addpermissions').click(function() {  
+		return !$('#notSelectedPermissions option:selected').remove().appendTo('#permissions');  
+	});
+	$('#removepermissions').click(function() {  
+		return !$('#permissions option:selected').remove().appendTo('#notSelectedPermissions');  
+	}); 
+
+	$('#addroles').click(function() {  
+		return !$('#notSelectedRoles option:selected').remove().appendTo('#roles');  
+	});	
+	$('#removeroles').click(function() {  
+		return !$('#roles option:selected').remove().appendTo('#notSelectedRoles');  
+	}); 
+
+	$('#add').click(function() {  
+	     return !$('#notSelectedItems option:selected').remove().appendTo('#selectedItems');  
+	});
+	$('#remove').click(function() {  
+		return !$('#selectedItems option:selected').remove().appendTo('#notSelectedItems');  
+	});
+
+	$('#addcurrencies').click(function() {  
+		return !$('#notSelectedCurrencies option:selected').remove().appendTo('#currencies');  
+	});
+	$('#removecurrencies').click(function() {  
+		return !$('#currencies option:selected').remove().appendTo('#notSelectedCurrencies');  
+	});
+
+	$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'dd MM yy'});
+
+	$("#entityform textarea").first().focus();
+	$('#entityform input').first().focus();	
+}
 
 function popupRegisterDatatableDialog(titleCode, templateSelector, width, height, saveSuccessFunction) {
 
