@@ -2,21 +2,30 @@
 
 //This does know about Mifos X Permission checking
 functionalityPermissionMatrix = {
-		xxxclientSearch: ["ALL_FUNCTIONS", "ALL_FUNCTIONS_READ", "CAN_CLIENT_LISTING"]
+		CLIENTSEARCH: ["ALL_FUNCTIONS", "ALL_FUNCTIONS_READ", "CAN_CLIENT_LISTING"]
 	};
+
 
 applicationProfiles = ["ALL", "IL"];
 
-isInitialised = false;
+applicationProfileExclusions = {
+		IL: ["GROUPSEARCH", "DEPOSITCREATE"]
+	};
 
+tenantNameInclusions = {
+		"HEAVENSFAMILY": ["OFFICETRANSACTIONLIST", "OFFICETRANSACTIONCREATE"]
+	};
+
+
+isInitialised = false;
 
 	$.MifosXUI = {};
 
 	$.MifosXUI.initialise = function(userPermissions, applicationProfile, tenantName) {
 
 		mUserPermissions = userPermissions;
-		mApplicationProfile = applicationProfile;
-		mTenantName = tenantName;
+		mApplicationProfile = applicationProfile.toUpperCase();
+		mTenantName = tenantName.toUpperCase();
 
 		if (checkApplicationProfile() == false) return;
 
@@ -34,7 +43,7 @@ isInitialised = false;
 			return false;
 		}
 
-		return showIt(functionalityName);   
+		return showIt(functionalityName.toUpperCase());   
 	};
 
 	function showIt(functionalityName) {
@@ -73,6 +82,18 @@ isInitialised = false;
 
 	function applicationProfileCheck(functionalityName) {
 
+		for (var appProfile in applicationProfileExclusions) 
+		{
+			if (appProfile == mApplicationProfile)
+			{
+				for (var excludedFunction in applicationProfileExclusions[appProfile])
+				{
+					if (applicationProfileExclusions[appProfile][excludedFunction] == functionalityName) return false;
+				}
+				return true;
+			}
+		}
+
 		return true;
 	}
 
@@ -85,7 +106,12 @@ isInitialised = false;
 
 		for (var i in applicationProfiles) 
 		{
-			if (applicationProfiles[i] == mApplicationProfile) return true;
+			
+			if (applicationProfiles[i] == mApplicationProfile) 
+			{
+				mApplicationProfileIndex = i;
+				return true;
+			}
 		}
 
 		alert("Invalid Application Profile: " + mApplicationProfile);
