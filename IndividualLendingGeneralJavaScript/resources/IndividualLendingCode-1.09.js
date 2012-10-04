@@ -1662,14 +1662,14 @@ function loadILLoan(loanId) {
 				});
 				$('button.repaymentloan span').text(doI18N('dialog.button.loan.repayment'));
 					
-				$('.waiveloan').button().click(function(e) {
+				$('.waiveinterestloan').button().click(function(e) {
 						var linkId = this.id;
-						var loanId = linkId.replace("waivebtn", "");
+						var loanId = linkId.replace("waiveinterestbtn", "");
 						
-						var getUrl = 'loans/' + loanId + '/transactions/template?command=waiver';
-						var postUrl = 'loans/' + loanId + '/transactions?command=waiver';
+						var getUrl = 'loans/' + loanId + '/transactions/template?command=waiveinterest';
+						var postUrl = 'loans/' + loanId + '/transactions?command=waiveinterest';
 						
-						var templateSelector = "#transactionLoanFormTemplate";
+						var templateSelector = "#loanTransactionWaiveInterestFormTemplate";
 						var width = 500; 
 						var height = 350;
 						var defaultOffset = offsetToApprovalDate;
