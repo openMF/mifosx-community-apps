@@ -8,6 +8,9 @@ functionalityPermissionMatrix = {
 
 applicationProfiles = ["ALL", "IL"];
 
+applicationProfileInclusions = {
+	};
+
 applicationProfileExclusions = {
 		IL: ["GROUPSEARCH", "DEPOSITCREATE", "OFFICETRANSACTIONLIST", "OFFICETRANSACTIONCREATE"]
 	};
@@ -51,17 +54,27 @@ isInitialised = false;
 
 	function showIt(functionalityName) {
 
-		if (tenantNameCheck(functionalityName) == false) return false;
-
 		var tenantNameCheckResult = tenantNameCheck(functionalityName);
 		switch (tenantNameCheckResult) {
-		case "YES":
-			return true;
-			break;
-		case "NO":
+		case "EXCLUDE":
 			return false;
 			break;
-		case "MAYBE":
+		case "INCLUDE":
+			break;
+		case "NEITHER":
+			var applicationProfileCheckResult = applicationProfileCheck(functionalityName);
+			switch (applicationProfileCheckResult) {
+			case "EXCLUDE":
+				return false;
+				break;
+			case "INCLUDE":
+				break;
+			case "NEITHER":
+				break;
+			default:
+				alert("Invalid applicationProfileCheckResult: " + applicationProfileCheckResult);
+				return false;
+			}
 			break;
 		default:
 			alert("Invalid tenantNameCheck: " + tenantNameCheckResult);
@@ -69,11 +82,7 @@ isInitialised = false;
 
 		}
 
-		if (applicationProfileCheck(functionalityName) == false) return false;
-
-		if (userPermissionsCheck(functionalityName) == false) return false;
-//alert("good to show");
-		return true;
+		return userPermissionsCheck(functionalityName);
 	}
 
 
@@ -100,51 +109,41 @@ isInitialised = false;
 	}
 
 	function applicationProfileCheck(functionalityName) {
-//If applicationProfile found and the functionalityName is excluded 'not okay to show'  (false) otherwise 'okay' (true)
-
-		for (var appProfile in applicationProfileExclusions) 
-		{
-			if (appProfile == mApplicationProfile)
-			{
-				for (var excludedFunction in applicationProfileExclusions[appProfile])
-				{
-					if (applicationProfileExclusions[appProfile][excludedFunction] == functionalityName) return false;
-				}
-				return true;
-			}
-		}
-		return true;
+		return includeExcludeNeither(functionalityName, mApplicationProfile, applicationProfileInclusions, applicationProfileExclusions);
 	}
 
 	function tenantNameCheck(functionalityName) {
-//If tenantName found and the functionalityName is included 'okay to show' (yes)
-//If tenantName found and the functionalityName is excluded 'not okay' (no)
-//Otherwise (maybe)
+		return includeExcludeNeither(functionalityName, mTenantName, tenantNameInclusions, tenantNameExclusions);
+	}
 
+	function includeExcludeNeither(functionalityName, name, inclusions, exclusions) {
+//If name found and the functionalityName is included - INCLUDE
+//If name found and the functionalityName is excluded - EXCLUDE
+//Otherwise (NEITHER)
 
-		for (var tenName in tenantNameInclusions) 
+		for (var i in inclusions) 
 		{
-			if (tenName == mTenantName)
+			if (i == name)
 			{
-				for (var includedFunction in tenantNameInclusions[tenName])
+				for (var j in inclusions[i])
 				{
-					if (tenantNameInclusions[tenName][includedFunction] == functionalityName) return "YES";
+					if (inclusions[i][j] == functionalityName) return "INCLUDE";
 				}
 			}
 		}
 
-		for (var tenName in tenantNameExclusions) 
+		for (var i in exclusions) 
 		{
-			if (tenName == mTenantName)
+			if (i == name)
 			{
-				for (var excludedFunction in tenantNameExclusions[tenName])
+				for (var j in exclusions[i])
 				{
-					if (tenantNameExclusions[tenName][excludedFunction] == functionalityName) return "NO";
+					if (exclusions[i][j] == functionalityName) return "EXCLUDE";
 				}
 			}
 		}
 
-		return "MAYBE";
+		return "NEITHER";
 	}
 
 	function checkApplicationProfile() {
