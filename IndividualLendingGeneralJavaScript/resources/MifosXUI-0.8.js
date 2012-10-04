@@ -9,15 +9,18 @@ functionalityPermissionMatrix = {
 applicationProfiles = ["ALL", "IL"];
 
 applicationProfileExclusions = {
-		IL: ["GROUPSEARCH", "DEPOSITCREATE"]
+		IL: ["GROUPSEARCH", "DEPOSITCREATE", "OFFICETRANSACTIONLIST", "OFFICETRANSACTIONCREATE"]
 	};
 
 tenantNameInclusions = {
 		"HEAVENSFAMILY": ["OFFICETRANSACTIONLIST", "OFFICETRANSACTIONCREATE"]
 	};
 
+tenantNameExclusions = {
+	};
 
 isInitialised = false;
+
 
 	$.MifosXUI = {};
 
@@ -48,11 +51,27 @@ isInitialised = false;
 
 	function showIt(functionalityName) {
 
-		if (userPermissionsCheck(functionalityName) == false) return false;
+		if (tenantNameCheck(functionalityName) == false) return false;
+
+		var tenantNameCheckResult = tenantNameCheck(functionalityName);
+		switch (tenantNameCheckResult) {
+		case "YES":
+			return true;
+			break;
+		case "NO":
+			return false;
+			break;
+		case "MAYBE":
+			break;
+		default:
+			alert("Invalid tenantNameCheck: " + tenantNameCheckResult);
+		return false;
+
+		}
 
 		if (applicationProfileCheck(functionalityName) == false) return false;
 
-		if (tenantNameCheck(functionalityName) == false) return false;
+		if (userPermissionsCheck(functionalityName) == false) return false;
 //alert("good to show");
 		return true;
 	}
@@ -81,6 +100,7 @@ isInitialised = false;
 	}
 
 	function applicationProfileCheck(functionalityName) {
+//If applicationProfile found and the functionalityName is excluded 'not okay to show'  (false) otherwise 'okay' (true)
 
 		for (var appProfile in applicationProfileExclusions) 
 		{
@@ -93,25 +113,45 @@ isInitialised = false;
 				return true;
 			}
 		}
-
 		return true;
 	}
 
 	function tenantNameCheck(functionalityName) {
+//If tenantName found and the functionalityName is included 'okay to show' (yes)
+//If tenantName found and the functionalityName is excluded 'not okay' (no)
+//Otherwise (maybe)
 
-		return true;
+
+		for (var tenName in tenantNameInclusions) 
+		{
+			if (tenName == mTenantName)
+			{
+				for (var includedFunction in tenantNameInclusions[tenName])
+				{
+					if (tenantNameInclusions[tenName][includedFunction] == functionalityName) return "YES";
+				}
+			}
+		}
+
+		for (var tenName in tenantNameExclusions) 
+		{
+			if (tenName == mTenantName)
+			{
+				for (var excludedFunction in tenantNameExclusions[tenName])
+				{
+					if (tenantNameExclusions[tenName][excludedFunction] == functionalityName) return "NO";
+				}
+			}
+		}
+
+		return "MAYBE";
 	}
 
 	function checkApplicationProfile() {
 
 		for (var i in applicationProfiles) 
 		{
-			
-			if (applicationProfiles[i] == mApplicationProfile) 
-			{
-				mApplicationProfileIndex = i;
-				return true;
-			}
+			if (applicationProfiles[i] == mApplicationProfile) return true;
 		}
 
 		alert("Invalid Application Profile: " + mApplicationProfile);
