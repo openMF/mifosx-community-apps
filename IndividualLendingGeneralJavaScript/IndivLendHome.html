@@ -1452,6 +1452,75 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="clientIdentifiersTemplate" type="text/x-jquery-tmpl">
+	<span id="toolbar" class="ui-widget-header ui-corner-all">
+   		<button id="addclientidentifier{{=clientId}}">{{=$ctx.doI18N("client.identifier.add")}}</button>
+	</span>
+	<hr/>
+	<table style="vertical-align: top;width: 100%">
+		{{#each crudRows}}
+				<tr>
+					<td colspan="3" align="center"><b>{{=$ctx.doI18N("client.identifier.label")}} {{=documentTypeName}}</b></td>
+				</tr>
+				<tr>
+					<td colspan="1">
+						<label for="documentKey">{{=$ctx.doI18N("client.identifier.unique.key")}}</label>
+					</td>
+					<td>{{=documentKey}}</td>
+				<tr>
+				<tr>
+				   	<td><label for="description">{{=$ctx.doI18N("client.identifier.description")}}</label></td>
+					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
+					<td>
+						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+					   		<button id="editclientidentifier{{=id}}">{{=$ctx.doI18N("client.identifier.edit")}}</button>
+					   		<button id="deleteclientidentifier{{=id}}">{{=$ctx.doI18N("client.identifier.delete")}}</button>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<hr/>
+					</td>
+				</tr>
+		{{/each}}
+	</table>
+</script>
+
+<script id="clientIdentifiersFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="documentTypeId">{{=$ctx.doI18N("client.identifier.document.type")}}</label>
+				<select id="documentTypeId" name="documentTypeId" title="">
+					<option value="">{{=$ctx.doI18N("client.identifier.document.type.option.first.choice")}}</option>
+					{{#each allowedDocumentTypes}}
+				        {{#if $ctx.number($parent.parent.data.documentTypeId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<label for="documentKey">{{=$ctx.doI18N("client.identifier.unique.key")}}</label>
+				<input id="documentKey" name="documentKey" title="" type="text" value="{{=documentKey}}"/>
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="description">{{=$ctx.doI18N("client.identifier.description")}}</label>
+				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+
 <script id="clientAccountSummariesTemplate" type="text/x-jquery-tmpl">
 <p><b>{{=$ctx.doI18N("heading.client.account.account.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(anyLoanCount)}}
