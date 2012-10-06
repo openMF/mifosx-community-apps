@@ -210,7 +210,9 @@ function setGroupListingContent(divName){
 function setClientContent(divName) {
 
 	var htmlVar = '<div id="newtabs">	<ul><li><a href="nothing"'; 
-	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("app.loading") + '</span></a></li></ul><div id="clienttab"></div></div>';
+	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("app.loading") + '</span></a></li>';
+	htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
+	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div></div>';
 	$("#" + divName).html(htmlVar);
 }
 
@@ -569,7 +571,11 @@ function showILClient(clientId) {
 						clientDirty = false;
 					}
 				}
-
+				
+				if (tab.index == 1)
+				{
+					refreshClientIdentifiers(clientUrl);
+				}
 	    		},
 		"add": function( event, ui ) {
 				$newtabs.tabs('select', '#' + ui.panel.id);
@@ -691,6 +697,67 @@ function showILClient(clientId) {
 	    
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);	  
 
+}
+
+function refreshClientIdentifiers(clientUrl) {
+		var successFunction =  function(data, textStatus, jqXHR) {
+			var crudObject = new Object();
+			crudObject.crudRows = data;
+			var tableHtml = $("#clientIdentifiersTemplate").render(crudObject);
+			$("#clientidentifiertab").html(tableHtml);
+			//initialize all edit/delete buttons
+				
+			var editClientIdentifierSuccessFunction = function(data, textStatus, jqXHR) {
+			  	$("#dialog-form").dialog("close");
+			  	refreshClientIdentifiers(clientUrl);
+			}
+			$.each(crudObject.crudRows, function(i, val) {
+			      $("#editclientidentifier" + val.id).button({icons: {
+	                primary: "ui-icon-pencil"}}
+	                ).click(function(e){
+			      	var clientId = clientUrl.replace("clients/", "");
+					var getUrl = clientUrl + '/identifiers/'+val.id+'?template=true';
+					var putUrl = clientUrl + '/identifiers/'+val.id;
+					var templateSelector = "#clientIdentifiersFormTemplate";
+					var width = 600; 
+					var height = 450;
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  editClientIdentifierSuccessFunction);
+				    e.preventDefault();
+			      });
+			      $("#deleteclientidentifier" + val.id).button({icons: {
+	                primary: "ui-icon-circle-close"}
+	            	}).click(function(e) {
+					var url = clientUrl + '/identifiers/'+val.id;
+					var width = 400; 
+					var height = 225;
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, editClientIdentifierSuccessFunction);
+					
+					e.preventDefault();
+				});
+			});			
+			//associate event with add client Identity button
+			$('#addclientidentifier').button({icons: {
+	                primary: "ui-icon-plusthick"}
+	            	}).click(function(e) {
+				var clientId = clientUrl.replace("clients/", "");
+				
+				var getUrl = clientUrl + '/identifiers/template';
+				var putUrl = clientUrl + '/identifiers';
+				var templateSelector = "#clientIdentifiersFormTemplate";
+				var width = 600; 
+				var height = 450;
+				
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	refreshClientIdentifiers(clientUrl);
+				}
+				
+				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+			    e.preventDefault();
+			});
+		}
+  		executeAjaxRequest(clientUrl + '/identifiers', 'GET', "", successFunction, formErrorFunction);	  	
 }
 	
 function showILGroup(groupId){
