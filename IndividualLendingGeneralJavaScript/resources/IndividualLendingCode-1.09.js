@@ -1525,7 +1525,7 @@ function showILGroup(groupId){
 
 function showRelatedDataTableInfo(tabVar, appTableName, appTablePKValue, ignoreDatatableArray) {	 
   
-		var url = 'datatables?appTable=' + appTableName;
+		var url = 'datatables?apptable=' + appTableName;
 
 		var successFunction =  function(data, textStatus, jqXHR) {
 				

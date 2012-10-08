@@ -64,7 +64,7 @@
 
 	function displayAdditionalInfo(params) {
 
-		var url = 'datatables?appTable=' + params.appTableName;
+		var url = 'datatables?apptable=' + params.appTableName;
 
 		var successFunction = function(data, status, xhr) {
 			if (data.length > 0)
