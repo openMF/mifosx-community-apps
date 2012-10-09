@@ -1405,11 +1405,12 @@ function showILGroup(groupId){
 				var linkId = this.id;
 				var depositAccountId = linkId.replace("rejectbtn", "");
 				var postUrl = 'depositaccounts/' + depositAccountId + '?command=reject';
+				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
 				var templateSelector = "#stateTransitionDepositFormTemplate";
 				var width = 400; 
 				var height = 250;
 
-				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.button.reject.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadClient);
+				popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.button.reject.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadClient);
 			    e.preventDefault();
 			});
     		$('button.rejectdepositapplication span').text(doI18N('dialog.button.reject.depositAccount'));
@@ -1514,9 +1515,9 @@ function showILGroup(groupId){
 				var linkId = this.id;
 				var depositAccountId = linkId.replace("undoapprovebtn", "");
 				var postUrl = 'depositaccounts/' + depositAccountId + '?command=undoapproval';
-				var templateSelector = "#stateTransitionDepositFormTemplate";
-				var width = 400; 
-				var height = 250;
+				var templateSelector = "#undoStateTransitionLoanFormTemplate";
+				var width = 450; 
+				var height = 260;
 
 				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
 				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.deposit.approval', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
@@ -1528,12 +1529,13 @@ function showILGroup(groupId){
     		$('.withdrawnbyapplicant').button().click(function(e) {
 				var linkId = this.id;
 				var depositAccountId = linkId.replace("withdrawnbyapplicantbtn", "");
+				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
 				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrewbyclient';
 				var templateSelector = "#stateTransitionDepositFormTemplate";
 				var width = 400; 
 				var height = 250;
 
-				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.loan.withdrawn.by.client', templateSelector, width, height, saveSuccessFunctionReloadClient);
+				popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.title.loan.withdrawn.by.client', templateSelector, width, height, saveSuccessFunctionReloadClient);
 			    e.preventDefault();
 			});
     		$('button.withdrawnbyapplicant span').text(doI18N('dialog.title.loan.withdrawn.by.client'));
