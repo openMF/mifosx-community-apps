@@ -1747,6 +1747,44 @@ function loadILLoan(loanId) {
 					    e.preventDefault();
 				});
 				$('button.waiveloan span').text(doI18N('dialog.button.loan.waive'));
+				
+				$('.writeoffloan').button().click(function(e) {
+					var linkId = this.id;
+					var loanId = linkId.replace("writeoffbtn", "");
+					
+					var getUrl = 'loans/' + loanId + '/transactions/template?command=writeoff';
+					var postUrl = 'loans/' + loanId + '/transactions?command=writeoff';
+					
+					var templateSelector = "#loanTransactionWriteOffFormTemplate";
+					var width = 500;
+					var height = 350;
+					var defaultOffset = offsetToApprovalDate;
+					
+					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					
+					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.writeoff.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
+				    e.preventDefault();
+				});
+				$('button.writeoffloan span').text(doI18N('dialog.button.loan.writeoff'));
+				
+				$('.closeasrescheduledloan').button().click(function(e) {
+					var linkId = this.id;
+					var loanId = linkId.replace("closeasrescheduledbtn", "");
+					
+					var getUrl = 'loans/' + loanId + '/transactions/template?command=closeasrescheduled';
+					var postUrl = 'loans/' + loanId + '/transactions?command=closeasrescheduled';
+					
+					var templateSelector = "#loanTransactionWaiveInterestFormTemplate";
+					var width = 500;
+					var height = 350;
+					var defaultOffset = offsetToApprovalDate;
+					
+					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					
+					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.closeasrescheduledloan.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
+				    e.preventDefault();
+				});
+				$('button.closeasrescheduledloan span').text(doI18N('dialog.button.loan.closeasrescheduledloan'));
 					
 				$('.adjustloanrepayment').button().click(function(e) {
 						
@@ -2939,6 +2977,18 @@ function jsViewsRegisterHelpers() {
 			      try {
 			    	var num = number.toFixed(0);
 			        return num > 0;
+			      } catch(e) {
+			        return false;
+			      }
+			},
+			isAdjustableTransaction: function(transactionTypeId) {
+				  try {
+		    		if (undefined == transactionTypeId || transactionTypeId === null) {
+						return false;
+					}
+			    		
+			    	var num = transactionTypeId.toFixed(0);
+			        return num == 2 || num == 4;
 			      } catch(e) {
 			        return false;
 			      }

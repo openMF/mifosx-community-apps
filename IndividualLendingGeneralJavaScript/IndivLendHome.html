@@ -2110,7 +2110,8 @@ $(document).ready(function() {
 		{{#if makeRepaymentAllowed}}
 		<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
 		<button id="repaymentbtn{{=$parent.parent.parent.data.id}}" class="repaymentloan">Make Repayment</button>
-		<button id="waiveinterestbtn{{=$parent.parent.data.id}}" class="waiveinterestloan">Waive interest</button>
+		<button id="waiveinterestbtn{{=$parent.parent.parent.data.id}}" class="waiveinterestloan">Waive interest</button>
+		<button id="writeoffbtn{{=$parent.parent.parent.data.id}}" class="writeoffloan">Write-off</button>
 		{{/if}}
 	</span>
 </div>
@@ -2126,8 +2127,8 @@ $(document).ready(function() {
 		{{#each repaymentSchedule}}
 		<li><a href="#schedule{{=id}}" title="schedule">{{=$ctx.doI18N("tab.client.account.loan.schedule")}}</a></li>
         {{/each}}
-		{{#if loanRepayments}}
-		<li><a href="#repayments{{=id}}" title="repayments">{{=$ctx.doI18N("tab.client.account.loan.repayments")}}</a></li>
+		{{#if transactions}}
+		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.client.account.loan.transactions")}}</a></li>
 		{{/if}}
 	</ul>
     <!-- first loan tab -->
@@ -2303,6 +2304,9 @@ $(document).ready(function() {
 					{{#if totalWaivedToDate}}
 					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.summary.heading.waived")}}</th>
 					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<th>Written-off</th>
+					{{/if}}
 					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.heading.outstanding")}}</th>
 				</tr>
 			</thead>
@@ -2314,6 +2318,9 @@ $(document).ready(function() {
 					{{#if totalWaivedToDate}}
 					<td>&nbsp;</td>
 					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalWrittenOff)}}</td>
+					{{/if}}
 					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalOutstanding)}}</td>
 				</tr>
 				<tr>
@@ -2323,6 +2330,9 @@ $(document).ready(function() {
 					{{#if totalWaivedToDate}}
 					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWaived)}}</td>
 					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWrittenOff)}}</td>
+					{{/if}}
 					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestOutstanding)}}</td>
 				</tr>
 				{{#if cumulativeChargesToDate}}
@@ -2331,6 +2341,9 @@ $(document).ready(function() {
 					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesToDate)}}</td>
 					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesPaid)}}</td>
 					{{#if totalWaivedToDate}}
+					<td>&nbsp;</td>
+					{{/if}}
+					{{#if totalWrittenOffToDate}}
 					<td>&nbsp;</td>
 					{{/if}}
 					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesOutstanding)}}</td>
@@ -2344,6 +2357,9 @@ $(document).ready(function() {
 					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
 					{{#if totalWaivedToDate}}
 					<th>{{=$ctx.monetaryValue(currency, totalWaivedToDate)}}</th>
+					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<th>{{=$ctx.monetaryValue(currency, totalWrittenOffToDate)}}</th>
 					{{/if}}
 					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
 				</tr>
@@ -2448,29 +2464,29 @@ $(document).ready(function() {
 	</div>
 	{{/each}}
 
-    {{#if loanRepayments}}
+    {{#if transactions}}
 	<!-- Third loan tab -->
-	<div id="repayments{{=id}}" style="margin-top: 5px;">
+	<div id="transactions{{=id}}" style="margin-top: 5px;">
 		<table id="newrepaymentsactivity{{=id}}" class="pretty displaypayments">
-		<caption>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.repayments.caption")}}</caption>
+		<caption>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.transactions.activity.caption")}}</caption>
 			<thead>
 				<tr>
-				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.paymentdate")}}</th>
+				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.transactiondate")}}</th>
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.transactionType")}}</th>
-				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.amountpaid")}}</th>
-				{{#if actualDisbursementDate !== null}}
+				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.amount")}}</th>
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.action")}}</th>
-				{{/if}}
 				</tr>
 			</thead>
 			<tbody>
-				{{#each loanRepayments}}
+				{{#each transactions}}
 				<tr>
 				<td>{{=$ctx.globalDate(date)}}</td>
-				<td>{{=$ctx.doI18N(transactionType.code)}}</td>
-				<td>{{=$ctx.money(total)}}</td>
-				{{#if $parent.parent.data.actualDisbursementDate !== null}}
+				<td>{{=$ctx.doI18N(type.code)}}</td>
+				<td>{{=$ctx.monetaryValue(currency, amount)}}</td>
+				{{#if $ctx.isAdjustableTransaction(type.id)}}
 				<td><button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment">Adjust</button></td>
+				{{#else}}
+				<td>&nbsp;</td>
 				{{/if}}
 				</tr>
 				{{/each}}
@@ -2535,6 +2551,21 @@ $(document).ready(function() {
 
 	<label for="transactionAmount">{{=$ctx.doI18N("label.loan.transaction.amount")}}</label>
 	<input id="transactionAmount" name="transactionAmount" class="text ui-widget-content ui-corner-all" title="" value="{{=$ctx.monetaryValue(currency, amount)}}" />
+
+	<label for="note">{{=$ctx.doI18N("label.loan.action.note")}}</label>
+	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
+</form>
+</script>
+
+<script id="loanTransactionWriteOffFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
 
 	<label for="note">{{=$ctx.doI18N("label.loan.action.note")}}</label>
 	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
