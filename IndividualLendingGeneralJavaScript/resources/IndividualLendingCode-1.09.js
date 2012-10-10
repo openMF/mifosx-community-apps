@@ -213,7 +213,8 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
-
+    htmlVar += '	<li><a href="unknown.html" onclick="postInterest();return false;">' + doI18N("label.interest.posting") + '</a></li>';
+	
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
 	htmlVar += '</ul>';
 	htmlVar += '<ul id="nav" class="floatright">';
@@ -1999,6 +2000,17 @@ function showILGroup(groupId){
 			});
     		$('button.withdrawinterestamount span').text(doI18N('label.withdraw.interest.amount'));
 
+			$('.printpdf').button().click(function(e) {
+				var linkId = this.id;
+				var depositAccountId = linkId.replace("printbtn", "");
+				var getUrl = 'depositaccounts/' + depositAccountId + '/print';
+				
+				executeAjaxOctetStreamDownloadRequest(getUrl);
+				alert("Please close the pdf file after download or print finished");
+				e.preventDefault();
+			});
+    		$('button.printpdf span').text(doI18N('label.print.fd.account.details'));
+			
     		
     		$('.renewdepositaccount').button().click(function(e) {
 				var linkId = this.id;
@@ -3865,5 +3877,12 @@ function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeh
 
 function jsViewsRegisterHelpers() {
 	$.views.registerHelpers(custom.helperFunctions);
+}
+function postInterest(){
+	var url = 'depositaccounts/postinterest';
+	var width = 400; 
+	var height = 225;
+							
+	popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
 }
 
