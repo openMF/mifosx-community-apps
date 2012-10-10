@@ -1805,10 +1805,10 @@ function loadILLoan(loanId) {
 					var linkId = this.id;
 					var loanId = linkId.replace("closeasrescheduledbtn", "");
 					
-					var getUrl = 'loans/' + loanId + '/transactions/template?command=closeasrescheduled';
-					var postUrl = 'loans/' + loanId + '/transactions?command=closeasrescheduled';
+					var getUrl = 'loans/' + loanId + '/transactions/template?command=close-rescheduled';
+					var postUrl = 'loans/' + loanId + '/transactions?command=close-rescheduled';
 					
-					var templateSelector = "#loanTransactionWaiveInterestFormTemplate";
+					var templateSelector = "#loanTransactionWriteOffFormTemplate";
 					var width = 500;
 					var height = 350;
 					var defaultOffset = offsetToApprovalDate;
@@ -1819,6 +1819,25 @@ function loadILLoan(loanId) {
 				    e.preventDefault();
 				});
 				$('button.closeasrescheduledloan span').text(doI18N('dialog.button.loan.closeasrescheduledloan'));
+				
+				$('.closeloan').button().click(function(e) {
+					var linkId = this.id;
+					var loanId = linkId.replace("closebtn", "");
+					
+					var getUrl = 'loans/' + loanId + '/transactions/template?command=close';
+					var postUrl = 'loans/' + loanId + '/transactions?command=close';
+					
+					var templateSelector = "#loanTransactionWriteOffFormTemplate";
+					var width = 500;
+					var height = 350;
+					var defaultOffset = offsetToApprovalDate;
+					
+					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					
+					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.close.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
+				    e.preventDefault();
+				});
+				$('button.closeloan span').text(doI18N('dialog.button.loan.close'));
 					
 				$('.adjustloanrepayment').button().click(function(e) {
 						

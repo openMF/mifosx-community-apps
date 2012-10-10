@@ -2342,7 +2342,9 @@ $(document).ready(function() {
 <div id="loanactions">
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
 
+		{{#if addLoanChargeAllowed}}
 		<button id="addloanchargebtn{{=$parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
+		{{/if}}
 
 		{{#if rejectAllowed}}
 		<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectloan">Reject</button>
@@ -2379,6 +2381,14 @@ $(document).ready(function() {
 		<button id="repaymentbtn{{=$parent.parent.parent.data.id}}" class="repaymentloan">Make Repayment</button>
 		<button id="waiveinterestbtn{{=$parent.parent.parent.data.id}}" class="waiveinterestloan">Waive interest</button>
 		<button id="writeoffbtn{{=$parent.parent.parent.data.id}}" class="writeoffloan">Write-off</button>
+		{{/if}}
+
+		{{#if closeLoanAsRescheduledAllowed}}
+		<button id="closeasrescheduledbtn{{=$parent.parent.parent.data.id}}" class="closeasrescheduledloan">Close as rescheduled</button>
+		{{/if}}
+
+		{{#if closeLoanAllowed}}
+		<button id="closebtn{{=$parent.parent.parent.data.id}}" class="closeloan">Close</button>
 		{{/if}}
 	</span>
 </div>
