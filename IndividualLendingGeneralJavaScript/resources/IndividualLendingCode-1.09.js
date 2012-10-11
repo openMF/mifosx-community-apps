@@ -512,29 +512,75 @@ function applyClientSearchFilter(officeHierarchy) {
 //HOME list groups functionality
 function showILGroupListing(){
 
+	if (jQuery.MifosXUI.showIt("groupSearch") == false)
+	{
+		alert(doI18N("group.search.not.allowed"));
+		return;
+	}
+
 	setGroupListingContent("content");
 
 	$("#tabs").tabs({
 	    select: function(event, ui) {
-	    	// comment out console.logs as dont work across all browsers.
-//	    	console.log("selected..");
-//			alert("selected");
 	    },
 	    load: function(event, ui) {
-//	    	console.log("load..");
 	    },
 	    show: function(event, ui) {
-//	    	console.log("show..");
-			var successFunction =  function(data) {
-	  			var groupObject = new Object();
-	    			groupObject.groups = data;
-	    			//console.log(groupObject);
-		    	
-				var tableHtml = $("#groupSearchTabTemplate").render(groupObject);
-				$("#searchtab").html(tableHtml);	
-	  		};
+			var initGroupSearch =  function() {
+				//render page markup
+				var tableHtml = $("#groupSearchTabTemplate").render();
+				$("#searchtab").html(tableHtml);
+				
+				//fetch all Offices 
+				var officeSearchSuccessFunction =  function(data) {
+					var officeSearchObject = new Object();
+				    officeSearchObject.crudRows = data;
+					var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
+					$("#officesInScopeDiv").html(tableHtml);
+			  	};
+			  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
+				
+				//render group drop down data
+				var groupSearchSuccessFunction =  function(data) {
+					var groupSearchObject = new Object();
+				    groupSearchObject.crudRows = data;
+					var tableHtml = $("#allGroupsDropdownTemplate").render(groupSearchObject);
+					$("#groupsInScopeDiv").html(tableHtml);
+			  	};
+				executeAjaxRequest('groups', 'GET', "", groupSearchSuccessFunction, formErrorFunction);
+	  			    	
+	    		//search group functionality
+				var searchSuccessFunction =  function(data) {
+					var groupSearchObject = new Object();
+				    groupSearchObject.crudRows = data;
+					var tableHtml = $("#groupsTableTemplate").render(groupSearchObject);
+					$("#groupTableDiv").html(tableHtml);
+				    var oTable=displayListTable("groupstable");
+			  	};
+				
+				//initialize search button				
+				$("#searchGroupBtn").button({
+					icons: {
+		                primary: "ui-icon-search"
+		            }
+		         }).click(function(e){
+		         	//get selected office
+		         	var officeHierarchy = $("#officeId").val();
+		         	//get search parameter
+					var searchValue = $("#groupSearchInput").val();
+					searchValue = searchValue.replace("'", "''");
+					//office hierarchy dropdown does not appear for branch users
+					var sqlSearchValue = "name like '%" + searchValue + "%'"; 
+					if(officeHierarchy){
+						executeAjaxRequest("groups?sqlSearch=" + encodeURIComponent(sqlSearchValue)+ "&underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", searchSuccessFunction, formErrorFunction);
+					}else{
+						executeAjaxRequest("groups?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
+					}
+				   	e.preventDefault(); 
+			   	});
+	    	};
 
-	  		executeAjaxRequest('groups', 'GET', "", successFunction, formErrorFunction);
+	    	initGroupSearch();
 	    }
 	});
 
