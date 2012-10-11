@@ -2688,7 +2688,7 @@ function doI18N(xlateStr, params) {
 	if (highlightMissingXlations == "Y") return jQuery.i18n.prop(xlateStr, params)
 	else
 	{
-		var xlated = jQuery.i18n.prop(xlateStr, params);
+		var xlated = jQuery.i18n.prop(xlateStr, params,arguments[2],arguments[3],arguments[4],arguments[5],arguments[6]);
 		if (xlated.substr(0,1) == "[" && xlated.substr(xlated.length - 1, 1) == "]") return xlated.substr(1, xlated.length - 2)
 		else return xlated;
 	}
