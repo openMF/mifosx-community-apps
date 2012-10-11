@@ -2966,7 +2966,7 @@ $(document).ready(function() {
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.loan.product.loan.amount")}}</td>
 						<td>
-							<input id="principal" name="principal" title="" style="width: 125px;" value="{{=$ctx.decimal(principal, $ctx.number(currency.decimalPlaces))}}" />
+							<input id="principal" name="principal" title="" style="width: 125px;" value="{{=$ctx.monetaryValue(currency, principal)}}" />
 						</td>
 					</tr>
 					<tr>
@@ -3071,7 +3071,7 @@ $(document).ready(function() {
 					<tr>
 						<td>{{=$ctx.doI18N("form.label.loan.product.arrears.tolerance")}}</td>
 						<td>
-							<input id="inArrearsTolerance" name="inArrearsTolerance" title="" style="width: 215px;" value="{{=$ctx.decimal(inArrearsTolerance, $ctx.number(currency.decimalPlaces))}}" />
+							<input id="inArrearsTolerance" name="inArrearsTolerance" title="" style="width: 215px;" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" />
 						</td>
 					</tr>
 				</table>

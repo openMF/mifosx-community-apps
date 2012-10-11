@@ -2710,13 +2710,13 @@ function initialiseAndShowILLogon() {
 	applicationProfile = "ALL";
 	if (QueryParameters["applicationProfile"]) applicationProfile = QueryParameters["applicationProfile"];
 
-	tenantIdentifier = "";
+	tenantIdentifier = "default";
 	if (QueryParameters["tenantIdentifier"]) tenantIdentifier= QueryParameters["tenantIdentifier"];
-	else
-	{
-		alert("System Error - no tenantIdentifier specified");
-		return;
-	}
+//	else
+//	{
+//		alert("System Error - no tenantIdentifier specified");
+//		return;
+//	}
 	
 	showILLogon("container");
 }
@@ -3054,6 +3054,9 @@ function jsViewsRegisterHelpers() {
 			},
 			decimal: function(number, digits) {
 		      try {
+		    	if (undefined == number || number == null) {
+		    		return "";
+				}
 		    	var parsed = parseFloat(number.toFixed(digits));
 		    	var parsedStr = "" + parsed;
 		    	var nonZeroDigitsAfterDecimal = 0;
