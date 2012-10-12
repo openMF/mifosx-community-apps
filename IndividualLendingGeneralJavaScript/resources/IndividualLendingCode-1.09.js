@@ -1816,7 +1816,7 @@ function loadILLoan(loanId) {
 						var getUrl = 'loans/' + loanId + '/transactions/template?command=waiveinterest';
 						var postUrl = 'loans/' + loanId + '/transactions?command=waiveinterest';
 						
-						var templateSelector = "#loanTransactionWaiveInterestFormTemplate";
+						var templateSelector = "#transactionLoanFormTemplate";
 						var width = 500; 
 						var height = 350;
 						var defaultOffset = offsetToApprovalDate;
@@ -3011,27 +3011,6 @@ function jsViewsRegisterHelpers() {
 }
 
 	helperFunctions = {
-			money: function(monetaryObj) {
-				
-				if (undefined == monetaryObj) {
-					return "";
-				}
-				Globalize.culture().numberFormat.currency.symbol = monetaryObj.displaySymbol;
-				
-				var digits = monetaryObj.digitsAfterDecimal.toFixed(0);
-				return Globalize.format(monetaryObj.amount, "n" + digits); 
-			},
-			moneyWithCurrency: function(monetaryObj) {
-				
-				if (undefined == monetaryObj) {
-					return "";
-				}
-				
-				Globalize.culture().numberFormat.currency.symbol = monetaryObj.displaySymbol;
-				
-				var digits = monetaryObj.digitsAfterDecimal.toFixed(0);
-				return Globalize.format(monetaryObj.amount, "c" + digits); 
-			},
 			moneyFormatted: function(currencyObj, bigDecimalValue) {
 				
 				if (undefined == bigDecimalValue || undefined == currencyObj) {

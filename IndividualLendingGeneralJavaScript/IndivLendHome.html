@@ -2833,8 +2833,7 @@ $(document).ready(function() {
 </form>
 </script>
 
-<script id="undoStateTransitionLoanFormTemplate"
-	type="text/x-jquery-tmpl">
+<script id="undoStateTransitionLoanFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
 
@@ -2844,24 +2843,6 @@ $(document).ready(function() {
 </script>
 
 <script id="transactionLoanFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
-	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
-
-	<label for="transactionAmount">{{=$ctx.doI18N("label.loan.transaction.amount")}}</label>
-	<input id="transactionAmount" name="transactionAmount" class="text ui-widget-content ui-corner-all" title="" value="{{=$ctx.money(total)}}" />
-
-	<label for="note">{{=$ctx.doI18N("label.loan.action.note")}}</label>
-	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
-</form>
-</script>
-
-<script id="loanTransactionWaiveInterestFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
 
