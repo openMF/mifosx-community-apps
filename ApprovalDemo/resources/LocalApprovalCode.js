@@ -39,8 +39,6 @@ function initialiseAndShowLogon() {
 			}
 		});
 
-	//jsViewsRegisterHelpers();
-
 	//baseApiUrl = "https://localhost:8443/mifosng-provider/api/v1/";
 	baseApiUrl = "https://ec2-46-137-62-163.eu-west-1.compute.amazonaws.com:8443/mifosng-provider/api/v1/";
 
@@ -116,6 +114,7 @@ function createTable(theData) {
 
 	rowsDisplayable = 0;
 	var tableColumns = [];
+	var columnName = "";
 	for (var i in theData.columnHeaders)
 	{
 		var tmpSType;
@@ -148,9 +147,15 @@ function createTable(theData) {
 			default:
   				tmpSType = 'string';
 		}
-		tableColumns.push({ "sTitle": doI18N(theData.columnHeaders[i].columnName), 
-					"sOriginalHeading": theData.columnHeaders[i].columnName,
-					// "dataType": tmpSType,
+		columnName = theData.columnHeaders[i].columnName;
+		if (columnName == "Id")
+		{
+			columnName = "Approval Page Link";
+  			tmpSType = 'string';
+			tmpSClass = "";
+		}
+		tableColumns.push({ "sTitle": doI18N(columnName), 
+					"sOriginalHeading": columnName,
 					"sType": tmpSType,
 					"sClass": tmpSClass
 					});
@@ -186,6 +191,7 @@ function createTable(theData) {
 			default:
   				alert("System Error - Type not Found: " + tableColumns[j].sType);
 			}
+			if (j==0) tmpVal = '<a href="unknown.html" onclick="alert(' + "'Showing Loan Details and Approval Functionality For Loan No.: " + tmpVal + "'" + ');return false;">' + doI18N("Show Loan Details") + '</a>';
 			tmpArr.push(tmpVal);
 		}
 		tableData.push(tmpArr);
