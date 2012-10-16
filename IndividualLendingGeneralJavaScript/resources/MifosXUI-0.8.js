@@ -43,16 +43,13 @@ isInitialised = false;
 	};
 
 	$.MifosXUI.showIt = function(functionalityName) {
-		
-		return true;
-// FIXME - disable showIt functionality for and always return true.		
-//		if (isInitialised == false)
-//		{
-//			alert("You haven't initialised MifosXUI");
-//			return false;
-//		}
-//
-//		return showIt(functionalityName.toUpperCase());   
+		if (isInitialised == false)
+		{
+			alert("You haven't initialised MifosXUI");
+			return false;
+		}
+
+		return showIt(functionalityName.toUpperCase());   
 	};
 
 	function showIt(functionalityName) {
