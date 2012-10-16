@@ -130,9 +130,9 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '</div>';
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
-	if (jQuery.MifosXUI.showIt("ClientSearch") == true) {
+//	if (jQuery.MifosXUI.showIt("ClientSearch") == true) {
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';		
-	}
+//	}
 //	htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 
