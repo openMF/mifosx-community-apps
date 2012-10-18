@@ -2180,7 +2180,7 @@ $(document).ready(function() {
  </form>
 </script>
 
-	<script id="loanDataTabTemplate" type="text/x-jquery-tmpl">
+<script id="loanDataTabTemplate" type="text/x-jquery-tmpl">
 {{#each permissions}}
 {{#if anyActionOnLoanAllowed}}
 <div id="loanactions">
@@ -2197,9 +2197,6 @@ $(document).ready(function() {
 		{{#if pendingApproval}}
 		<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
 		<button id="approvebtn{{=$parent.parent.parent.data.id}}" class="approveloan">Approve</button>
-		{{/if}}
-		
-		{{#if pendingApproval}}
 		<button id="deletebtn{{=$parent.parent.parent.data.id}}" class="deleteloan">Delete</button>
 		{{/if}}
 		
