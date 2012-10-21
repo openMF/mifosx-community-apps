@@ -2702,10 +2702,7 @@ function initialiseAndShowILLogon() {
 
 	jsViewsRegisterHelpers();
 
-	//baseApiUrl = "https://localhost:8443/mifosng-provider/api/v1/";
-	baseApiUrl = "https://ec2-46-137-62-163.eu-west-1.compute.amazonaws.com:8443/mifosng-provider/api/v1/";
-	if (QueryParameters["baseApiUrl"]) baseApiUrl = QueryParameters["baseApiUrl"];
-
+	baseApiUrl = getBaseApiURL(window.location.href);
 
 	applicationProfile = "ALL";
 	if (QueryParameters["applicationProfile"]) applicationProfile = QueryParameters["applicationProfile"];
@@ -2720,6 +2717,33 @@ function initialiseAndShowILLogon() {
 	
 	showILLogon("container");
 }
+
+function getBaseApiURL(docURL)
+{
+	var l = getLocation(docURL);
+	
+	var baseApiUrl = "";
+	if (l.hostname == "localhost" || l.hostname == "" || l.hostname == null) {
+		baseApiUrl = "https://demo.openmf.org/mifosng-provider/api/v1/";
+	}
+	else if (l.hostname == "demo.openmf.org") {
+		baseApiUrl = "/mifosng-provider/api/v1/";
+	} else {
+		baseApiUrl = "https://ec2-46-137-62-163.eu-west-1.compute.amazonaws.com:8443/mifosng-provider/api/v1/";
+	}
+	
+	if (QueryParameters["baseApiUrl"]) {
+		baseApiUrl = QueryParameters["baseApiUrl"];
+	}
+    
+    return baseApiUrl; 
+}
+
+getLocation = function(href) {
+    var l = document.createElement("a");
+    l.href = href;
+    return l;
+};
 
 function setInitialCulture() {
 
