@@ -1,10 +1,4 @@
 
-decimalsNo = 4; 
-separatorChar = ',';
-dbDecimalChar = ".";
-decimalChar = ".";
-nullTitleValue = "-99999999.11";
-
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
 
 	var jqxhr = $.ajax({ 
@@ -109,6 +103,16 @@ generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
 	alert("Failure");
 				};
 
+
+
+
+//generic stuff to do with jquery reporting plugin which I've copied and pasted
+
+decimalsNo = 4; 
+separatorChar = ',';
+dbDecimalChar = ".";
+decimalChar = ".";
+nullTitleValue = "-99999999.11";
 
 function createTable(theData) {
 
