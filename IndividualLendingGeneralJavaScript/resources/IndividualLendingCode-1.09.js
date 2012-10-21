@@ -209,15 +209,15 @@ function setGroupListingContent(divName){
 
 function setClientContent(divName) {
 
-	var htmlVar = '<div id="newtabs">	<ul><li><a href="nothing"'; 
+	var htmlVar = '<div id="newtabs">	<ul><li><a href="unknown.html"'; 
 	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("app.loading") + '</span></a></li>';
-	htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
+	htmlVar += '<li><a href="unknown.html" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
 	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div></div>';
 	$("#" + divName).html(htmlVar);
 }
 
 function setGroupContent(divName) {
-	var htmlVar = '<div id="newtabs">	<ul><li><a href="nothing"'; 
+	var htmlVar = '<div id="newtabs">	<ul><li><a href="unknown.html"'; 
 	htmlVar += ' title="grouptab" class="topleveltab"><span id="grouptabname">' + doI18N("app.loading") + '</span></a></li></ul><div id="grouptab"></div></div>';
 	
 	$("#" + divName).html(htmlVar);
@@ -1420,7 +1420,7 @@ function showILGroup(groupId){
 
 	function showDepositAccount(accountId, productName) {
 		var title = productName + ": #" + accountId ;			    
-		$newtabs.tabs( "add", "no url", title);
+		$newtabs.tabs( "add", "unknown.html", title);
 		loadDepositAccount(accountId);
 	}
 	
@@ -1642,7 +1642,7 @@ function showRelatedDataTableInfo(tabVar, appTableName, appTablePKValue, ignoreD
 
 function showILLoan(loanId, product) {
 	var title = product + ": #" + loanId ;			    
-	$newtabs.tabs( "add", "no url", title);
+	$newtabs.tabs( "add", "unknown.html", title);
 	loadILLoan(loanId);
 }
 
