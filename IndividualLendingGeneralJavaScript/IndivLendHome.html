@@ -446,7 +446,7 @@ $(document).ready(function() {
 								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
 							</span>
 							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px">
+								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
 								{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
 									{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
 										<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -457,7 +457,7 @@ $(document).ready(function() {
 								</select>
 							</span>
 							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px">
+								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
 								{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
 									{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
 										<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -548,7 +548,7 @@ $(document).ready(function() {
 <label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
 <input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
 <label for="chargeCalculationType">{{=$ctx.doI18N("form.label.charge.calculation.type")}}</label>
-<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 180px">
+<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 180px" disabled="disabled">
 	{{#each chargeCalculationTypeOptions}}
 		{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
 			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -558,7 +558,7 @@ $(document).ready(function() {
 	{{/each}}
 </select>
 <label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
-<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 180px">
+<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 180px" disabled="disabled">
 	{{#each chargeTimeTypeOptions}}
 		{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
 			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -863,7 +863,7 @@ $(document).ready(function() {
 								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amountOrPercentage, 2)}}" style="width: 125px;"/>
 							</span>
 							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px">
+								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
 									{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
 										{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
 											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -874,7 +874,7 @@ $(document).ready(function() {
 								</select>
 							</span>
 							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px">
+								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
 									{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
 										{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
 											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -2388,7 +2388,7 @@ $(document).ready(function() {
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
 
 		{{#if addLoanChargeAllowed}}
-		<button id="addloanchargebtn{{=$parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
+		<button id="addloanchargebtn{{=$parent.parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
 		{{/if}}
 
 		{{#if rejectAllowed}}
