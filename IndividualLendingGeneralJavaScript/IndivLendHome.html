@@ -45,6 +45,8 @@
 <script type="text/javascript"	src="resources/libs/globalize/cultures/globalize.culture.pt.js"></script>
 <script type="text/javascript"	src="resources/libs/globalize/cultures/globalize.culture.zh.js"></script>
 
+<!-- JQuery Ajax file download plug-in-->
+<script type="text/javascript"	src="resources/libs/jquery.fileDownload.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform additional data -->
 <script type="text/javascript" src="resources/stretchydata-0.999.js"></script>
@@ -1592,6 +1594,98 @@ $(document).ready(function() {
  </form>
 </script>
 
+<script id="clientDocumentsTemplate" type="text/x-jquery-tmpl">
+	<span id="toolbar" class="ui-widget-header ui-corner-all">
+   		<button id="addclientdocument{{=clientId}}">{{=$ctx.doI18N("client.document.add")}}</button>
+	</span>
+	<hr/>
+	<table style="vertical-align: top;width: 100%">
+		{{#each crudRows}}
+				<tr>
+					<td>{{=$ctx.doI18N("client.document.name")}}</td>
+					<td>{{=name}}</td>
+				</tr>
+				<tr>
+				   	<td><label for="description">{{=$ctx.doI18N("client.document.description")}}</label></td>
+					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
+					<td>
+						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+							<button id="downloadclientdocument{{=id}}">{{=$ctx.doI18N("client.document.download")}}</button>
+					   		<button id="editclientdocument{{=id}}">{{=$ctx.doI18N("client.document.edit")}}</button>
+					   		<button id="deleteclientdocument{{=id}}">{{=$ctx.doI18N("client.document.delete")}}</button>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("client.document.file.name")}}</td>
+					<td>{{=fileName}}</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<hr/>
+					</td>
+				</tr>
+		{{/each}}
+	</table>
+</script>
+
+<script id="clientDocumentsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("client.document.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("client.document.description")}}</label>
+				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("client.document.file.select")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<script id="editClientDocumentsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("client.document.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("client.document.description")}}</label>
+				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
+			</td>
+		<tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("client.document.current.file.name")}}</label>
+				{{=fileName}}
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("client.document.file.new.select")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
 
 <script id="clientAccountSummariesTemplate" type="text/x-jquery-tmpl">
 <p><b>{{=$ctx.doI18N("heading.client.account.account.overview")}}</b></p>
