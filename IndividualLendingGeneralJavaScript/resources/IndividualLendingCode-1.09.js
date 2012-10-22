@@ -119,6 +119,31 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 			}); 
 }
 
+function executeAjaxOctetStreamDownloadRequest(url) { 
+	 $.fileDownload(baseApiUrl + url +"?tenantIdentifier="+tenantIdentifier, {
+        //preparingMessageHtml: "Please wait while your document is downloaded...",
+        //failMessageHtml: "There was a problem downloading the document, please try again.",
+        httpMethod: "GET"
+    });
+}
+
+function executeMultipartUploadAjaxRequest(url, verbType, formData, successFunction, errorFunction) { 
+	var jqxhr = $.ajax({ 
+				url : baseApiUrl + url, 
+				type : verbType, //POST, GET, PUT or DELETE 
+				contentType : false, 
+				processData: false,
+				data : formData, 
+				cache : false, 
+				beforeSend : function(xhr) { 
+						if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+						if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
+					}, 
+				success : successFunction, 
+				error : errorFunction 
+			}); 
+}
+
 
 // load html functions
 function showMainContainer(containerDivName, username) {
@@ -211,8 +236,9 @@ function setClientContent(divName) {
 
 	var htmlVar = '<div id="newtabs">	<ul><li><a href="unknown.html"'; 
 	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("app.loading") + '</span></a></li>';
-	htmlVar += '<li><a href="unknown.html" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
-	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div></div>';
+	htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
+	htmlVar += '<li><a href="nothing" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
+	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumentstab"></div></div>';
 	$("#" + divName).html(htmlVar);
 }
 
@@ -641,9 +667,12 @@ function showILClient(clientId) {
 					}
 				}
 				
-				if (tab.index == 1)
+				else if (tab.index == 1)
 				{
 					refreshClientIdentifiers(clientUrl);
+				}
+				else if (tab.index == 2){
+					refreshClientDocuments(clientUrl);
 				}
 	    		},
 		"add": function( event, ui ) {
@@ -827,6 +856,74 @@ function refreshClientIdentifiers(clientUrl) {
 			});
 		}
   		executeAjaxRequest(clientUrl + '/identifiers', 'GET', "", successFunction, formErrorFunction);	  	
+}
+
+function refreshClientDocuments(clientUrl) {
+		var successFunction =  function(data, textStatus, jqXHR) {
+			var crudObject = new Object();
+			crudObject.crudRows = data;
+			var tableHtml = $("#clientDocumentsTemplate").render(crudObject);
+			$("#clientdocumenttab").html(tableHtml);
+			//initialize all edit/delete buttons
+				
+			var editClientDocumentSuccessFunction = function(data, textStatus, jqXHR) {
+			  	$("#dialog-form").dialog("close");
+			  	refreshClientDocuments(clientUrl);
+			}
+			$.each(crudObject.crudRows, function(i, val) {
+			      $("#editclientdocument" + val.id).button({icons: {
+	                primary: "ui-icon-pencil"}}
+	                ).click(function(e){
+			      	var clientId = clientUrl.replace("clients/", "");
+					var getUrl = clientUrl + '/documents/'+val.id;
+					var putUrl = clientUrl + '/documents/'+val.id;
+					var templateSelector = "#editClientDocumentsFormTemplate";
+					var width = 600; 
+					var height = 450;
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  editClientDocumentSuccessFunction);
+				    e.preventDefault();
+			      });
+			      $("#deleteclientdocument" + val.id).button({icons: {
+	                primary: "ui-icon-circle-close"}
+	            	}).click(function(e) {
+					var url = clientUrl + '/documents/'+val.id;
+					var width = 400; 
+					var height = 225;
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, editClientDocumentSuccessFunction);
+					
+					e.preventDefault();
+				});
+				$("#downloadclientdocument" + val.id).button({icons: {
+	                primary: "ui-icon-arrowthickstop-1-s"}
+	            	}).click(function(e) {
+					var url = clientUrl + '/documents/'+val.id + '/attachment';
+					executeAjaxOctetStreamDownloadRequest(url);
+					e.preventDefault();
+				});
+			});			
+			//associate event with add client document button
+			$('#addclientdocument').button({icons: {
+	                primary: "ui-icon-plusthick"}
+	            	}).click(function(e) {
+				var clientId = clientUrl.replace("clients/", "");
+				
+				var getUrl = "";
+				var putUrl = clientUrl + '/documents';
+				var templateSelector = "#clientDocumentsFormTemplate";
+				var width = 600; 
+				var height = 450;
+				
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	refreshClientDocuments(clientUrl);
+				}
+				
+				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+			    e.preventDefault();
+			});
+		}
+  		executeAjaxRequest(clientUrl + '/documents', 'GET', "", successFunction, formErrorFunction);	  	
 }
 	
 function showILGroup(groupId){
@@ -2434,7 +2531,17 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					}
 					
 			    	var newFormData = JSON.stringify(serializedArray);
-					executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
+			    	if (postUrl.toLowerCase().indexOf("documents") >= 0){
+			    		var formData = new FormData();    
+						formData.append( 'file', $('#file')[0].files[0] );
+						$.each(serializedArray, function (name, val) {
+					        formData.append(name, val);
+					    });	
+			    		executeMultipartUploadAjaxRequest(postUrl, submitType, formData, saveSuccessFunction, formErrorFunction);
+			    	}else{
+			    		executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
+			    	}
+					
 				};
 				
 				buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
