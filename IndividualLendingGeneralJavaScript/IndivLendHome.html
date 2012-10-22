@@ -1329,7 +1329,7 @@ $(document).ready(function() {
 	{{#if crudRows.length > 1 }}
 		<div style="width:100%">
 				<label for="office">{{=$ctx.doI18N("label.data.scope")}}</label>
-				<select id="officeId" name="officeId" onChange="applyClientSearchFilter(options[selectedIndex].value);">
+				<select id="officeId" name="officeId">
 					{{#each crudRows}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
 							<option value="{{=hierarchy}}" selected="selected">{{=nameDecorated}}</option>

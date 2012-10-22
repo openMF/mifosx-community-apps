@@ -429,6 +429,11 @@ setClientListingContent("content");
 			    officeSearchObject.crudRows = data;
 				var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
 				$("#officesInScopeDiv").html(tableHtml);
+
+				// add client filter behaviour
+				$("#officeId").change(function(){
+					applyClientSearchFilter($(this).val());
+				})
 		  	};
 		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
 			
@@ -537,6 +542,11 @@ function showILGroupListing(){
 				    officeSearchObject.crudRows = data;
 					var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
 					$("#officesInScopeDiv").html(tableHtml);
+
+					// add group filter behaviour
+					$("#officeId").change(function(){
+						applyGroupSearchFilter($(this).val());
+					})
 			  	};
 			  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
 				
@@ -548,7 +558,7 @@ function showILGroupListing(){
 					$("#groupsInScopeDiv").html(tableHtml);
 			  	};
 				executeAjaxRequest('groups', 'GET', "", groupSearchSuccessFunction, formErrorFunction);
-	  			    	
+	  			
 	    		//search group functionality
 				var searchSuccessFunction =  function(data) {
 					var groupSearchObject = new Object();
@@ -599,6 +609,19 @@ function showILGroupListing(){
 		
 	    e.preventDefault();
 	});
+}
+
+//set scope for group search
+function applyGroupSearchFilter(officeHierarchy) {
+	//re-render group drop down data
+	var groupSearchSuccessFunction =  function(data) {
+		var groupSearchObject = new Object();
+	    groupSearchObject.crudRows = data;
+		var tableHtml = $("#allGroupsDropdownTemplate").render(groupSearchObject);
+		$("#groupsInScopeDiv").html(tableHtml);
+	};
+	var sqlSearchValue = "o.hierarchy like '"+ officeHierarchy +"%'";
+	executeAjaxRequest("groups?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", groupSearchSuccessFunction, formErrorFunction);
 }
 
 function showILClient(clientId) {
@@ -2449,14 +2472,14 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	})
 
 	if (templateSelector === "#groupFormTemplate"){
-		$("#officeId").change(function(e){
+		$("#dialog-form #officeId").change(function(e){
 			var selectedOfficeId = $(this).val();
 			var officeIdChangeSuccess = function(groupData, textStatus, jqXHR){
 				groupData['officeId'] = selectedOfficeId;
 				repopulateOpenPopupDialogWithFormViewData(groupData, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
 			}
 			if (data['id']){
-				executeAjaxRequest("groups/" + data['id'] + "?template=true&officeId=" + $(this).val(), "GET", "", officeIdChangeSuccess, formErrorFunction);	
+				executeAjaxRequest("groups/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			} else {
 				executeAjaxRequest("groups/template?officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			}
