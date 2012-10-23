@@ -4288,38 +4288,87 @@ function showLockinOptions(){
 <!--GK Risk Analysis View-->
 <script id="clientRiskAnalysisTemplate" type="text/x-jquery-tmpl">
 
-	<table>
+	<table width="100%">
 		<tr>
-			<td><b>{{=$ctx.doI18N("riskanalysis.label.assets")}}</b></td>
-			<td></td><td width="100px"></td><td></td><td></td>
+			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.assets")}}</b></td>
+			<td width="5%"></td>
+			<td width="10%"></td>
+			<td width="10%"></td>
+			<td width="30%"></td>
+			<td width="5%"></td>
+			<td width="10%"></td>
 		</tr>
 		<tr>
 			<td>(1) {{=$ctx.doI18N("assets_cash")}}</td>
-			<td width="100px" bgcolor="#FF0000" align="right">56.99</td>
-			<td width="100px"></td>
+			<td></td>
+			<td align="right">56.99</td>
+			<td></td>
 			<td>(2) {{=$ctx.doI18N("assets_bank_accounts")}}</td>
+			<td></td>
 			<td align="right">758.99</td>
+		</tr>
+		<tr>
+			<td>(3) {{=$ctx.doI18N("assets_accounts_receivable")}}</td>
+			<td></td>
+			<td align="right">56.99</td>
+			<td></td>
+			<td>(4) {{=$ctx.doI18N("assets_inventory")}}</td>
+			<td></td>
+			<td align="right">758.99</td>
+		</tr>
+		<tr>
+			<td>(5) {{=$ctx.doI18N("assets_total_fixed_business")}}</td>
+			<td></td>
+			<td align="right">56.99</td>
+			<td></td>
+			<td>(6) {{=$ctx.doI18N("assets_total_business")}} (sum 1 to 5)</td>
+			<td></td>
+			<td bgcolor="gray" align="right">758.99</td>
+		</tr>
+		<tr>
+			<td>(7) {{=$ctx.doI18N("assets_total_household")}}</td>
+			<td></td>
+			<td align="right">56.99</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
 		</tr>
 	</table>
 	<hr><hr>
 	<table>
 		<tr>
 			<td><b>{{=$ctx.doI18N("riskanalysis.label.liabilities")}}</b></td>
-			<td></td><td width="100px"></td><td></td><td></td>
+			<td width="50px"></td>
+			<td width="100px"></td>
+			<td width="100px"></td>
+			<td width="100px"></td>
+			<td width="50px"></td>
+			<td width="100px"></td>
 		</tr>
 	</table>
 	<hr><hr>
 	<table>
 		<tr>
 			<td><b>{{=$ctx.doI18N("riskanalysis.label.cashflow")}}</b></td>
-			<td></td><td width="100px"></td><td></td><td></td>
+			<td></td>
+			<td></td>
+			<td width="100px"></td>
+			<td width="100px"></td>
+			<td width="50px"></td>
+			<td width="100px"></td>
 		</tr>
 	</table>
 	<hr><hr>
 	<table>
 		<tr>
 			<td><b>{{=$ctx.doI18N("riskanalysis.label.financial.indicators")}}</b></td>
-			<td></td><td width="100px"></td><td></td><td></td>
+			<td width="50px"></td>
+			<td width="100px"></td>
+			<td width="100px"></td>
+			<td width="100px"></td>
+			<td width="50px"></td>
+			<td width="100px"></td>
 		</tr>
 	</table>
 

@@ -935,8 +935,8 @@ function refreshClientDocuments(clientUrl) {
 
 function refreshRiskAnalysis() {
 
-alert("Work in Progress")
-return
+//alert("Work in Progress")
+//return
 	var datatableUrl = 'datatables/risk_analysis/' + currentClientId;
 
 	var successFunction =  function(data, textStatus, jqXHR) {
