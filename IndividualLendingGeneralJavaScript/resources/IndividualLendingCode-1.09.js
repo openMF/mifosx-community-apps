@@ -238,7 +238,8 @@ function setClientContent(divName) {
 	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("app.loading") + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
-	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumentstab"></div></div>';
+	htmlVar += '<li><a href="nothing" title="clientriskanalysistab" class="topleveltab"><span id="clientriskanalysistabname">' + doI18N("client.riskanalysis.tab.name")  + '</span></a></li>';
+	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div><div id="clientriskanalysistab"></div></div>';
 	$("#" + divName).html(htmlVar);
 }
 
@@ -674,6 +675,11 @@ function showILClient(clientId) {
 				else if (tab.index == 2){
 					refreshClientDocuments(clientUrl);
 				}
+				else if (tab.index == 3){
+					//temporarily hardcoded at tab 3 (jpw)
+					refreshRiskAnalysis();
+				}
+
 	    		},
 		"add": function( event, ui ) {
 				$newtabs.tabs('select', '#' + ui.panel.id);
@@ -926,6 +932,78 @@ function refreshClientDocuments(clientUrl) {
   		executeAjaxRequest(clientUrl + '/documents', 'GET', "", successFunction, formErrorFunction);	  	
 }
 	
+
+function refreshRiskAnalysis() {
+
+alert("Work in Progress")
+return
+	var datatableUrl = 'datatables/risk_analysis/' + currentClientId;
+
+	var successFunction =  function(data, textStatus, jqXHR) {
+			var crudObject = new Object();
+			crudObject.crudRow = data;
+			var tableHtml = $("#clientRiskAnalysisTemplate").render(crudObject);
+			$("#clientriskanalysistab").html(tableHtml);
+			//initialize all edit/delete buttons
+/*
+			var editClientIdentifierSuccessFunction = function(data, textStatus, jqXHR) {
+			  	$("#dialog-form").dialog("close");
+			  	refreshClientIdentifiers(clientUrl);
+			}
+			$.each(crudObject.crudRows, function(i, val) {
+			      $("#editclientidentifier" + val.id).button({icons: {
+	                primary: "ui-icon-pencil"}}
+	                ).click(function(e){
+			      	var clientId = clientUrl.replace("clients/", "");
+					var getUrl = clientUrl + '/identifiers/'+val.id+'?template=true';
+					var putUrl = clientUrl + '/identifiers/'+val.id;
+					var templateSelector = "#clientIdentifiersFormTemplate";
+					var width = 600; 
+					var height = 450;
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  editClientIdentifierSuccessFunction);
+				    e.preventDefault();
+			      });
+			      $("#deleteclientidentifier" + val.id).button({icons: {
+	                primary: "ui-icon-circle-close"}
+	            	}).click(function(e) {
+					var url = clientUrl + '/identifiers/'+val.id;
+					var width = 400; 
+					var height = 225;
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, editClientIdentifierSuccessFunction);
+					
+					e.preventDefault();
+				});
+			});			
+			//associate event with add client Identity button
+			$('#addclientidentifier').button({icons: {
+	                primary: "ui-icon-plusthick"}
+	            	}).click(function(e) {
+				var clientId = clientUrl.replace("clients/", "");
+				
+				var getUrl = clientUrl + '/identifiers/template';
+				var putUrl = clientUrl + '/identifiers';
+				var templateSelector = "#clientIdentifiersFormTemplate";
+				var width = 600; 
+				var height = 450;
+				
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	refreshClientIdentifiers(clientUrl);
+				}
+				
+				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+			    e.preventDefault();
+			});
+*/
+		}
+
+  		executeAjaxRequest(datatableUrl, 'GET', "", successFunction, formErrorFunction);	  
+}
+
+
+
+
 function showILGroup(groupId){
 	var groupUrl = "groups/"+groupId;
 	setGroupContent("content");
@@ -2837,14 +2915,6 @@ function initialiseAndShowILLogon() {
 	applicationProfile = "ALL";
 	if (QueryParameters["applicationProfile"]) applicationProfile = QueryParameters["applicationProfile"];
 
-	tenantIdentifier = "default";
-	if (QueryParameters["tenantIdentifier"]) tenantIdentifier= QueryParameters["tenantIdentifier"];
-//	else
-//	{
-//		alert("System Error - no tenantIdentifier specified");
-//		return;
-//	}
-	
 	showILLogon("container");
 }
 
