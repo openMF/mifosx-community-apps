@@ -491,7 +491,7 @@ $(document).ready(function() {
 		<input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
 	</span>
 	<span class="rowvalue">
-		<select id="charges[{{=index}}][chargeCalculationType]" name="charges[{{=index}}][chargeCalculationType]" title="" style="width: 180px">
+		<select id="charges[{{=index}}][chargeCalculationType]" name="charges[{{=index}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
 		{{#each chargeCalculationTypeOptions}}
 			{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
 				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -502,7 +502,7 @@ $(document).ready(function() {
 		</select>
 	</span>
 	<span class="rowvalue">
-		<select id="charges[{{=index}}][chargeTimeType]" name="charges[{{=index}}][chargeTimeType]" title="" style="width: 180px">
+		<select id="charges[{{=index}}][chargeTimeType]" name="charges[{{=index}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
 		{{#each chargeTimeTypeOptions}}
 			{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
 				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
