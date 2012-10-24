@@ -4512,11 +4512,66 @@ function showLockinOptions(){
 <!--GK Risk Analysis Add/Edit-->
 <script id="clientRiskAnalysisFormTemplate" type="text/x-jquery-tmpl">
 
-woohoo<br>and again
+<form id="entityform">
+    	<div id="formerrors"></div>
+	<fieldset>
+		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<table width="100%">
+		<tr>
+			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.assets")}}</b></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+			<td width="20%"></td>
+			<td width="30%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+		</tr>
+		<tr>
+			<td>(1) {{=$ctx.doI18N("assets_cash")}}</td>
+			<td></td>
+			<td align="right">
+				<input id="assets_cash" name="assets_cash" title="" style="width: 100px;" value="{{=$ctx.decimal(assets_cash, 2)}}"/>
+			</td>
+			<td></td>
+			<td>(2) {{=$ctx.doI18N("assets_bank_accounts")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(assets_bank_accounts, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(3) {{=$ctx.doI18N("assets_accounts_receivable")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(assets_accounts_receivable, 2)}}</td>
+			<td></td>
+			<td>(4) {{=$ctx.doI18N("assets_inventory")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(assets_inventory, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(5) {{=$ctx.doI18N("assets_total_fixed_business")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(assets_total_fixed_business, 2)}}</td>
+			<td></td>
+			<td>(6) {{=$ctx.doI18N("assets_total_business")}} (sum 1:5)</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(assets_total_business, 2)}}</b></td>
+		</tr>
+		<tr>
+			<td>(7) {{=$ctx.doI18N("assets_total_household")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(assets_total_household, 2)}}</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</table>
+	<hr><hr>
+
+	</fieldset>
+</form>
 
 </script>
-
-
 
 
 </body>

@@ -970,7 +970,7 @@ function refreshRiskAnalysis(clientId) {
 			$('#addclientriskanalysis').button({icons: {
 	                primary: "ui-icon-plusthick"}
 	            	}).click(function(e) {
-					popupDialogWithFormView(datatableUrl, datatableUrl, 'POST', "dialog.title.create.risk.analysis", templateSelector, width, height,  saveSuccessFunction);
+					popupDialogWithFormView("", datatableUrl, 'POST', "dialog.title.create.risk.analysis", templateSelector, width, height,  saveSuccessFunction);
 			    		e.preventDefault();
 			});
 		}
@@ -2502,6 +2502,7 @@ function resetBasicAuthKey()
 function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
+
 				//console.log(data);
 				if(templateSelector == "#employeeFormTemplate" && submitType!= "PUT"){
 					var officesObject = new Object();
