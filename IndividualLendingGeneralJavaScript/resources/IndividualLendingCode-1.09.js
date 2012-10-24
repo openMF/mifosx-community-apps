@@ -777,7 +777,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfo($newtabs, "m_client", clientId, ["dummy excluded table1", "dummy excluded table2"]); 
+					showRelatedDataTableInfo($newtabs, "m_client", clientId, ["risk_analysis", "dummy excluded table2"]); 
 
 					
 					// retrieve additional info
@@ -941,7 +941,8 @@ function refreshRiskAnalysis() {
 
 	var successFunction =  function(data, textStatus, jqXHR) {
 			var crudObject = new Object();
-			crudObject.crudRow = data;
+			crudObject.crudRows = data;
+
 			var tableHtml = $("#clientRiskAnalysisTemplate").render(crudObject);
 			$("#clientriskanalysistab").html(tableHtml);
 			//initialize all edit/delete buttons

@@ -4288,47 +4288,49 @@ function showLockinOptions(){
 <!--GK Risk Analysis View-->
 <script id="clientRiskAnalysisTemplate" type="text/x-jquery-tmpl">
 
+{{#each crudRows}}
+
 	<table width="100%">
 		<tr>
 			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.assets")}}</b></td>
-			<td width="5%"></td>
-			<td width="10%"></td>
-			<td width="10%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+			<td width="20%"></td>
 			<td width="30%"></td>
-			<td width="5%"></td>
-			<td width="10%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
 		</tr>
 		<tr>
 			<td>(1) {{=$ctx.doI18N("assets_cash")}}</td>
 			<td></td>
-			<td align="right">56.99</td>
+			<td align="right">{{=$ctx.decimal(assets_cash, 2)}}</td>
 			<td></td>
 			<td>(2) {{=$ctx.doI18N("assets_bank_accounts")}}</td>
 			<td></td>
-			<td align="right">758.99</td>
+			<td align="right">{{=$ctx.decimal(assets_bank_accounts, 2)}}</td>
 		</tr>
 		<tr>
 			<td>(3) {{=$ctx.doI18N("assets_accounts_receivable")}}</td>
 			<td></td>
-			<td align="right">56.99</td>
+			<td align="right">{{=$ctx.decimal(assets_accounts_receivable, 2)}}</td>
 			<td></td>
 			<td>(4) {{=$ctx.doI18N("assets_inventory")}}</td>
 			<td></td>
-			<td align="right">758.99</td>
+			<td align="right">{{=$ctx.decimal(assets_inventory, 2)}}</td>
 		</tr>
 		<tr>
 			<td>(5) {{=$ctx.doI18N("assets_total_fixed_business")}}</td>
 			<td></td>
-			<td align="right">56.99</td>
+			<td align="right">{{=$ctx.decimal(assets_total_fixed_business, 2)}}</td>
 			<td></td>
-			<td>(6) {{=$ctx.doI18N("assets_total_business")}} (sum 1 to 5)</td>
+			<td>(6) {{=$ctx.doI18N("assets_total_business")}} (sum 1:5)</td>
 			<td></td>
-			<td bgcolor="gray" align="right">758.99</td>
+			<td align="right"><b>{{=$ctx.decimal(assets_total_business, 2)}}</b></td>
 		</tr>
 		<tr>
 			<td>(7) {{=$ctx.doI18N("assets_total_household")}}</td>
 			<td></td>
-			<td align="right">56.99</td>
+			<td align="right">{{=$ctx.decimal(assets_total_household, 2)}}</td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -4336,42 +4338,161 @@ function showLockinOptions(){
 		</tr>
 	</table>
 	<hr><hr>
-	<table>
+	<table width="100%">
 		<tr>
-			<td><b>{{=$ctx.doI18N("riskanalysis.label.liabilities")}}</b></td>
-			<td width="50px"></td>
-			<td width="100px"></td>
-			<td width="100px"></td>
-			<td width="100px"></td>
-			<td width="50px"></td>
-			<td width="100px"></td>
+			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.liabilities")}}</b></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+			<td width="20%"></td>
+			<td width="30%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+		</tr>
+		<tr>
+			<td>(8) {{=$ctx.doI18N("liabilities_accounts_payable")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(liabilities_accounts_payable, 2)}}</td>
+			<td></td>
+			<td>(9) {{=$ctx.doI18N("liabilities_business_debts")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(liabilities_business_debts, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(10) {{=$ctx.doI18N("liabilities_total_business")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(liabilities_total_business, 2)}}</td>
+			<td></td>
+			<td>(11) {{=$ctx.doI18N("liabilities_equity_working_capital")}} (6-10)</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(liabilities_equity_working_capital, 2)}}</b></td>
+		</tr>
+		<tr>
+			<td>(12) {{=$ctx.doI18N("liabilities_total_household")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(liabilities_total_household, 2)}}</td>
+			<td></td>
+			<td>(13) {{=$ctx.doI18N("liabilities_household_equity")}} (7 -12)</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(liabilities_household_equity, 2)}}</b></td>
 		</tr>
 	</table>
 	<hr><hr>
-	<table>
+	<table width="100%">
 		<tr>
-			<td><b>{{=$ctx.doI18N("riskanalysis.label.cashflow")}}</b></td>
+			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.cashflow")}}</b></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+			<td width="20%"></td>
+			<td width="30%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+		</tr>
+		<tr>
+			<td>(14) {{=$ctx.doI18N("cashflow_cash_sales")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_cash_sales, 2)}}</td>
+			<td></td>
+			<td>(15) {{=$ctx.doI18N("cashflow_cash_sales2")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_cash_sales2, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(16) {{=$ctx.doI18N("cashflow_cost_goods_sold")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_cost_goods_sold, 2)}}</td>
+			<td></td>
+			<td>(17) {{=$ctx.doI18N("cashflow_cost_goods_sold2")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_cost_goods_sold2, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(18) {{=$ctx.doI18N("cashflow_gross_profit")}} ((14+15)-(16+17))</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(cashflow_gross_profit, 2)}}</b></td>
+			<td></td>
+			<td>(19) {{=$ctx.doI18N("cashflow_other_income1")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_other_income1, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(20) {{=$ctx.doI18N("cashflow_total_income2")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_total_income2, 2)}}</td>
+			<td></td>
+			<td>(21) {{=$ctx.doI18N("cashflow_household_expense")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_household_expense, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(22) {{=$ctx.doI18N("cashflow_payments_to_savings")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_payments_to_savings, 2)}}</td>
+			<td></td>
+			<td>(23) {{=$ctx.doI18N("cashflow_operational_expenses")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_operational_expenses, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(24) {{=$ctx.doI18N("cashflow_disposable_income")}} ((18+19+20)-(21+22+23))</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(cashflow_disposable_income, 2)}}</b></td>
+			<td></td>
+			<td>(25) {{=$ctx.doI18N("cashflow_amount_loan_installment")}}</td>
+			<td></td>
+			<td align="right">{{=$ctx.decimal(cashflow_amount_loan_installment, 2)}}</td>
+		</tr>
+		<tr>
+			<td>(26) {{=$ctx.doI18N("cashflow_available_surplus")}} (24-25)</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(cashflow_available_surplus, 2)}}</b></td>
 			<td></td>
 			<td></td>
-			<td width="100px"></td>
-			<td width="100px"></td>
-			<td width="50px"></td>
-			<td width="100px"></td>
+			<td></td>
+			<td></td>
 		</tr>
 	</table>
 	<hr><hr>
-	<table>
+	<table width="100%">
 		<tr>
-			<td><b>{{=$ctx.doI18N("riskanalysis.label.financial.indicators")}}</b></td>
-			<td width="50px"></td>
-			<td width="100px"></td>
-			<td width="100px"></td>
-			<td width="100px"></td>
-			<td width="50px"></td>
-			<td width="100px"></td>
+			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.financial.indicators")}}</b></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+			<td width="20%"></td>
+			<td width="30%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
 		</tr>
+		<tr>
+			<td>(27) {{=$ctx.doI18N("fi_inventory_turnover")}} (16/4)</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(fi_inventory_turnover, 2)}}</b></td>
+			<td></td>
+			<td>(28) {{=$ctx.doI18N("fi_gross_margin")}} ((14+15-16)/14)</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(fi_gross_margin, 2)}}</b></td>
+		</tr>
+		<tr>
+			<td>(29) {{=$ctx.doI18N("fi_indebtedness")}} (10/11)</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(fi_indebtedness, 2)}}</b></td>
+			<td></td>
+			<td>(30) {{=$ctx.doI18N("fi_loan_recommendation")}} ((10 + loan amount)/11)???</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(fi_loan_recommendation, 2)}}</b></td>
+		</tr>
+		<tr>
+			<td>(31) {{=$ctx.doI18N("fi_roe")}} (18/11) </td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(fi_roe, 2)}}</b></td>
+			<td></td>
+			<td>(32) {{=$ctx.doI18N("fi_repayment_capacity")}} (25/24)</td>
+			<td></td>
+			<td align="right"><b>{{=$ctx.decimal(fi_repayment_capacity, 2)}}</b></td>
+		</tr>
+
 	</table>
 
+{{/each}}
 
 </script>
 
