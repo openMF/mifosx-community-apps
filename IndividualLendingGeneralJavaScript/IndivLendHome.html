@@ -4288,6 +4288,18 @@ function showLockinOptions(){
 <!--GK Risk Analysis View-->
 <script id="clientRiskAnalysisTemplate" type="text/x-jquery-tmpl">
 
+{{#if crudRows.length > 0}}
+	<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+		<button id="editclientriskanalysis">{{=$ctx.doI18N("Datatables.Edit")}}</button>
+		<button id="deleteclientriskanalysis">{{=$ctx.doI18N("Datatables.Delete")}}</button>
+	</span>
+{{#else}}
+	<span id="toolbar" class="ui-widget-header ui-corner-all">
+   		<button id="addclientriskanalysis">{{=$ctx.doI18N("Datatables.Add")}}</button>
+	</span>
+	<hr/>
+{{/if}}
+
 {{#each crudRows}}
 
 	<table width="100%">
@@ -4497,6 +4509,12 @@ function showLockinOptions(){
 </script>
 
 
+<!--GK Risk Analysis Add/Edit-->
+<script id="clientRiskAnalysisFormTemplate" type="text/x-jquery-tmpl">
+
+woohoo<br>and again
+
+</script>
 
 
 

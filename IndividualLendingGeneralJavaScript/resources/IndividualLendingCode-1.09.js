@@ -677,7 +677,7 @@ function showILClient(clientId) {
 				}
 				else if (tab.index == 3){
 					//temporarily hardcoded at tab 3 (jpw)
-					refreshRiskAnalysis();
+					refreshRiskAnalysis(clientId);
 				}
 
 	    		},
@@ -933,11 +933,18 @@ function refreshClientDocuments(clientUrl) {
 }
 	
 
-function refreshRiskAnalysis() {
+function refreshRiskAnalysis(clientId) {
 
-//alert("Work in Progress")
-//return
-	var datatableUrl = 'datatables/risk_analysis/' + currentClientId;
+	var datatableUrl = 'datatables/risk_analysis/' + clientId;
+
+	var templateSelector = "#clientRiskAnalysisFormTemplate";
+	var width = 1100; 
+	var height = 600;
+				
+	var saveSuccessFunction = function(data, textStatus, jqXHR) {
+		$("#dialog-form").dialog("close");
+		refreshRiskAnalysis(clientId);
+	}
 
 	var successFunction =  function(data, textStatus, jqXHR) {
 			var crudObject = new Object();
@@ -945,58 +952,27 @@ function refreshRiskAnalysis() {
 
 			var tableHtml = $("#clientRiskAnalysisTemplate").render(crudObject);
 			$("#clientriskanalysistab").html(tableHtml);
-			//initialize all edit/delete buttons
-/*
-			var editClientIdentifierSuccessFunction = function(data, textStatus, jqXHR) {
-			  	$("#dialog-form").dialog("close");
-			  	refreshClientIdentifiers(clientUrl);
-			}
-			$.each(crudObject.crudRows, function(i, val) {
-			      $("#editclientidentifier" + val.id).button({icons: {
+
+			//initialize all buttons
+			$("#editclientriskanalysis").button({icons: {
 	                primary: "ui-icon-pencil"}}
 	                ).click(function(e){
-			      	var clientId = clientUrl.replace("clients/", "");
-					var getUrl = clientUrl + '/identifiers/'+val.id+'?template=true';
-					var putUrl = clientUrl + '/identifiers/'+val.id;
-					var templateSelector = "#clientIdentifiersFormTemplate";
-					var width = 600; 
-					var height = 450;
-					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  editClientIdentifierSuccessFunction);
-				    e.preventDefault();
+					popupDialogWithFormView(datatableUrl, datatableUrl, 'PUT', "dialog.title.edit.risk.analysis", templateSelector, width, height,  saveSuccessFunction);
+				    	e.preventDefault();
 			      });
-			      $("#deleteclientidentifier" + val.id).button({icons: {
+			$("#deleteclientriskanalysis").button({icons: {
 	                primary: "ui-icon-circle-close"}
-	            	}).click(function(e) {
-					var url = clientUrl + '/identifiers/'+val.id;
-					var width = 400; 
-					var height = 225;
-											
-					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, editClientIdentifierSuccessFunction);
-					
+	            	}).click(function(e) {									
+					popupConfirmationDialogAndPost(datatableUrl, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, saveSuccessFunction);
 					e.preventDefault();
 				});
-			});			
-			//associate event with add client Identity button
-			$('#addclientidentifier').button({icons: {
+
+			$('#addclientriskanalysis').button({icons: {
 	                primary: "ui-icon-plusthick"}
 	            	}).click(function(e) {
-				var clientId = clientUrl.replace("clients/", "");
-				
-				var getUrl = clientUrl + '/identifiers/template';
-				var putUrl = clientUrl + '/identifiers';
-				var templateSelector = "#clientIdentifiersFormTemplate";
-				var width = 600; 
-				var height = 450;
-				
-				var saveSuccessFunction = function(data, textStatus, jqXHR) {
-				  	$("#dialog-form").dialog("close");
-				  	refreshClientIdentifiers(clientUrl);
-				}
-				
-				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
-			    e.preventDefault();
+					popupDialogWithFormView(datatableUrl, datatableUrl, 'POST', "dialog.title.create.risk.analysis", templateSelector, width, height,  saveSuccessFunction);
+			    		e.preventDefault();
 			});
-*/
 		}
 
   		executeAjaxRequest(datatableUrl, 'GET', "", successFunction, formErrorFunction);	  
@@ -2644,6 +2620,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction){
 	var dialogDiv = $("#dialog-form");
 	var formHtml = $(templateSelector).render(data);
+
 	dialogDiv.html(formHtml);
 
 	//attaching charges to loan from popup
