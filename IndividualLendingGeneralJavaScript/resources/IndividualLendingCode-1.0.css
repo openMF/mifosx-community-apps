@@ -39,7 +39,16 @@ h2 {
 .datatableLabel {
     	font-weight: bold;
 }
- 
+
+
+input.right { 
+	text-align: right; 
+}
+
+input.rightreadonly { 
+	text-align: right; 
+	background-color: #D3D3D3; 
+}
 
 
 

@@ -4530,39 +4530,49 @@ function showLockinOptions(){
 		<tr>
 			<td>(1) {{=$ctx.doI18N("assets_cash")}}</td>
 			<td></td>
-			<td align="right">
-				<input id="assets_cash" name="assets_cash" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_cash, 2)}}"/>
+			<td>
+				<input class="right" id="assets_cash" name="assets_cash" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_cash, 2)}}"/>
 			</td>
 			<td></td>
 			<td>(2) {{=$ctx.doI18N("assets_bank_accounts")}}</td>
 			<td></td>
-			<td align="right">
-				<input id="assets_bank_accounts" name="assets_bank_accounts" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_bank_accounts, 2)}}"/>
+			<td>
+				<input class="right" id="assets_bank_accounts" name="assets_bank_accounts" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_bank_accounts, 2)}}"/>
 			</td>
-
 		</tr>
 		<tr>
 			<td>(3) {{=$ctx.doI18N("assets_accounts_receivable")}}</td>
 			<td></td>
-			<td align="right">{{=$ctx.decimal(assets_accounts_receivable, 2)}}</td>
+			<td>
+				<input class="right" id="assets_accounts_receivable" name="assets_accounts_receivable" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_accounts_receivable, 2)}}"/>
+			</td>
 			<td></td>
 			<td>(4) {{=$ctx.doI18N("assets_inventory")}}</td>
 			<td></td>
-			<td align="right">{{=$ctx.decimal(assets_inventory, 2)}}</td>
+			<td>
+				<input class="right" id="assets_inventory" name="assets_inventory" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_inventory, 2)}}"/>
+			</td>
 		</tr>
 		<tr>
 			<td>(5) {{=$ctx.doI18N("assets_total_fixed_business")}}</td>
 			<td></td>
-			<td align="right">{{=$ctx.decimal(assets_total_fixed_business, 2)}}</td>
+			<td>
+				<input class="right" id="assets_total_fixed_business" name="assets_total_fixed_business" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_total_fixed_business, 2)}}"/>
+			</td>
 			<td></td>
 			<td>(6) {{=$ctx.doI18N("assets_total_business")}} (sum 1:5)</td>
 			<td></td>
-			<td align="right"><b>{{=$ctx.decimal(assets_total_business, 2)}}</b></td>
+			<td>
+				<input class="rightreadonly" id="assets_total_business" name="assets_total_business" readonly="readonly" title="" style="width: 100px;" value="{{=$ctx.decimal(assets_total_business, 2)}}"/>
+			</td>
+
 		</tr>
 		<tr>
 			<td>(7) {{=$ctx.doI18N("assets_total_household")}}</td>
 			<td></td>
-			<td align="right">{{=$ctx.decimal(assets_total_household, 2)}}</td>
+			<td>
+				<input class="right" id="assets_total_household" name="assets_total_household" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_total_household, 2)}}"/>
+			</td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -4579,8 +4589,39 @@ function showLockinOptions(){
 <script type="text/javascript">
 
 function gkRiskAnalysisCalc(){
-	alert($("#assets_cash").val());
+
+	$("#assets_total_business").val("");
+
+	var assets_cash = idNumber("assets_cash");
+	if (assets_cash == "nan")
+	{alert("not number");
+		return false;
+	}
+	var assets_bank_accounts = idNumber("assets_bank_accounts");
+	var assets_accounts_receivable = idNumber("assets_accounts_receivable");
+
+	var calc = assets_cash + assets_bank_accounts + assets_accounts_receivable;
+	$("#assets_total_business").val(calc.toFixed(2));
+	return true;
 } 
+
+function idNumber(idName) {
+	var n = $("#" + idName).val();
+alert(n)
+	if (n > "") 
+	{
+		if (isNumber(n) == true) return parseFloat(n)
+		else return "nan";
+	}
+	else 
+	{	alert("ret 0");
+		return 0.0;
+	}
+}
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 </script>
 
 
