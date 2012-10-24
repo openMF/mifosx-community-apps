@@ -4531,12 +4531,15 @@ function showLockinOptions(){
 			<td>(1) {{=$ctx.doI18N("assets_cash")}}</td>
 			<td></td>
 			<td align="right">
-				<input id="assets_cash" name="assets_cash" title="" style="width: 100px;" value="{{=$ctx.decimal(assets_cash, 2)}}"/>
+				<input id="assets_cash" name="assets_cash" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_cash, 2)}}"/>
 			</td>
 			<td></td>
 			<td>(2) {{=$ctx.doI18N("assets_bank_accounts")}}</td>
 			<td></td>
-			<td align="right">{{=$ctx.decimal(assets_bank_accounts, 2)}}</td>
+			<td align="right">
+				<input id="assets_bank_accounts" name="assets_bank_accounts" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(assets_bank_accounts, 2)}}"/>
+			</td>
+
 		</tr>
 		<tr>
 			<td>(3) {{=$ctx.doI18N("assets_accounts_receivable")}}</td>
@@ -4572,6 +4575,15 @@ function showLockinOptions(){
 </form>
 
 </script>
+
+<script type="text/javascript">
+
+function gkRiskAnalysisCalc(){
+	alert($("#assets_cash").val());
+} 
+</script>
+
+
 
 
 </body>
