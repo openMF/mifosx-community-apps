@@ -4689,38 +4689,88 @@ function showLockinOptions(){
 
 function gkRiskAnalysisCalc(){
 
-	$("#assets_total_business").val("");
+	var calc;
 
-	var assets_cash = idNumber("assets_cash");
-	if (assets_cash == "nan")
-	{alert("not number");
+	if (validRAData("#entityform", "#formerrors") == false)
+	{
 		return false;
 	}
-	var assets_bank_accounts = idNumber("assets_bank_accounts");
-	var assets_accounts_receivable = idNumber("assets_accounts_receivable");
+	else
+	{
 
-	var calc = assets_cash + assets_bank_accounts + assets_accounts_receivable;
+		calc = amountRA("assets_cash") + amountRA("assets_bank_accounts") + amountRA("assets_accounts_receivable") + amountRA("assets_inventory") + amountRA("assets_total_fixed_business");
+
 	$("#assets_total_business").val(calc.toFixed(2));
-	return true;
+
+	}
+return true;
+
+  	var num="";
+
+	if ($("#assets_cash").val() > "")
+	{
+		num = Globalize.parseFloat($("#assets_cash").val());
+		if (isNaN(num))
+		{
+			alert("is a nan: " + num);
+			javascriptError("assets_cash", "formerrors");
+		}
+	}
+	else
+	{
+		num = 0;
+	}
 } 
 
-function idNumber(idName) {
-	var n = $("#" + idName).val();
-alert(n)
-	if (n > "") 
-	{
-		if (isNumber(n) == true) return parseFloat(n)
-		else return "nan";
-	}
-	else 
-	{	alert("ret 0");
-		return 0.0;
-	}
+function amountRA(idName) {
+	
+	if ($("#" + idName).val() > "") return Globalize.parseFloat($("#" + idName).val())
+	else return 0.0;
 }
 
-function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+function validRAData(formDiv, formErrorsDiv) {
+
+	$(formErrorsDiv).html("");
+
+	// get all the input fields except 'locale'
+	var IDs = [];
+	$(formDiv).find("input").each(function(){ if (this.id != 'locale') IDs.push(this.id); });
+
+  	var num="";
+	var currentId = "";
+	for (var i in IDs)
+	{
+		currentId = "#" + IDs[i];
+	      $(currentId).removeClass("ui-state-error"); // clear error highlight if there
+
+		if ($(currentId).val() > "")
+		{
+			num = Globalize.parseFloat($(currentId).val());
+			if (isNaN(num)) 
+			{
+				jsError(currentId, formErrorsDiv, "not.a.number");
+				return false;
+			}
+		}
+	}
+	return true;
 }
+
+function jsError(fieldName, formErrorsDiv, formErrorMsg) {
+	$(fieldName).addClass("ui-state-error");	
+
+	var errorHtml = '<div class="ui-widget">';
+	errorHtml += '	<div class="ui-state-error ui-corner-all">';
+	errorHtml += '		<span class="ui-icon ui-icon-alert" style="float: left; margin-right: 5px;" ></span>';
+	errorHtml += '		<div style="margin-left: 5px;">';
+	errorHtml += '			<div><em>' + doI18N(formErrorMsg) + '</em></div>';
+	errorHtml += '		</div>';
+	errorHtml += ' </div>';
+	errorHtml += '</div>';
+
+	$(formErrorsDiv).html(errorHtml );
+}
+
 </script>
 
 
