@@ -1857,7 +1857,12 @@ function loadILLoan(loanId) {
 						"show": function(event, ui) {
 							var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
 			      			var curTabID = curTab.prop("id")
-						}
+						},
+						"select": function( event, ui ) {
+        					if($(ui.panel).attr( 'id' ) == ( "loanDocuments"+ loanId )){
+        						refreshLoanDocuments(loanId)
+        					}
+   						}
 					});
 	        		
 	        		$('.rejectloan').button().click(function(e) {
@@ -2122,6 +2127,73 @@ function loadILLoan(loanId) {
 
 }
 
+
+function refreshLoanDocuments(loanId) {
+		var successFunction =  function(data, textStatus, jqXHR) {
+			var crudObject = new Object();
+			crudObject.crudRows = data;
+			crudObject.loanId	= loanId;
+			var tableHtml = $("#loanDocumentsTemplate").render(crudObject);
+			$("#loanDocuments"+loanId).html(tableHtml);
+			//initialize all edit/delete buttons
+			var loanUrl = "loans/"+ loanId;
+			var editLoanDocumentSuccessFunction = function(data, textStatus, jqXHR) {
+			  	$("#dialog-form").dialog("close");
+			  	refreshLoanDocuments(loanId);
+			}
+			$.each(crudObject.crudRows, function(i, val) {
+			      $("#editloandocument" + val.id).button({icons: {
+	                primary: "ui-icon-pencil"}}
+	                ).click(function(e){
+			      	
+					var getUrl = loanUrl + '/documents/'+val.id;
+					var putUrl = loanUrl + '/documents/'+val.id;
+					var templateSelector = "#editLoanDocumentsFormTemplate";
+					var width = 600; 
+					var height = 450;
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  editLoanDocumentSuccessFunction);
+				    e.preventDefault();
+			      });
+			      $("#deleteloandocument" + val.id).button({icons: {
+	                primary: "ui-icon-circle-close"}
+	            	}).click(function(e) {
+					var url = loanUrl + '/documents/'+val.id;
+					var width = 400; 
+					var height = 225;
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, editLoanDocumentSuccessFunction);
+					
+					e.preventDefault();
+				});
+				$("#downloadloandocument" + val.id).button({icons: {
+	                primary: "ui-icon-arrowthickstop-1-s"}
+	            	}).click(function(e) {
+					var url = loanUrl + '/documents/'+val.id + '/attachment';
+					executeAjaxOctetStreamDownloadRequest(url);
+					e.preventDefault();
+				});
+			});			
+			//associate event with add loan document button
+			$('#addloandocument'+loanId).button({icons: {
+	                primary: "ui-icon-plusthick"}
+	            	}).click(function(e) {
+				var getUrl = "";
+				var putUrl = loanUrl + '/documents';
+				var templateSelector = "#loanDocumentsFormTemplate";
+				var width = 600; 
+				var height = 450;
+				
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	refreshLoanDocuments(loanId);
+				}
+				
+				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+			    e.preventDefault();
+			});
+		}
+  		executeAjaxRequest("loans/"+ loanId + '/documents', 'GET', "", successFunction, formErrorFunction);	  	
+}
 
 /* crud admin code */
 

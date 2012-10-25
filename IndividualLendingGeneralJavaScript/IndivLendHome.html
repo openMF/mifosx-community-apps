@@ -2545,6 +2545,7 @@ $(document).ready(function() {
 		{{#if transactions}}
 		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.client.account.loan.transactions")}}</a></li>
 		{{/if}}
+		<li><a href="#loanDocuments{{=id}}" title="documents">{{=$ctx.doI18N("tab.client.account.loan.documents")}}</a></li>
 	</ul>
     <!-- first loan tab -->
 
@@ -2909,7 +2910,105 @@ $(document).ready(function() {
 		</table>
 	</div>
 	{{/if}}
+	<!-- Loan Documents Tab--->
+	<div id="loanDocuments{{=id}}" style="margin-top: 5px;">
+		
+	</div>
+	
 </div>
+</script>
+
+<script id="loanDocumentsTemplate" type="text/x-jquery-tmpl">
+	<span id="toolbar" class="ui-widget-header ui-corner-all">
+   			<button id="addloandocument{{=loanId}}">{{=$ctx.doI18N("loan.document.add")}}</button>
+	</span>
+	<hr/>
+	<table style="vertical-align: top;width: 100%">
+		{{#each crudRows}}
+				<tr>
+					<td>{{=$ctx.doI18N("loan.document.name")}}</td>
+					<td>{{=name}}</td>
+				</tr>
+				<tr>
+				   	<td><label for="description">{{=$ctx.doI18N("loan.document.description")}}</label></td>
+					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
+					<td>
+						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+							<button id="downloadloandocument{{=id}}">{{=$ctx.doI18N("loan.document.download")}}</button>
+					   		<button id="editloandocument{{=id}}">{{=$ctx.doI18N("loan.document.edit")}}</button>
+					   		<button id="deleteloandocument{{=id}}">{{=$ctx.doI18N("loan.document.delete")}}</button>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("loan.document.file.name")}}</td>
+					<td>{{=fileName}}</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<hr/>
+					</td>
+				</tr>
+		{{/each}}
+	</table>
+</script>
+
+<script id="loanDocumentsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("loan.document.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("loan.document.description")}}</label>
+				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("loan.document.file.select")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<script id="editLoanDocumentsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("loan.document.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("loan.document.description")}}</label>
+				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
+			</td>
+		<tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("loan.document.current.file.name")}}</label>
+				{{=fileName}}
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("loan.document.file.new.select")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
 </script>
 
 <script id="stateTransitionLoanFormTemplate" type="text/x-jquery-tmpl">
