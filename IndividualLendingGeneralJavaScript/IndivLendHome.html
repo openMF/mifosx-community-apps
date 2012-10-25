@@ -4680,13 +4680,66 @@ function showLockinOptions(){
 	</table>
 	<hr><hr>
 
+	<table width="100%">
+		<tr>
+			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.liabilities")}}</b></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+			<td width="20%"></td>
+			<td width="30%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+		</tr>
+		<tr>
+			<td>(8) {{=$ctx.doI18N("liabilities_accounts_payable")}}</td>
+			<td></td>
+			<td>
+				<input class="right" id="liabilities_accounts_payable" name="liabilities_accounts_payable" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(liabilities_accounts_payable, 2)}}"/>
+			</td>
+			<td></td>
+			<td>(9) {{=$ctx.doI18N("liabilities_business_debts")}}</td>
+			<td></td>
+			<td>
+				<input class="right" id="liabilities_business_debts" name="liabilities_business_debts" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(liabilities_business_debts, 2)}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>(10) {{=$ctx.doI18N("liabilities_total_business")}}</td>
+			<td></td>
+			<td>
+				<input class="right" id="liabilities_total_business" name="liabilities_total_business" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(liabilities_total_business, 2)}}"/>
+			</td>
+			<td></td>
+			<td>(11) {{=$ctx.doI18N("liabilities_equity_working_capital")}} (6-10)</td>
+			<td></td>
+			<td>
+				<input class="rightreadonly" id="liabilities_equity_working_capital" name="liabilities_equity_working_capital" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(liabilities_equity_working_capital, 2)}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>(12) {{=$ctx.doI18N("liabilities_total_household")}}</td>
+			<td></td>
+			<td>
+				<input class="right" id="liabilities_total_household" name="liabilities_total_household" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(liabilities_total_household, 2)}}"/>
+			</td>
+
+			<td></td>
+			<td>(13) {{=$ctx.doI18N("liabilities_household_equity")}} (7 -12)</td>
+			<td></td>
+			<td>
+				<input class="rightreadonly" id="liabilities_household_equity" name="liabilities_household_equity" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(liabilities_household_equity, 2)}}"/>
+			</td>
+		</tr>
+	</table>
+	<hr><hr>
+
 	</fieldset>
 </form>
 
 </script>
 
 <script type="text/javascript">
-
+//move this into a GK specific config later
 function gkRiskAnalysisCalc(){
 
 	var calc;
@@ -4697,29 +4750,17 @@ function gkRiskAnalysisCalc(){
 	}
 	else
 	{
-
 		calc = amountRA("assets_cash") + amountRA("assets_bank_accounts") + amountRA("assets_accounts_receivable") + amountRA("assets_inventory") + amountRA("assets_total_fixed_business");
+		$("#assets_total_business").val(calc.toFixed(2));
 
-	$("#assets_total_business").val(calc.toFixed(2));
+		calc = amountRA("assets_total_business") - amountRA("liabilities_total_business");
+		$("#liabilities_equity_working_capital").val(calc.toFixed(2));
+
+		calc = amountRA("assets_total_household") - amountRA("liabilities_total_household");
+		$("#liabilities_household_equity").val(calc.toFixed(2));
 
 	}
-return true;
-
-  	var num="";
-
-	if ($("#assets_cash").val() > "")
-	{
-		num = Globalize.parseFloat($("#assets_cash").val());
-		if (isNaN(num))
-		{
-			alert("is a nan: " + num);
-			javascriptError("assets_cash", "formerrors");
-		}
-	}
-	else
-	{
-		num = 0;
-	}
+	return true;
 } 
 
 function amountRA(idName) {
@@ -4730,18 +4771,22 @@ function amountRA(idName) {
 
 function validRAData(formDiv, formErrorsDiv) {
 
-	$(formErrorsDiv).html("");
-
 	// get all the input fields except 'locale'
 	var IDs = [];
 	$(formDiv).find("input").each(function(){ if (this.id != 'locale') IDs.push(this.id); });
 
-  	var num="";
+	$(formErrorsDiv).html("");
 	var currentId = "";
 	for (var i in IDs)
 	{
 		currentId = "#" + IDs[i];
 	      $(currentId).removeClass("ui-state-error"); // clear error highlight if there
+	}
+
+  	var num="";
+	for (var i in IDs)
+	{
+		currentId = "#" + IDs[i];
 
 		if ($(currentId).val() > "")
 		{
