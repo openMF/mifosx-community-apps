@@ -4922,23 +4922,45 @@ function gkRiskAnalysisCalc(){
 		calc = amountRA("cashflow_disposable_income") - amountRA("cashflow_amount_loan_installment");
 		$("#cashflow_available_surplus").val(calc.toFixed(2));
 
-		calc = amountRA("cashflow_cost_goods_sold") / amountRA("assets_inventory");
-		$("#fi_inventory_turnover").val(calc.toFixed(2));
+		if (amountRA("assets_inventory") != 0.0)
+		{
+			calc = amountRA("cashflow_cost_goods_sold") / amountRA("assets_inventory");
+			$("#fi_inventory_turnover").val(calc.toFixed(2));
+		}
+		else $("#fi_inventory_turnover").val("");
 
-		calc = (amountRA("cashflow_cash_sales") + amountRA("cashflow_cash_sales2") - amountRA("cashflow_cost_goods_sold")) / amountRA("cashflow_cash_sales");
-		$("#fi_gross_margin").val(calc.toFixed(2));
+		if (amountRA("cashflow_cash_sales") != 0.0)
+		{
+			calc = (amountRA("cashflow_cash_sales") + amountRA("cashflow_cash_sales2") - amountRA("cashflow_cost_goods_sold")) / amountRA("cashflow_cash_sales");
+			$("#fi_gross_margin").val(calc.toFixed(2));
+		}
+		else $("#fi_gross_margin").val("");
 
-		calc = amountRA("cashflow_disposable_income") - amountRA("cashflow_amount_loan_installment");
-		$("#fi_indebtedness").val(calc.toFixed(2));
+		if (amountRA("liabilities_equity_working_capital") != 0.0)
+		{
+			calc = amountRA("liabilities_total_business") / amountRA("liabilities_equity_working_capital");
+			$("#fi_indebtedness").val(calc.toFixed(2));
 
-		calc = amountRA("cashflow_disposable_income") - amountRA("cashflow_amount_loan_installment");
-		$("#fi_loan_recommendation").val(calc.toFixed(2));
+			calc = (amountRA("liabilities_total_business") + 100000.0) / amountRA("liabilities_equity_working_capital");
+			$("#fi_loan_recommendation").val(calc.toFixed(2));
 
-		calc = amountRA("cashflow_disposable_income") - amountRA("cashflow_amount_loan_installment");
-		$("#fi_roe").val(calc.toFixed(2));
+			calc = amountRA("cashflow_gross_profit") / amountRA("liabilities_equity_working_capital");
+			$("#fi_roe").val(calc.toFixed(2));
+		}
+		else 
+		{
+			$("#fi_indebtedness").val("");
+			$("#fi_loan_recommendation").val("");
+			$("#fi_roe").val("");
+		}
 
-		calc = amountRA("cashflow_disposable_income") - amountRA("cashflow_amount_loan_installment");
-		$("#fi_repayment_capacity").val(calc.toFixed(2));
+		if (amountRA("cashflow_disposable_income") != 0.0)
+		{
+			calc = amountRA("cashflow_amount_loan_installment") / amountRA("cashflow_disposable_income");
+			$("#fi_repayment_capacity").val(calc.toFixed(2));
+		}
+		else $("#fi_repayment_capacity").val("");
+
 	}
 	return true;
 } 
