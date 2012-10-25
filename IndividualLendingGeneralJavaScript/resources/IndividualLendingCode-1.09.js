@@ -1816,9 +1816,38 @@ function showRelatedDataTableInfo(tabVar, appTableName, appTablePKValue, ignoreD
 
 
 function showILLoan(loanId, product) {
-	var title = product + ": #" + loanId ;			    
-	$newtabs.tabs( "add", "unknown.html", title);
-	loadILLoan(loanId);
+	var newLoanTabId='loan'+loanId+'tab';
+	//show existing tab if this Id is already present
+	if(tabExists(newLoanTabId)){
+		var index = $('#newtabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
+		$('#newtabs').tabs('select', index);
+	}
+	//else create new tab and set identifier properties
+	else{
+		var title = product + ": #" + loanId ;			    
+		$newtabs.tabs( "add", "unknown.html", title);
+		loadILLoan(loanId);
+		//add ids and titles to newly added div's and a'hrefs
+		var lastAHref=$('#newtabs> ul > li:last > a');
+		var lastDiv=$('#newtabs > div:last')
+		var lastButOneDiv=$('#newtabs > div:last').prev();
+		lastAHref.attr('href','#loan'+loanId+'tab');
+		lastButOneDiv.attr('id',newLoanTabId);
+		//the add functionality seems to be adding a dummy div at the end 
+		//am deleting the same to make div manipulation easier
+		lastDiv.remove();
+	}
+}
+
+//checks for existence of tab with given Id
+function tabExists(tabId){
+    var tabFound = false;
+    $('#newtabs > div').each(function(index, ui) {
+        if($(ui).attr('id') == tabId){
+        	tabFound = true;
+        }
+    });
+    return tabFound;
 }
 
 
@@ -2124,7 +2153,6 @@ function loadILLoan(loanId) {
 	        };
 	    
 		executeAjaxRequest(loanUrl, 'GET', "", successFunction, errorFunction);	  
-
 }
 
 
@@ -2192,7 +2220,7 @@ function refreshLoanDocuments(loanId) {
 			    e.preventDefault();
 			});
 		}
-  		executeAjaxRequest("loans/"+ loanId + '/documents', 'GET', "", successFunction, formErrorFunction);	  	
+  		executeAjaxRequest("loans/"+ loanId + '/documents', 'GET', "", successFunction, formErrorFunction);	 
 }
 
 /* crud admin code */
