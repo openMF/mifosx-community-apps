@@ -2150,9 +2150,12 @@ function loadILLoan(loanId) {
 							cancelLabel: doI18N("dialog.button.cancel")						
 				};
 				//will fully delete after (JPW) jQuery.stretchyData.displayAllExtraData(additionalFieldsParams)
+				//also fetch loan documents for this loan
+				refreshLoanDocuments(loanId);
 	        };
 	    
 		executeAjaxRequest(loanUrl, 'GET', "", successFunction, errorFunction);	  
+		
 }
 
 
