@@ -825,10 +825,10 @@ function refreshClientIdentifiers(clientUrl) {
 					var templateSelector = "#clientIdentifiersFormTemplate";
 					var width = 600; 
 					var height = 450;
-					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  editClientIdentifierSuccessFunction);
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.clientIdentifier.edit", templateSelector, width, height,  editClientIdentifierSuccessFunction);
 				    e.preventDefault();
 			      });
-			      $("#deleteclientidentifier" + val.id).button({icons: {
+			     $("#deleteclientidentifier" + val.id).button({icons: {
 	                primary: "ui-icon-circle-close"}
 	            	}).click(function(e) {
 					var url = clientUrl + '/identifiers/'+val.id;
@@ -839,6 +839,26 @@ function refreshClientIdentifiers(clientUrl) {
 					
 					e.preventDefault();
 				});
+				//button for add document
+			   $("#addclientIdentifierdocument" + val.id).button({icons: {
+                primary: "ui-icon-plusthick"}
+                }).click(function(e){
+		      	var getUrl = "";
+				var putUrl = "client_identifiers/"+ val.id+ '/documents';
+				var templateSelector = "#clientIdentifierDocumentsFormTemplate";
+				var width = 600; 
+				var height = 300;
+				
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	refreshClientIdentifierDocuments(val.id);
+				}
+				
+				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.clientIdentifier.add.document", templateSelector, width, height,  saveSuccessFunction);
+			    e.preventDefault();
+		      });
+		      //fetch the identifier documents for this identifier
+		      refreshClientIdentifierDocuments(val.id);
 			});			
 			//associate event with add client Identity button
 			$('#addclientidentifier').button({icons: {
@@ -857,11 +877,63 @@ function refreshClientIdentifiers(clientUrl) {
 				  	refreshClientIdentifiers(clientUrl);
 				}
 				
-				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.clientIdentifier.add", templateSelector, width, height,  saveSuccessFunction);
 			    e.preventDefault();
 			});
 		}
   		executeAjaxRequest(clientUrl + '/identifiers', 'GET', "", successFunction, formErrorFunction);	  	
+}
+
+
+function refreshClientIdentifierDocuments(clientIdentifierId) {
+		var successFunction =  function(data, textStatus, jqXHR) {
+			var crudObject = new Object();
+			crudObject.crudRows = data;
+			crudObject.clientIdentifierId	= clientIdentifierId;
+			var tableHtml = $("#clientIdentifierDocumentsTemplate").render(crudObject);
+			$("#clientidentifier"+clientIdentifierId+"documents").html(tableHtml);
+			//initialize all edit/delete buttons
+			var clientIdentifierUrl = "client_identifiers/"+ clientIdentifierId;
+			var editClientIdentifierDocumentSuccessFunction = function(data, textStatus, jqXHR) {
+			  	$("#dialog-form").dialog("close");
+			  	refreshClientIdentifierDocuments(clientIdentifierId);
+			}
+			$.each(crudObject.crudRows, function(i, val) {
+			      $("#editclientIdentifierdocument" + val.id).button({icons: {
+	                primary: "ui-icon-pencil"},
+	                text: false
+	                }).click(function(e){
+					var getUrl = clientIdentifierUrl + '/documents/'+val.id;
+					var putUrl = clientIdentifierUrl + '/documents/'+val.id;
+					var templateSelector = "#editClientIdentifierDocumentsFormTemplate";
+					var width = 600; 
+					var height = 300;
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.clientIdentifier.edit.document", templateSelector, width, height,  editClientIdentifierDocumentSuccessFunction);
+				    e.preventDefault();
+			      });
+			      $("#deleteclientIdentifierdocument" + val.id).button({icons: {
+	                primary: "ui-icon-trash"},
+	                text: false
+	            	}).click(function(e) {
+					var url = clientIdentifierUrl + '/documents/'+val.id;
+					var width = 400; 
+					var height = 225;
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, editClientIdentifierDocumentSuccessFunction);
+					
+					e.preventDefault();
+				});
+				$("#downloadclientIdentifierdocument" + val.id).button({icons: {
+	                primary: "ui-icon-arrowthickstop-1-s"},
+	                text: false
+	            	}).click(function(e) {
+					var url = clientIdentifierUrl + '/documents/'+val.id + '/attachment';
+					executeAjaxOctetStreamDownloadRequest(url);
+					e.preventDefault();
+				});
+			});			
+		}
+  		executeAjaxRequest("client_identifiers/"+ clientIdentifierId + '/documents', 'GET', "", successFunction, formErrorFunction);	 
 }
 
 function refreshClientDocuments(clientUrl) {
@@ -886,7 +958,7 @@ function refreshClientDocuments(clientUrl) {
 					var templateSelector = "#editClientDocumentsFormTemplate";
 					var width = 600; 
 					var height = 450;
-					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  editClientDocumentSuccessFunction);
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.client.document.edit", templateSelector, width, height,  editClientDocumentSuccessFunction);
 				    e.preventDefault();
 			      });
 			      $("#deleteclientdocument" + val.id).button({icons: {
@@ -925,7 +997,7 @@ function refreshClientDocuments(clientUrl) {
 				  	refreshClientDocuments(clientUrl);
 				}
 				
-				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.client.document.add", templateSelector, width, height,  saveSuccessFunction);
 			    e.preventDefault();
 			});
 		}
@@ -2182,7 +2254,7 @@ function refreshLoanDocuments(loanId) {
 					var templateSelector = "#editLoanDocumentsFormTemplate";
 					var width = 600; 
 					var height = 450;
-					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  editLoanDocumentSuccessFunction);
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.loan.document.edit", templateSelector, width, height,  editLoanDocumentSuccessFunction);
 				    e.preventDefault();
 			      });
 			      $("#deleteloandocument" + val.id).button({icons: {
@@ -2219,7 +2291,7 @@ function refreshLoanDocuments(loanId) {
 				  	refreshLoanDocuments(loanId);
 				}
 				
-				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+				popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.loan.document.add", templateSelector, width, height,  saveSuccessFunction);
 			    e.preventDefault();
 			});
 		}
