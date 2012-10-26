@@ -1549,10 +1549,17 @@ $(document).ready(function() {
 					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
 					<td>
 						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+							<button id="addclientIdentifierdocument{{=id}}">{{=$ctx.doI18N("clientIdentifier.document.add")}}</button>
 					   		<button id="editclientidentifier{{=id}}">{{=$ctx.doI18N("client.identifier.edit")}}</button>
 					   		<button id="deleteclientidentifier{{=id}}">{{=$ctx.doI18N("client.identifier.delete")}}</button>
 						</span>
 					</td>
+				</tr>
+				<tr>
+				   	<td><label for="documents">{{=$ctx.doI18N("client.identifier.documents")}}</label></td>
+				</tr>
+				<tr>
+					<td colspan="2" id="clientidentifier{{=id}}documents"></td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -1596,6 +1603,73 @@ $(document).ready(function() {
  </form>
 </script>
 
+<!--Client identifier documents section begins here -->
+
+<script id="clientIdentifierDocumentsTemplate" type="text/x-jquery-tmpl">
+	<table style="vertical-align: top;width: 100%">
+		{{#each crudRows}}
+				<tr>
+					<td>{{=$ctx.doI18N("clientIdentifier.document.label")}} {{=name}} ({{=fileName}})</td>
+					<td>
+						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+							<button id="downloadclientIdentifierdocument{{=id}}"></button>
+					   		<button id="editclientIdentifierdocument{{=id}}"></button>
+					   		<button id="deleteclientIdentifierdocument{{=id}}"></button>
+						</span>
+					</td>
+				</tr>
+		{{/each}}
+	</table>
+</script>
+
+<script id="clientIdentifierDocumentsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("clientIdentifier.document.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("clientIdentifier.document.file.select")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<script id="editClientIdentifierDocumentsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("clientIdentifier.document.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("clientIdentifier.document.current.file.name")}}</label>
+				{{=fileName}}
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("clientIdentifier.document.file.new.select")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+<!-- Clients Identifier Document section ends here-->
+
+<!-- Client document section begins here-->
 <script id="clientDocumentsTemplate" type="text/x-jquery-tmpl">
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
    		<button id="addclientdocument{{=clientId}}">{{=$ctx.doI18N("client.document.add")}}</button>
