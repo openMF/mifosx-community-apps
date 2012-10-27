@@ -4474,7 +4474,19 @@ function showLockinOptions(){
 {{/if}}
 
 {{#each crudRows}}
-
+	<hr>
+	<table width="100%">
+		<tr>
+			<td width="30%">(0) {{=$ctx.doI18N("proposed_loan_amount")}}</td>
+			<td width="1%"></td>
+			<td width="9%" align="right">{{=$ctx.decimal(proposed_loan_amount, 2)}}</td>
+			<td width="20%"></td>
+			<td width="30%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+		</tr>
+	</table>
+	<hr>
 	<table width="100%">
 		<tr>
 			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.assets")}}</b></td>
@@ -4522,7 +4534,7 @@ function showLockinOptions(){
 			<td></td>
 		</tr>
 	</table>
-	<hr><hr>
+	<hr>
 	<table width="100%">
 		<tr>
 			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.liabilities")}}</b></td>
@@ -4561,7 +4573,7 @@ function showLockinOptions(){
 			<td align="right"><b>{{=$ctx.decimal(liabilities_household_equity, 2)}}</b></td>
 		</tr>
 	</table>
-	<hr><hr>
+	<hr>
 	<table width="100%">
 		<tr>
 			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.cashflow")}}</b></td>
@@ -4636,7 +4648,7 @@ function showLockinOptions(){
 			<td></td>
 		</tr>
 	</table>
-	<hr><hr>
+	<hr>
 	<table width="100%">
 		<tr>
 			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.financial.indicators")}}</b></td>
@@ -4661,7 +4673,7 @@ function showLockinOptions(){
 			<td></td>
 			<td align="right"><b>{{=$ctx.decimal(fi_indebtedness, 2)}}</b></td>
 			<td></td>
-			<td>(30) {{=$ctx.doI18N("fi_loan_recommendation")}} ((10 + loan amount)/11)???</td>
+			<td>(30) {{=$ctx.doI18N("fi_loan_recommendation")}} ((10 + 0)/11)???</td>
 			<td></td>
 			<td align="right"><b>{{=$ctx.decimal(fi_loan_recommendation, 2)}}</b></td>
 		</tr>
@@ -4691,6 +4703,20 @@ function showLockinOptions(){
 	<fieldset>
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
+	<table width="100%">
+		<tr>
+			<td width="30%">(0) {{=$ctx.doI18N("proposed_loan_amount")}}</td>
+			<td width="1%"></td>
+			<td width="9%">
+				<input class="right" id="proposed_loan_amount" name="proposed_loan_amount" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(proposed_loan_amount, 2)}}"/>
+			</td>
+			<td width="20%"></td>
+			<td width="30%"></td>
+			<td width="1%"></td>
+			<td width="9%"></td>
+		</tr>
+	</table>
+	<hr>
 	<table width="100%">
 		<tr>
 			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.assets")}}</b></td>
@@ -4753,7 +4779,7 @@ function showLockinOptions(){
 			<td></td>
 		</tr>
 	</table>
-	<hr><hr>
+	<hr>
 	<table width="100%">
 		<tr>
 			<td width="30%"><b>{{=$ctx.doI18N("riskanalysis.label.liabilities")}}</b></td>
@@ -4805,7 +4831,7 @@ function showLockinOptions(){
 			</td>
 		</tr>
 	</table>
-	<hr><hr>
+	<hr>
 
 	<table width="100%">
 		<tr>
@@ -4907,7 +4933,7 @@ function showLockinOptions(){
 			<td></td>
 		</tr>
 	</table>
-	<hr><hr>
+	<hr>
 
 	<table width="100%">
 		<tr>
@@ -4939,7 +4965,7 @@ function showLockinOptions(){
 				<input class="rightreadonly" id="fi_indebtedness" name="fi_indebtedness" readonly="readonly" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(fi_indebtedness, 2)}}"/>
 			</td>
 			<td></td>
-			<td>(30) {{=$ctx.doI18N("fi_loan_recommendation")}} ((10 + loan amount)/11)???</td>
+			<td>(30) {{=$ctx.doI18N("fi_loan_recommendation")}} ((10 + 0)/11)</td>
 			<td></td>
 			<td>
 				<input class="rightreadonly" id="fi_loan_recommendation" name="fi_loan_recommendation" readonly="readonly" title="" onchange="gkRiskAnalysisCalc();"; style="width: 100px;" value="{{=$ctx.decimal(fi_loan_recommendation, 2)}}"/>
@@ -5015,7 +5041,7 @@ function gkRiskAnalysisCalc(){
 			calc = amountRA("liabilities_total_business") / amountRA("liabilities_equity_working_capital");
 			$("#fi_indebtedness").val(calc.toFixed(2));
 
-			calc = (amountRA("liabilities_total_business") + 100000.0) / amountRA("liabilities_equity_working_capital");
+			calc = (amountRA("liabilities_total_business") + amountRA("proposed_loan_amount") ) / amountRA("liabilities_equity_working_capital");
 			$("#fi_loan_recommendation").val(calc.toFixed(2));
 
 			calc = amountRA("cashflow_gross_profit") / amountRA("liabilities_equity_working_capital");
@@ -5074,6 +5100,7 @@ function validRAData(formDiv, formErrorsDiv) {
 				jsError(currentId, formErrorsDiv, "not.a.number");
 				return false;
 			}
+//alert(Globalize.parseFloat($(currentId).val()))
 		}
 	}
 	return true;
