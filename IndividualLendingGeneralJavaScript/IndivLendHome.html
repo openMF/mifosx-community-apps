@@ -1435,6 +1435,58 @@ $(document).ready(function() {
 	</table>
 </script>
 
+<script id="clientImageAndActionsTemplate" type="text/x-jquery-tmpl">
+<form id="clientImageForm">
+		<table style="width:100%">
+			<tr>
+				<td>
+					<img id="customerImage" src="resources/img/client-image-placeholder.png" width="100" height="100"/>
+					<br/>
+					<span id="modifyImageToolbar" class="ui-widget-header ui-corner-all">
+								<button id="captureClientImage"></button>
+						   		<button id="editClientImage"></button>
+						   		<button id="deleteClientImage"></button>
+					</span>
+				</td>
+				<td valign="top" align="left">
+					<br/>
+					<br/>
+					<b><span id="customerName"></span></b>
+					<br/>
+					<span id="customerOfficeName"></span>
+				</td>
+				<td valign="top" style="text-align: right">
+					<span id="toolbar" class="ui-widget-header ui-corner-all">
+						<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
+						<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
+					
+					{{#if $ctx.showIt("DepositCreate")}}
+						<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
+					{{/if}}
+					
+						<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
+						<button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
+					</span>
+				</td>
+			<tr>
+		</table>
+</form>
+</script>
+
+<script id="clientImageUploadFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">Browse image for this customer:</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
 <script id="clientFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -1539,9 +1591,13 @@ $(document).ready(function() {
 </script>
 
 <script id="clientIdentifiersTemplate" type="text/x-jquery-tmpl">
-	<span id="toolbar" class="ui-widget-header ui-corner-all">
-   		<button id="addclientidentifier{{=clientId}}">{{=$ctx.doI18N("client.identifier.add")}}</button>
-	</span>
+	<table width="100%">
+		<td align="center">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+		   		<button id="addclientidentifier{{=clientId}}">{{=$ctx.doI18N("client.identifier.add")}}</button>
+			</span>
+		</td>
+	</table>
 	<hr/>
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
@@ -1639,7 +1695,7 @@ $(document).ready(function() {
 		<tr>
 			<td>
 				<label for="name">{{=$ctx.doI18N("clientIdentifier.document.name")}}</label>
-				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+				<input id="name" name="name" title="" type="text"/>
 			</td>
 		</tr>
 		<tr>
@@ -1681,9 +1737,13 @@ $(document).ready(function() {
 
 <!-- Client document section begins here-->
 <script id="clientDocumentsTemplate" type="text/x-jquery-tmpl">
-	<span id="toolbar" class="ui-widget-header ui-corner-all">
-   		<button id="addclientdocument{{=clientId}}">{{=$ctx.doI18N("client.document.add")}}</button>
-	</span>
+	<table width="100%">
+		<td align="center">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+		   		<button id="addclientdocument{{=clientId}}">{{=$ctx.doI18N("client.document.add")}}</button>
+			</span>
+		</td>
+	</table>
 	<hr/>
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
@@ -1907,19 +1967,6 @@ $(document).ready(function() {
 </script>
 
 <script id="clientDataTabTemplate" type="text/x-jquery-tmpl">
-<span id="toolbar" class="ui-widget-header ui-corner-all">
-	<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
-	<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
-
-{{#if $ctx.showIt("DepositCreate")}}
-	<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
-{{/if}}
-
-	<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
-	<button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
-</span>
-<hr/>
-
 <div id="clienttabcontent">
 	<div id="clienttableftpane" style="float:left; max-width: 700px; width: 700px;">
 		<div class="row">
@@ -2565,54 +2612,58 @@ $(document).ready(function() {
 {{#each permissions}}
 {{#if anyActionOnLoanAllowed}}
 <div id="loanactions">
-	<span id="toolbar" class="ui-widget-header ui-corner-all">
-
-		{{#if addLoanChargeAllowed}}
-		<button id="addloanchargebtn{{=$parent.parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
-		{{/if}}
-
-		{{#if rejectAllowed}}
-		<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectloan">Reject</button>
-		{{/if}}
-		
-		{{#if withdrawnByApplicantAllowed}}
-		<button id="withdrawnbyapplicantloanbtn{{=$parent.parent.parent.data.id}}" class="withdrawnbyapplicantloan">Withdrawn By Applicant</button>
-		{{/if}}
-		
-		{{#if pendingApproval}}
-		<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
-		<button id="approvebtn{{=$parent.parent.parent.data.id}}" class="approveloan">Approve</button>
-		<button id="deletebtn{{=$parent.parent.parent.data.id}}" class="deleteloan">Delete</button>
-		{{/if}}
-		
-		{{#if undoApprovalAllowed}}
-		<button id="undoapprovebtn{{=$parent.parent.parent.data.id}}" class="undoapproveloan">Undo Approval</button>
-		{{/if}}
-		
-		{{#if disbursalAllowed}}
-		<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
-		<button id="disbursebtn{{=$parent.parent.parent.data.id}}" class="disburseloan">Disburse</button>
-		{{/if}}
-		
-		{{#if undoDisbursalAllowed}}
-		<button id="undodisbursalbtn{{=$parent.parent.parent.data.id}}" class="undodisbursalloan">Undo Disbursal</button>
-		{{/if}}
-		
-		{{#if makeRepaymentAllowed}}
-		<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
-		<button id="repaymentbtn{{=$parent.parent.parent.data.id}}" class="repaymentloan">Make Repayment</button>
-		<button id="waiveinterestbtn{{=$parent.parent.parent.data.id}}" class="waiveinterestloan">Waive interest</button>
-		<button id="writeoffbtn{{=$parent.parent.parent.data.id}}" class="writeoffloan">Write-off</button>
-		{{/if}}
-
-		{{#if closeLoanAsRescheduledAllowed}}
-		<button id="closeasrescheduledbtn{{=$parent.parent.parent.data.id}}" class="closeasrescheduledloan">Close as rescheduled</button>
-		{{/if}}
-
-		{{#if closeLoanAllowed}}
-		<button id="closebtn{{=$parent.parent.parent.data.id}}" class="closeloan">Close</button>
-		{{/if}}
-	</span>
+	<table width="100%">
+		<td align="center">
+		<span id="toolbar" class="ui-widget-header ui-corner-all">
+	
+			{{#if addLoanChargeAllowed}}
+			<button id="addloanchargebtn{{=$parent.parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
+			{{/if}}
+	
+			{{#if rejectAllowed}}
+			<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectloan">Reject</button>
+			{{/if}}
+			
+			{{#if withdrawnByApplicantAllowed}}
+			<button id="withdrawnbyapplicantloanbtn{{=$parent.parent.parent.data.id}}" class="withdrawnbyapplicantloan">Withdrawn By Applicant</button>
+			{{/if}}
+			
+			{{#if pendingApproval}}
+			<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
+			<button id="approvebtn{{=$parent.parent.parent.data.id}}" class="approveloan">Approve</button>
+			<button id="deletebtn{{=$parent.parent.parent.data.id}}" class="deleteloan">Delete</button>
+			{{/if}}
+			
+			{{#if undoApprovalAllowed}}
+			<button id="undoapprovebtn{{=$parent.parent.parent.data.id}}" class="undoapproveloan">Undo Approval</button>
+			{{/if}}
+			
+			{{#if disbursalAllowed}}
+			<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
+			<button id="disbursebtn{{=$parent.parent.parent.data.id}}" class="disburseloan">Disburse</button>
+			{{/if}}
+			
+			{{#if undoDisbursalAllowed}}
+			<button id="undodisbursalbtn{{=$parent.parent.parent.data.id}}" class="undodisbursalloan">Undo Disbursal</button>
+			{{/if}}
+			
+			{{#if makeRepaymentAllowed}}
+			<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
+			<button id="repaymentbtn{{=$parent.parent.parent.data.id}}" class="repaymentloan">Make Repayment</button>
+			<button id="waiveinterestbtn{{=$parent.parent.parent.data.id}}" class="waiveinterestloan">Waive interest</button>
+			<button id="writeoffbtn{{=$parent.parent.parent.data.id}}" class="writeoffloan">Write-off</button>
+			{{/if}}
+	
+			{{#if closeLoanAsRescheduledAllowed}}
+			<button id="closeasrescheduledbtn{{=$parent.parent.parent.data.id}}" class="closeasrescheduledloan">Close as rescheduled</button>
+			{{/if}}
+	
+			{{#if closeLoanAllowed}}
+			<button id="closebtn{{=$parent.parent.parent.data.id}}" class="closeloan">Close</button>
+			{{/if}}
+		</span>
+		</td>
+	</table>
 </div>
 {{/if}}
 {{/each}}
@@ -2856,7 +2907,7 @@ $(document).ready(function() {
 				</tr>
 				{{/if}}
 			</tbody>
-			<tfoot class="ui-widget-header">
+			<tfoot >
 				<tr>
 					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.total")}}</th>
 					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
@@ -2966,7 +3017,7 @@ $(document).ready(function() {
 					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
 				</tr>
 			</tfoot>
-		</table>
+</table>-->
 	</div>
 	{{/each}}
 
@@ -3009,9 +3060,13 @@ $(document).ready(function() {
 </script>
 
 <script id="loanDocumentsTemplate" type="text/x-jquery-tmpl">
-	<span id="toolbar" class="ui-widget-header ui-corner-all">
-   			<button id="addloandocument{{=loanId}}">{{=$ctx.doI18N("loan.document.add")}}</button>
-	</span>
+	<table width="100%">
+		<td align="right">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+		   			<button id="addloandocument{{=loanId}}">{{=$ctx.doI18N("loan.document.add")}}</button>
+			</span>
+		</td>
+	</table>
 	<hr/>
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
