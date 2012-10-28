@@ -1264,9 +1264,14 @@ function showILGroup(groupId){
 	  				});
   					
   					$('.chargeAmount').change(function() {  
+  						alert("testcharg9999999");
   			  			calculateLoanSchedule();
   			  		});
-			  		
+  					
+  					$("[class*=specifiedDueDate]").change(function() {
+  			  			calculateLoanSchedule();
+  				  	});
+  					
 			  		calculateLoanSchedule();
   				}
   				
@@ -1283,9 +1288,13 @@ function showILGroup(groupId){
 	  			e.preventDefault();
 	  		});
 	  		
-	  		$('.chargeAmount').change(function() {  
+	  		$('.chargeAmount').change(function() {
 	  			calculateLoanSchedule();
 	  		});
+	  		
+	  		$("[class*=specifiedDueDate]").change(function() {
+	  			calculateLoanSchedule();
+		  	});
 	  		
 			// change detection
 			$('#principal').change(function() {
@@ -1366,7 +1375,7 @@ function showILGroup(groupId){
 		executeAjaxRequest('loans/template?groupId=' + groupId, 'GET', "", successFunction, formErrorFunction);		
 	}
 	
-	function removeLoanCharge(loanId, loanChargeId){
+	function removeLoanCharge(loanId, loanChargeId) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
 			$("#dialog-form").dialog("close");
@@ -1374,6 +1383,18 @@ function showILGroup(groupId){
 		};
 
 		popupConfirmationDialogAndPost('loans/' + loanId +'/charges/' + loanChargeId, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
+
+		return false;
+	}
+	
+	function waiveLoanCharge(loanId, loanChargeId) {
+
+		var successFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			loadILLoan(loanId);
+		};
+
+		popupConfirmationDialogAndPost('loans/' + loanId +'/charges/' + loanChargeId + '?command=waive', 'POST', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
 
 		return false;
 	}
@@ -1497,9 +1518,13 @@ function showILGroup(groupId){
 		  					e.preventDefault();
 		  				});
 	  					
-	  					$('.chargeAmount').change(function() {  
+	  					$('.chargeAmount').change(function() {
 	  			  			calculateLoanSchedule();
 	  			  		});
+	  					
+	  					$("[class*=specifiedDueDate]").change(function() {
+	  			  			calculateLoanSchedule();
+	  				  	});
 				  		
 				  		calculateLoanSchedule();
 	  				}
@@ -1520,6 +1545,10 @@ function showILGroup(groupId){
 		  		$('.chargeAmount').change(function() {  
 		  			calculateLoanSchedule();
 		  		});
+		  		
+		  		$("[class*=specifiedDueDate]").change(function() {
+		  			calculateLoanSchedule();
+			  	});
 		  		
 				// change detection
 				$('#principal').change(function() {
@@ -2805,6 +2834,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			var selectChargeForLoanSuccess = function(chargeData, textStatus, jqXHR){
 				var partialFormHtml = $("#loanChargeDetailsPartialFormTemplate").render(chargeData);
 				$("#loanChargeDetails").html(partialFormHtml);
+				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
 			}
 			executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForLoanSuccess, formErrorFunction);    	
 		}

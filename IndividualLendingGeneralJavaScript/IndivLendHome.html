@@ -147,7 +147,7 @@ $(document).ready(function() {
 				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
 
 				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, chargesDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
 
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
@@ -443,7 +443,7 @@ $(document).ready(function() {
 						<div class="row charge">
 							<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
 							{{#if id}}
-							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class ="id" title="" type="hidden" value="{{=id}}" />
+							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
 							{{/if}}
 							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=chargeId}}" />
 							<span class="rowvalue">
@@ -470,6 +470,9 @@ $(document).ready(function() {
 									{{/if}}
 								{{/each}}
 								</select>
+							</span>
+							<span class="rowvalue">
+								<input id="charges[{{=$itemNumber}}][specifiedDueDate]" name="charges[{{=$itemNumber}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
 							</span>
 							<span class="rowvalue">
 								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
@@ -571,7 +574,14 @@ $(document).ready(function() {
 		{{/if}}
 	{{/each}}
 </select>
+{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+<label for="specifiedDueDate">Due for collection on:</label>
+<input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
+{{/if}}
 </script> 
+
+<!-- // TODO - HERE -->
 
 <script id="newLoanFormTemplateMin" type="text/x-jquery-tmpl">
 <form id="entityform">
@@ -2753,6 +2763,7 @@ $(document).ready(function() {
 				<tr>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.name")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.paymentdueat")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loan.charges.due.asof")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.calculationtype")}}</th>
 				<th>Due</th>
 				<th>Paid</th>
@@ -2765,6 +2776,11 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=name}}</td>
 					<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
+				{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+					<td>{{=$ctx.globalDate(dueAsOfDate)}}</td>
+				{{#else}}
+					<td>&nbsp;</td>
+				{{/if}}
 
 				{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
 					<td>{{=$ctx.doI18N(chargeCalculationType.code)}} - {{=$ctx.decimal(percentage, 4)}}% of {{=$ctx.moneyFormatted(currency, amountPercentageAppliedTo)}}</td>
@@ -2774,7 +2790,7 @@ $(document).ready(function() {
 					<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
 					<td>{{=$ctx.moneyFormatted(currency, amountPaid)}}</td>
 					<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
-					<td><a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Remove</a>/Waive/Pay</td>
+					<td><a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Remove</a>&nbsp;<a href="unknown.html" onclick="return waiveLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Waive</a></td>
 				</tr>
 				{{/each}}
 			</tbody>
@@ -2919,7 +2935,7 @@ $(document).ready(function() {
 				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
 
 				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, chargesDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
 
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
