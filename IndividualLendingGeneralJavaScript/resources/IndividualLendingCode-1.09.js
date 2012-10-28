@@ -119,6 +119,21 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 			}); 
 }
 
+function executeAjaxRequestForImageDownload(url, verbType,successFunction, errorFunction) { 
+
+	var jqxhr = $.ajax({ 
+				url : baseApiUrl + url, 
+				type: verbType, //POST, GET, PUT or DELETE 
+				data: null,
+				beforeSend : function(xhr) { 
+						if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+						if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
+					}, 
+				success : successFunction, 
+				error : errorFunction 
+			}); 
+}
+
 function executeAjaxOctetStreamDownloadRequest(url) { 
 	 $.fileDownload(baseApiUrl + url +"?tenantIdentifier="+tenantIdentifier, {
         //preparingMessageHtml: "Please wait while your document is downloaded...",
@@ -233,9 +248,9 @@ function setGroupListingContent(divName){
 }
 
 function setClientContent(divName) {
-
-	var htmlVar = '<div id="newtabs">	<ul><li><a href="unknown.html"'; 
-	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("app.loading") + '</span></a></li>';
+	var htmlVar = '<div  id="clientmaintab"></div>'
+	htmlVar += '<div id="newtabs">	<ul><li><a href="unknown.html"'; 
+	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientriskanalysistab" class="topleveltab"><span id="clientriskanalysistabname">' + doI18N("client.riskanalysis.tab.name")  + '</span></a></li>';
@@ -655,6 +670,11 @@ function showILClient(clientId) {
 	var clientUrl = 'clients/' + clientId
 
 	setClientContent("content");
+	//populate main content
+	var crudObject = new Object();
+	var tableHtml = $("#clientImageAndActionsTemplate").render(crudObject);
+	$("#clientmaintab").html(tableHtml);
+	
 	$newtabs = $("#newtabs").tabs({
 	    	select: function(event, tab) {
 				//alert("client tab selected: " + tab.index);
@@ -689,8 +709,20 @@ function showILClient(clientId) {
 	        	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
 	            $(anchor.hash).html("error occured while ajax loading.");
 	        };
+	        
+	//initialize client image related buttons
+	var imageFetchSuccessFunction = function(data, textStatus, jqXHR) {
+		//showILClient(clientId);
+		var base = 'data:image/gif;base64,';
+		var url = base + data;
+		$("#customerImage").attr("src",url);
+	};
 
 	var successFunction = function(data, status, xhr) {
+					//do we fetch image data?
+					if(data.imagePresent == true){
+						executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);	
+					}
 	        		currentClientId = clientId;
 				clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
 	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
@@ -698,16 +730,17 @@ function showILClient(clientId) {
 	            
 	        		var tableHtml = $("#clientDataTabTemplate").render(data);
 					$("#clienttab").html(tableHtml);
-					$("#clienttabname").html(data.displayName);
+					$("#customerName").html(data.displayName);
+					$("#customerOfficeName").html(data.officeName);
+					
 					
 					// retrieve accounts summary info
 					refreshLoanSummaryInfo(clientUrl);
 					
 					// bind click listeners to buttons.
-					$('.deleteclientbtn').button().click(function(e) {
-						var linkId = this.id;
-						var clientId = linkId.replace("deleteclientbtn", "");
-
+					$('.deleteclientbtn').button({icons: {
+               			 primary: "ui-icon-trash"}
+                	}).click(function(e) {
 						var url = 'clients/' + clientId;
 						var width = 400; 
 						var height = 225;
@@ -717,10 +750,9 @@ function showILClient(clientId) {
 					});
 					$('button.deleteclientbtn span').text(doI18N('dialog.button.delete.client'));
 					
-					$('.editclientbtn').button().click(function(e) {
-						var linkId = this.id;
-						var clientId = linkId.replace("editclientbtn", "");
-						
+					$('.editclientbtn').button({icons: {
+               			 primary: "ui-icon-pencil"}
+                	}).click(function(e) {
 						var getUrl = 'clients/' + clientId + '?template=true';
 						var putUrl = 'clients/' + clientId;
 						var templateSelector = "#clientFormTemplate";
@@ -737,18 +769,17 @@ function showILClient(clientId) {
 					});
 					$('button.editclientbtn span').text(doI18N('dialog.button.edit.client'));
 					
-					$('.newloanbtn').button().click(function(e) {
-						var linkId = this.id;
-						var clientId = linkId.replace("newloanbtn", "");
+					$('.newloanbtn').button({icons: {
+               			 primary: "ui-icon-document"}
+                	}).click(function(e) {
 						addILLoan(clientId);
 					    e.preventDefault();
 					});
 					$('button.newloanbtn span').text(doI18N('dialog.button.new.loan.application'));
 					
-					$('.newdepositbtn').button().click(function(e) {
-						var linkId = this.id;
-						var clientId = linkId.replace("newdepositbtn", "");
-						
+					$('.newdepositbtn').button({icons: {
+               			 primary: "ui-icon-document-b"}
+                	}).click(function(e) {
 						addILDeposit(clientId);
 						
 						//launchAddDepositAccountDialog(clientId);
@@ -757,9 +788,9 @@ function showILClient(clientId) {
 					});
 					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));	
 					
-					$('.addnotebtn').button().click(function(e) {
-						var linkId = this.id;
-						var clientId = linkId.replace("addnotebtn", "");
+					$('.addnotebtn').button({icons: {
+               			 primary: "ui-icon-comment"}
+                	}).click(function(e) {
 						var postUrl = 'clients/' + clientId + '/notes';
 						var templateSelector = "#noteFormTemplate";
 						var width = 600; 
@@ -797,10 +828,54 @@ function showILClient(clientId) {
 							cancelLabel: doI18N("dialog.button.cancel")				
 					};
 					//will fully delete after (JPW) jQuery.stretchyData.displayAllExtraData(additionalFieldsParams);
+					
+					$('#captureClientImage').button(
+						{icons: {
+	                	primary: "ui-icon-camera"},
+	                	text: false
+	            	}).click(function(e) {
+						alert("Web Cam Integration not yet available");
+						e.preventDefault();
+					});
+					$('#editClientImage').button(
+						{icons: {
+	                	primary: "ui-icon-zoomin"},
+	                	text: false
+	            	}).click(function(e) {
+						var getUrl = '';
+						var putUrl = 'clients/' + clientId + '/image';
+						var templateSelector = "#clientImageUploadFormTemplate";
+						var width = 600; 
+						var height = 250;
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						  $("#dialog-form").dialog("close");
+						  executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);
+						};
+						
+						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunction);
+					    e.preventDefault();
+					});
+					//delete client image
+					$('#deleteClientImage').button({icons: {
+	                	primary: "ui-icon-trash"},
+	                	text: false
+	            	}).click(function(e) {
+					var url = 'clients/' + clientId + '/image';
+					var width = 400; 
+					var height = 225;
+					var saveSuccessFunction = function(data, textStatus, jqXHR) {
+							$("#dialog-form").dialog("close");
+						  	$("#customerImage").attr("src","resources/img/client-image-placeholder.png");
+					};
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction);
+					
+					e.preventDefault();
+					});
 	        };
 	    
-		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);	  
-
+		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
 }
 
 function refreshClientIdentifiers(clientUrl) {
@@ -841,7 +916,7 @@ function refreshClientIdentifiers(clientUrl) {
 				});
 				//button for add document
 			   $("#addclientIdentifierdocument" + val.id).button({icons: {
-                primary: "ui-icon-plusthick"}
+                primary: "ui-icon-circle-plus"}
                 }).click(function(e){
 		      	var getUrl = "";
 				var putUrl = "client_identifiers/"+ val.id+ '/documents';
@@ -1982,7 +2057,10 @@ function loadILLoan(loanId) {
 	        		offsetToSubmittedDate = data.convenienceData.maxSubmittedOnOffsetFromToday;
 	        		offsetToApprovalDate = data.convenienceData.maxApprovedOnOffsetFromToday;
 	        		offsetToDisbursalDate = data.convenienceData.maxDisbursedOnOffsetFromToday;
-	        		
+	        		 
+	        		//adding styles for vertical sub-tabs
+	        		//$( ".loantabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+	        		//$( ".loantabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 	        		var $loantabs = $(".loantabs").tabs({
 						"show": function(event, ui) {
 							var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
@@ -2791,7 +2869,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					}
 					
 			    	var newFormData = JSON.stringify(serializedArray);
-			    	if (postUrl.toLowerCase().indexOf("documents") >= 0){
+			    	if (postUrl.toLowerCase().indexOf("documents") >= 0 || postUrl.toLowerCase().indexOf("image") >= 0){
 			    		var formData = new FormData();    
 						formData.append( 'file', $('#file')[0].files[0] );
 						$.each(serializedArray, function (name, val) {
