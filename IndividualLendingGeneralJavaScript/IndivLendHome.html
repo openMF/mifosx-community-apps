@@ -4532,25 +4532,10 @@ function showLockinOptions(){
 <!--GK Risk Analysis View/Add/Edit-->
 <script id="clientRiskAnalysisFormTemplate" type="text/x-jquery-tmpl">
 
-{{#if displayMode == "view"}}
-  {{#if displayButtons == "editDelete"}}
-	<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
-		<button id="editclientriskanalysis">{{=$ctx.doI18N("Datatables.Edit")}}</button>
-		<button id="deleteclientriskanalysis">{{=$ctx.doI18N("Datatables.Delete")}}</button>
-	</span>
-	<hr/>
-  {{#else}}
-	<span id="toolbar" class="ui-widget-header ui-corner-all">
-   		<button id="addclientriskanalysis">{{=$ctx.doI18N("Datatables.Add")}}</button>
-	</span>
-	<hr/>
-  {{/if}}
-{{/if}}
-
+<div id=GKRiskAnalysis>
 
 {{#if displayMode != "view"}}
 <form id="entityform">
-  <div id="RAentityform">
     	<div id="RAformerrors"></div>
 {{/if}}
 
@@ -4564,9 +4549,20 @@ function showLockinOptions(){
 			<td width="1%"></td>
 			<td width="9%">{{=$ctx.makeAmountInputField("proposed_loan_amount", proposed_loan_amount, displayMode)!}}</td>
 			<td width="20%"></td>
-			<td width="30%"></td>
-			<td width="1%"></td>
-			<td width="9%"></td>
+			<td width="40%" align="right" colspan="3">
+{{#if displayMode == "view"}}
+  {{#if displayButtons == "editDelete"}}
+	<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+		<button id="editclientriskanalysis">{{=$ctx.doI18N("Datatables.Edit")}}</button>
+		<button id="deleteclientriskanalysis">{{=$ctx.doI18N("Datatables.Delete")}}</button>
+	</span>
+  {{#else}}
+	<span id="toolbar" class="ui-widget-header ui-corner-all">
+   		<button id="addclientriskanalysis">{{=$ctx.doI18N("Datatables.Add")}}</button>
+	</span>
+  {{/if}}
+{{/if}}
+			</td>
 		</tr>
 	</table>
 	<hr>
@@ -4777,10 +4773,10 @@ function showLockinOptions(){
 
 
 {{#if displayMode != "view"}}
-  </div>
 </form>
 {{/if}}
 
+</div>
 </script>
 
 <script type="text/javascript">
@@ -4796,47 +4792,47 @@ function gkRiskAnalysisCalc(){
 	else
 	{
 		calc = amountRA("assets_cash") + amountRA("assets_bank_accounts") + amountRA("assets_accounts_receivable") + amountRA("assets_inventory") + amountRA("assets_total_fixed_business");
-		$("#assets_total_business").val(calc.toFixed(2));
+		$("#assets_total_business").val(Globalize.format(calc, "n2"));
 
 		calc = amountRA("assets_total_business") - amountRA("liabilities_total_business");
-		$("#liabilities_equity_working_capital").val(calc.toFixed(2));
+		$("#liabilities_equity_working_capital").val(Globalize.format(calc, "n2"));
 
 		calc = amountRA("assets_total_household") - amountRA("liabilities_total_household");
-		$("#liabilities_household_equity").val(calc.toFixed(2));
+		$("#liabilities_household_equity").val(Globalize.format(calc, "n2"));
 
 		calc = (amountRA("cashflow_cash_sales") + amountRA("cashflow_cash_sales2")) - (amountRA("cashflow_cost_goods_sold") + amountRA("cashflow_cost_goods_sold2"));
-		$("#cashflow_gross_profit").val(calc.toFixed(2));
+		$("#cashflow_gross_profit").val(Globalize.format(calc, "n2"));
 
 		calc = (amountRA("cashflow_gross_profit") + amountRA("cashflow_other_income1") + amountRA("cashflow_total_income2")) - (amountRA("cashflow_household_expense") + amountRA("cashflow_payments_to_savings") + amountRA("cashflow_operational_expenses"));
-		$("#cashflow_disposable_income").val(calc.toFixed(2));
+		$("#cashflow_disposable_income").val(Globalize.format(calc, "n2"));
 
 		calc = amountRA("cashflow_disposable_income") - amountRA("cashflow_amount_loan_installment");
-		$("#cashflow_available_surplus").val(calc.toFixed(2));
+		$("#cashflow_available_surplus").val(Globalize.format(calc, "n2"));
 
 		if (amountRA("assets_inventory") != 0.0)
 		{
 			calc = amountRA("cashflow_cost_goods_sold") / amountRA("assets_inventory");
-			$("#fi_inventory_turnover").val(calc.toFixed(2));
+			$("#fi_inventory_turnover").val(Globalize.format(calc, "n2"));
 		}
 		else $("#fi_inventory_turnover").val("");
 
 		if (amountRA("cashflow_cash_sales") != 0.0)
 		{
 			calc = (amountRA("cashflow_cash_sales") + amountRA("cashflow_cash_sales2") - amountRA("cashflow_cost_goods_sold")) / amountRA("cashflow_cash_sales");
-			$("#fi_gross_margin").val(calc.toFixed(2));
+			$("#fi_gross_margin").val(Globalize.format(calc, "n2"));
 		}
 		else $("#fi_gross_margin").val("");
 
 		if (amountRA("liabilities_equity_working_capital") != 0.0)
 		{
 			calc = amountRA("liabilities_total_business") / amountRA("liabilities_equity_working_capital");
-			$("#fi_indebtedness").val(calc.toFixed(2));
+			$("#fi_indebtedness").val(Globalize.format(calc, "n2"));
 
 			calc = (amountRA("liabilities_total_business") + amountRA("proposed_loan_amount") ) / amountRA("liabilities_equity_working_capital");
-			$("#fi_loan_recommendation").val(calc.toFixed(2));
+			$("#fi_loan_recommendation").val(Globalize.format(calc, "n2"));
 
 			calc = amountRA("cashflow_gross_profit") / amountRA("liabilities_equity_working_capital");
-			$("#fi_roe").val(calc.toFixed(2));
+			$("#fi_roe").val(Globalize.format(calc, "n2"));
 		}
 		else 
 		{
@@ -4848,7 +4844,7 @@ function gkRiskAnalysisCalc(){
 		if (amountRA("cashflow_disposable_income") != 0.0)
 		{
 			calc = amountRA("cashflow_amount_loan_installment") / amountRA("cashflow_disposable_income");
-			$("#fi_repayment_capacity").val(calc.toFixed(2));
+			$("#fi_repayment_capacity").val(Globalize.format(calc, "n2"));
 		}
 		else $("#fi_repayment_capacity").val("");
 
@@ -4859,8 +4855,8 @@ function gkRiskAnalysisCalc(){
 function amountRA(idName) {
 	
 	var currentVal = $.trim($("#" + idName).val());
-	if (currentVal > "") return Globalize.parseFloat(currentVal)
-	else return 0.0;
+	if (!(currentVal > "")) currentVal = 0.00;
+	return Globalize.parseFloat(currentVal);
 }
 
 function validRAData(formDiv, formErrorsDiv) {
@@ -4891,7 +4887,10 @@ function validRAData(formDiv, formErrorsDiv) {
 				jsError(currentId, formErrorsDiv, "not.a.number");
 				return false;
 			}
-//alert(Globalize.parseFloat($(currentId).val()))
+			else
+			{
+				$(currentId).val(Globalize.format(num, "n2"));
+			}
 		}
 	}
 	return true;

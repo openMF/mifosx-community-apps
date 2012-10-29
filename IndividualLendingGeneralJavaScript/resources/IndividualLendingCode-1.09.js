@@ -3653,7 +3653,7 @@ function jsViewsRegisterHelpers() {
 					if (!(currentVal > "")) currentVal = 0.00;
 					currentVal = parseFloat(currentVal);
 					var currentValGlobal = Globalize.format(currentVal, "n2");
-					amountInputFieldHtml += ' style="width: 100px;" value="' + currentValGlobal + '"/>';
+					amountInputFieldHtml += ' style="width: 100px;" value="' + currentValGlobal + '" />';
 					return amountInputFieldHtml;
 			      } catch(e) {
 			        return "System Error: makeAmountInputField - fieldName: " + fieldName + "  fieldValue: " + fieldValue + "   displayMode: " + displayMode;
