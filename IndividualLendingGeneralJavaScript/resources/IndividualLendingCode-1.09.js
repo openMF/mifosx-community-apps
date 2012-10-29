@@ -1095,9 +1095,21 @@ function refreshRiskAnalysis(clientId) {
 
 	var successFunction =  function(data, textStatus, jqXHR) {
 			var crudObject = new Object();
-			crudObject.crudRows = data;
+			var tableHtml = "";
 
-			var tableHtml = $("#clientRiskAnalysisTemplate").render(crudObject);
+			if (data.length > 0)
+			{
+				crudObject.crudRows = data;
+				crudObject.crudRows[0].displayMode = "view";
+				crudObject.crudRows[0].displayButtons = "editDelete";
+				tableHtml = $(templateSelector).render(crudObject.crudRows[0]);
+			}
+			else
+			{
+				crudObject.displayMode = "view";
+				crudObject.displayButtons = "add";
+				tableHtml = $(templateSelector).render(crudObject);
+			}
 			$("#clientriskanalysistab").html(tableHtml);
 
 			//initialize all buttons
@@ -1124,8 +1136,6 @@ function refreshRiskAnalysis(clientId) {
 
   		executeAjaxRequest(datatableUrl, 'GET', "", successFunction, formErrorFunction);	  
 }
-
-
 
 
 function showILGroup(groupId){
@@ -3618,6 +3628,35 @@ function jsViewsRegisterHelpers() {
 			    	  return doI18N(xlateStr, params);
 			      } catch(e) {
 			        return xlateStr;
+			      }
+			},
+			makeAmountInputField: function(fieldName, fieldValue, displayMode, fieldType) {
+			      try {
+					var amountInputFieldHtml = "<input ";
+			  		if (displayMode == "view")
+					{
+						amountInputFieldHtml  += ' class="rightreadonly" readonly="readonly" ';
+					}
+					else
+					{
+						if (fieldType == "calc")
+						{
+							amountInputFieldHtml  += ' class="rightreadonly" readonly="readonly" id="' + fieldName + '" name="' + fieldName + '" title="" ';
+						}
+						else
+						{
+							amountInputFieldHtml  += ' class="right" onchange="gkRiskAnalysisCalc();" id="' + fieldName + '" name="' + fieldName + '" title="" ';
+						}
+			  		}
+
+					var currentVal = $.trim(fieldValue);
+					if (!(currentVal > "")) currentVal = 0.00;
+					currentVal = parseFloat(currentVal);
+					var currentValGlobal = Globalize.format(currentVal, "n2");
+					amountInputFieldHtml += ' style="width: 100px;" value="' + currentValGlobal + '"/>';
+					return amountInputFieldHtml;
+			      } catch(e) {
+			        return "System Error: makeAmountInputField - fieldName: " + fieldName + "  fieldValue: " + fieldValue + "   displayMode: " + displayMode;
 			      }
 			},
 			showIt: function(functionalityName) {
