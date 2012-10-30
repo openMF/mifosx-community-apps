@@ -803,7 +803,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfox($newtabs, "m_client", clientId); 
+					showRelatedDataTableInfo($newtabs, "m_client", clientId); 
 
 					
 					// retrieve additional info
@@ -2221,7 +2221,7 @@ function loadILLoan(loanId) {
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
 
-				showRelatedDataTableInfox($loantabs, "m_loan", loanId); 
+				showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
 				// additional data
 				var additionalFieldsParams = {
