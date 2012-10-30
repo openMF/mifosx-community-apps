@@ -1,29 +1,111 @@
 
-//alert("hi there in the default");
-/*
-crudDatax = {
-		loanproduct: {
-				editTemplateNeeded: true,
-				refreshListNeeded: true,
-				dialogWidth: 850,
-				dialogHeight: 550
-			},
-		savingproduct: {
-				editTemplateNeeded: true,
-				refreshListNeeded: true,
-				dialogWidth: 850,
-				dialogHeight: 550
+alert("hi there in the default");
+
+
+
+
+//default function for display registered data table data
+showRelatedDataTableInfoxx = function (tabVar, appTableName, appTablePKValue) {	 
+  
+		var url = 'datatables?apptable=' + appTableName;
+
+		var successFunction =  function(data, textStatus, jqXHR) {
+				
+				if (data.length > 0)
+				{
+					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
+					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
+					tabVar.tabs('select', 0); //back to main tab
+
+					var additionalInfoParams = {
+						baseApiUrl : baseApiUrl,
+						base64: base64,
+						tenantIdentifier: tenantIdentifier,
+						appTableName: appTableName,
+						appTablePKValue: appTablePKValue, 
+						ignoreDatatableArray: ["risk_analysis", "dummy excluded table2"],
+						globaliseFunctions: helperFunctions,
+						resValue: "resources/libs/",
+
+						datatablesDiv: datatablesDiv,
+						labelClass: "datatableLabel ",
+						valueClass:	"",
+						saveLabel: doI18N("dialog.button.save"),	
+						cancelLabel: doI18N("dialog.button.cancel")				
+					};
+					jQuery.stretchyDataTables.displayAdditionalInfo(additionalInfoParams);
+
+				}
+			  };
+
+		executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction);	
+	}
+
+
+				//else if (tab.index == 3){
+					//temporarily hardcoded at tab 3 (jpw)
+					//refreshRiskAnalysis(clientId);
+				//}
+	//htmlVar += '<li><a href="nothing" title="clientriskanalysistab" class="topleveltab"><span id="clientriskanalysistabname">' + doI18N("client.riskanalysis.tab.name")  + '</span></a></li>';
+
+//<div id="clientriskanalysistab">
+
+function refreshRiskAnalysis(clientId) {
+
+	var datatableUrl = 'datatables/risk_analysis/' + clientId;
+
+	var templateSelector = "#clientRiskAnalysisFormTemplate";
+	var width = 1100; 
+	var height = 600;
+				
+	var saveSuccessFunction = function(data, textStatus, jqXHR) {
+		$("#dialog-form").dialog("close");
+		refreshRiskAnalysis(clientId);
+	}
+
+	var successFunction =  function(data, textStatus, jqXHR) {
+			var crudObject = new Object();
+			var tableHtml = "";
+
+			if (data.length > 0)
+			{
+				crudObject.crudRows = data;
+				crudObject.crudRows[0].displayMode = "view";
+				crudObject.crudRows[0].displayButtons = "editDelete";
+				tableHtml = $(templateSelector).render(crudObject.crudRows[0]);
 			}
-		};
+			else
+			{
+				crudObject.displayMode = "view";
+				crudObject.displayButtons = "add";
+				tableHtml = $(templateSelector).render(crudObject);
+			}
+			$("#clientriskanalysistab").html(tableHtml);
 
-bbbb =  function(data, textStatus, jqXHR) {
-						  	$("#dialog-form").dialog("close");
-		  					showILClient(currentClientId );
-				  		};
+			//initialize all buttons
+			$("#editclientriskanalysis").button({icons: {
+	                primary: "ui-icon-pencil"}}
+	                ).click(function(e){
+					popupDialogWithFormView(datatableUrl, datatableUrl, 'PUT', "dialog.title.edit.risk.analysis", templateSelector, width, height,  saveSuccessFunction);
+				    	e.preventDefault();
+			      });
+			$("#deleteclientriskanalysis").button({icons: {
+	                primary: "ui-icon-circle-close"}
+	            	}).click(function(e) {									
+					popupConfirmationDialogAndPost(datatableUrl, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, saveSuccessFunction);
+					e.preventDefault();
+				});
 
-function yada() { 
+			$('#addclientriskanalysis').button({icons: {
+	                primary: "ui-icon-plusthick"}
+	            	}).click(function(e) {
+					popupDialogWithFormView("", datatableUrl, 'POST', "dialog.title.create.risk.analysis", templateSelector, width, height,  saveSuccessFunction);
+			    		e.preventDefault();
+			});
+		}
+
+  		executeAjaxRequest(datatableUrl, 'GET', "", successFunction, formErrorFunction);	  
 }
-*/
 
 
 
@@ -31,7 +113,10 @@ function yada() {
 
 
 
-//GK specific risk analysis code
+
+
+
+//GK specific risk analysis code for validating and calculating derived field values
 function gkRiskAnalysisCalc(){
 
 	var calc;

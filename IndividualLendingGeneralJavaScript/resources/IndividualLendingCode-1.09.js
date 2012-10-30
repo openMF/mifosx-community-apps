@@ -253,8 +253,7 @@ function setClientContent(divName) {
 	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
-	htmlVar += '<li><a href="nothing" title="clientriskanalysistab" class="topleveltab"><span id="clientriskanalysistabname">' + doI18N("client.riskanalysis.tab.name")  + '</span></a></li>';
-	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div><div id="clientriskanalysistab"></div></div>';
+	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div></div></div>';
 	$("#" + divName).html(htmlVar);
 }
 
@@ -695,10 +694,6 @@ function showILClient(clientId) {
 				else if (tab.index == 2){
 					refreshClientDocuments(clientUrl);
 				}
-				else if (tab.index == 3){
-					//temporarily hardcoded at tab 3 (jpw)
-					refreshRiskAnalysis(clientId);
-				}
 
 	    		},
 		"add": function( event, ui ) {
@@ -808,7 +803,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfo($newtabs, "m_client", clientId, ["risk_analysis", "dummy excluded table2"]); 
+					showRelatedDataTableInfox($newtabs, "m_client", clientId); 
 
 					
 					// retrieve additional info
@@ -1079,64 +1074,6 @@ function refreshClientDocuments(clientUrl) {
   		executeAjaxRequest(clientUrl + '/documents', 'GET', "", successFunction, formErrorFunction);	  	
 }
 	
-
-function refreshRiskAnalysis(clientId) {
-
-	var datatableUrl = 'datatables/risk_analysis/' + clientId;
-
-	var templateSelector = "#clientRiskAnalysisFormTemplate";
-	var width = 1100; 
-	var height = 600;
-				
-	var saveSuccessFunction = function(data, textStatus, jqXHR) {
-		$("#dialog-form").dialog("close");
-		refreshRiskAnalysis(clientId);
-	}
-
-	var successFunction =  function(data, textStatus, jqXHR) {
-			var crudObject = new Object();
-			var tableHtml = "";
-
-			if (data.length > 0)
-			{
-				crudObject.crudRows = data;
-				crudObject.crudRows[0].displayMode = "view";
-				crudObject.crudRows[0].displayButtons = "editDelete";
-				tableHtml = $(templateSelector).render(crudObject.crudRows[0]);
-			}
-			else
-			{
-				crudObject.displayMode = "view";
-				crudObject.displayButtons = "add";
-				tableHtml = $(templateSelector).render(crudObject);
-			}
-			$("#clientriskanalysistab").html(tableHtml);
-
-			//initialize all buttons
-			$("#editclientriskanalysis").button({icons: {
-	                primary: "ui-icon-pencil"}}
-	                ).click(function(e){
-					popupDialogWithFormView(datatableUrl, datatableUrl, 'PUT', "dialog.title.edit.risk.analysis", templateSelector, width, height,  saveSuccessFunction);
-				    	e.preventDefault();
-			      });
-			$("#deleteclientriskanalysis").button({icons: {
-	                primary: "ui-icon-circle-close"}
-	            	}).click(function(e) {									
-					popupConfirmationDialogAndPost(datatableUrl, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, saveSuccessFunction);
-					e.preventDefault();
-				});
-
-			$('#addclientriskanalysis').button({icons: {
-	                primary: "ui-icon-plusthick"}
-	            	}).click(function(e) {
-					popupDialogWithFormView("", datatableUrl, 'POST', "dialog.title.create.risk.analysis", templateSelector, width, height,  saveSuccessFunction);
-			    		e.preventDefault();
-			});
-		}
-
-  		executeAjaxRequest(datatableUrl, 'GET', "", successFunction, formErrorFunction);	  
-}
-
 
 function showILGroup(groupId){
 	var groupUrl = "groups/"+groupId;
@@ -1964,42 +1901,6 @@ function showILGroup(groupId){
 	}
 	
 
-function showRelatedDataTableInfo(tabVar, appTableName, appTablePKValue, ignoreDatatableArray) {	 
-  
-		var url = 'datatables?apptable=' + appTableName;
-
-		var successFunction =  function(data, textStatus, jqXHR) {
-				
-				if (data.length > 0)
-				{
-					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
-					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
-					tabVar.tabs('select', 0); //back to main tab
-
-					var additionalInfoParams = {
-						baseApiUrl : baseApiUrl,
-						base64: base64,
-						tenantIdentifier: tenantIdentifier,
-						appTableName: appTableName,
-						appTablePKValue: appTablePKValue, 
-						ignoreDatatableArray: ignoreDatatableArray,
-						globaliseFunctions: helperFunctions,
-						resValue: "resources/libs/",
-
-						datatablesDiv: datatablesDiv,
-						labelClass: "datatableLabel ",
-						valueClass:	"",
-						saveLabel: doI18N("dialog.button.save"),	
-						cancelLabel: doI18N("dialog.button.cancel")				
-					};
-					jQuery.stretchyDataTables.displayAdditionalInfo(additionalInfoParams);
-
-				}
-			  };
-
-		executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction);	
-}
-
 
 function showILLoan(loanId, product) {
 	var newLoanTabId='loan'+loanId+'tab';
@@ -2320,7 +2221,7 @@ function loadILLoan(loanId) {
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
 
-				showRelatedDataTableInfo($loantabs, "m_loan", loanId, []); 
+				showRelatedDataTableInfox($loantabs, "m_loan", loanId); 
 
 				// additional data
 				var additionalFieldsParams = {
