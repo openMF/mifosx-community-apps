@@ -1,9 +1,18 @@
-//put any default code configuration here.  It will be overridden by any tenant specific customisations included at the end of this script
+//put default configuration code here.  It will be overridden by any tenant specific customisations included at the end of this script
+//A naming standard is used so its clear what things are being customised
+
+	custom = {
+// default function to register helpers for jsViews and jsRender functionality 
+// fixes bug with display zero! Also included are some utility functions needed during rendering
+			helperFunctions: "",
+
+//default function for displaying registered data table entries (Additional Data)
+			showRelatedDataTableInfo: ""
+			};
 
 
-// these helpers are later registered for the jsViews and jsRender functionality to fix bug with display zero! 
-// also included are some utility functions
-	helperFunctions = {
+
+	custom.helperFunctions = {
 			moneyFormatted: function(currencyObj, bigDecimalValue) {
 				
 				if (undefined == bigDecimalValue || undefined == currencyObj) {
@@ -127,35 +136,6 @@
 			        return xlateStr;
 			      }
 			},
-			makeAmountInputFieldxx: function(fieldName, fieldValue, displayMode, fieldType) {
-			      try {
-					var amountInputFieldHtml = "<input ";
-			  		if (displayMode == "view")
-					{
-						amountInputFieldHtml  += ' class="rightreadonly" readonly="readonly" ';
-					}
-					else
-					{
-						if (fieldType == "calc")
-						{
-							amountInputFieldHtml  += ' class="rightreadonly" readonly="readonly" id="' + fieldName + '" name="' + fieldName + '" title="" ';
-						}
-						else
-						{
-							amountInputFieldHtml  += ' class="right" onchange="gkRiskAnalysisCalc();" id="' + fieldName + '" name="' + fieldName + '" title="" ';
-						}
-			  		}
-
-					var currentVal = $.trim(fieldValue);
-					if (!(currentVal > "")) currentVal = 0.00;
-					currentVal = parseFloat(currentVal);
-					var currentValGlobal = Globalize.format(currentVal, "n2");
-					amountInputFieldHtml += ' style="width: 100px;" value="' + currentValGlobal + '" />';
-					return amountInputFieldHtml;
-			      } catch(e) {
-			        return "System Error: makeAmountInputField - fieldName: " + fieldName + "  fieldValue: " + fieldValue + "   displayMode: " + displayMode;
-			      }
-			},
 			showIt: function(functionalityName) {
 			      try {
 			    	  return jQuery.MifosXUI.showIt(functionalityName);
@@ -167,11 +147,7 @@
 	};
 
 
-
-
-
-//default function for displaying registered data table entries (Additional Data)
-showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
+	custom.showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
   
 		var url = 'datatables?apptable=' + appTableName;
 
@@ -190,7 +166,7 @@ showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {
 						appTableName: appTableName,
 						appTablePKValue: appTablePKValue, 
 						ignoreDatatableArray: [],
-						globaliseFunctions: helperFunctions,
+						globaliseFunctions: custom.helperFunctions,
 						resValue: "resources/libs/",
 
 						datatablesDiv: datatablesDiv,
@@ -215,7 +191,7 @@ showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {
 
 
 
-
+//establish the tenant and include any tenant specific javascript configuration file
 
 	tenantIdentifier = "default";
 	if (QueryParameters["tenantIdentifier"]) tenantIdentifier= QueryParameters["tenantIdentifier"];
@@ -223,4 +199,3 @@ showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {
 	var tenantConfigScript = '<script type="text/javascript" src="resources/tenantconfigs/' + tenantIdentifier + '.js"></script>';
 	document.write(tenantConfigScript);
 	
-

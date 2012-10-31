@@ -1,7 +1,37 @@
 
+	custom.helperFunctions.makeAmountInputField = function(fieldName, fieldValue, displayMode, fieldType) {
+			      try {
+					var amountInputFieldHtml = "<input ";
+			  		if (displayMode == "view")
+					{
+						amountInputFieldHtml  += ' class="rightreadonly" readonly="readonly" ';
+					}
+					else
+					{
+						if (fieldType == "calc")
+						{
+							amountInputFieldHtml  += ' class="rightreadonly" readonly="readonly" id="' + fieldName + '" name="' + fieldName + '" title="" ';
+						}
+						else
+						{
+							amountInputFieldHtml  += ' class="right" onchange="gkRiskAnalysisCalc();" id="' + fieldName + '" name="' + fieldName + '" title="" ';
+						}
+			  		}
+
+					var currentVal = $.trim(fieldValue);
+					if (!(currentVal > "")) currentVal = 0.00;
+					currentVal = parseFloat(currentVal);
+					var currentValGlobal = Globalize.format(currentVal, "n2");
+					amountInputFieldHtml += ' style="width: 100px;" value="' + currentValGlobal + '" />';
+					return amountInputFieldHtml;
+			      } catch(e) {
+			        return "System Error: makeAmountInputField - fieldName: " + fieldName + "  fieldValue: " + fieldValue + "   displayMode: " + displayMode;
+			      }
+			};
+
 
 //over-ride out-of-the-box data table functionality with GK specific one
-showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
+	custom.showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
 
 		var url = 'datatables?apptable=' + appTableName;
 
@@ -35,7 +65,7 @@ showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {
 						appTableName: appTableName,
 						appTablePKValue: appTablePKValue, 
 						ignoreDatatableArray: ["risk_analysis"],
-						globaliseFunctions: helperFunctions,
+						globaliseFunctions: custom.helperFunctions,
 						resValue: "resources/libs/",
 
 						datatablesDiv: datatablesDiv,
@@ -112,36 +142,6 @@ function refreshRiskAnalysis(clientId, riskAnalysisDiv) {
 }
 
 
-
-	helperFunctions.makeAmountInputField = function(fieldName, fieldValue, displayMode, fieldType) {
-			      try {
-					var amountInputFieldHtml = "<input ";
-			  		if (displayMode == "view")
-					{
-						amountInputFieldHtml  += ' class="rightreadonly" readonly="readonly" ';
-					}
-					else
-					{
-						if (fieldType == "calc")
-						{
-							amountInputFieldHtml  += ' class="rightreadonly" readonly="readonly" id="' + fieldName + '" name="' + fieldName + '" title="" ';
-						}
-						else
-						{
-							amountInputFieldHtml  += ' class="right" onchange="gkRiskAnalysisCalc();" id="' + fieldName + '" name="' + fieldName + '" title="" ';
-						}
-			  		}
-
-					var currentVal = $.trim(fieldValue);
-					if (!(currentVal > "")) currentVal = 0.00;
-					currentVal = parseFloat(currentVal);
-					var currentValGlobal = Globalize.format(currentVal, "n2");
-					amountInputFieldHtml += ' style="width: 100px;" value="' + currentValGlobal + '" />';
-					return amountInputFieldHtml;
-			      } catch(e) {
-			        return "System Error: makeAmountInputField - fieldName: " + fieldName + "  fieldValue: " + fieldValue + "   displayMode: " + displayMode;
-			      }
-			};
 
 
 //GK specific risk analysis code for validating and calculating derived field values

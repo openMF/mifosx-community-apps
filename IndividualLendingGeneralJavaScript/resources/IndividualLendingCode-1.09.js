@@ -803,7 +803,7 @@ function showILClient(clientId) {
 
 					refreshNoteWidget(clientUrl);
 
-					showRelatedDataTableInfo($newtabs, "m_client", clientId); 
+					custom.showRelatedDataTableInfo($newtabs, "m_client", clientId); 
 
 					
 					// retrieve additional info
@@ -2221,7 +2221,7 @@ function loadILLoan(loanId) {
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
 
-				showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
+				custom.showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
 				// additional data
 				var additionalFieldsParams = {
@@ -3402,6 +3402,6 @@ function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeh
 }
 
 function jsViewsRegisterHelpers() {
-	$.views.registerHelpers(helperFunctions);
+	$.views.registerHelpers(custom.helperFunctions);
 }
 
