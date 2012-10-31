@@ -1,6 +1,6 @@
 
 
-//default function for display registered data table data
+//default function for displaying registered data table entries
 showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
   
 		var url = 'datatables?apptable=' + appTableName;

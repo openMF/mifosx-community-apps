@@ -1,14 +1,29 @@
 
 
-//default function for display registered data table data
+//over-ride out-of-the-box data table functionality with GK specific one - also in default tenant
 showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
-  
+
 		var url = 'datatables?apptable=' + appTableName;
 
 		var successFunction =  function(data, textStatus, jqXHR) {
 				
 				if (data.length > 0)
 				{
+//assume risk_analysis is one of the data tables
+//show client risk_analysis separate to other data tables
+					if (appTableName == "m_client")
+					{
+						var riskAnalysisDiv = "ClientRiskAnalysisTab";
+						tabVar.append("<div id=" + riskAnalysisDiv + "></div>");
+						tabVar.tabs( "add", "#" + riskAnalysisDiv , doI18N("client.riskanalysis.tab.name"));
+						refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
+					}
+				//else if (tab.index == 3){
+					//temporarily hardcoded at tab 3 (jpw)
+					//refreshRiskAnalysis(appTablePKValue);
+				//}
+	//htmlVar += '<li><a href="nothing" title="clientriskanalysistab" class="topleveltab"><span id="clientriskanalysistabname">' + doI18N("client.riskanalysis.tab.name")  + '</span></a></li>';
+
 					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
 					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
 					tabVar.tabs('select', 0); //back to main tab
@@ -19,12 +34,12 @@ showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
 						appTablePKValue: appTablePKValue, 
-						ignoreDatatableArray: ["risk_analysis", "dummy excluded table2"],
+						ignoreDatatableArray: ["risk_analysis"],
 						globaliseFunctions: helperFunctions,
 						resValue: "resources/libs/",
 
 						datatablesDiv: datatablesDiv,
-						labelClass: "datatableLabel ",
+						labelClass: "datatableLabel",
 						valueClass:	"",
 						saveLabel: doI18N("dialog.button.save"),	
 						cancelLabel: doI18N("dialog.button.cancel")				
@@ -38,15 +53,8 @@ showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {
 	}
 
 
-				//else if (tab.index == 3){
-					//temporarily hardcoded at tab 3 (jpw)
-					//refreshRiskAnalysis(clientId);
-				//}
-	//htmlVar += '<li><a href="nothing" title="clientriskanalysistab" class="topleveltab"><span id="clientriskanalysistabname">' + doI18N("client.riskanalysis.tab.name")  + '</span></a></li>';
 
-//<div id="clientriskanalysistab">
-
-function refreshRiskAnalysis(clientId) {
+function refreshRiskAnalysis(clientId, riskAnalysisDiv) {
 
 	var datatableUrl = 'datatables/risk_analysis/' + clientId;
 
@@ -56,7 +64,7 @@ function refreshRiskAnalysis(clientId) {
 				
 	var saveSuccessFunction = function(data, textStatus, jqXHR) {
 		$("#dialog-form").dialog("close");
-		refreshRiskAnalysis(clientId);
+		refreshRiskAnalysis(clientId, riskAnalysisDiv);
 	}
 
 	var successFunction =  function(data, textStatus, jqXHR) {
@@ -76,7 +84,7 @@ function refreshRiskAnalysis(clientId) {
 				crudObject.displayButtons = "add";
 				tableHtml = $(templateSelector).render(crudObject);
 			}
-			$("#clientriskanalysistab").html(tableHtml);
+			$("#" + riskAnalysisDiv).html(tableHtml);
 
 			//initialize all buttons
 			$("#editclientriskanalysis").button({icons: {
@@ -117,7 +125,7 @@ function gkRiskAnalysisCalc(){
 
 	var calc;
 
-	if (validRAData("#RAentityform", "#RAformerrors") == false)
+	if (validRAData("#entityform", "#formerrors") == false)
 	{
 		return false;
 	}
@@ -210,6 +218,7 @@ function validRAData(formDiv, formErrorsDiv) {
 	for (var i in IDs)
 	{
 		currentId = "#" + IDs[i];
+		//alert(currentId + " - " + $(currentId).val());
 		currentVal = $.trim($(currentId).val());
 		if (currentVal > "")
 		{
