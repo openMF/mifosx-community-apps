@@ -75,7 +75,7 @@ crudData = {
 				editTemplateNeeded: true,
 				refreshListNeeded: false,
 				dialogWidth: 600,
-				dialogHeight: 650	
+				dialogHeight: 500	
 		},
 		datatable: {
 				editTemplateNeeded: false,
