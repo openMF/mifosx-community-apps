@@ -105,9 +105,8 @@ $(document).ready(function() {
 				<col>
 				<col class="righthighlightcol">
 			</colgroup>
-			<colgroup span="3">
+			<colgroup span="2">
 				<col class="lefthighlightcol">
-				<col>
 				<col class="righthighlightcol">
 			</colgroup>
 			<colgroup span="3"></colgroup>
@@ -116,7 +115,7 @@ $(document).ready(function() {
 				<tr>
 					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
 					<th colspan="3" scope="colgroup" class="highlightcol">Loan Amount and Balance</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">Total Cost of Loan</th>
+					<th colspan="2" scope="colgroup" class="highlightcol">Total Cost of Loan</th>
 					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
 				</tr>
 				<tr>
@@ -129,8 +128,7 @@ $(document).ready(function() {
 					<th scope="col" class="righthighlightcolheader">Balance of Loan</th>
 
 					<th scope="col" class="lefthighlightcolheader">Interest Repayment</th>
-					<th scope="col">Fees</th>
-					<th scope="col" class="righthighlightcolheader">Penalties</th>
+					<th scope="col" class="righthighlightcolheader">Charges</th>
 
 					<th scope="col">Total Repayment Due</th>
 					<th scope="col">Total Paid</th>
@@ -149,8 +147,7 @@ $(document).ready(function() {
 				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
 
 				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, penaltyChargesDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
 
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
@@ -168,8 +165,7 @@ $(document).ready(function() {
 					<th class="righthighlightcolheader">&nbsp;</th>
 
 					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</th>
-					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</th>
+					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeChargesToDate)}}</th>
 
 					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
 					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
@@ -584,6 +580,8 @@ $(document).ready(function() {
 <input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
 {{/if}}
 </script> 
+
+<!-- // TODO - HERE -->
 
 <script id="newLoanFormTemplateMin" type="text/x-jquery-tmpl">
 <form id="entityform">
@@ -2815,7 +2813,6 @@ $(document).ready(function() {
 			<thead>
 				<tr>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.name")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.loan.charges.fee.or.penalty")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.paymentdueat")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.due.asof")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.calculationtype")}}</th>
@@ -2829,13 +2826,6 @@ $(document).ready(function() {
 				{{#each charges}}
 				<tr>
 					<td>{{=name}}</td>
-
-				{{#if penalty}}
-					<td>Penalty</td>
-				{{#else}}
-					<td>Fee</td>
-				{{/if}}
-
 					<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
 				{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
 					<td>{{=$ctx.globalDate(dueAsOfDate)}}</td>
@@ -2851,10 +2841,7 @@ $(document).ready(function() {
 					<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
 					<td>{{=$ctx.moneyFormatted(currency, amountPaid)}}</td>
 					<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
-					<td>
-						<a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Remove</a>&nbsp;
-						<!-- <a href="unknown.html" onclick="return waiveLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Waive</a> -->
-					</td>
+					<td><a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Remove</a>&nbsp;<a href="unknown.html" onclick="return waiveLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Waive</a></td>
 				</tr>
 				{{/each}}
 			</tbody>
@@ -2905,33 +2892,18 @@ $(document).ready(function() {
 					{{/if}}
 					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestOutstanding)}}</td>
 				</tr>
-				{{#if cumulativeFeeChargesToDate}}
+				{{#if cumulativeChargesToDate}}
 				<tr>
-					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.fees")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesPaid)}}</td>
+					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.charges")}}</th>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesToDate)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesPaid)}}</td>
 					{{#if totalWaivedToDate}}
 					<td>&nbsp;</td>
 					{{/if}}
 					{{#if totalWrittenOffToDate}}
 					<td>&nbsp;</td>
 					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesOutstanding)}}</td>
-				</tr>
-				{{/if}}
-
-				{{#if cumulativePenaltyChargesToDate}}
-				<tr>
-					<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.penalties")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesPaid)}}</td>
-					{{#if totalWaivedToDate}}
-					<td>&nbsp;</td>
-					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>&nbsp;</td>
-					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesOutstanding)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeChargesOutstanding)}}</td>
 				</tr>
 				{{/if}}
 			</tbody>
@@ -2961,9 +2933,8 @@ $(document).ready(function() {
 				<col>
 				<col class="righthighlightcol">
 			</colgroup>
-			<colgroup span="3">
+			<colgroup span="2">
 				<col class="lefthighlightcol">
-				<col>
 				<col class="righthighlightcol">
 			</colgroup>
 			{{#if totalWaivedToDate}}
@@ -2976,7 +2947,7 @@ $(document).ready(function() {
 				<tr>
 					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
 					<th colspan="3" scope="colgroup" class="highlightcol">Loan Amount and Balance</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">Total Cost of Loan</th>
+					<th colspan="2" scope="colgroup" class="highlightcol">Total Cost of Loan</th>
 					{{#if totalWaivedToDate}}
 					<th colspan="4" scope="colgroup" class="empty">&nbsp;</th>
 					{{#else}}
@@ -2993,8 +2964,7 @@ $(document).ready(function() {
 					<th scope="col" class="righthighlightcolheader">Balance of Loan</th>
 
 					<th scope="col" class="lefthighlightcolheader">Interest Repayment</th>
-					<th scope="col">Fees</th>
-					<th scope="col" class="righthighlightcolheader">Penalties</th>
+					<th scope="col" class="righthighlightcolheader">Charges</th>
 
 					<th scope="col">Total Repayment Due</th>
 					<th scope="col">Total Paid</th>
@@ -3016,8 +2986,7 @@ $(document).ready(function() {
 				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
 
 				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, penaltyChargesDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
 
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
@@ -3038,8 +3007,7 @@ $(document).ready(function() {
 					<th class="righthighlightcolheader">&nbsp;</th>
 
 					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</th>
-					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</th>
+					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeChargesToDate)}}</th>
 
 					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
 					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
@@ -3049,7 +3017,7 @@ $(document).ready(function() {
 					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
 				</tr>
 			</tfoot>
-		</table>
+</table>-->
 	</div>
 	{{/each}}
 
@@ -3236,7 +3204,7 @@ $(document).ready(function() {
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
-	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.writeoff.on")}}</label>
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
 	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
 
 	<label for="note">{{=$ctx.doI18N("label.loan.action.note")}}</label>
@@ -4086,6 +4054,7 @@ $(document).ready(function() {
 </form>
 </script>
 
+
 <script id="chargeListTemplate" type="text/x-jquery-tmpl">
 <table id='chargestable' width='100%'>
 	<thead>
@@ -4094,7 +4063,6 @@ $(document).ready(function() {
 			<th>{{=$ctx.doI18N("table.heading.charge.currency")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.charge.amount")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.charge.chargeAppliesTo")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.charge.is.penalty.charge")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.charge.chargeCalculationType")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.charge.chargeTimeType")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.charge.active")}}</th>
@@ -4108,13 +4076,6 @@ $(document).ready(function() {
 	<td>{{=currency.displayLabel}}</td>
 	<td>{{=$ctx.decimal(amount, currency.decimalPlaces)}}</td>
 	<td>{{=$ctx.doI18N(chargeAppliesTo.code)}}</td>
-	<td>
-		{{#if penalty}} 
-			{{=$ctx.doI18N("boolean.true")}}
-		{{#else}}
-			{{=$ctx.doI18N("boolean.false")}}
-		{{/if}}
-	</td>
 	<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
 	<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
 	<td>
@@ -4218,13 +4179,6 @@ $(document).ready(function() {
 			<input type="checkbox" id="active" name="active" title="" style="width: 125px;" checked=checked />
 		{{#else}}
 			<input type="checkbox" id="active" name="active" title="" style="width: 125px;" />
-		{{/if}}
-
-		<label for="penalty">{{=$ctx.doI18N("form.label.charge.penalty")}}</label>
-		{{#if penalty}}
-			<input type="checkbox" id="penalty" name="penalty" title="" style="width: 125px;" checked=checked />
-		{{#else}}
-			<input type="checkbox" id="penalty" name="penalty" title="" style="width: 125px;" />
 		{{/if}}
 	</fieldset>
 </form>
@@ -4593,7 +4547,7 @@ function showLockinOptions(){
 		<tr>
 			<td width="30%">(0) {{=$ctx.doI18N("proposed_loan_amount")}}</td>
 			<td width="1%"></td>
-			<td width="9%">{{=$ctx.makeAmountInputField("proposed_loan_amount", proposed_loan_amount, displayMode)!}}</td>
+			<td width="9%">{{=$ctx.GKRA_MakeAmountInputField("proposed_loan_amount", proposed_loan_amount, displayMode)!}}</td>
 			<td width="20%"></td>
 			<td width="40%" align="right" colspan="3">
 {{#if displayMode == "view"}}
@@ -4625,34 +4579,34 @@ function showLockinOptions(){
 		<tr>
 			<td>(1) {{=$ctx.doI18N("assets_cash")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("assets_cash", assets_cash, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("assets_cash", assets_cash, displayMode)!}}</td>
 			<td></td>
 			<td>(2) {{=$ctx.doI18N("assets_bank_accounts")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("assets_bank_accounts", assets_bank_accounts, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("assets_bank_accounts", assets_bank_accounts, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(3) {{=$ctx.doI18N("assets_accounts_receivable")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("assets_accounts_receivable", assets_accounts_receivable, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("assets_accounts_receivable", assets_accounts_receivable, displayMode)!}}</td>
 			<td></td>
 			<td>(4) {{=$ctx.doI18N("assets_inventory")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("assets_inventory", assets_inventory, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("assets_inventory", assets_inventory, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(5) {{=$ctx.doI18N("assets_total_fixed_business")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("assets_total_fixed_business", assets_total_fixed_business, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("assets_total_fixed_business", assets_total_fixed_business, displayMode)!}}</td>
 			<td></td>
 			<td>(6) {{=$ctx.doI18N("assets_total_business")}} (sum 1:5)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("assets_total_business", assets_total_business, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("assets_total_business", assets_total_business, displayMode, "calc")!}}</td>
 		</tr>
 		<tr>
 			<td>(7) {{=$ctx.doI18N("assets_total_household")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("assets_total_household", assets_total_household, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("assets_total_household", assets_total_household, displayMode)!}}</td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -4673,29 +4627,29 @@ function showLockinOptions(){
 		<tr>
 			<td>(8) {{=$ctx.doI18N("liabilities_accounts_payable")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("liabilities_accounts_payable", liabilities_accounts_payable, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("liabilities_accounts_payable", liabilities_accounts_payable, displayMode)!}}</td>
 			<td></td>
 			<td>(9) {{=$ctx.doI18N("liabilities_business_debts")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("liabilities_business_debts", liabilities_business_debts, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("liabilities_business_debts", liabilities_business_debts, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(10) {{=$ctx.doI18N("liabilities_total_business")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("liabilities_total_business", liabilities_total_business, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("liabilities_total_business", liabilities_total_business, displayMode)!}}</td>
 			<td></td>
 			<td>(11) {{=$ctx.doI18N("liabilities_equity_working_capital")}} (6-10)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("liabilities_equity_working_capital", liabilities_equity_working_capital, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("liabilities_equity_working_capital", liabilities_equity_working_capital, displayMode, "calc")!}}</td>
 		</tr>
 		<tr>
 			<td>(12) {{=$ctx.doI18N("liabilities_total_household")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("liabilities_total_household", liabilities_total_household, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("liabilities_total_household", liabilities_total_household, displayMode)!}}</td>
 			<td></td>
 			<td>(13) {{=$ctx.doI18N("liabilities_household_equity")}} (7 -12)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("liabilities_household_equity", liabilities_household_equity, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("liabilities_household_equity", liabilities_household_equity, displayMode, "calc")!}}</td>
 		</tr>
 	</table>
 	<hr>
@@ -4713,61 +4667,61 @@ function showLockinOptions(){
 		<tr>
 			<td>(14) {{=$ctx.doI18N("cashflow_cash_sales")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_cash_sales", cashflow_cash_sales, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_cash_sales", cashflow_cash_sales, displayMode)!}}</td>
 			<td></td>
 			<td>(15) {{=$ctx.doI18N("cashflow_cash_sales2")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_cash_sales2", cashflow_cash_sales2, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_cash_sales2", cashflow_cash_sales2, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(16) {{=$ctx.doI18N("cashflow_cost_goods_sold")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_cost_goods_sold", cashflow_cost_goods_sold, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_cost_goods_sold", cashflow_cost_goods_sold, displayMode)!}}</td>
 			<td></td>
 			<td>(17) {{=$ctx.doI18N("cashflow_cost_goods_sold2")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_cost_goods_sold2", cashflow_cost_goods_sold2, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_cost_goods_sold2", cashflow_cost_goods_sold2, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(18) {{=$ctx.doI18N("cashflow_gross_profit")}} ((14+15)-(16+17))</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_gross_profit", cashflow_gross_profit, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_gross_profit", cashflow_gross_profit, displayMode, "calc")!}}</td>
 			<td></td>
 			<td>(19) {{=$ctx.doI18N("cashflow_other_income1")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_other_income1", cashflow_other_income1, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_other_income1", cashflow_other_income1, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(20) {{=$ctx.doI18N("cashflow_total_income2")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_total_income2", cashflow_total_income2, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_total_income2", cashflow_total_income2, displayMode)!}}</td>
 			<td></td>
 			<td>(21) {{=$ctx.doI18N("cashflow_household_expense")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_household_expense", cashflow_household_expense, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_household_expense", cashflow_household_expense, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(22) {{=$ctx.doI18N("cashflow_payments_to_savings")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_payments_to_savings", cashflow_payments_to_savings, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_payments_to_savings", cashflow_payments_to_savings, displayMode)!}}</td>
 			<td></td>
 			<td>(23) {{=$ctx.doI18N("cashflow_operational_expenses")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_operational_expenses", cashflow_operational_expenses, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_operational_expenses", cashflow_operational_expenses, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(24) {{=$ctx.doI18N("cashflow_disposable_income")}} ((18+19+20)-(21+22+23))</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_disposable_income", cashflow_disposable_income, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_disposable_income", cashflow_disposable_income, displayMode, "calc")!}}</td>
 			<td></td>
 			<td>(25) {{=$ctx.doI18N("cashflow_amount_loan_installment")}}</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_amount_loan_installment", cashflow_amount_loan_installment, displayMode)!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_amount_loan_installment", cashflow_amount_loan_installment, displayMode)!}}</td>
 		</tr>
 		<tr>
 			<td>(26) {{=$ctx.doI18N("cashflow_available_surplus")}} (24-25)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("cashflow_available_surplus", cashflow_available_surplus, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("cashflow_available_surplus", cashflow_available_surplus, displayMode, "calc")!}}</td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -4789,29 +4743,29 @@ function showLockinOptions(){
 		<tr>
 			<td>(27) {{=$ctx.doI18N("fi_inventory_turnover")}} (16/4)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("fi_inventory_turnover", fi_inventory_turnover, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("fi_inventory_turnover", fi_inventory_turnover, displayMode, "calc")!}}</td>
 			<td></td>
 			<td>(28) {{=$ctx.doI18N("fi_gross_margin")}} ((14+15-16)/14)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("fi_gross_margin", fi_gross_margin, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("fi_gross_margin", fi_gross_margin, displayMode, "calc")!}}</td>
 		</tr>
 		<tr>
 			<td>(29) {{=$ctx.doI18N("fi_indebtedness")}} (10/11)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("fi_indebtedness", fi_indebtedness, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("fi_indebtedness", fi_indebtedness, displayMode, "calc")!}}</td>
 			<td></td>
 			<td>(30) {{=$ctx.doI18N("fi_loan_recommendation")}} ((10 + 0)/11)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("fi_loan_recommendation", fi_loan_recommendation, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("fi_loan_recommendation", fi_loan_recommendation, displayMode, "calc")!}}</td>
 		</tr>
 		<tr>
 			<td>(31) {{=$ctx.doI18N("fi_roe")}} (18/11) </td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("fi_roe", fi_roe, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("fi_roe", fi_roe, displayMode, "calc")!}}</td>
 			<td></td>
 			<td>(32) {{=$ctx.doI18N("fi_repayment_capacity")}} (25/24)</td>
 			<td></td>
-			<td>{{=$ctx.makeAmountInputField("fi_repayment_capacity", fi_repayment_capacity, displayMode, "calc")!}}</td>
+			<td>{{=$ctx.GKRA_MakeAmountInputField("fi_repayment_capacity", fi_repayment_capacity, displayMode, "calc")!}}</td>
 		</tr>
 	</table>
 

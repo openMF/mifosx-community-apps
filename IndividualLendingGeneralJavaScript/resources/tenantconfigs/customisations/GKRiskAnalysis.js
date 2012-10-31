@@ -1,5 +1,5 @@
 
-	custom.helperFunctions.makeAmountInputField = function(fieldName, fieldValue, displayMode, fieldType) {
+	custom.helperFunctions.GKRA_MakeAmountInputField = function(fieldName, fieldValue, displayMode, fieldType) {
 			      try {
 					var amountInputFieldHtml = "<input ";
 			  		if (displayMode == "view")
@@ -14,7 +14,7 @@
 						}
 						else
 						{
-							amountInputFieldHtml  += ' class="right" onchange="gkRiskAnalysisCalc();" id="' + fieldName + '" name="' + fieldName + '" title="" ';
+							amountInputFieldHtml  += ' class="right" onchange="GKRA.RiskAnalysisCalc();" id="' + fieldName + '" name="' + fieldName + '" title="" ';
 						}
 			  		}
 
@@ -25,7 +25,7 @@
 					amountInputFieldHtml += ' style="width: 100px;" value="' + currentValGlobal + '" />';
 					return amountInputFieldHtml;
 			      } catch(e) {
-			        return "System Error: makeAmountInputField - fieldName: " + fieldName + "  fieldValue: " + fieldValue + "   displayMode: " + displayMode;
+			        return "System Error: GKRA_MakeAmountInputField - fieldName: " + fieldName + "  fieldValue: " + fieldValue + "   displayMode: " + displayMode;
 			      }
 			};
 
@@ -43,16 +43,11 @@
 //show client risk_analysis separate to other data tables
 					if (appTableName == "m_client")
 					{
-						var riskAnalysisDiv = "ClientRiskAnalysisTab";
+						var riskAnalysisDiv = "GKRA_ClientRiskAnalysisTab";
 						tabVar.append("<div id=" + riskAnalysisDiv + "></div>");
 						tabVar.tabs( "add", "#" + riskAnalysisDiv , doI18N("client.riskanalysis.tab.name"));
-						refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
+						GKRA.refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
 					}
-				//else if (tab.index == 3){
-					//temporarily hardcoded at tab 3 (jpw)
-					//refreshRiskAnalysis(appTablePKValue);
-				//}
-	//htmlVar += '<li><a href="nothing" title="clientriskanalysistab" class="topleveltab"><span id="clientriskanalysistabname">' + doI18N("client.riskanalysis.tab.name")  + '</span></a></li>';
 
 					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
 					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
@@ -82,9 +77,9 @@
 		executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction);	
 	}
 
+GKRA = {};
 
-
-function refreshRiskAnalysis(clientId, riskAnalysisDiv) {
+GKRA.refreshRiskAnalysis = function (clientId, riskAnalysisDiv) {
 
 	var datatableUrl = 'datatables/risk_analysis/' + clientId;
 
@@ -94,7 +89,7 @@ function refreshRiskAnalysis(clientId, riskAnalysisDiv) {
 				
 	var saveSuccessFunction = function(data, textStatus, jqXHR) {
 		$("#dialog-form").dialog("close");
-		refreshRiskAnalysis(clientId, riskAnalysisDiv);
+		GKRA.refreshRiskAnalysis(clientId, riskAnalysisDiv);
 	}
 
 	var successFunction =  function(data, textStatus, jqXHR) {
@@ -139,64 +134,61 @@ function refreshRiskAnalysis(clientId, riskAnalysisDiv) {
 		}
 
   		executeAjaxRequest(datatableUrl, 'GET', "", successFunction, formErrorFunction);	  
-}
-
-
+};
 
 
 //GK specific risk analysis code for validating and calculating derived field values
-function gkRiskAnalysisCalc(){
-
+GKRA.RiskAnalysisCalc = function(){
 
 	var calc;
 
-	if (validRAData("#entityform", "#formerrors") == false)
+	if (GKRA.validRAData("#entityform", "#formerrors") == false)
 	{
 		return false;
 	}
 	else
 	{
-		calc = amountRA("assets_cash") + amountRA("assets_bank_accounts") + amountRA("assets_accounts_receivable") + amountRA("assets_inventory") + amountRA("assets_total_fixed_business");
+		calc = GKRA.amountRA("assets_cash") + GKRA.amountRA("assets_bank_accounts") + GKRA.amountRA("assets_accounts_receivable") + GKRA.amountRA("assets_inventory") + GKRA.amountRA("assets_total_fixed_business");
 		$("#assets_total_business").val(Globalize.format(calc, "n2"));
 
-		calc = amountRA("assets_total_business") - amountRA("liabilities_total_business");
+		calc = GKRA.amountRA("assets_total_business") - GKRA.amountRA("liabilities_total_business");
 		$("#liabilities_equity_working_capital").val(Globalize.format(calc, "n2"));
 
-		calc = amountRA("assets_total_household") - amountRA("liabilities_total_household");
+		calc = GKRA.amountRA("assets_total_household") - GKRA.amountRA("liabilities_total_household");
 		$("#liabilities_household_equity").val(Globalize.format(calc, "n2"));
 
-		calc = (amountRA("cashflow_cash_sales") + amountRA("cashflow_cash_sales2")) - (amountRA("cashflow_cost_goods_sold") + amountRA("cashflow_cost_goods_sold2"));
+		calc = (GKRA.amountRA("cashflow_cash_sales") + GKRA.amountRA("cashflow_cash_sales2")) - (GKRA.amountRA("cashflow_cost_goods_sold") + GKRA.amountRA("cashflow_cost_goods_sold2"));
 		$("#cashflow_gross_profit").val(Globalize.format(calc, "n2"));
 
-		calc = (amountRA("cashflow_gross_profit") + amountRA("cashflow_other_income1") + amountRA("cashflow_total_income2")) - (amountRA("cashflow_household_expense") + amountRA("cashflow_payments_to_savings") + amountRA("cashflow_operational_expenses"));
+		calc = (GKRA.amountRA("cashflow_gross_profit") + GKRA.amountRA("cashflow_other_income1") + GKRA.amountRA("cashflow_total_income2")) - (GKRA.amountRA("cashflow_household_expense") + GKRA.amountRA("cashflow_payments_to_savings") + GKRA.amountRA("cashflow_operational_expenses"));
 		$("#cashflow_disposable_income").val(Globalize.format(calc, "n2"));
 
-		calc = amountRA("cashflow_disposable_income") - amountRA("cashflow_amount_loan_installment");
+		calc = GKRA.amountRA("cashflow_disposable_income") - GKRA.amountRA("cashflow_amount_loan_installment");
 		$("#cashflow_available_surplus").val(Globalize.format(calc, "n2"));
 
-		if (amountRA("assets_inventory") != 0.0)
+		if (GKRA.amountRA("assets_inventory") != 0.0)
 		{
-			calc = amountRA("cashflow_cost_goods_sold") / amountRA("assets_inventory");
+			calc = GKRA.amountRA("cashflow_cost_goods_sold") / GKRA.amountRA("assets_inventory");
 			$("#fi_inventory_turnover").val(Globalize.format(calc, "n2"));
 		}
 		else $("#fi_inventory_turnover").val("");
 
-		if (amountRA("cashflow_cash_sales") != 0.0)
+		if (GKRA.amountRA("cashflow_cash_sales") != 0.0)
 		{
-			calc = (amountRA("cashflow_cash_sales") + amountRA("cashflow_cash_sales2") - amountRA("cashflow_cost_goods_sold")) / amountRA("cashflow_cash_sales");
+			calc = (GKRA.amountRA("cashflow_cash_sales") + GKRA.amountRA("cashflow_cash_sales2") - GKRA.amountRA("cashflow_cost_goods_sold")) / GKRA.amountRA("cashflow_cash_sales");
 			$("#fi_gross_margin").val(Globalize.format(calc, "n2"));
 		}
 		else $("#fi_gross_margin").val("");
 
-		if (amountRA("liabilities_equity_working_capital") != 0.0)
+		if (GKRA.amountRA("liabilities_equity_working_capital") != 0.0)
 		{
-			calc = amountRA("liabilities_total_business") / amountRA("liabilities_equity_working_capital");
+			calc = GKRA.amountRA("liabilities_total_business") / GKRA.amountRA("liabilities_equity_working_capital");
 			$("#fi_indebtedness").val(Globalize.format(calc, "n2"));
 
-			calc = (amountRA("liabilities_total_business") + amountRA("proposed_loan_amount") ) / amountRA("liabilities_equity_working_capital");
+			calc = (GKRA.amountRA("liabilities_total_business") + GKRA.amountRA("proposed_loan_amount") ) / GKRA.amountRA("liabilities_equity_working_capital");
 			$("#fi_loan_recommendation").val(Globalize.format(calc, "n2"));
 
-			calc = amountRA("cashflow_gross_profit") / amountRA("liabilities_equity_working_capital");
+			calc = GKRA.amountRA("cashflow_gross_profit") / GKRA.amountRA("liabilities_equity_working_capital");
 			$("#fi_roe").val(Globalize.format(calc, "n2"));
 		}
 		else 
@@ -206,25 +198,25 @@ function gkRiskAnalysisCalc(){
 			$("#fi_roe").val("");
 		}
 
-		if (amountRA("cashflow_disposable_income") != 0.0)
+		if (GKRA.amountRA("cashflow_disposable_income") != 0.0)
 		{
-			calc = amountRA("cashflow_amount_loan_installment") / amountRA("cashflow_disposable_income");
+			calc = GKRA.amountRA("cashflow_amount_loan_installment") / GKRA.amountRA("cashflow_disposable_income");
 			$("#fi_repayment_capacity").val(Globalize.format(calc, "n2"));
 		}
 		else $("#fi_repayment_capacity").val("");
 
 	}
 	return true;
-} 
+};
 
-function amountRA(idName) {
+GKRA.amountRA = function(idName) {
 	
 	var currentVal = $.trim($("#" + idName).val());
 	if (!(currentVal > "")) currentVal = 0.00;
 	return Globalize.parseFloat(currentVal);
-}
+};
 
-function validRAData(formDiv, formErrorsDiv) {
+GKRA.validRAData = function(formDiv, formErrorsDiv) {
 
 	// get all the input fields except 'locale'
 	var IDs = [];
@@ -250,7 +242,7 @@ function validRAData(formDiv, formErrorsDiv) {
 			num = Globalize.parseFloat($(currentId).val());
 			if (isNaN(num)) 
 			{
-				jsError(currentId, formErrorsDiv, "not.a.number");
+				GKRA.jsError(currentId, formErrorsDiv, "not.a.number");
 				return false;
 			}
 			else
@@ -260,9 +252,9 @@ function validRAData(formDiv, formErrorsDiv) {
 		}
 	}
 	return true;
-}
+};
 
-function jsError(fieldName, formErrorsDiv, formErrorMsg) {
+GKRA.jsError = function(fieldName, formErrorsDiv, formErrorMsg) {
 	$(fieldName).addClass("ui-state-error");	
 
 	var errorHtml = '<div class="ui-widget">';
@@ -275,6 +267,6 @@ function jsError(fieldName, formErrorsDiv, formErrorMsg) {
 	errorHtml += '</div>';
 
 	$(formErrorsDiv).html(errorHtml );
-}
+};
 
 
