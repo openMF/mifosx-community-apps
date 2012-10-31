@@ -46,16 +46,20 @@
 //show client risk_analysis separate to other data tables
 					if (appTableName == "m_client")
 					{
-						var riskAnalysisDiv = "GKRA_ClientRiskAnalysisTab";
-						tabVar.append("<div id=" + riskAnalysisDiv + "></div>");
-						tabVar.tabs( "add", "#" + riskAnalysisDiv , doI18N("client.riskanalysis.tab.name"));
-						GKRA.refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
-
+						var riskAnalysisFound = false;
 						for (var i in data)
 						{
-							if (data[i].registeredTableName != "risk_analysis") datatableArray.push(data[i]);
+							if (data[i].registeredTableName != "risk_analysis") datatableArray.push(data[i])
+							else riskAnalysisFound = true;
 						}
-
+						if (riskAnalysisFound == true)
+						{
+							var riskAnalysisDiv = "GKRA_ClientRiskAnalysisTab";
+							tabVar.append("<div id=" + riskAnalysisDiv + "></div>");
+							tabVar.tabs( "add", "#" + riskAnalysisDiv , doI18N("client.riskanalysis.tab.name"));
+							GKRA.refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
+						}
+						else alert(doI18N("gk.risk.analysis.datatable.not.registered"));
 					}
 					else datatableArray = data;
 
