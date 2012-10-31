@@ -1,6 +1,6 @@
+//put any default code configuration here.  It will be overridden by any tenant specific customisations included at the end of this script
 
-
-//default function for displaying registered data table entries
+//default function for displaying registered data table entries (Additional Data)
 showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
   
 		var url = 'datatables?apptable=' + appTableName;
