@@ -41,8 +41,6 @@
 				{
 
 					datatableArray = [];
-
-//assume risk_analysis is one of the data tables and has been registered for m_client
 //show client risk_analysis separate to other data tables
 					if (appTableName == "m_client")
 					{
