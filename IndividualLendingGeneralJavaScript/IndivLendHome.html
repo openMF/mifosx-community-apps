@@ -3957,6 +3957,9 @@ $(document).ready(function() {
 	</td>
 	<td>
 		<a id='editemployee{{=id}}' class='editemployee' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		{{#if loanOfficerFlag}}
+			<a id='bulkloanreassignment' class='bulkloanreassignment' href='#' style='margin-right: 5px;' data-officeid="{{=officeId}}" data-fromloanofficerid="{{=id}}">{{=$ctx.doI18N("link.action.bulkloanreassignment")}}</a>	
+		{{/if}}
 		<a id='deleteemployee{{=id}}' class='deleteemployee' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 	</td>
 </tr>
@@ -4054,6 +4057,102 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="bulkLoanReassignmentFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.bulk.loan.reassignment")}}</legend>
+		<table cellspacing="4px" cellpadding="8px">
+			<tr>
+				<td colspan="3">
+					<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+					<select id="officeId" title="">
+						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+						{{#each officeOptions}}
+							{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							{{/if}}
+				        {{/each}}
+					</select>
+				</td>	
+			</tr>
+			<tr>
+				<td colspan="2">
+					<label for="fromLoanOfficer">{{=$ctx.doI18N("form.label.loan.officer.from")}}</label>
+					<select id="fromLoanOfficerId" name="fromLoanOfficerId" title="">
+						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+						{{#each loanOfficerOptions}}
+							{{#if $ctx.number($parent.parent.data.fromLoanOfficerId)===$ctx.number(id)}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							{{/if}}
+				        {{/each}}
+					</select>
+				</td>
+				<td>
+					<label for="toLoanOfficer">{{=$ctx.doI18N("form.label.loan.officer.to")}}</label>
+					<select id="toLoanOfficerId" name="toLoanOfficerId" title="">
+						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+						{{#each loanOfficerOptions}}
+							{{#if $ctx.number($parent.parent.data.fromLoanOfficerId)!==$ctx.number(id)}}}
+								<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							{{/if}}
+				        {{/each}}
+					</select>
+				</td>
+			</tr>
+			{{#if accountSummaryCollection}}
+				{{#if accountSummaryCollection.clients.length > 0 }}
+					<tr>
+						<td>{{=$ctx.doI18N("label.clients")}}</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					{{#each accountSummaryCollection.clients}}
+						<tr>
+							<td><input type="checkbox" class="parentCheckBox" data-id="{{=id}}"/></td>
+							<td>{{=displayName}}</td>
+							<td>&nbsp;</td>
+						</tr>
+						{{#each loans}}
+							<tr>
+								<td>&nbsp;</td>
+								<td><input type="checkbox" name="loans" value="{{=id}}" data-parentid="{{=$parent.parent.data.id}}"/></td>
+								<td>{{=productName}}: &#35;{{=id}}</td>
+							</tr>
+						{{/each}}
+					{{/each}}
+				{{/if}}
+				{{#if accountSummaryCollection.groups.length > 0 }}
+					<tr>
+						<td>{{=$ctx.doI18N("label.groups")}}</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					{{#each accountSummaryCollection.groups}}
+						<tr>
+							<td><input type="checkbox" class="parentCheckBox" data-id="{{=id}}"/></td>
+							<td>{{=name}}</td>
+							<td>&nbsp;</td>
+						</tr>
+						{{#each loans}}
+						<tr>
+							<td>&nbsp;</td>
+							<td><input type="checkbox" name="loans" value="{{=id}}" data-parentid="{{=$parent.parent.data.id}}"/></td>
+							<td>{{=productName}}: &#35;{{=id}}</td>
+						</tr>
+						{{/each}}
+					{{/each}}
+				{{/if}}
+			{{/if}}
+		</table>
+	</fieldset>
+</form>
+</script>
 
 <script id="chargeListTemplate" type="text/x-jquery-tmpl">
 <table id='chargestable' width='100%'>
