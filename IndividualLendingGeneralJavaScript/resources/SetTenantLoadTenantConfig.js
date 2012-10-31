@@ -165,7 +165,7 @@
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
 						appTablePKValue: appTablePKValue, 
-						ignoreDatatableArray: [],
+						datatableArray: data,
 						globaliseFunctions: custom.helperFunctions,
 						resValue: "resources/libs/",
 

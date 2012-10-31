@@ -64,35 +64,25 @@
 
 	function displayAdditionalInfo(params) {
 
-		var url = 'datatables?apptable=' + params.appTableName;
-
-		var successFunction = function(data, status, xhr) {
-			if (data.length > 0)
+			if (params.datatableArray.length > 0)
 			{
 
 				var additionalDataInnerDiv = params.datatablesDiv+ "_x";
 
 				var htmlVar = '<div id="' + additionalDataInnerDiv + '"><ul>';
 				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
-				for (var i in data) 
+				for (var i in params.datatableArray) 
 				{
-					if (datatableExcluded(data[i].registeredTableName) == false)
-					{
 						htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyDataTables.showDataTable(' + "'";
-						htmlVar += additionalDataInnerDiv + "', '" + data[i].registeredTableName + "', ";
-						htmlVar += params.appTablePKValue + ", '" + getFKName(data[i].applicationTableName) + "'" + ');return false;"><span>';
-						htmlVar += doI18N(data[i].registeredTableName) + '</span></a></li>';
-					}
+						htmlVar += additionalDataInnerDiv + "', '" + params.datatableArray[i].registeredTableName + "', ";
+						htmlVar += params.appTablePKValue + ", '" + getFKName(params.datatableArray[i].applicationTableName) + "'" + ');return false;"><span>';
+						htmlVar += doI18N(params.datatableArray[i].registeredTableName) + '</span></a></li>';
 				}
 				htmlVar += '</ul></div>';
 	        		$("#" + params.datatablesDiv).html(htmlVar);
 
     				$("#" + additionalDataInnerDiv ).tabs();
 			}
-		};
-
-		executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction );	
-
 	}
 
 
@@ -744,18 +734,6 @@ function genAddEditPopupClick(requestType , postOrPutUrl, updateRowIndex) {
 
 function genDeletePopupClick(deleteUrl) {
 	return "jQuery.stretchyDataTables.popupDeleteDialog('" + deleteUrl + "');";
-}
-
-function datatableExcluded(datatableName) {
-
-	if (!(tabledataParams.ignoreDatatableArray)) return false;
-
-	var datatableNameLower = datatableName.toLowerCase();
-	for (var i in tabledataParams.ignoreDatatableArray) 
-	{
-		if (tabledataParams.ignoreDatatableArray[i].toLowerCase() == datatableNameLower) return true;
-	}
-	return false;
 }
 
 $.fn.serializeObject = function() {

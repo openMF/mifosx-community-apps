@@ -39,6 +39,9 @@
 				
 				if (data.length > 0)
 				{
+
+					datatableArray = [];
+
 //assume risk_analysis is one of the data tables and has been registered for m_client
 //show client risk_analysis separate to other data tables
 					if (appTableName == "m_client")
@@ -47,7 +50,14 @@
 						tabVar.append("<div id=" + riskAnalysisDiv + "></div>");
 						tabVar.tabs( "add", "#" + riskAnalysisDiv , doI18N("client.riskanalysis.tab.name"));
 						GKRA.refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
+
+						for (var i in data)
+						{
+							if (data[i].registeredTableName != "risk_analysis") datatableArray.push(data[i]);
+						}
+
 					}
+					else datatableArray = data;
 
 					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
 					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
@@ -59,7 +69,7 @@
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
 						appTablePKValue: appTablePKValue, 
-						ignoreDatatableArray: ["risk_analysis"],
+						datatableArray: datatableArray,
 						globaliseFunctions: custom.helperFunctions,
 						resValue: "resources/libs/",
 
