@@ -71,6 +71,12 @@ crudData = {
 				dialogWidth: 900,
 				dialogHeight: 400
 			},
+		bulkLoanReassignment: {
+				editTemplateNeeded: true,
+				refreshListNeeded: false,
+				dialogWidth: 600,
+				dialogHeight: 650	
+		},
 		datatable: {
 				editTemplateNeeded: false,
 				refreshListNeeded: true,
@@ -288,6 +294,7 @@ function setOrgAdminContent(divName) {
 	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
+	var bulkLoanReassignmentUrl = "maintainTable('bulkLoanReassignment', 'staff/loanreassignment', 'POST');return false;";
 
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
@@ -329,6 +336,8 @@ function setOrgAdminContent(divName) {
 	if (jQuery.MifosXUI.showIt("OfficeTransactionCreate") == true)
 		htmlVar += ' | <a href="unknown.html" onclick="' + officeMoneyTransfer + '" id="internalTransfer">' + doI18N("administration.link.office.money.transfer") + '</a>';
 
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + bulkLoanReassignmentUrl + '" id="bulkLoanReassignment">' + doI18N("administration.link.bulk.loan.reassignment") + '</a>';	
 	htmlVar += ' <br><br> ';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
@@ -2402,6 +2411,23 @@ function refreshLoanDocuments(loanId) {
 						e.preventDefault();
 				});
 
+				$("a.bulkloanreassignment").click(function(e){
+
+					var officeId = $(this).attr("data-officeid");
+					var fromLoanOfficerId = $(this).attr("data-fromloanofficerid");
+					var getUrl = "staff/loanreassignment/template?officeId="+officeId+"&fromLoanOfficerId="+fromLoanOfficerId;
+					var postUrl = "staff/loanreassignment";
+
+					var saveSuccessFunction = function(data, textStatus, jqXHR) {
+					  	$("#dialog-form").dialog("close");
+					  	refreshTableView("employee");
+					};
+
+					popupDialogWithFormView(getUrl, postUrl, "POST", "bulkLoanReassignment", "#bulkLoanReassignmentFormTemplate", crudData["bulkLoanReassignment"].dialogWidth, crudData["bulkLoanReassignment"].dialogHeight, saveSuccessFunction); 
+
+					e.preventDefault();
+				})
+
 				var oTable = displayListTable(tableName + "stable");
 			  };
 		
@@ -2718,6 +2744,8 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				var dialogDiv = $("<div id='dialog-form'></div>");
 				var saveButton = doI18N('dialog.button.save');
 				var cancelButton = doI18N('dialog.button.cancel');
+
+				var serializationOptions = {};
 				
 				var buttonsOpts = {};
 				buttonsOpts[saveButton] = function() {
@@ -2773,7 +2801,13 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					}
 
 					var serializedArray = {};
-					serializedArray = $('#entityform').serializeObject();
+					
+					if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
+						serializationOptions["checkboxesAsBools"] = false; // send checkboxes values (which contain loans ids) instead of bools
+					} 
+					
+					serializedArray = $('#entityform').serializeObject(serializationOptions);	
+					
 					
 					if (!serializedArray["charges"] && postUrl.substring(0, 13) == "loanproducts/") {
 						serializedArray["charges"] = new Array();
@@ -2840,6 +2874,38 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				executeAjaxRequest("groups/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			} else {
 				executeAjaxRequest("groups/template?officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
+			}
+		})
+	}
+
+	if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
+		$("#dialog-form #officeId").change(function(e){
+			var selectedOfficeId = $("#dialog-form #officeId").val();
+			withOfficeIdUrl = postUrl + "/template?officeId=" + selectedOfficeId;
+			var officeIdSelectSuccess = function(loanReassignmentData, textStatus, jqXHR){
+				repopulateOpenPopupDialogWithFormViewData(loanReassignmentData, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
+			}
+			executeAjaxRequest(withOfficeIdUrl, "GET", "", officeIdSelectSuccess, formErrorFunction);
+		});
+		$("#dialog-form #fromLoanOfficerId").change(function(e){
+			var selectedOfficeId = $("#dialog-form #officeId").val();
+			var selectedFromLoanOfficerId = $("#dialog-form #fromLoanOfficerId").val();
+			var withOfficeIdAndFromLoanOfficerIdUrl = postUrl  + "/template?officeId=" + selectedOfficeId + "&fromLoanOfficerId="+selectedFromLoanOfficerId+"";
+			var fromLoanOfficerIdSelectSuccess = function(loanReassignmentData, textStatus, jqXHR){
+				repopulateOpenPopupDialogWithFormViewData(loanReassignmentData, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
+			}
+			executeAjaxRequest(withOfficeIdAndFromLoanOfficerIdUrl, "GET", "", fromLoanOfficerIdSelectSuccess, formErrorFunction); 
+		});
+		$("input[type='checkbox']").click(function(){ // checkboxes hierarchy handler
+			if ($(this).is("[data-id]")){
+				var isChecked = $(this).is(":checked");
+				$("input[data-parentid='"+$(this).attr("data-id")+"']").prop("checked", isChecked);
+			} else {
+				if( $("input[data-parentid='"+$(this).attr("data-parentid")+"']").filter(':not(:checked)').length === 0){
+					$("input[data-id='"+$(this).attr("data-parentid")+"']").prop("checked", true);
+				} else {
+					$("input[data-id='"+$(this).attr("data-parentid")+"']").prop("checked", false);
+				}			
 			}
 		})
 	}
@@ -3206,10 +3272,15 @@ function showNotAvailableDialog(titleCode) {
 		 }).dialog('open');
 }
 	
-$.fn.serializeObject = function()
+$.fn.serializeObject = function(serializationOptions)
 {
 	var o = {};
-	var a = this.serializeArray({ checkboxesAsBools: true});
+	var a;
+	if (serializationOptions !== null && serializationOptions !== undefined){
+		a = this.serializeArray(serializationOptions);
+	} else{
+		a = this.serializeArray({ checkboxesAsBools: true});	
+	}
 	var arrayName, propertyName, index;
 
 	$.each(a, function() {
@@ -3240,7 +3311,7 @@ $.fn.serializeObject = function()
 		    } else {
 		    	
 		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies' || this.name === 'permissions' 
-	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges') {
+	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges' || this.name === 'loans') {
 		    		o[this.name] = new Array();
 		    		o[this.name].push(this.value || '');
 		    	} else {
