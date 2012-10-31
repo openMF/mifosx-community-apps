@@ -2746,6 +2746,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				var cancelButton = doI18N('dialog.button.cancel');
 
 				var serializationOptions = {};
+				serializationOptions["checkboxesAsBools"] = true;
 				
 				var buttonsOpts = {};
 				buttonsOpts[saveButton] = function() {
@@ -2807,7 +2808,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					} 
 					
 					serializedArray = $('#entityform').serializeObject(serializationOptions);	
-					
 					
 					if (!serializedArray["charges"] && postUrl.substring(0, 13) == "loanproducts/") {
 						serializedArray["charges"] = new Array();
@@ -3012,7 +3012,6 @@ buttonsOpts[saveButton] = function() {
 	if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
 
 	var newFormData = JSON.stringify($('#entityform').serializeObject());
-	//console.log(newFormData);
 
 	executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 };
@@ -3276,11 +3275,13 @@ $.fn.serializeObject = function(serializationOptions)
 {
 	var o = {};
 	var a;
-	if (serializationOptions !== null && serializationOptions !== undefined){
+	if (serializationOptions !== null && serializationOptions !== undefined) {
 		a = this.serializeArray(serializationOptions);
-	} else{
-		a = this.serializeArray({ checkboxesAsBools: true});	
+	} else {
+		a = this.serializeArray({checkboxesAsBools: true});
 	}
+	console.log(a);
+	
 	var arrayName, propertyName, index;
 
 	$.each(a, function() {
