@@ -522,6 +522,9 @@ $(document).ready(function() {
 		</select>
 	</span>
 	<span class="rowvalue">
+		<input id="charges[{{=index}}][specifiedDueDate]" name="charges[{{=index}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="" />
+	</span>
+	<span class="rowvalue">
 		<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
 	</span>
 </div>
@@ -899,6 +902,9 @@ $(document).ready(function() {
 										{{/if}}
 									{{/each}}
 								</select>
+							</span>
+							<span class="rowvalue">
+								<input id="charges[{{=$itemNumber}}][specifiedDueDate]" name="charges[{{=$itemNumber}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueAsOfDate)}}" />
 							</span>
 							<span class="rowvalue">
 								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 

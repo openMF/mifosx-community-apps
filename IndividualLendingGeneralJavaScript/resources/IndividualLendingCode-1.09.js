@@ -1295,7 +1295,6 @@ function showILGroup(groupId){
 	  				});
   					
   					$('.chargeAmount').change(function() {  
-  						alert("testcharg9999999");
   			  			calculateLoanSchedule();
   			  		});
   					
