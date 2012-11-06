@@ -3069,6 +3069,7 @@ $(document).ready(function() {
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.transactiondate")}}</th>
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.transactionType")}}</th>
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.amount")}}</th>
+				<th>Breakdown</th>
 				<th>{{=$ctx.doI18N("tab.client.account.loan.schedule.table.column.heading.action")}}</th>
 				</tr>
 			</thead>
@@ -3078,6 +3079,14 @@ $(document).ready(function() {
 				<td>{{=$ctx.globalDate(date)}}</td>
 				<td>{{=$ctx.doI18N(type.code)}}</td>
 				<td>{{=$ctx.monetaryValue(currency, amount)}}</td>
+				<td>
+					<table style="border: 0px; padding: 0px;" class="notablestyle">
+						{{#if principalPortion}}<tr><td style="border: 0px; text-align: left; ">Principal: {{=$ctx.monetaryValue(currency, principalPortion)}}</td></tr>{{/if}}
+						{{#if interestPortion}}<tr><td style="border: 0px; text-align: left; ">Interest: {{=$ctx.monetaryValue(currency, interestPortion)}}</td></tr>{{/if}}
+						{{#if feeChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Fees: {{=$ctx.monetaryValue(currency, feeChargesPortion)}}</td></tr>{{/if}}
+						{{#if penaltyChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Penalities: {{=$ctx.monetaryValue(currency, penaltyChargesPortion)}}</td></tr>{{/if}}
+					</table>
+				</td>
 				{{#if $ctx.isAdjustableTransaction(type.id)}}
 				<td><button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment">Adjust</button></td>
 				{{#else}}
