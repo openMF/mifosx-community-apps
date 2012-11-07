@@ -2,7 +2,7 @@
 
 //This does know about Mifos X Permission checking
 functionalityPermissionMatrix = {
-		CLIENTSEARCH: ["ALL_FUNCTIONS", "ALL_FUNCTIONS_READ", "CAN_CLIENT_LISTING"]
+		laterCLIENTSEARCH: ["ALL_FUNCTIONS", "ALL_FUNCTIONS_READ", "CAN_CLIENT_LISTING"]
 	};
 
 
