@@ -2827,6 +2827,7 @@ $(document).ready(function() {
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.calculationtype")}}</th>
 				<th>Due</th>
 				<th>Paid</th>
+				<th>Waived</th>
 				<th>Outstanding</th>
 				<th>{{=$ctx.doI18N("table.heading.loan.charges.actions")}}</th>
 				</tr>
@@ -2856,10 +2857,11 @@ $(document).ready(function() {
 				{{/if}}
 					<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
 					<td>{{=$ctx.moneyFormatted(currency, amountPaid)}}</td>
+					<td>{{=$ctx.moneyFormatted(currency, amountWaived)}}</td>
 					<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
 					<td>
 						<a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Remove</a>&nbsp;
-						<!-- <a href="unknown.html" onclick="return waiveLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Waive</a> -->
+						<a href="unknown.html" onclick="return waiveLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Waive</a>
 					</td>
 				</tr>
 				{{/each}}
@@ -2917,10 +2919,10 @@ $(document).ready(function() {
 					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</td>
 					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesPaid)}}</td>
 					{{#if totalWaivedToDate}}
-					<td>&nbsp;</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesWaived)}}</td>
 					{{/if}}
 					{{#if totalWrittenOffToDate}}
-					<td>&nbsp;</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesWrittenOff)}}</td>
 					{{/if}}
 					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesOutstanding)}}</td>
 				</tr>
@@ -2932,10 +2934,10 @@ $(document).ready(function() {
 					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</td>
 					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesPaid)}}</td>
 					{{#if totalWaivedToDate}}
-					<td>&nbsp;</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesWaived)}}</td>
 					{{/if}}
 					{{#if totalWrittenOffToDate}}
-					<td>&nbsp;</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesWrittenOff)}}</td>
 					{{/if}}
 					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesOutstanding)}}</td>
 				</tr>
