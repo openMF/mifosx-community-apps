@@ -4168,6 +4168,14 @@ $(document).ready(function() {
 				</td>	
 			</tr>
 			<tr>
+				<td colspan="3">
+					<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+					<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+					<label for="assignmentDate">{{=$ctx.doI18N("form.label.aassignment.date")}}</label>
+					<input id="assignmentDate" name="assignmentDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(assignmentDate)}}"/>
+				</td>
+			</tr>
+			<tr>
 				<td colspan="2">
 					<label for="fromLoanOfficer">{{=$ctx.doI18N("form.label.loan.officer.from")}}</label>
 					<select id="fromLoanOfficerId" name="fromLoanOfficerId" title="">
