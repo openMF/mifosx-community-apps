@@ -1417,6 +1417,23 @@ function showILGroup(groupId){
 		return false;
 	}
 	
+	function modifyLoanCharge(loanId, loanChargeId) {
+
+		var successFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			loadILLoan(loanId);
+		};
+		
+		var getAndPutUrl = 'loans/' + loanId +'/charges/' + loanChargeId;
+		var templateSelector = "#modifyLoanChargeFormTemplate";
+		var width = 400;
+		var height = 250;
+		
+		popupDialogWithFormView(getAndPutUrl, getAndPutUrl, 'PUT', 'dialog.title.update.details', templateSelector, 400, 225, successFunction);
+
+		return false;
+	}
+	
 	function waiveLoanCharge(loanId, loanChargeId) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
@@ -1428,7 +1445,7 @@ function showILGroup(groupId){
 
 		return false;
 	}
-
+	
 	function genAddLoanSuccessVar(clientId, groupId) {
 
 		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
@@ -1494,17 +1511,17 @@ function showILGroup(groupId){
 			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
 			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
 			
-		$('#submitdepositapp').button().click(function(e) {
-			submitDepositApplication(clientId);
-		    e.preventDefault();
-		});
-		$('button#submitdepositapp span').text(doI18N('dialog.button.submit'));
-		
-		$('#canceldepositapp').button().click(function(e) {
-  			showILClient(clientId);
-		    e.preventDefault();
-		});
-		$('button#canceldepositapp span').text(doI18N('dialog.button.cancel'));
+			$('#submitdepositapp').button().click(function(e) {
+				submitDepositApplication(clientId);
+			    e.preventDefault();
+			});
+			$('button#submitdepositapp span').text(doI18N('dialog.button.submit'));
+			
+			$('#canceldepositapp').button().click(function(e) {
+	  			showILClient(clientId);
+			    e.preventDefault();
+			});
+			$('button#canceldepositapp span').text(doI18N('dialog.button.cancel'));
 		}
 		executeAjaxRequest('depositaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);
 	}	
@@ -2952,7 +2969,8 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	});
 
 	$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'dd MM yy'});
-
+	$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+	
 	$("#entityform textarea").first().focus();
 	$('#entityform input').first().focus();	
 }

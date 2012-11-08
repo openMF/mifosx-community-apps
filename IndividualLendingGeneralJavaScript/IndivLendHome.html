@@ -586,7 +586,29 @@ $(document).ready(function() {
 <label for="specifiedDueDate">Due for collection on:</label>
 <input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
 {{/if}}
-</script> 
+</script>
+
+<script id="modifyLoanChargeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<div>
+			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
+			<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+			<label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
+			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
+
+		{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+			<label for="specifiedDueDate">Due for collection on:</label>
+			<input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueAsOfDate)}}" />
+		{{/if}}
+		</div>
+	</fieldset>
+</form>
+</script>
 
 <script id="newLoanFormTemplateMin" type="text/x-jquery-tmpl">
 <form id="entityform">
@@ -2861,6 +2883,7 @@ $(document).ready(function() {
 					<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
 					<td>
 						<a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Remove</a>&nbsp;
+						<a href="unknown.html" onclick="return modifyLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Modify</a>&nbsp;
 						<a href="unknown.html" onclick="return waiveLoanCharge({{=$parent.parent.data.id}}, {{=id}});">Waive</a>
 					</td>
 				</tr>
