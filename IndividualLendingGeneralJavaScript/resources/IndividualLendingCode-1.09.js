@@ -838,9 +838,65 @@ function showILClient(clientId) {
 	                	primary: "ui-icon-camera"},
 	                	text: false
 	            	}).click(function(e) {
-						alert("Web Cam Integration not yet available");
+	            		var imageUploadSuccessFunction = function(data, textStatus, jqXHR) {
+	            			$("#dialog-form").dialog("close");
+							$("#customerImage").attr("src",imageCanvas.toDataURL("image/jpeg"));
+						};
+						var templateSelector = "#clientImageWebcamFormTemplate";
+						var width = 775; 
+						var height = 400;
+	            		popupDialogWithFormView("", 'clients/' + clientId + '/image', 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  imageUploadSuccessFunction);
+	            		var pos = 0; 
+	            		var ctx = null; 
+	            		var image = [];
+	            		$('#imageCanvas').html('');
+						var imageCanvas = $('#imageCanvas')[0];
+     	            	ctx = imageCanvas.getContext("2d");
+     	            	image = ctx.getImageData(0, 0, 320, 240);
+     	            	
+						saveCB = function(data) {
+							var col = data.split(";");
+							var img = image;
+							for(var i = 0; i < 320; i++) {
+								var tmp = parseInt(col[i]);
+								img.data[pos + 0] = (tmp >> 16) & 0xff;
+								img.data[pos + 1] = (tmp >> 8) & 0xff;
+								img.data[pos + 2] = tmp & 0xff;
+								img.data[pos + 3] = 0xff;
+								pos+= 4;
+							}
+				
+							if (pos >= 4 * 320 * 240) {
+								ctx.putImageData(img, 0, 0);
+								pos = 0;
+							}
+						};
+						
+						$("#webcam").webcam({
+							width: 320,
+							height: 240,
+							mode: "callback",
+							swffile: "jscam_canvas_only.swf",
+							onTick: function() {},
+							onSave: saveCB,
+							onCapture: function() {
+								webcam.save();
+							},
+							quality: 50,
+							debug: function() {},
+							onLoad: function() {}
+						});
+						
+						$('#captureImage').button({icons: {
+		                	primary: "ui-icon-zoomin"},
+		            	}).click(function(e) {
+		            		//reset position
+		            		webcam.capture();
+		            		e.preventDefault();
+		            	});
 						e.preventDefault();
 					});
+				
 					$('#editClientImage').button(
 						{icons: {
 	                	primary: "ui-icon-zoomin"},
@@ -2830,7 +2886,12 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					}
 					
 			    	var newFormData = JSON.stringify(serializedArray);
-			    	if (postUrl.toLowerCase().indexOf("documents") >= 0 || postUrl.toLowerCase().indexOf("image") >= 0){
+			    	if( templateSelector == '#clientImageWebcamFormTemplate'){
+			    		var imageCanvas = $('#imageCanvas')[0];
+						var imageForUpload = imageCanvas.toDataURL("image/jpeg");
+						executeAjaxRequest(postUrl, submitType, imageForUpload, saveSuccessFunction, formErrorFunction);
+			    	}
+			    	else if (postUrl.toLowerCase().indexOf("documents") >= 0 || postUrl.toLowerCase().indexOf("image") >= 0){
 			    		var formData = new FormData();    
 						formData.append( 'file', $('#file')[0].files[0] );
 						$.each(serializedArray, function (name, val) {

@@ -48,6 +48,9 @@
 <!-- JQuery Ajax file download plug-in-->
 <script type="text/javascript"	src="resources/libs/jquery.fileDownload.js"></script>
 
+<!-- JQuery webcam integration plug-in-->
+<script type="text/javascript"	src="resources/libs/jquery.webcam.js"></script>
+
 <!-- JQuery plug-in to show Mifos X Platform additional data -->
 <script type="text/javascript" src="resources/stretchydata-0.999.js"></script>
 
@@ -1512,6 +1515,19 @@ $(document).ready(function() {
 				<label for="file">Browse image for this customer:</label>
 				<input type="file" name="file" id="file" size="65"></input>
 			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<script id="clientImageWebcamFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table style="width:100%">
+		<tr>
+			<td><div id="webcam" style="width:320px;height:240px"></div></td>
+			<td><button id="captureImage">Capture</button></td>
+			<td><canvas id="imageCanvas" height="240" width="320"></canvas></td>
 		</tr>
 	</table>
  </form>
