@@ -529,14 +529,18 @@ setClientListingContent("content");
 	  	  //initialize the client search tab
 		 initClientSearch();
 	 }
-	 
 	});
-	
 
 	var addClientSuccessFunction = function(data, textStatus, jqXHR) {
 		  $('#dialog-form').dialog("close");
-		  showILClient(data.entityId);
+		  
+		  if (data.makerCheckerId) {
+			  showILClientListing();
+		  } else {
+			  showILClient(data.entityId);
+		  }
 	}
+	
 	$("#addclient").button().click(function(e) {
 		var getUrl = 'clients/template';
 		var postUrl = 'clients';
