@@ -97,8 +97,8 @@ saveSuccessFunctionReloadClientListing =  function(data, textStatus, jqXHR) {
 };
 
 formErrorFunction = function(jqXHR, textStatus, errorThrown) {
-				    	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-				};
+	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+};
 
 
 generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
@@ -179,6 +179,9 @@ function showMainContainer(containerDivName, username) {
 
 	if (jQuery.MifosXUI.showIt("ClientSearch") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+	
+//	if (jQuery.MifosXUI.showIt("Checker") == true)
+//		htmlVar += '	<li><a href="unknown.html" onclick="showMakerCheckerListing();return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
 
 	if (jQuery.MifosXUI.showIt("GroupSearch") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
@@ -441,10 +444,63 @@ function setAccountSettingsContent(divName) {
 	$("#" + divName).html(htmlVar);
 }
 
-
-
-
 //all the code for the various functions
+function showMakerCheckerListing() {
+	
+	var onApprovalSuccessFunction = function(data) {
+		$('#dialog-form').dialog("close");
+		showMakerCheckerListing();
+	}
+	
+	var onListRetrievialSuccessFunction = function(data) {
+		var makerCheckerListObject = new Object();
+		makerCheckerListObject.crudRows = data;
+	    
+		var tableHtml = "<p>Hello</p>";
+		tableHtml = $("#makerCheckerListTemplate").render(makerCheckerListObject);
+		
+		$("#content").html(tableHtml);
+		
+		// register event listeners
+		$("a.editmakerchecker").click( function(e) {
+			var linkId = this.id;
+			
+			var entityId = null;
+			var makerCheckerId = linkId.replace("editmakerchecker", "");
+			
+			// assumption its clients for now.
+			var getUrl = "clients/template?makerCheckerId=" + makerCheckerId;
+			var templateSelector = "#clientFormTemplate";
+			var width = 600; 
+			var height = 350;
+			
+			popupDialogWithReadOnlyFormView(getUrl, "dialog.title.edit.client", templateSelector, width, height);
+			
+			e.preventDefault();
+		});
+		
+		// register event listeners
+		$("a.approvemakerchecker").click( function(e) {
+			var linkId = this.id;
+			
+			var entityId = null;
+			var makerCheckerId = linkId.replace("approvemakerchecker", "");
+			
+			// assumption its clients for now.
+			var url = 'makerchecker/' + makerCheckerId + '?command=approve';
+			var width = 400; 
+			var height = 225;
+									
+			popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, onApprovalSuccessFunction);
+			
+			e.preventDefault();
+		});
+  	};
+
+  	// fetch all maker checker entries
+  	executeAjaxRequest('makerchecker', 'GET', "", onListRetrievialSuccessFunction, formErrorFunction);
+}
+
 
 function showILClientListing() {
 
@@ -454,10 +510,9 @@ function showILClientListing() {
 		return;
 	}
 
+	setClientListingContent("content");
 
-setClientListingContent("content");
-
-//HOME list clients functionality
+	//HOME list clients functionality
 	$("#tabs").tabs({
 	    select: function(event, ui) {
 	    	//console.log("selected..");
@@ -467,8 +522,8 @@ setClientListingContent("content");
 	    	//console.log("load..");
 	    },
 	    show: function(event, ui) {
-	    	//console.log("show..");
-		var initClientSearch =  function() {
+
+	    	var initClientSearch =  function() {
 			//render page markup
 			var tableHtml = $("#clientSearchTabTemplate").render();
 			$("#searchtab").html(tableHtml);
@@ -552,8 +607,7 @@ setClientListingContent("content");
 		
 	    e.preventDefault();
 	});
-	
-}	
+} // end showILClientListing
 
 //set scope for client search
 function applyClientSearchFilter(officeHierarchy) {
@@ -2792,8 +2846,49 @@ function resetBasicAuthKey()
 }
 
 
+//Popups used for saving data and confirmation
+function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, width, height) {
 
-//Popups used for saving data and confirmation	
+	var executeGetUrlSuccessFunction = function(data, textStatus, jqXHR) {
+		popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height);
+  	};
+	
+	if (getUrl == "") {
+		popupDialogWithReadOnlyFormViewData("", titleCode, templateSelector, width, height);
+	}
+	else {
+		executeAjaxRequest(getUrl, "GET", "", executeGetUrlSuccessFunction, formErrorFunction);
+	}
+}
+
+function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height)  {
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+	var cancelButton = doI18N('dialog.button.cancel');
+
+	var buttonsOpts = {};
+	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+	
+	dialogDiv.dialog({
+	  		title: doI18N(titleCode), 
+	  		width: width, 
+	  		height: height, 
+	  		modal: true,
+	  		buttons: buttonsOpts,
+	  		close: function() {
+	  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+	  			$(this).remove();
+			},
+	  		open: function (event, ui) {
+	  			var dialogDiv = $("#dialog-form");
+	  			var formHtml = $(templateSelector).render(data);
+	  			dialogDiv.html(formHtml);
+	  		}
+	  	}).dialog('open');
+}
+
+// end of readonly form view
+
 function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
@@ -2814,8 +2909,8 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 		
 		if (getUrl == "") popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
 		else executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
-
 }
+
 function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)  {
 				var dialogDiv = $("<div id='dialog-form'></div>");
 				var saveButton = doI18N('dialog.button.save');

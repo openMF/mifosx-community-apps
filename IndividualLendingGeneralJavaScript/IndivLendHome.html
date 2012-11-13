@@ -98,6 +98,33 @@ $(document).ready(function() {
 <!-- If anyone knows how to include this text without the need for a web server that would help a lot. -->
 <!-- I guess I could just read the file and write it into the DOM but probably not worth it -->
 
+<script id="makerCheckerListTemplate" type="text/x-jquery-tmpl">
+<table id='makercheckertable' width='100%'>
+<thead>
+	<tr>
+		<th>Id</th>
+		<th>Task</th>
+		<th>Created on</th>
+		<th>&nbsp;</th>
+	</tr>
+</thead>
+<tbody>
+{{#each crudRows}}
+<tr>
+	<td>{{=id}}</td>
+	<td>{{=taskName}}</td>
+	<td>{{=$ctx.globalDate(madeOnDate)}}</td>
+	<td>
+		<a id='editmakerchecker{{=id}}' class='editmakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='deletemakerchecker{{=id}}' class='deletemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.approve")}}</a>
+	</td>
+</tr>
+{{/each}}
+</tbody>
+</table>
+</script>
+
 <!-- portfolio templates -->
 <script id="newLoanScheduleTemplate" type="text/x-jquery-tmpl">
 		<table id="repaymentschedule" class="pretty displayschedule">

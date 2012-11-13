@@ -48,8 +48,13 @@ isInitialised = false;
 			alert("You haven't initialised MifosXUI");
 			return false;
 		}
-
-		return showIt(functionalityName.toUpperCase());   
+		
+		// temp - remove when permissions done
+		if ("Checker" == functionalityName) {
+			return true;
+		} else {
+			return showIt(functionalityName.toUpperCase());	
+		}
 	};
 
 	function showIt(functionalityName) {
