@@ -4009,6 +4009,41 @@ $(document).ready(function() {
 </form>
 </script>
 
+<!-- ISMAIL -->
+<script id="codeListTemplate" type="text/x-jquery-tmpl">
+<table id='codestable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.code.name")}}</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+{{#each crudRows}}
+<tr>
+	<td>{{=codeName}}</td>
+	<td>
+		<a id='editcode{{=id}}' class='editcode' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='deletecode{{=id}}' class='deletecode' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+	</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
+<script id="codeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.code.details")}}</legend>
+		<label for="name">{{=$ctx.doI18N("form.label.code.name")}}</label>
+		<input id="name" name="name" title="" type="text" value="{{=codeName}}" size="75"/>
+	</fieldset>
+</form>
+</script>
+<!-- FIN -->
 
 <script id="fundListTemplate" type="text/x-jquery-tmpl">
 <table id='fundstable' width='100%'>

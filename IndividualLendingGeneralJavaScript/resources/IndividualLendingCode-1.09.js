@@ -29,6 +29,14 @@ crudData = {
 				dialogWidth: 600,
 				dialogHeight: 275
 			},
+			
+		code: {
+				editTemplateNeeded: false,
+				refreshListNeeded: true,
+				dialogWidth: 600,
+				dialogHeight: 275
+			},			
+			
 		employee: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
@@ -293,6 +301,9 @@ function setOrgAdminContent(divName) {
 	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
+	
+	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
+	
 	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
 	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
@@ -316,8 +327,15 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
-	htmlVar += ' | ';
+	htmlVar += ' | ';	
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
+	htmlVar += ' | ';	
+	
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'code'" + ');return false;" id="viewcodes">' + doI18N("administration.link.view.code") + '</a>';
+	htmlVar += ' | ';	
+	htmlVar += '	<a href="unknown.html" onclick="' + addCodeUrl + '" id="addcode">' + doI18N("administration.link.add.code") + '</a>';
+	
+	
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'employee'" + ');return false;" id="viewemployees">' + doI18N("administration.link.view.employees") + '</a>';
 	htmlVar += ' | ';
@@ -2464,13 +2482,16 @@ function refreshLoanDocuments(loanId) {
 				var crudObject = new Object();
 				crudObject.crudRows = data;
 				var html = $("#" + tableName + "ListTemplate").render(crudObject);
+				console.log(html);
 				$("#listplaceholder").html(html);  
 				
 				$("a.edit" + tableName).click( function(e) {
 					var linkId = this.id;
 					var entityId = linkId.replace("edit" + tableName, "");
+					console.log(entityId);
 
 					var resourceUrl = tableName + "s/" + entityId;
+					console.log(resourceUrl);
 					if(tableName == 'employee'){
 						resourceUrl = "staff" + "/" + entityId;
 					}
@@ -2559,6 +2580,7 @@ function refreshLoanDocuments(loanId) {
 				})
 
 				var oTable = displayListTable(tableName + "stable");
+				console.log(oTable);
 			  };
 		
 		if(tableName=="employee"){
@@ -2570,7 +2592,7 @@ function refreshLoanDocuments(loanId) {
 	
 
 	function maintainTable(tableName, resourceUrl, submitType, putPostQuery) {
-
+		
 		if (!(submitType == "PUT" || submitType == "POST"))
 		{
 			alert("System Error - Invalid submitType: " + submitType);
@@ -2610,7 +2632,6 @@ function refreshLoanDocuments(loanId) {
 				}else{
 					getUrl = resourceUrl + '/template';
 				}
-				
 				popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
 			}
 			else popupDialogWithPostOnlyFormView(putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction, 0, 0, 0);
@@ -2619,6 +2640,7 @@ function refreshLoanDocuments(loanId) {
 		{
 			if (crudData[tableName].editTemplateNeeded == true) getUrl = resourceUrl + '?template=true'
 			else getUrl = resourceUrl;
+			console.log(getUrl);
 			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
 		}
 
@@ -3349,8 +3371,10 @@ function getBaseApiURL(docURL)
 	
 	if (QueryParameters["baseApiUrl"]) {
 		baseApiUrl = QueryParameters["baseApiUrl"];
+		console.log("picking up query param: " + QueryParameters["baseApiUrl"]);
 	}
     
+	console.log("base url is :" + baseApiUrl);
     return baseApiUrl; 
 }
 
