@@ -533,11 +533,8 @@ function showILClientListing() {
 	//HOME list clients functionality
 	$("#tabs").tabs({
 	    select: function(event, ui) {
-	    	//console.log("selected..");
-		//alert("selected");
 	    },
 	    load: function(event, ui) {
-	    	//console.log("load..");
 	    },
 	    show: function(event, ui) {
 
@@ -2482,16 +2479,13 @@ function refreshLoanDocuments(loanId) {
 				var crudObject = new Object();
 				crudObject.crudRows = data;
 				var html = $("#" + tableName + "ListTemplate").render(crudObject);
-				console.log(html);
 				$("#listplaceholder").html(html);  
 				
 				$("a.edit" + tableName).click( function(e) {
 					var linkId = this.id;
 					var entityId = linkId.replace("edit" + tableName, "");
-					console.log(entityId);
 
 					var resourceUrl = tableName + "s/" + entityId;
-					console.log(resourceUrl);
 					if(tableName == 'employee'){
 						resourceUrl = "staff" + "/" + entityId;
 					}
@@ -2580,7 +2574,6 @@ function refreshLoanDocuments(loanId) {
 				})
 
 				var oTable = displayListTable(tableName + "stable");
-				console.log(oTable);
 			  };
 		
 		if(tableName=="employee"){
@@ -2640,7 +2633,8 @@ function refreshLoanDocuments(loanId) {
 		{
 			if (crudData[tableName].editTemplateNeeded == true) getUrl = resourceUrl + '?template=true'
 			else getUrl = resourceUrl;
-			console.log(getUrl);
+			
+			
 			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
 		}
 
@@ -2915,7 +2909,6 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 
 		var successFunction = function(data, textStatus, jqXHR) {
 
-				//console.log(data);
 				if(templateSelector == "#employeeFormTemplate" && submitType!= "PUT"){
 					var officesObject = new Object();
 			    	officesObject.crudRows = data;
@@ -3371,10 +3364,8 @@ function getBaseApiURL(docURL)
 	
 	if (QueryParameters["baseApiUrl"]) {
 		baseApiUrl = QueryParameters["baseApiUrl"];
-		console.log("picking up query param: " + QueryParameters["baseApiUrl"]);
 	}
     
-	console.log("base url is :" + baseApiUrl);
     return baseApiUrl; 
 }
 
@@ -3481,7 +3472,6 @@ $.fn.serializeObject = function(serializationOptions)
 	} else {
 		a = this.serializeArray({checkboxesAsBools: true});
 	}
-	console.log(a);
 	
 	var arrayName, propertyName, index;
 
@@ -3634,9 +3624,7 @@ function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeh
 			removeErrors(placeholderDiv);
 			
 		  	var jsonErrors = JSON.parse(jqXHR.responseText);
-		  	//console.log(jsonErrors);
 		  	var valErrors = jsonErrors.errors;
-		  	//console.log(valErrors);
 		  	var errorArray = new Array();
 		  	var arrayIndex = 0;
 		  	$.each(valErrors, function() {
