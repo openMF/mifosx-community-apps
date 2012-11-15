@@ -112,12 +112,19 @@ $(document).ready(function() {
 {{#each crudRows}}
 <tr>
 	<td>{{=id}}</td>
-	<td>{{=taskName}}</td>
+	<td>{{=apiOperation}} {{=resource}}</td>
 	<td>{{=$ctx.globalDate(madeOnDate)}}</td>
 	<td>
-		<a id='editmakerchecker{{=id}}' class='editmakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		{{#if resourceId}}
+		<a id='editmakerchecker{{=id}}' href='#' style='margin-right: 5px;' onclick="viewMakerCheckerEntry('{{=apiOperation}}', '{{=resource}}', {{=resourceId}} ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.view")}}</a>
 		<a id='deletemakerchecker{{=id}}' class='deletemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
-		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.approve")}}</a>
+		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;' onclick="approveMakerCheckerEntry('{{=apiOperation}}', '{{=resource}}', {{=resourceId}} ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.approve")}}</a>
+		{{else}}
+		<a id='editmakerchecker{{=id}}' href='#' style='margin-right: 5px;' onclick="viewMakerCheckerEntry('{{=apiOperation}}', '{{=resource}}', null ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.view")}}</a>
+		<a id='deletemakerchecker{{=id}}' class='deletemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;' onclick="approveMakerCheckerEntry('{{=apiOperation}}', '{{=resource}}', null ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.approve")}}</a>
+		{{/if}}
+		
 	</td>
 </tr>
 {{/each}}
@@ -1564,6 +1571,31 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+	{{#if changes}}
+		{{#if changes.officeId}}
+	<select id="officeId" name="officeId" title="" style="border: thin solid green;">
+		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+		{{#each allowedOffices}}
+			{{#if $ctx.number($parent.parent.data.changes.officeId)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			{{/if}}
+        {{/each}}
+	</select>
+		{{#else}}
+		<select id="officeId" name="officeId" title="">
+		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+		{{#each allowedOffices}}
+			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			{{/if}}
+        {{/each}}
+		</select>
+		{{/if}} 
+	{{#else}}
 	<select id="officeId" name="officeId" title="">
 		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 		{{#each allowedOffices}}
@@ -1574,32 +1606,73 @@ $(document).ready(function() {
 			{{/if}}
         {{/each}}
 	</select>
+	{{/if}}
 
 	<table>
 		<tr>
 			<td>
 				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
+				{{#if changes}}
+					{{#if changes.firstname}}
+				<input id="firstname" name="firstname" title="Previous value was {{=firstname}}" type="text" value="{{=changes.firstname}}" style="border: thin solid green;"/>
+					{{#else}}
 				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
+					{{/if}}
+				{{#else}}
+				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
+				{{/if}}
 			</td>
 			<td>
 				<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
+				{{#if changes}}
+					{{#if changes.lastname}}
+					<input id="lastname" name="lastname" title="Previous value was {{=lastname}}" type="text" value="{{=changes.lastname}}" style="border: thin solid green;"/>
+					{{#else}}
+					<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
+					{{/if}}
+				{{#else}}
 				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
+				{{/if}}
 			</td>
 		<tr>
 		<tr>
 			<td colspan="2">
 				<label for="clientOrBusinessName">{{=$ctx.doI18N("label.longname")}}</label>
+				{{#if changes}}
+					{{#if changes.clientOrBusinessName}}
+					<input id="clientOrBusinessName" name="clientOrBusinessName" title="Previous value was {{=clientOrBusinessName}}" type="text" value="{{=changes.clientOrBusinessName}}" style="width:100%; border: thin solid green;"/>
+					{{#else}}
+					<input id="clientOrBusinessName" name="clientOrBusinessName" title="" type="text" value="{{=clientOrBusinessName}}" style="width:100%"/>
+					{{/if}}
+				{{#else}}
 				<input id="clientOrBusinessName" name="clientOrBusinessName" title="" type="text" value="{{=clientOrBusinessName}}" style="width:100%"/>
+				{{/if}}
 			</td>
 		</tr>
 	</table>
     <label for="externalId">{{=$ctx.doI18N("form.label.group.externalid")}}</label>
+	{{#if changes}}
+		{{#if changes.externalId}}
+		<input id="externalId" name="externalId" title="Previous value was {{=externalId}}" type="text" value="{{=changes.externalId}}" style="border: thin solid green;"/>
+		{{#else}}
+		<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+		{{/if}}
+	{{#else}}
 	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+	{{/if}}
 
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="joiningDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
+	{{#if changes}}
+		{{#if changes.joiningDate}}
+		<input id="joiningDate" name="joiningDate" title="Previous value was {{=$ctx.globalDate(joinedDate)}}" type="text" class="datepickerfield" value="{{=$ctx.globalDate(changes.joiningDate)}}" style="border: thin solid green;"/>
+		{{#else}}
+		<input id="joiningDate" name="joiningDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
+		{{/if}}
+	{{#else}}
 	<input id="joiningDate" name="joiningDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
+	{{/if}}
 </form>
 </script>
 

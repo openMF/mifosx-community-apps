@@ -462,10 +462,59 @@ function setAccountSettingsContent(divName) {
 	$("#" + divName).html(htmlVar);
 }
 
+/*
+ * operationType: 	{CREATE, UPDATE, DELETE}
+ * resource:    	{CLIENTS, OFFICES, etc}
+ * resourceId:      	Individual id of client of office resource.
+ * makerCheckerId:	Id of the maker checker entry on table
+ */
+function viewMakerCheckerEntry(operationType, resource, resourceId, makerCheckerId) {
+
+	var getUrl = resource + '/';
+	
+	switch (operationType) {
+	case "CREATE":
+		getUrl = getUrl + "template?makerCheckerId=" + makerCheckerId;
+		break;
+	case "UPDATE":
+		getUrl = getUrl + resourceId + "?template=true&makerCheckerId=" + makerCheckerId;
+		break;
+	case "DELETE":
+		getUrl = getUrl + resourceId + "?template=true&makerCheckerId=" + makerCheckerId;
+		break;
+	}
+	
+	var templateSelector = "#clientFormTemplate";
+	var width = 600; 
+	var height = 350;
+	
+	popupDialogWithReadOnlyFormView(getUrl, "dialog.title.edit.client", templateSelector, width, height);
+}
+
+/*
+ * operationType: 	{CREATE, UPDATE, DELETE}
+ * entityType:    	{CLIENTS, OFFICES, etc}
+ * entityId:      	Individual id of client of office resource.
+ * commandSourceId:	Id of the maker checker entry on table
+ */
+function approveMakerCheckerEntry(operationType, entityType, entityId, commandSourceId) {
+
+	var url = 'commands/' + commandSourceId + '?command=approve';
+	var width = 400; 
+	var height = 225;
+	
+	var onSuccessFunction = function(data) {
+		$('#dialog-form').dialog("close");
+		showMakerCheckerListing();
+	}
+								
+	popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, onSuccessFunction);
+}
+
 //all the code for the various functions
 function showMakerCheckerListing() {
 	
-	var onApprovalSuccessFunction = function(data) {
+	var onMakerCheckerActionSuccessFunction = function(data) {
 		$('#dialog-form').dialog("close");
 		showMakerCheckerListing();
 	}
@@ -480,43 +529,25 @@ function showMakerCheckerListing() {
 		$("#content").html(tableHtml);
 		
 		// register event listeners
-		$("a.editmakerchecker").click( function(e) {
+		$("a.deletemakerchecker").click( function(e) {
 			var linkId = this.id;
 			
 			var entityId = null;
-			var makerCheckerId = linkId.replace("editmakerchecker", "");
+			var makerCheckerId = linkId.replace("deletemakerchecker", "");
 			
 			// assumption its clients for now.
-			var getUrl = "clients/template?makerCheckerId=" + makerCheckerId;
-			var templateSelector = "#clientFormTemplate";
-			var width = 600; 
-			var height = 350;
-			
-			popupDialogWithReadOnlyFormView(getUrl, "dialog.title.edit.client", templateSelector, width, height);
-			
-			e.preventDefault();
-		});
-		
-		// register event listeners
-		$("a.approvemakerchecker").click( function(e) {
-			var linkId = this.id;
-			
-			var entityId = null;
-			var makerCheckerId = linkId.replace("approvemakerchecker", "");
-			
-			// assumption its clients for now.
-			var url = 'makerchecker/' + makerCheckerId + '?command=approve';
+			var url = 'commands/' + makerCheckerId;
 			var width = 400; 
 			var height = 225;
 									
-			popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, onApprovalSuccessFunction);
+			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, onMakerCheckerActionSuccessFunction);
 			
 			e.preventDefault();
 		});
   	};
 
   	// fetch all maker checker entries
-  	executeAjaxRequest('makerchecker', 'GET', "", onListRetrievialSuccessFunction, formErrorFunction);
+  	executeAjaxRequest('commands', 'GET', "", onListRetrievialSuccessFunction, formErrorFunction);
 }
 
 
