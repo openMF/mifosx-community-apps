@@ -3053,10 +3053,10 @@ function loadILLoan(loanId) {
 						var height = 225;
 
 						eval(genSaveSuccessFunctionReloadLoan(loanId));
-						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.button.assign.loan.officer", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.loan.officer", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
-				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
+				$('button.assignloanofficer span').text(doI18N('dialog.button.loan.reassignment'));
 
 				custom.showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
