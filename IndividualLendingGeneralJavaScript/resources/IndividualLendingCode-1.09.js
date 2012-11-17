@@ -2406,6 +2406,23 @@ function loadILLoan(loanId) {
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
 
+				$('.assignloanofficer').button().click(function(e){
+
+						var linkId = this.id;
+						var loanId = linkId.replace("assignloanofficerbtn", "");
+						var postUrl = 'loans/' + loanId + '/assign';
+						var getUrl = 'loans/' + loanId + '/assign/template';
+
+						var templateSelector = "#loanReassignmentFormTemplate";
+						var width = 425; 
+						var height = 225;
+
+						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.button.assign.loan.officer", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
+					    e.preventDefault();
+				});
+				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
+
 				custom.showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
 				// additional data
