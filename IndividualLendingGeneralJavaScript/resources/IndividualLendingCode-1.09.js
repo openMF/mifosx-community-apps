@@ -2541,6 +2541,15 @@ function refreshLoanDocuments(loanId) {
 					e.preventDefault();
 				});
 
+				$("a.editnew" + tableName).click( function(e) {
+					var linkId = this.id;
+					var entityId = linkId.replace("editnew" + tableName, "");
+					var resourceUrl = tableName + "s/" + entityId + "/permissions";
+					maintainTable(tableName, resourceUrl, 'PUT');
+					e.preventDefault();
+				});
+
+
 				$("a.delete" + tableName).click( function(e) {
 					
 					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user') {
@@ -2641,6 +2650,7 @@ function refreshLoanDocuments(loanId) {
 		}
 
 		var templateSelector = "#" + tableName + "FormTemplate";
+
 		var dialogTitle = "dialog.title." + tableName + ".details";
 		if (submitType == "POST") dialogTitle = 'dialog.title.add.' + tableName;
 
@@ -2659,6 +2669,15 @@ function refreshLoanDocuments(loanId) {
 			return false;
 		}
 //end datatable specific code
+
+
+//permissions specific code
+		if (resourceUrl.indexOf("/permissions") > -1)
+		{
+alert("one");
+			templateSelector = "#" + tableName + "FormTemplateNEW";
+		}
+
 
 		var getUrl = ''; 
 		var putPostUrl = resourceUrl;
@@ -2959,7 +2978,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 
 				if(templateSelector == "#employeeFormTemplate" && submitType!= "PUT"){
 					var officesObject = new Object();
-			    	officesObject.crudRows = data;
+			    		officesObject.crudRows = data;
 					popupDialogWithFormViewData(officesObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 				}else if(templateSelector == "#employeeFormTemplate" && submitType == "PUT") {
 					templateSelector = "#employeeFormEditTemplate";
@@ -2970,11 +2989,16 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 		  		}
 		  	};
 		
+alert("two");
+
 		if (getUrl == "") popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
 		else executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
 }
 
 function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)  {
+
+alert("three");
+
 				var dialogDiv = $("<div id='dialog-form'></div>");
 				var saveButton = doI18N('dialog.button.save');
 				var cancelButton = doI18N('dialog.button.cancel');

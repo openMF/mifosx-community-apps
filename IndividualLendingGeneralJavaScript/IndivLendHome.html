@@ -4722,6 +4722,7 @@ $(document).ready(function() {
 	<td>{{=description}}</td>
 	<td>
 		<a id='editrole{{=id}}' class='editrole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='editnewrole{{=id}}' class='editnewrole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("New Edit")}}</a>
 		<a id='deleterole{{=id}}' class='deleterole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 	</td>
 </tr>
@@ -4811,6 +4812,24 @@ $(document).ready(function() {
 		</div>
 	</fieldset>
 </form>
+</script>
+
+<script id="roleFormTemplateNEW" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.role.details")}}</legend>
+
+		<label for="name">{{=$ctx.doI18N("form.label.role.name")}}</label>
+		<input id="name" name="name" title="" type="text" value="{{=name}}" size="75"/>
+
+		<label for="description">{{=$ctx.doI18N("form.label.role.description")}}</label>
+		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
+		<br/>
+
+	</fieldset>
+</form>
+
 </script>
 
 <script id="roleFormTemplate" type="text/x-jquery-tmpl">
