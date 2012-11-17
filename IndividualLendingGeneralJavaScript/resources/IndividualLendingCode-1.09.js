@@ -2406,23 +2406,6 @@ function loadILLoan(loanId) {
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
 
-				$('.assignloanofficer').button().click(function(e){
-
-						var linkId = this.id;
-						var loanId = linkId.replace("assignloanofficerbtn", "");
-						var postUrl = 'loans/' + loanId + '/assign';
-						var getUrl = 'loans/' + loanId + '/assign/template';
-
-						var templateSelector = "#loanReassignmentFormTemplate";
-						var width = 425; 
-						var height = 225;
-
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
-						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.loan.officer", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
-					    e.preventDefault();
-				});
-				$('button.assignloanofficer span').text(doI18N('dialog.button.loan.reassignment'));
-
 				custom.showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
 				// additional data
@@ -2670,14 +2653,7 @@ function refreshLoanDocuments(loanId) {
 		}
 //end datatable specific code
 
-
-//permissions specific code
-		if (resourceUrl.indexOf("/permissions") > -1)
-		{
-alert("one");
-			templateSelector = "#" + tableName + "FormTemplateNEW";
-		}
-
+		if (resourceUrl.indexOf("/permissions") > -1) templateSelector = "#" + tableName + "FormTemplateNEW";
 
 		var getUrl = ''; 
 		var putPostUrl = resourceUrl;
@@ -2989,15 +2965,12 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 		  		}
 		  	};
 		
-alert("two");
 
 		if (getUrl == "") popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
 		else executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
 }
 
 function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)  {
-
-alert("three");
 
 				var dialogDiv = $("<div id='dialog-form'></div>");
 				var saveButton = doI18N('dialog.button.save');
