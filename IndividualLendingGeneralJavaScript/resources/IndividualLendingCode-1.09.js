@@ -3339,16 +3339,81 @@ function actionNameFound(compareActionName, actionNames) {
 
 function makeRolePermissionsTabContent(currentTabData) {
 
-	contentHtml = "";
+	var permissionCode = "";
+	var contentHtml = "";
+
 	if (currentTabData.grouping == specialRolePermissionTab)
 	{
-		return "specialllll";
+//permissions names are in the entityNames array
+
+		contentHtml = '<table width="50%">';
+		for (var i in currentTabData.entityNames)
+		{
+			contentHtml += '<tr><td valign="top"><b>' + doI18N(i) + '</b></td>'
+			permissionCode = specialRolePermissionTab + "_" + i;
+			contentHtml += '<td><input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
+					if (currentTabData.permissions[permissionCode] == true) contentHtml += 'true" checked="true"'
+					else contentHtml += 'false"';
+					contentHtml += '/></td>';
+
+		}
+		contentHtml += '</table>';
+		return contentHtml;
 	}
 	
 
 	if (currentTabData.grouping.indexOf("transaction_") == 0) //starts with transaction_
 	{
-		return currentTabData.grouping;
+//All action names will be for one entity name
+		var singleEntityName = "";
+		for (var i in currentTabData.entityNames) singleEntityName = i;
+
+		var colsPerRow = 6;
+
+		var displayActionLines = [];
+		var displayCheckboxLines = [];
+		var tempLine = '';
+
+//loop first for action name headers, second for checkbox value
+		for (var lineType = 0; lineType < 2; lineType++)
+		{
+			var colsPerRowCount = 0;
+			tempLine = '<tr>';
+			for (var i in currentTabData.actionNamesOrdered)
+			{
+					colsPerRowCount += 1;
+					if (colsPerRowCount > colsPerRow) {
+						tempLine += '</tr>';
+						if (lineType == 0) displayActionLines.push(tempLine)
+						else displayCheckboxLines.push(tempLine);
+
+						tempLine = '<tr>';
+						colsPerRowCount = 1;
+					}
+				if (lineType == 0) tempLine += '<td valign="top"><b>' + doI18N(i) + '</b></td>'
+				else
+				{
+					permissionCode = i + "_" + singleEntityName;
+					tempLine += '<td valign="top" style="height:60px;"><input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
+					if (currentTabData.permissions[permissionCode] == true) tempLine += 'true" checked="true"'
+					else tempLine += 'false"';
+					tempLine += '/></td>';
+				}
+			}
+			tempLine += '</tr>';
+			if (lineType == 0) displayActionLines.push(tempLine)
+			else displayCheckboxLines.push(tempLine);			
+		}
+
+
+		contentHtml = '<table width="100%">';
+		for (var i in displayActionLines)
+		{
+			contentHtml += displayActionLines[i];
+			contentHtml += displayCheckboxLines[i];
+		}
+		contentHtml += '</table>';
+		return contentHtml;
 	}
 
 //for all other cases	
@@ -3359,7 +3424,6 @@ function makeRolePermissionsTabContent(currentTabData) {
 	}
 	contentHtml += '</tr>';
 
-	var permissionCode = "";
 	for (var i in currentTabData.entityNames)
 	{
 		contentHtml += '<tr><td><b>' + doI18N(i) + '</b></td>';
