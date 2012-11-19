@@ -58,8 +58,8 @@ crudData = {
 		role: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
-				dialogWidth: 1000,
-				dialogHeight: 550
+				dialogWidth: 1200,
+				dialogHeight: 650
 			},
 		orgCurrency: {
 				editTemplateNeeded: false,
@@ -3037,7 +3037,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
 						serializationOptions["checkboxesAsBools"] = false; // send checkboxes values (which contain loans ids) instead of bools
 					} 
-					
 					serializedArray = $('#entityform').serializeObject(serializationOptions);	
 					
 					if (!serializedArray["charges"] && postUrl.substring(0, 13) == "loanproducts/") {
@@ -3084,8 +3083,13 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction){
 	var dialogDiv = $("#dialog-form");
 	var formHtml = $(templateSelector).render(data);
-
 	dialogDiv.html(formHtml);
+
+	if (postUrl.indexOf("/permissions") > -1) 
+	{
+		makeRolePermissionsTabs(data.permissionUsageData, "#rolePermissionsDiv");
+	}
+
 
 	//attaching charges to loan from popup
 	$('#chargeOptions').change(function(e) {
@@ -3229,6 +3233,155 @@ dialogDiv.dialog({
   		}
   }).dialog('open');
 }
+
+
+//Generate permissions tabs because didn't know how to do it effectively in jsrender
+	specialRolePermissionTab = 'special';
+	permissionActionOrder = [];
+	permissionActionOrder.push('CREATE');
+	permissionActionOrder.push('READ');
+	permissionActionOrder.push('UPDATE');
+	permissionActionOrder.push('DELETE');
+	permissionActionOrder.push('CREATEHISTORIC');
+	permissionActionOrder.push('UPDATEHISTORIC');
+	permissionActionOrder.push('BULKREASSIGN');
+	permissionActionOrder.push('APPROVE');
+	permissionActionOrder.push('APPROVEINPAST');
+	permissionActionOrder.push('APPROVALUNDO');
+	permissionActionOrder.push('REJECT');
+	permissionActionOrder.push('REJECTINPAST');
+	permissionActionOrder.push('WITHDRAW');
+	permissionActionOrder.push('WITHDRAWINPAST');
+	permissionActionOrder.push('DISBURSE');
+	permissionActionOrder.push('DISBURSEINPAST');
+	permissionActionOrder.push('DISBURSALUNDO');
+	permissionActionOrder.push('REPAYMENT');
+	permissionActionOrder.push('REPAYMENTINPAST');
+	permissionActionOrder.push('WITHDRAWAL');
+	permissionActionOrder.push('INTEREST');
+	permissionActionOrder.push('ADJUST');
+	permissionActionOrder.push('WAIVE');
+	permissionActionOrder.push('WAIVEINTERESTPORTION');
+	permissionActionOrder.push('CLOSE');
+	permissionActionOrder.push('WRITEOFF');
+	permissionActionOrder.push('CLOSEASRESCHEDULED');
+	permissionActionOrder.push('RENEW');
+	
+function makeRolePermissionsTabs(permissionUsageData, rolePermissionsDiv) {
+
+	var currentGrouping = "";
+	var currentIndex = 0;
+	permissionUIData = [];
+//convert from row input into a data structure that allows easier creation of the crosstab UI
+	for (var i in permissionUsageData)
+	{
+		if (permissionUsageData[i].grouping != currentGrouping)
+		{
+			currentGrouping = permissionUsageData[i].grouping;
+			var newEntry = {
+						grouping: currentGrouping,
+						permissions: [],
+						entityNames: [],
+						actionNames: [],
+						actionNamesOrdered: []
+					};
+			permissionUIData.push(newEntry);
+		}
+
+		currentIndex = permissionUIData.length - 1;
+		permissionUIData[currentIndex].permissions[permissionUsageData[i].code] = permissionUsageData[i].selected;
+		if (currentGrouping == specialRolePermissionTab) 
+		{
+			permissionUIData[currentIndex].entityNames[permissionUsageData[i].code] = true;
+		}
+		else
+		{
+			permissionUIData[currentIndex].entityNames[permissionUsageData[i].entityName] = true;
+			permissionUIData[currentIndex].actionNames[permissionUsageData[i].actionName] = true;
+		}
+
+	}
+
+	var tabsHtml = "";
+	var tabsContentHtml = "";
+	var currentActionOrder = "";
+	for (var i in permissionUIData)
+	{ 
+		for (var j in permissionActionOrder)
+		{
+			currentActionOrder = permissionActionOrder[j];
+			if (actionNameFound(currentActionOrder, permissionUIData[i].actionNames))
+			{
+				permissionUIData[i].actionNamesOrdered[currentActionOrder] = true;
+				permissionUIData[i].actionNames.splice(currentActionOrder,1);
+			}
+		}
+		for (var j in permissionUIData[i].actionNames) permissionUIData[i].actionNamesOrdered[j] = true;
+
+		tabsHtml += '<li><a href="#rolePermissionsInnerDiv' + i + '"><span>' + doI18N(permissionUIData[i].grouping) + '</span></a></li>';
+		tabsContentHtml += '<div id="rolePermissionsInnerDiv' + i + '">' + makeRolePermissionsTabContent(permissionUIData[i]) + '</div>';
+	}
+
+	var rolePermissionsHtml = '<div id="rolePermissionsInnerDiv"><ul>' + tabsHtml + '</ul>' + tabsContentHtml + '</div>';
+	$(rolePermissionsDiv).html(rolePermissionsHtml);
+    	$("#rolePermissionsInnerDiv").tabs();
+    	$("#rolePermissionsInnerDiv").tabs('select', 0);
+}
+
+function actionNameFound(compareActionName, actionNames) {
+
+	for (var i in actionNames)
+	{
+		if (i == compareActionName) return true;
+	}
+	return false;
+}
+
+function makeRolePermissionsTabContent(currentTabData) {
+
+	contentHtml = "";
+	if (currentTabData.grouping == specialRolePermissionTab)
+	{
+		return "specialllll";
+	}
+	
+
+	if (currentTabData.grouping.indexOf("transaction_") == 0) //starts with transaction_
+	{
+		return currentTabData.grouping;
+	}
+
+//for all other cases	
+	contentHtml = '<table width="100%"><tr><td></td>';
+	for (var i in currentTabData.actionNamesOrdered)
+	{
+		contentHtml += '<td valign="top"><b>' + doI18N(i) + '</b></td>';
+	}
+	contentHtml += '</tr>';
+
+	var permissionCode = "";
+	for (var i in currentTabData.entityNames)
+	{
+		contentHtml += '<tr><td><b>' + doI18N(i) + '</b></td>';
+		for (var j in currentTabData.actionNamesOrdered)
+		{
+			permissionCode = j + "_" + i;
+			if (currentTabData.permissions.hasOwnProperty(permissionCode))
+			{
+				contentHtml += '<td><input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
+				if (currentTabData.permissions[permissionCode] == true) contentHtml += 'true" checked="true"'
+				else contentHtml += 'false"';
+				contentHtml += '/></td>';
+			}
+			else contentHtml += '<td></td>';
+		}
+	}
+
+	contentHtml += '</table>';
+	return contentHtml;
+	
+}
+
 
 
 // used by deposit account functionality

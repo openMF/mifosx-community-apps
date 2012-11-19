@@ -709,8 +709,15 @@ $(document).ready(function() {
 					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
 					<td valign="top">
 						<label for"loanOfficerId">{{=$ctx.doI18N("label.loan.officer")}}</label>
-						<select name="loanOfficerId" id="loanOfficerId" disabled="disabled">/
-							<option selected="selected">{{=loanOfficerName}}</option>
+						<select name="loanOfficerId" id="loanOfficerId">
+							<option value="">{{=$ctx.doI18N("form.option.loanOfficer.dropdown.first.choice")}}</option>
+						{{#each loanOfficerOptions}}
+							{{#if $ctx.number($parent.parent.data.loanOfficerId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							{{/if}}
+        				{{/each}}
   						</select>
   						
 						<label for="submittedOnDate">{{=$ctx.doI18N("form.label.loan.submitted.on")}}</label>
@@ -2758,8 +2765,6 @@ $(document).ready(function() {
 			{{#if addLoanChargeAllowed}}
 			<button id="addloanchargebtn{{=$parent.parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
 			{{/if}}
-
-			<button id="assignloanofficerbtn{{=$parent.parent.data.id}}" class="assignloanofficer">Assign Loan Officer</button>
 	
 			{{#if rejectAllowed}}
 			<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectloan">Reject</button>
@@ -4275,40 +4280,6 @@ $(document).ready(function() {
 </form>
 </script>
 
-<script id="loanReassignmentFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	</div>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.loan.reassignment")}}</legend>
-		<table cellspacing="4px" cellpadding="8px">
-			<tr>
-				<td>
-					<input type="hidden" id="fromLoanOfficerId" name="fromLoanOfficerId" value="{{=fromLoanOfficerId}}" />
-					<label for="toLoanOfficer">{{=$ctx.doI18N("form.label.loan.officer.to")}}</label>
-					<select id="toLoanOfficerId" name="toLoanOfficerId" title="">
-						<option value="-1">{{=$ctx.doI18N("form.option.loanOfficer.dropdown.first.choice")}}</option>
-						{{#each loanOfficerOptions}}
-							{{#if $ctx.number($parent.parent.data.fromLoanOfficerId)===$ctx.number(id)}}
-								<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
-							{{#else}}
-								<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
-							{{/if}}
-				        {{/each}}
-					</select>
-				</td>
-				<td>
-					<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
-					<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-					<label for="assignmentDate">{{=$ctx.doI18N("form.label.aassignment.date")}}</label>
-					<input id="assignmentDate" name="assignmentDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(assignmentDate)}}"/>
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-</form>
-</script> 
-
 <script id="bulkLoanReassignmentFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -4819,14 +4790,19 @@ $(document).ready(function() {
     <div id="formerrors"></div>
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.role.details")}}</legend>
-
-		<label for="name">{{=$ctx.doI18N("form.label.role.name")}}</label>
-		<input id="name" name="name" title="" type="text" value="{{=name}}" size="75"/>
-
-		<label for="description">{{=$ctx.doI18N("form.label.role.description")}}</label>
-		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
-		<br/>
-
+		<table width="100%">
+		  <tr>
+		    <td valign="top" width="50%">
+			<label for="name">{{=$ctx.doI18N("form.label.role.name")}}</label>
+			<input id="name" name="name" title="" type="text" value="{{=name}}" size="50"/>
+		    </td>
+		    <td valign="top" width="50%">
+			<label for="description">{{=$ctx.doI18N("form.label.role.description")}}</label>
+			<textarea cols="50" rows="2" id="description" name="description" title="">{{=description}}</textarea>
+		    <td>
+		  </tr>
+		</table>
+		<div id=rolePermissionsDiv></div>
 	</fieldset>
 </form>
 
