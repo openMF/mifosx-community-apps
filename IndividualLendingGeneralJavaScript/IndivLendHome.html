@@ -4699,7 +4699,7 @@ $(document).ready(function() {
 	<td>{{=description}}</td>
 	<td>
 		<a id='editrole{{=id}}' class='editrole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='editnewrole{{=id}}' class='editnewrole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("New Edit")}}</a>
+		<a id='permissionsrole{{=id}}' class='permissionsrole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.permissionsrole")}}</a>
 		<a id='deleterole{{=id}}' class='deleterole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 	</td>
 </tr>
@@ -4791,20 +4791,20 @@ $(document).ready(function() {
 </form>
 </script>
 
-<script id="roleFormTemplateNEW" type="text/x-jquery-tmpl">
+<script id="rolePermissionsFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
 	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.role.details")}}</legend>
+		<legend>{{=$ctx.doI18N("form.legend.role.permissions")}}</legend>
 		<table width="100%">
 		  <tr>
 		    <td valign="top" width="50%">
 			<label for="name">{{=$ctx.doI18N("form.label.role.name")}}</label>
-			<input id="name" name="name" title="" type="text" value="{{=name}}" size="50"/>
+			<input title="" type="text" readonly="readonly" value="{{=name}}" size="50"/>
 		    </td>
 		    <td valign="top" width="50%">
 			<label for="description">{{=$ctx.doI18N("form.label.role.description")}}</label>
-			<textarea cols="50" rows="2" id="description" name="description" title="">{{=description}}</textarea>
+			<textarea cols="50" rows="2" title="" readonly="readonly" >{{=description}}</textarea>
 		    <td>
 		  </tr>
 		</table>

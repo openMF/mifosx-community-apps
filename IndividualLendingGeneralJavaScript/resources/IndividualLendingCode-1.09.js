@@ -2524,9 +2524,9 @@ function refreshLoanDocuments(loanId) {
 					e.preventDefault();
 				});
 
-				$("a.editnew" + tableName).click( function(e) {
+				$("a.permissions" + tableName).click( function(e) {
 					var linkId = this.id;
-					var entityId = linkId.replace("editnew" + tableName, "");
+					var entityId = linkId.replace("permissions" + tableName, "");
 					var resourceUrl = tableName + "s/" + entityId + "/permissions";
 					maintainTable(tableName, resourceUrl, 'PUT');
 					e.preventDefault();
@@ -2653,7 +2653,11 @@ function refreshLoanDocuments(loanId) {
 		}
 //end datatable specific code
 
-		if (resourceUrl.indexOf("/permissions") > -1) templateSelector = "#" + tableName + "FormTemplateNEW";
+		if (resourceUrl.indexOf("/permissions") > -1) 
+		{
+			templateSelector = "#rolePermissionsFormTemplate";
+			dialogTitle = "dialog.title.role.permissions.details";
+		}
 
 		var getUrl = ''; 
 		var putPostUrl = resourceUrl;
@@ -3234,8 +3238,14 @@ dialogDiv.dialog({
   }).dialog('open');
 }
 
-
-//Generate permissions tabs because didn't know how to do it effectively in jsrender
+/*
+Generate permissions tabs because didn't know how to do it effectively in jsrender 
+moving to plug-in shortly to get it out of the way of this file.
+*/
+/*
+The UI needs to order the 'actions' (headers) and 'groupings' (tabs)
+This could have been done by adding meta data to the back-end but decided to pay for it in the UI instead
+*/
 	specialRolePermissionTab = 'special';
 	permissionActionOrder = [];
 	permissionActionOrder.push('CREATE');
@@ -3244,6 +3254,7 @@ dialogDiv.dialog({
 	permissionActionOrder.push('DELETE');
 	permissionActionOrder.push('CREATEHISTORIC');
 	permissionActionOrder.push('UPDATEHISTORIC');
+	permissionActionOrder.push('PERMISSIONS');
 	permissionActionOrder.push('BULKREASSIGN');
 	permissionActionOrder.push('APPROVE');
 	permissionActionOrder.push('APPROVEINPAST');
@@ -3267,11 +3278,23 @@ dialogDiv.dialog({
 	permissionActionOrder.push('CLOSEASRESCHEDULED');
 	permissionActionOrder.push('RENEW');
 	
+	permissionGrouping = [];
+	permissionGrouping.push('special');
+	permissionGrouping.push('portfolio');
+	permissionGrouping.push('transaction_loan');
+	permissionGrouping.push('transaction_deposit');
+	permissionGrouping.push('organisation');
+	permissionGrouping.push('configuration');
+	permissionGrouping.push('authorisation');
+	permissionGrouping.push('report');
+	permissionGrouping.push('datatable');
+
+
 function makeRolePermissionsTabs(permissionUsageData, rolePermissionsDiv) {
 
 	var currentGrouping = "";
 	var currentIndex = 0;
-	permissionUIData = [];
+	var tempPermissionUIData = [];
 //convert from row input into a data structure that allows easier creation of the crosstab UI
 	for (var i in permissionUsageData)
 	{
@@ -3279,38 +3302,52 @@ function makeRolePermissionsTabs(permissionUsageData, rolePermissionsDiv) {
 		{
 			currentGrouping = permissionUsageData[i].grouping;
 			var newEntry = {
-						grouping: currentGrouping,
 						permissions: [],
 						entityNames: [],
 						actionNames: [],
 						actionNamesOrdered: []
 					};
-			permissionUIData.push(newEntry);
+			tempPermissionUIData[currentGrouping] = newEntry;
 		}
 
-		currentIndex = permissionUIData.length - 1;
-		permissionUIData[currentIndex].permissions[permissionUsageData[i].code] = permissionUsageData[i].selected;
+		tempPermissionUIData[currentGrouping].permissions[permissionUsageData[i].code] = permissionUsageData[i].selected;
 		if (currentGrouping == specialRolePermissionTab) 
 		{
-			permissionUIData[currentIndex].entityNames[permissionUsageData[i].code] = true;
+			tempPermissionUIData[currentGrouping].entityNames[permissionUsageData[i].code] = true;
 		}
 		else
 		{
-			permissionUIData[currentIndex].entityNames[permissionUsageData[i].entityName] = true;
-			permissionUIData[currentIndex].actionNames[permissionUsageData[i].actionName] = true;
+			tempPermissionUIData[currentGrouping].entityNames[permissionUsageData[i].entityName] = true;
+			tempPermissionUIData[currentGrouping].actionNames[permissionUsageData[i].actionName] = true;
 		}
 
 	}
+//sort by preferred grouping order
 
+	permissionUIData = [];
+
+	for (var i in permissionGrouping)
+	{
+		currentGrouping = permissionGrouping[i];
+		if (nameFoundInArray(currentGrouping, tempPermissionUIData))
+		{
+			permissionUIData[currentGrouping] = tempPermissionUIData[currentGrouping];
+			tempPermissionUIData.splice(currentGrouping,1);
+		}
+	}
+	for (var i in tempPermissionUIData) permissionUIData[i] = tempPermissionUIData[i];
+
+//create tabbed UI from transformed permission data
 	var tabsHtml = "";
 	var tabsContentHtml = "";
 	var currentActionOrder = "";
 	for (var i in permissionUIData)
 	{ 
+		currentGrouping = i;
 		for (var j in permissionActionOrder)
 		{
 			currentActionOrder = permissionActionOrder[j];
-			if (actionNameFound(currentActionOrder, permissionUIData[i].actionNames))
+			if (nameFoundInArray(currentActionOrder, permissionUIData[i].actionNames))
 			{
 				permissionUIData[i].actionNamesOrdered[currentActionOrder] = true;
 				permissionUIData[i].actionNames.splice(currentActionOrder,1);
@@ -3318,8 +3355,8 @@ function makeRolePermissionsTabs(permissionUsageData, rolePermissionsDiv) {
 		}
 		for (var j in permissionUIData[i].actionNames) permissionUIData[i].actionNamesOrdered[j] = true;
 
-		tabsHtml += '<li><a href="#rolePermissionsInnerDiv' + i + '"><span>' + doI18N(permissionUIData[i].grouping) + '</span></a></li>';
-		tabsContentHtml += '<div id="rolePermissionsInnerDiv' + i + '">' + makeRolePermissionsTabContent(permissionUIData[i]) + '</div>';
+		tabsHtml += '<li><a href="#rolePermissionsInnerDiv' + i + '"><span>' + doI18N(currentGrouping) + '</span></a></li>';
+		tabsContentHtml += '<div id="rolePermissionsInnerDiv' + i + '">' + makeRolePermissionsTabContent(currentGrouping, permissionUIData[currentGrouping]) + '</div>';
 	}
 
 	var rolePermissionsHtml = '<div id="rolePermissionsInnerDiv"><ul>' + tabsHtml + '</ul>' + tabsContentHtml + '</div>';
@@ -3328,21 +3365,21 @@ function makeRolePermissionsTabs(permissionUsageData, rolePermissionsDiv) {
     	$("#rolePermissionsInnerDiv").tabs('select', 0);
 }
 
-function actionNameFound(compareActionName, actionNames) {
+function nameFoundInArray(compareName, compareArray) {
 
-	for (var i in actionNames)
+	for (var i in compareArray)
 	{
-		if (i == compareActionName) return true;
+		if (i == compareName) return true;
 	}
 	return false;
 }
 
-function makeRolePermissionsTabContent(currentTabData) {
+function makeRolePermissionsTabContent(currentGrouping, currentTabData) {
 
 	var permissionCode = "";
 	var contentHtml = "";
 
-	if (currentTabData.grouping == specialRolePermissionTab)
+	if (currentGrouping == specialRolePermissionTab)
 	{
 //permissions names are in the entityNames array
 
@@ -3350,7 +3387,7 @@ function makeRolePermissionsTabContent(currentTabData) {
 		for (var i in currentTabData.entityNames)
 		{
 			contentHtml += '<tr><td valign="top"><b>' + doI18N(i) + '</b></td>'
-			permissionCode = specialRolePermissionTab + "_" + i;
+			permissionCode = i;
 			contentHtml += '<td><input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
 					if (currentTabData.permissions[permissionCode] == true) contentHtml += 'true" checked="true"'
 					else contentHtml += 'false"';
@@ -3362,7 +3399,7 @@ function makeRolePermissionsTabContent(currentTabData) {
 	}
 	
 
-	if (currentTabData.grouping.indexOf("transaction_") == 0) //starts with transaction_
+	if (currentGrouping.indexOf("transaction_") == 0) //starts with transaction_
 	{
 //All action names will be for one entity name
 		var singleEntityName = "";
