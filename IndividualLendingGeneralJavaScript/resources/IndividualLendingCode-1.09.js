@@ -813,10 +813,10 @@ function showILClient(clientId) {
 				$newtabs.tabs('select', '#' + ui.panel.id);
 			}
 	});
-	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
-	        	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-	            $(anchor.hash).html("error occured while ajax loading.");
-	        };
+	
+	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
+		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+	};
 	        
 	//initialize client image related buttons
 	var imageFetchSuccessFunction = function(data, textStatus, jqXHR) {
@@ -2535,7 +2535,7 @@ function refreshLoanDocuments(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 

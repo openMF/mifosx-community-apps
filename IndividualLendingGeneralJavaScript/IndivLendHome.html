@@ -1571,12 +1571,12 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
-	{{#if changes}}
-		{{#if changes.officeId}}
+	{{#if currentChange}}
+		{{#if currentChange.officeId}}
 	<select id="officeId" name="officeId" title="" style="border: thin solid green;">
 		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 		{{#each allowedOffices}}
-			{{#if $ctx.number($parent.parent.data.changes.officeId)===$ctx.number(id)}}
+			{{#if $ctx.number($parent.parent.data.currentChange.officeId)===$ctx.number(id)}}
 				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
 			{{#else}}
 				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
@@ -1612,9 +1612,9 @@ $(document).ready(function() {
 		<tr>
 			<td>
 				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
-				{{#if changes}}
-					{{#if changes.firstname}}
-				<input id="firstname" name="firstname" title="Previous value was {{=firstname}}" type="text" value="{{=changes.firstname}}" style="border: thin solid green;"/>
+				{{#if currentChange}}
+					{{#if currentChange.firstname}}
+				<input id="firstname" name="firstname" title="Previous value was {{=firstname}}" type="text" value="{{=currentChange.firstname}}" style="border: thin solid green;"/>
 					{{#else}}
 				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
 					{{/if}}
@@ -1624,9 +1624,9 @@ $(document).ready(function() {
 			</td>
 			<td>
 				<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
-				{{#if changes}}
-					{{#if changes.lastname}}
-					<input id="lastname" name="lastname" title="Previous value was {{=lastname}}" type="text" value="{{=changes.lastname}}" style="border: thin solid green;"/>
+				{{#if currentChange}}
+					{{#if currentChange.lastname}}
+					<input id="lastname" name="lastname" title="Previous value was {{=lastname}}" type="text" value="{{=currentChange.lastname}}" style="border: thin solid green;"/>
 					{{#else}}
 					<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
 					{{/if}}
@@ -1638,9 +1638,9 @@ $(document).ready(function() {
 		<tr>
 			<td colspan="2">
 				<label for="clientOrBusinessName">{{=$ctx.doI18N("label.longname")}}</label>
-				{{#if changes}}
-					{{#if changes.clientOrBusinessName}}
-					<input id="clientOrBusinessName" name="clientOrBusinessName" title="Previous value was {{=clientOrBusinessName}}" type="text" value="{{=changes.clientOrBusinessName}}" style="width:100%; border: thin solid green;"/>
+				{{#if currentChange}}
+					{{#if currentChange.clientOrBusinessName}}
+					<input id="clientOrBusinessName" name="clientOrBusinessName" title="Previous value was {{=clientOrBusinessName}}" type="text" value="{{=currentChange.clientOrBusinessName}}" style="width:100%; border: thin solid green;"/>
 					{{#else}}
 					<input id="clientOrBusinessName" name="clientOrBusinessName" title="" type="text" value="{{=clientOrBusinessName}}" style="width:100%"/>
 					{{/if}}
@@ -1651,9 +1651,9 @@ $(document).ready(function() {
 		</tr>
 	</table>
     <label for="externalId">{{=$ctx.doI18N("form.label.group.externalid")}}</label>
-	{{#if changes}}
-		{{#if changes.externalId}}
-		<input id="externalId" name="externalId" title="Previous value was {{=externalId}}" type="text" value="{{=changes.externalId}}" style="border: thin solid green;"/>
+	{{#if currentChange}}
+		{{#if currentChange.externalId}}
+		<input id="externalId" name="externalId" title="Previous value was {{=externalId}}" type="text" value="{{=currentChange.externalId}}" style="border: thin solid green;"/>
 		{{#else}}
 		<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 		{{/if}}
@@ -1664,9 +1664,9 @@ $(document).ready(function() {
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="joiningDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
-	{{#if changes}}
-		{{#if changes.joiningDate}}
-		<input id="joiningDate" name="joiningDate" title="Previous value was {{=$ctx.globalDate(joinedDate)}}" type="text" class="datepickerfield" value="{{=$ctx.globalDate(changes.joiningDate)}}" style="border: thin solid green;"/>
+	{{#if currentChange}}
+		{{#if currentChange.joinedDate}}
+		<input id="joiningDate" name="joiningDate" title="Previous value was {{=$ctx.globalDate(joinedDate)}}" type="text" class="datepickerfield" value="{{=$ctx.globalDate(currentChange.joinedDate)}}" style="border: thin solid green;"/>
 		{{#else}}
 		<input id="joiningDate" name="joiningDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
 		{{/if}}
@@ -2115,6 +2115,12 @@ $(document).ready(function() {
 <script id="clientDataTabTemplate" type="text/x-jquery-tmpl">
 <div id="clienttabcontent">
 	<div id="clienttableftpane" style="float:left; max-width: 700px; width: 700px;">
+		{{#if allChanges}}
+		<div class="row" style="border: 1px dashed red;">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.changes.awaiting")}}</span>
+			<span class="rowvalue">{{=allChanges.length}}</span>
+		</div>
+		{{/if}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.name")}}</span>
 			<span class="rowvalue">{{=displayName}}</span>
@@ -4094,7 +4100,7 @@ $(document).ready(function() {
 	<tbody>
 {{#each crudRows}}
 <tr>
-	<td>{{=codeName}}</td>
+	<td>{{=name}}</td>
 	<td>
 		<a id='editcode{{=id}}' class='editcode' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
 		<a id='deletecode{{=id}}' class='deletecode' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
@@ -4112,7 +4118,7 @@ $(document).ready(function() {
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.code.details")}}</legend>
 		<label for="name">{{=$ctx.doI18N("form.label.code.name")}}</label>
-		<input id="name" name="name" title="" type="text" value="{{=codeName}}" size="75"/>
+		<input id="name" name="name" title="" type="text" value="{{=name}}" size="75"/>
 	</fieldset>
 </form>
 </script>
