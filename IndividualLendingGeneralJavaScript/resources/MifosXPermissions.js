@@ -2,23 +2,24 @@
 
 	$.MifosXPermissions = {};
 
-	$.MifosXPermissions.addRolePermissionsTabs= function(permissionUsageData, rolePermissionsDiv) {
-		addRolePermissionsTabs(permissionUsageData, rolePermissionsDiv);
+	$.MifosXPermissions.addRolePermissionsTabs= function(data, rolePermissionsDiv) {
+	//adds tabs for role permissions into rolePermissionsDiv
+		addRolePermissionsTabs(data.permissionUsageData, rolePermissionsDiv);
 	};
 
 
 /*
-Generate permissions tabs because didn't know how to do it effectively in jsrender 
-moving to plug-in shortly to get it out of the way of this file.
-*/
-/*
+Generate permissions tabs via javascript because didn't know how to do it effectively in jsrender 
+
 The UI needs to order the 'actions' (headers) and 'groupings' (tabs)
 This could have been done by adding meta data to the back-end but decided to pay for it in the UI instead
-*/
-	specialRolePermissionTab = 'special';
-	reportingRolePermissionTab = 'report';
 
-	permissionActionOrder = [];
+This plug-in due expect doI18N function to be available
+*/
+	var specialRolePermissionTab = 'special';
+	var reportingRolePermissionTab = 'report';
+
+	var permissionActionOrder = [];
 	permissionActionOrder.push('CREATE');
 	permissionActionOrder.push('READ');
 	permissionActionOrder.push('UPDATE');
@@ -49,7 +50,7 @@ This could have been done by adding meta data to the back-end but decided to pay
 	permissionActionOrder.push('CLOSEASRESCHEDULED');
 	permissionActionOrder.push('RENEW');
 	
-	permissionGrouping = [];
+	var permissionGrouping = [];
 	permissionGrouping.push('special');
 	permissionGrouping.push('portfolio');
 	permissionGrouping.push('transaction_loan');
@@ -61,7 +62,7 @@ This could have been done by adding meta data to the back-end but decided to pay
 	permissionGrouping.push('datatable');
 
 
-function addRolePermissionsTabs(permissionUsageData, rolePermissionsDiv) {
+var addRolePermissionsTabs = function(permissionUsageData, rolePermissionsDiv) {
 
 	var currentGrouping = "";
 	var currentIndex = 0;
@@ -95,7 +96,7 @@ function addRolePermissionsTabs(permissionUsageData, rolePermissionsDiv) {
 	}
 //sort by preferred grouping order
 
-	permissionUIData = [];
+	var permissionUIData = [];
 
 	for (var i in permissionGrouping)
 	{
@@ -136,7 +137,7 @@ function addRolePermissionsTabs(permissionUsageData, rolePermissionsDiv) {
     	$("#rolePermissionsInnerDiv").tabs('select', 0);
 }
 
-function nameFoundInArray(compareName, compareArray) {
+var nameFoundInArray = function(compareName, compareArray) {
 
 	for (var i in compareArray)
 	{
@@ -145,7 +146,7 @@ function nameFoundInArray(compareName, compareArray) {
 	return false;
 }
 
-function makeRolePermissionsTabContent(currentGrouping, currentTabData) {
+var makeRolePermissionsTabContent = function(currentGrouping, currentTabData) {
 
 	var permissionCode = "";
 	var contentHtml = "";

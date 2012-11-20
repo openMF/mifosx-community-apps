@@ -3091,7 +3091,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 
 	if (postUrl.indexOf("/permissions") > -1) 
 	{
-		jQuery.MifosXPermissions.addRolePermissionsTabs(data.permissionUsageData, "#rolePermissionsDiv");
+		jQuery.MifosXPermissions.addRolePermissionsTabs(data, "#rolePermissionsDiv");
 	}
 
 
