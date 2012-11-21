@@ -2405,7 +2405,82 @@ function loadILLoan(loanId) {
 					    e.preventDefault();
 				});
 				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
-
+				
+				//Guarantor for loan functionality
+				$('.setguarantor').button(
+						{icons: {
+	                	primary: "ui-icon-link"},
+	            	}).click(function(e) {
+						var linkId = this.id;
+						var loanId = linkId.replace("setGuarantorbtn", "");
+						var postUrl = 'loans/' + loanId + '/guarantor';
+						
+						var templateSelector = "#guarantorFormTemplate";
+						var width = 600; 
+						var height = 350;
+						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						
+	            		popupDialogWithFormView("", postUrl, 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
+	            		
+	            		//initially hide external guarantor div
+	            		$('#externalGuarantorDiv').hide();
+	            		$("#internalGuarantorCheckbox").change(function() {
+	            		  var isChecked = $('#internalGuarantorCheckbox').is(':checked')
+						  if(isChecked){
+						 	$('#internalGuarantorDiv').show();
+						  	$('#externalGuarantorDiv').hide();
+						  }else{
+						  	$('#internalGuarantorDiv').hide();
+						  	$('#externalGuarantorDiv').show();
+						  }
+						});
+	            		
+				        $( "#smartGuarantorSearch" ).autocomplete({
+				            source: function(request, response){
+				            	//get selected office
+								var sqlSearchValue = "display_name like '%" + request.term + "%'"; 
+								smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
+									response( $.map( data, function( item ) {
+			                            return {
+			                                label: item.displayName + "(" + item.officeName + ")",
+			                                value: item.displayName,
+			                                joinedDate: item.joinedDate,
+			                                id: item.id,
+			                                branchName:item.officeName
+			                            }
+			                        }));
+						  		};
+								executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", smartSearchSuccessFunction, formErrorFunction);
+							   	e.preventDefault(); 
+				            },
+				            minLength: 3,
+				            select: function( event, ui ) {
+				                $( "#selectedGuarantorName" ).val(ui.item.value);
+				                $( "#selectedGuarantorBranch" ).val(ui.item.branchName);
+				                $( "#selectedGuarantorJoinedDate" ).val(custom.helperFunctions.globalDate(ui.item.joinedDate));
+				                $( "#selectedGuarantorIdentifier" ).val(ui.item.id);
+				                return false;
+				            }
+				        });
+        
+	            		e.preventDefault();
+	            });
+	            
+	            //remove guarantor
+				$('.removeguarantor').button(
+						{icons: {
+	                	primary: "ui-icon-trash"},
+	            	}).click(function(e) {
+						var linkId = this.id;
+						var loanId = linkId.replace("removeGuarantorbtn", "");
+						var deleteUrl = 'loans/' + loanId + '/guarantor';
+						var width = 500; 
+						var height = 350;
+						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						popupConfirmationDialogAndPost(deleteUrl, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan);
+	            		e.preventDefault();
+	            });
+	            
 				custom.showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
 				// additional data
@@ -3047,7 +3122,31 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 						serializedArray["charges"] = new Array();
 					}
 					
+					//manipulate serialized array for guarantors
+			    	if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
+			    	   var serializedArray = {};
+			    	   var isChecked = $('#internalGuarantorCheckbox').is(':checked')
+					   if(isChecked){
+			    	   	serializedArray["existingClientId"] = $('#selectedGuarantorIdentifier').val();
+			    	   }else{
+			    	   	serializedArray["externalGuarantor"] = true;
+			    	   	serializedArray["firstname"] = $('#guarantorFirstName').val();
+			    	   	serializedArray["lastname"] = $('#guarantorLastName').val();
+			    	   	serializedArray["dob"] = $('#guarantorDateOfBirth').val();
+			    	   	serializedArray["addressLine1"] = $('#guarantorAddressLine1').val();
+			    	   	serializedArray["addressLine2"] = $('#guarantorAddressLine2').val();
+			    	   	serializedArray["city"] = $('#guarantorCity').val();
+			    	   	serializedArray["zip"] = $('#guarantorZip').val();
+			    	   	serializedArray["mobileNumber"] = $('#guarantorMobileNumber').val();
+			    	   	serializedArray["housePhoneNumber"] = $('#guarantorHouseNumber').val();
+			    	   	serializedArray["locale"] = $('#locale').val();
+			    	   	serializedArray["dateFormat"] = $('#dateFormat').val();
+			    	   }  
+			    	}
+					
 			    	var newFormData = JSON.stringify(serializedArray);
+			    	
+			    	//spl ajax req for webcam and doc upload
 			    	if( templateSelector == '#clientImageWebcamFormTemplate'){
 			    		var imageCanvas = $('#imageCanvas')[0];
 						var imageForUpload = imageCanvas.toDataURL("image/jpeg");
