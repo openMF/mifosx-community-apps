@@ -58,8 +58,8 @@ crudData = {
 		role: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
-				dialogWidth: 1200,
-				dialogHeight: 650
+				dialogWidth: 900,
+				dialogHeight: 300
 			},
 		orgCurrency: {
 				editTemplateNeeded: false,
@@ -2712,6 +2712,9 @@ function refreshLoanDocuments(loanId) {
 		var dialogTitle = "dialog.title." + tableName + ".details";
 		if (submitType == "POST") dialogTitle = 'dialog.title.add.' + tableName;
 
+		var dialogWidth = crudData[tableName].dialogWidth;
+		var dialogHeight = crudData[tableName].dialogHeight;
+
 		
 		var genSSF = 'var saveSuccessFunction = function(data, textStatus, jqXHR) {';
 		genSSF += '$("#dialog-form").dialog("close");';
@@ -2723,7 +2726,7 @@ function refreshLoanDocuments(loanId) {
 		if (tableName == "datatable") 
 		{
 			dialogTitle = 'dialog.title.register.datatable';
-			popupRegisterDatatableDialog('dialog.title.register.datatable', templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction, 0, 0, 0);
+			popupRegisterDatatableDialog('dialog.title.register.datatable', templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
 			return false;
 		}
 //end datatable specific code
@@ -2732,6 +2735,8 @@ function refreshLoanDocuments(loanId) {
 		{
 			templateSelector = "#rolePermissionsFormTemplate";
 			dialogTitle = "dialog.title.role.permissions.details";
+			dialogWidth = 1200;
+			dialogHeight = 500;
 		}
 
 		var getUrl = ''; 
@@ -2747,9 +2752,9 @@ function refreshLoanDocuments(loanId) {
 				}else{
 					getUrl = resourceUrl + '/template';
 				}
-				popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
+				popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction);
 			}
-			else popupDialogWithPostOnlyFormView(putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction, 0, 0, 0);
+			else popupDialogWithPostOnlyFormView(putPostUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
 		}
 		else
 		{
@@ -2757,7 +2762,7 @@ function refreshLoanDocuments(loanId) {
 			else getUrl = resourceUrl;
 			
 			
-			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, crudData[tableName].dialogWidth, crudData[tableName].dialogHeight, saveSuccessFunction);
+			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction);
 		}
 
 	}
