@@ -4990,27 +4990,6 @@ $(document).ready(function() {
 
 		<label for="description">{{=$ctx.doI18N("form.label.role.description")}}</label>
 		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
-		<br/>
-
-		<div class="multiselectwidget">
-			<label for="notSelectedPermissions">{{=$ctx.doI18N("form.label.role.available.permissions")}}</label>
-			<select id="notSelectedPermissions" name="notSelectedPermissions" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:450px;height:125px;">
-			{{#each availablePermissions}}
-				<option value="{{=id}}" title="{{=description}}">{{=name}}</option>
-            {{/each}}
-			</select>
-			<a href="#" id="addpermissions" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
-		</div>
-		
-		<div class="multiselectwidget">
-			<label for="permissions">{{=$ctx.doI18N("form.label.role.selected.permissions")}}</label>
-			<select id="permissions" name="permissions" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:450px;height:125px;">
-			{{#each selectedPermissions}}
-				<option value="{{=id}}" title="{{=description}}">{{=name}}</option>
-            {{/each}}
-			</select>
-			<a href="#" id="removepermissions" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
-		</div>
 	</fieldset>
 </form>
 
