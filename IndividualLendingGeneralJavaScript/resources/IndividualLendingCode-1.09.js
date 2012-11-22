@@ -3079,14 +3079,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					$('#charges option').each(function(i) {
 						$(this).attr("selected", "selected");
 					});
-
-					$('#notSelectedPermissions option').each(function(i) {  
-						$(this).attr("selected", "selected");  
-					});
 				    	
-			    	$('#permissions option').each(function(i) {  
-			    	   	$(this).attr("selected", "selected");  
-			    	});
 
 				    $('#notSelectedRoles option').each(function(i) {  
 						$(this).attr("selected", "selected");  
@@ -3271,13 +3264,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#removecharges').click(function() {  
 		return !$('#charges option:selected').remove().appendTo('#notSelectedCharges');  
 	});
-
-	$('#addpermissions').click(function() {  
-		return !$('#notSelectedPermissions option:selected').remove().appendTo('#permissions');  
-	});
-	$('#removepermissions').click(function() {  
-		return !$('#permissions option:selected').remove().appendTo('#notSelectedPermissions');  
-	}); 
 
 	$('#addroles').click(function() {  
 		return !$('#notSelectedRoles option:selected').remove().appendTo('#roles');  
@@ -3634,7 +3620,7 @@ $.fn.serializeObject = function(serializationOptions)
 
 	$.each(a, function() {
 		
-		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedPermissions' || this.name === 'notSelectedRoles' 
+		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedRoles' 
 	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges') {
 			// do not serialize
 		} else if (this.name.indexOf('[') !== -1) { //serialize as separate object
@@ -3659,7 +3645,7 @@ $.fn.serializeObject = function(serializationOptions)
 		        o[this.name].push(this.value || '');
 		    } else {
 		    	
-		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies' || this.name === 'permissions' 
+		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies'  
 	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges' || this.name === 'loans') {
 		    		o[this.name] = new Array();
 		    		o[this.name].push(this.value || '');
