@@ -58,8 +58,8 @@ crudData = {
 		role: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
-				dialogWidth: 900,
-				dialogHeight: 300
+				dialogWidth: 1000,
+				dialogHeight: 550
 			},
 		orgCurrency: {
 				editTemplateNeeded: false,
@@ -70,7 +70,7 @@ crudData = {
 		permission: {
 				editTemplateNeeded: false,
 				refreshListNeeded: false,
-				dialogWidth: 900,
+				dialogWidth: 1000,
 				dialogHeight: 400
 			},
 		officetransaction: {
@@ -472,6 +472,18 @@ function viewMakerCheckerEntry(operationType, resource, resourceId, makerChecker
 
 	var getUrl = resource + '/';
 	
+	var templateSelector = "#clientFormTemplate";
+	var width = 600; 
+	var height = 350;
+	switch (resource) {
+		case "clients":
+			templateSelector = "#clientFormTemplate"
+		break;
+		case "roles":
+			templateSelector = "#roleFormTemplate"
+		break;
+	}
+	
 	switch (operationType) {
 	case "CREATE":
 		getUrl = getUrl + "template?makerCheckerId=" + makerCheckerId;
@@ -484,11 +496,7 @@ function viewMakerCheckerEntry(operationType, resource, resourceId, makerChecker
 		break;
 	}
 	
-	var templateSelector = "#clientFormTemplate";
-	var width = 600; 
-	var height = 350;
-	
-	popupDialogWithReadOnlyFormView(getUrl, "dialog.title.edit.client", templateSelector, width, height);
+	popupDialogWithReadOnlyFormView(getUrl, "dialog.title.proposedchanges", templateSelector, width, height);
 }
 
 /*
