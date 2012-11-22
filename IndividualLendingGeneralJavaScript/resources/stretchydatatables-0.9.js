@@ -169,7 +169,7 @@ function showDataTableOneToOne() {
 
 				if (colVal > "")
 				{
-					colType = currentTableDataInfo.data.columnHeaders[i].columnDisplayTypeNew;
+					colType = currentTableDataInfo.data.columnHeaders[i].columnDisplayType;
 					switch (colType) 
 					{
 					case "STRING":
@@ -186,7 +186,7 @@ function showDataTableOneToOne() {
 						colVal = globalDecimal(parseFloat(colVal), defaultDecimalPlaces);
 						break;
 					case "CODELOOKUP":
-						colVal = getDropdownValue(colVal, currentTableDataInfo.data.columnHeaders[i].columnValuesNew);			
+						colVal = getDropdownValue(colVal, currentTableDataInfo.data.columnHeaders[i].columnValues);			
 						break;
 					case "TEXT":
 						colVal = '<textarea rows="3" cols="40" readonly="readonly">' + colVal + '</textarea>';
@@ -340,7 +340,7 @@ function getTableColumns(fkName, data) {
 	{
   		tmpSType = 'string';
 		tmpSClass = "";
-		var colType = data.columnHeaders[i].columnDisplayTypeNew;
+		var colType = data.columnHeaders[i].columnDisplayType;
 		switch(colType)
 		{
 			case "STRING":
@@ -396,7 +396,7 @@ function getTableData(fkName, data, tableColumns) {
 				if (tmpVal == null) tmpVal = ""
 				else 
 				{
-					if (tableColumns[j].dbColType == "CODELOOKUP") tmpVal = getDropdownValue(tmpVal, data.columnHeaders[j].columnValuesNew)					
+					if (tableColumns[j].dbColType == "CODELOOKUP") tmpVal = getDropdownValue(tmpVal, data.columnHeaders[j].columnValues)					
 					tmpVal = convertCRtoBR(tmpVal);
 				}
   				break;
@@ -510,7 +510,7 @@ function addUpdateColDisplayHTML(columnHeader, colVal) {
 		var colLength = columnHeader.columnLength;
 		if (colLength > defaultStringLength) colLength = defaultStringLength;
 
-		var colType = columnHeader.columnDisplayTypeNew;
+		var colType = columnHeader.columnDisplayType;
 		switch (colType) {
 		case "STRING":
 			displayHTML += getTextHTML(colNameUnderscore, displayVal, colLength);
@@ -528,10 +528,10 @@ function addUpdateColDisplayHTML(columnHeader, colVal) {
 			displayHTML += getTextHTML(colNameUnderscore, displayVal, 20);
 			break;
 		case "CODELOOKUP":
-			displayHTML += getSelectHTML(colNameUnderscore, columnHeader.columnValuesNew, colVal);		
+			displayHTML += getSelectHTML(colNameUnderscore, columnHeader.columnValues, colVal);		
 			break;
 		case "CODEVALUE":
-			displayHTML += getSelectHTMLValue(colNameUnderscore, columnHeader.columnValuesNew, colVal);		
+			displayHTML += getSelectHTMLValue(colNameUnderscore, columnHeader.columnValues, colVal);		
 			break;
 		case "TEXT":
 			displayHTML += '<textarea id="' + colNameUnderscore + '" name="'
