@@ -41,9 +41,10 @@
 				{
 
 					datatableArray = [];
-//show client risk_analysis separate to other data tables
-					if (appTableName == "m_client")
-					{
+
+					switch (appTableName) {	
+					case "m_client":
+					//show client risk_analysis separate to other data tables
 						var riskAnalysisFound = false;
 						for (var i in data)
 						{
@@ -58,8 +59,16 @@
 							GKRA.refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
 						}
 						else alert(doI18N("gk.risk.analysis.datatable.not.registered"));
+						break;
+					case "m_loan": //exclude m_guarantor_external from default m_loan data table display
+						for (var i in data)
+						{
+							if (data[i].registeredTableName != "m_guarantor_external") datatableArray.push(data[i])
+						}
+						break;
+					default:
+						datatableArray = data;
 					}
-					else datatableArray = data;
 
 					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
 					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));

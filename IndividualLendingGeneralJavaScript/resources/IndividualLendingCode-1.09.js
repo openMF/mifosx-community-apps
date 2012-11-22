@@ -925,25 +925,6 @@ function showILClient(clientId) {
 					refreshNoteWidget(clientUrl);
 
 					custom.showRelatedDataTableInfo($newtabs, "m_client", clientId); 
-
-					
-					// retrieve additional info
-					var additionalFieldsParams = {
-							url: baseApiUrl,
-							basicAuthKey: base64,
-							tenantIdentifier: tenantIdentifier,
-							datasetType: "m_client",
-							datasetPKValue: data.id,
-							datasetTypeDiv: "clientadditionaldata", 
-							headingPrefix: "", 
-							headingClass: "", 
-							labelClass: "longrowlabel",
-							valueClass:	"rowvalue",
-							editLabel: doI18N("link.edit"),	
-							saveLabel: doI18N("dialog.button.save"),	
-							cancelLabel: doI18N("dialog.button.cancel")				
-					};
-					//will fully delete after (JPW) jQuery.stretchyData.displayAllExtraData(additionalFieldsParams);
 					
 					$('#captureClientImage').button(
 						{icons: {
@@ -2491,23 +2472,6 @@ function loadILLoan(loanId) {
 	            
 				custom.showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
-				// additional data
-				var additionalFieldsParams = {
-							url: baseApiUrl,
-							basicAuthKey: base64,
-							tenantIdentifier: tenantIdentifier,
-							datasetType: "m_loan",
-							datasetPKValue: data.id,
-							datasetTypeDiv: "loanadditionaldata" + data.id, 
-							headingPrefix: "", 
-							headingClass: "", 
-							labelClass: "longrowlabel",
-							valueClass:	"rowvalue",
-							editLabel: doI18N("link.edit"),	
-							saveLabel: doI18N("dialog.button.save"),	
-							cancelLabel: doI18N("dialog.button.cancel")						
-				};
-				//will fully delete after (JPW) jQuery.stretchyData.displayAllExtraData(additionalFieldsParams)
 				//also fetch loan documents for this loan
 				refreshLoanDocuments(loanId);
 	        };

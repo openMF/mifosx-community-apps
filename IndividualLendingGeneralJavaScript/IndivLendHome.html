@@ -51,10 +51,7 @@
 <!-- JQuery webcam integration plug-in-->
 <script type="text/javascript"	src="resources/libs/jquery.webcam.js"></script>
 
-<!-- JQuery plug-in to show Mifos X Platform additional data -->
-<script type="text/javascript" src="resources/stretchydata-0.999.js"></script>
-
-<!-- JQuery plug-in to show Mifos X Platform additional data tables (will replace above script) -->
+<!-- JQuery plug-in to show Mifos X Platform additional data tables -->
 <script type="text/javascript" src="resources/stretchydatatables-0.9.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform reporting -->
@@ -2144,8 +2141,6 @@ $(document).ready(function() {
 		</div>
 
 		<div id="clientaccountssummary"></div>
-
-		<div id="clientadditionaldata"></div>
 	</div>
 	<!-- end of left pane content -->
 
@@ -2185,8 +2180,6 @@ $(document).ready(function() {
 		{{/each}}
 
 		<div id="groupaccountssummary"></div>
-
-		<div id="groupadditionaldata"></div>
 
 		<div id="grouptabrightpane" style="float:right;max-width:400px;width:400px;"></div>
 	</div>
@@ -3024,7 +3017,6 @@ $(document).ready(function() {
 		{{/if}}
 		{{/if}}
 
-		<div id="loanadditionaldata{{=id}}"></div>
 	</div>
 
 	{{#if charges}}

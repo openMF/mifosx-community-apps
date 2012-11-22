@@ -155,6 +155,17 @@
 				
 				if (data.length > 0)
 				{
+					switch (appTableName) {	
+					case "m_loan": //exclude m_guarantor_external from default m_loan data table display
+						for (var i in data)
+						{
+							if (data[i].registeredTableName != "m_guarantor_external") datatableArray.push(data[i])
+						}
+						break;
+					default:
+						datatableArray = data;
+					}
+
 					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
 					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
 					tabVar.tabs('select', 0); //back to main tab
