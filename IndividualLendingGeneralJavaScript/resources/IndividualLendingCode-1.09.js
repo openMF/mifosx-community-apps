@@ -490,6 +490,12 @@ function viewMakerCheckerEntry(operationType, resource, resourceId, commandId) {
 	case "UPDATE":
 		getUrl = getUrl + resourceId + "?template=true&commandId=" + commandId;
 		break;
+	case "UPDATEPERMISSIONS":
+		getUrl = getUrl + resourceId + "/permissions?template=true&commandId=" + commandId;
+		templateSelector = "#rolePermissionsFormTemplate"
+		width=1000;
+		height=550;
+		break;
 	case "DELETE":
 		getUrl = getUrl + resourceId + "?template=true&commandId=" + commandId;
 		break;
@@ -2969,6 +2975,16 @@ function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, wi
 	var executeGetUrlSuccessFunction = function(data, textStatus, jqXHR) {
 		popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height);
   	};
+  	
+	if (getUrl.indexOf("/permissions") > -1) 
+	{
+		executeGetUrlSuccessFunction = function(data, textStatus, jqXHR) {
+			popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height);
+			
+			// TODO - KW - need to support ability to displat 'proposed changes'
+			jQuery.MifosXPermissions.addRolePermissionsTabs(data, "#rolePermissionsDiv");
+	  	};
+	}
 	
 	if (getUrl == "") {
 		popupDialogWithReadOnlyFormViewData("", titleCode, templateSelector, width, height);
