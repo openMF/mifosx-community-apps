@@ -213,11 +213,11 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '<ul id="nav" class="floatright">';
 	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.culture") + '</a>';
 	htmlVar += '		<ul>';
-	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowListing(' + "'" + 'en' + "'" + ');return false;">en</a></li>';
-	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowListing(' + "'" + 'fr' + "'" + ');return false;">fr</a></li>';
-	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowListing(' + "'" + 'es' + "'" + ');return false;">es</a></li>';
-	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowListing(' + "'" + 'pt' + "'" + ');return false;">pt</a></li>';
-	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowListing(' + "'" + 'zh' + "'" + ');return false;">zh</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowFirstPage(' + "'" + 'en' + "'" + ');return false;">en</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowFirstPage(' + "'" + 'fr' + "'" + ');return false;">fr</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowFirstPage(' + "'" + 'es' + "'" + ');return false;">es</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowFirstPage(' + "'" + 'pt' + "'" + ');return false;">pt</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowFirstPage(' + "'" + 'zh' + "'" + ');return false;">zh</a></li>';
 	htmlVar += '		</ul>';
 	htmlVar += '	</li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="showILAccountSettings();return false;" class="dmenu"><div id=displayUN>' + currentUserName + '</div></a>';
@@ -3517,10 +3517,10 @@ function setInitialCulture() {
 	setCulture(baseCulture);	
 }
 
-function setCultureReshowListing(cultureVal) {
+function setCultureReshowFirstPage(cultureVal) {
 	setCulture(cultureVal);
 	showMainContainer("container");
-	showILClientListing();
+	custom.showFirstPage();
 }
 
 
