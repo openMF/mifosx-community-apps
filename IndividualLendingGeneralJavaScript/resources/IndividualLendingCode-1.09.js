@@ -70,8 +70,8 @@ crudData = {
 		permission: {
 				editTemplateNeeded: false,
 				refreshListNeeded: false,
-				dialogWidth: 1000,
-				dialogHeight: 400
+				dialogWidth: 1200,
+				dialogHeight: 500
 			},
 		officetransaction: {
 				editTemplateNeeded: true,
@@ -467,7 +467,7 @@ function setAccountSettingsContent(divName) {
  * resourceId:      	Individual id of client of office resource.
  * makerCheckerId:	Id of the maker checker entry on table
  */
-function viewMakerCheckerEntry(operationType, resource, resourceId, commandId) {
+function viewMakerCheckerEntry(operationType, resource, resourceId, makerCheckerId) {
 
 	var getUrl = resource + '/';
 	
@@ -485,19 +485,13 @@ function viewMakerCheckerEntry(operationType, resource, resourceId, commandId) {
 	
 	switch (operationType) {
 	case "CREATE":
-		getUrl = getUrl + "template?commandId=" + commandId;
+		getUrl = getUrl + "template?makerCheckerId=" + makerCheckerId;
 		break;
 	case "UPDATE":
-		getUrl = getUrl + resourceId + "?template=true&commandId=" + commandId;
-		break;
-	case "UPDATEPERMISSIONS":
-		getUrl = getUrl + resourceId + "/permissions?template=true&commandId=" + commandId;
-		templateSelector = "#rolePermissionsFormTemplate"
-		width=1000;
-		height=550;
+		getUrl = getUrl + resourceId + "?template=true&makerCheckerId=" + makerCheckerId;
 		break;
 	case "DELETE":
-		getUrl = getUrl + resourceId + "?template=true&commandId=" + commandId;
+		getUrl = getUrl + resourceId + "?template=true&makerCheckerId=" + makerCheckerId;
 		break;
 	}
 	
@@ -2563,6 +2557,9 @@ function refreshLoanDocuments(loanId) {
 				crudObject.crudRows = data;
 				var html = $("#" + tableName + "ListTemplate").render(crudObject);
 				$("#listplaceholder").html(html);  
+
+				if (tableName == "permission") jQuery.MifosXPermissions.addViewPermissionsTabs(data, "#permissionsDiv");
+
 				
 				$("a.edit" + tableName).click( function(e) {
 					var linkId = this.id;
@@ -2972,16 +2969,6 @@ function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, wi
 	var executeGetUrlSuccessFunction = function(data, textStatus, jqXHR) {
 		popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height);
   	};
-  	
-	if (getUrl.indexOf("/permissions") > -1) 
-	{
-		executeGetUrlSuccessFunction = function(data, textStatus, jqXHR) {
-			popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height);
-			
-			// TODO - KW - need to support ability to displat 'proposed changes'
-			jQuery.MifosXPermissions.addRolePermissionsTabs(data, "#rolePermissionsDiv");
-	  	};
-	}
 	
 	if (getUrl == "") {
 		popupDialogWithReadOnlyFormViewData("", titleCode, templateSelector, width, height);
@@ -3173,11 +3160,13 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	var formHtml = $(templateSelector).render(data);
 	dialogDiv.html(formHtml);
 
-	if (postUrl.indexOf("/permissions") > -1) 
+	switch(templateSelector)
 	{
-		jQuery.MifosXPermissions.addRolePermissionsTabs(data, "#rolePermissionsDiv");
+			case "#rolePermissionsFormTemplate":
+				jQuery.MifosXPermissions.addRolePermissionsTabs(data, "#rolePermissionsDiv");
+  				break;
+			default: //do nothing
 	}
-
 
 	//attaching charges to loan from popup
 	$('#chargeOptions').change(function(e) {

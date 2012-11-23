@@ -1,12 +1,5 @@
 (function($) {
 
-	$.MifosXPermissions = {};
-
-	$.MifosXPermissions.addRolePermissionsTabs= function(data, rolePermissionsDiv) {
-	//adds tabs for role permissions into rolePermissionsDiv
-		addRolePermissionsTabs(data.permissionUsageData, rolePermissionsDiv);
-	};
-
 
 /*
 Generate permissions tabs via javascript because didn't know how to do it effectively in jsrender 
@@ -14,7 +7,7 @@ Generate permissions tabs via javascript because didn't know how to do it effect
 The UI needs to order the 'actions' (headers) and 'groupings' (tabs)
 This could have been done by adding meta data to the back-end but decided to pay for it in the UI instead
 
-This plug-in due expect doI18N function to be available
+This plug-in due expects doI18N function to be available
 */
 	var specialRolePermissionTab = 'special';
 	var reportingRolePermissionTab = 'report';
@@ -62,8 +55,21 @@ This plug-in due expect doI18N function to be available
 	permissionGrouping.push('datatable');
 
 
-var addRolePermissionsTabs = function(permissionUsageData, rolePermissionsDiv) {
 
+	$.MifosXPermissions = {};
+
+	$.MifosXPermissions.addRolePermissionsTabs = function(data, outerDiv) {
+		displayPermissionsTabs(data.permissionUsageData, outerDiv, false);
+	};
+
+	$.MifosXPermissions.addViewPermissionsTabs = function(data, outerDiv) {
+		displayPermissionsTabs(data, outerDiv, true);
+	};
+
+
+var displayPermissionsTabs = function(permissionUsageData, outerDiv, readOnly) {
+
+	var innerDiv = outerDiv.substring(1) + "InnerDiv";
 	var currentGrouping = "";
 	var currentIndex = 0;
 	var tempPermissionUIData = [];
@@ -127,14 +133,14 @@ var addRolePermissionsTabs = function(permissionUsageData, rolePermissionsDiv) {
 		}
 		for (var j in permissionUIData[i].actionNames) permissionUIData[i].actionNamesOrdered[j] = true;
 
-		tabsHtml += '<li><a href="#rolePermissionsInnerDiv' + i + '"><span>' + doI18N(currentGrouping) + '</span></a></li>';
-		tabsContentHtml += '<div id="rolePermissionsInnerDiv' + i + '">' + makeRolePermissionsTabContent(currentGrouping, permissionUIData[currentGrouping]) + '</div>';
+		tabsHtml += '<li><a href="#' + innerDiv + i + '"><span>' + doI18N(currentGrouping) + '</span></a></li>';
+		tabsContentHtml += '<div id="' + innerDiv + i + '">' + makeRolePermissionsTabContent(currentGrouping, permissionUIData[currentGrouping], readOnly) + '</div>';
 	}
 
-	var rolePermissionsHtml = '<div id="rolePermissionsInnerDiv"><ul>' + tabsHtml + '</ul>' + tabsContentHtml + '</div>';
-	$(rolePermissionsDiv).html(rolePermissionsHtml);
-    	$("#rolePermissionsInnerDiv").tabs();
-    	$("#rolePermissionsInnerDiv").tabs('select', 0);
+	var html = '<div id="' + innerDiv + '"><ul>' + tabsHtml + '</ul>' + tabsContentHtml + '</div>';
+	$(outerDiv).html(html);
+    	$("#" + innerDiv).tabs();
+    	$("#" + innerDiv).tabs('select', 0);
 }
 
 var nameFoundInArray = function(compareName, compareArray) {
@@ -146,7 +152,7 @@ var nameFoundInArray = function(compareName, compareArray) {
 	return false;
 }
 
-var makeRolePermissionsTabContent = function(currentGrouping, currentTabData) {
+var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, readOnly) {
 
 	var permissionCode = "";
 	var contentHtml = "";
@@ -160,11 +166,9 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData) {
 		{
 			contentHtml += '<tr><td valign="top"><b>' + doI18N(i) + '</b></td>'
 			permissionCode = i;
-			contentHtml += '<td><input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
-					if (currentTabData.permissions[permissionCode] == true) contentHtml += 'true" checked="true"'
-					else contentHtml += 'false"';
-					contentHtml += '/></td>';
-
+			contentHtml += '<td>';
+			contentHtml += htmlCheckbox(permissionCode, currentTabData.permissions[permissionCode], readOnly);
+			contentHtml += '</td>';
 		}
 		contentHtml += '</table>';
 		return contentHtml;
@@ -203,10 +207,9 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData) {
 				else
 				{
 					permissionCode = i + "_" + singleEntityName;
-					tempLine += '<td valign="top" style="height:60px;"><input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
-					if (currentTabData.permissions[permissionCode] == true) tempLine += 'true" checked="true"'
-					else tempLine += 'false"';
-					tempLine += '/></td>';
+					tempLine += '<td valign="top" style="height:60px;">';
+					tempLine += htmlCheckbox(permissionCode, currentTabData.permissions[permissionCode], readOnly);
+					tempLine += '</td>';
 				}
 			}
 			tempLine += '</tr>';
@@ -242,10 +245,9 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData) {
 			permissionCode = j + "_" + i;
 			if (currentTabData.permissions.hasOwnProperty(permissionCode))
 			{
-				contentHtml += '<td><input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
-				if (currentTabData.permissions[permissionCode] == true) contentHtml += 'true" checked="true"'
-				else contentHtml += 'false"';
-				contentHtml += '/></td>';
+				contentHtml += '<td>';
+				contentHtml += htmlCheckbox(permissionCode, currentTabData.permissions[permissionCode], readOnly);
+				contentHtml += '</td>';
 			}
 			else contentHtml += '<td></td>';
 		}
@@ -256,6 +258,18 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData) {
 	
 }
 
+var htmlCheckbox = function(permissionCode, permissionCodeValue, readOnly) {
+
+	var html = '<input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
+
+	if (permissionCodeValue == true) html += 'true" checked="true"'
+	else html += 'false"';
+
+	if (readOnly == true) html += ' disabled="disabled" ';
+
+	html += '/>';
+	return html;
+}
 
 
 })(jQuery);
