@@ -2,6 +2,9 @@
 //A naming standard is used so its clear what things are being customised
 
 	custom = {
+//default function to display initial page after logon
+		showFirstPage: "",	
+
 // default function to register helpers for jsViews and jsRender functionality 
 // fixes bug with display zero! Also included are some utility functions needed during rendering
 			helperFunctions: "",
@@ -10,6 +13,12 @@
 			showRelatedDataTableInfo: ""
 			};
 
+
+	custom.showFirstPage = function () {
+
+		showILClientListing();
+
+	}
 
 
 	custom.helperFunctions = {

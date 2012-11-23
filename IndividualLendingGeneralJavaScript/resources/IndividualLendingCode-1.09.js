@@ -173,7 +173,6 @@ function executeMultipartUploadAjaxRequest(url, verbType, formData, successFunct
 			}); 
 }
 
-
 // load html functions
 function showMainContainer(containerDivName, username) {
 
@@ -238,7 +237,7 @@ function showMainContainer(containerDivName, username) {
 }
 
 
-function showILLogon(logonDivName) {
+function showLogon(logonDivName) {
 	var htmlVar = '<div id=theLogonForm><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/><div id=appTitle>' + doI18N("app.name") + ' - ' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</div>';
 	htmlVar += '<form name = "logonform"><table id=logonTable><tr><td>' + doI18N("login.username") + ':</td><td><input type="text" name="username"></td></tr>';
 	htmlVar += '<tr><td>' + doI18N("login.password") + ': </td><td><input type="password" name="pwd"></td></tr>';
@@ -2890,7 +2889,7 @@ function setBasicAuthKey(logonDivName, username, password)
 					jQuery.MifosXUI.initialise(data.permissions, applicationProfile, tenantIdentifier );
 
 					showMainContainer(logonDivName, username);
-					showILClientListing();
+					custom.showFirstPage();
 					return false;
 			};
 
@@ -3464,7 +3463,7 @@ function doI18N(xlateStr, params) {
 }
 
 
-function initialiseAndShowILLogon() {
+function initialiseAndShowLogon() {
 	jQuery.support.cors = true;
 
 	setInitialCulture();
@@ -3476,7 +3475,7 @@ function initialiseAndShowILLogon() {
 	applicationProfile = "ALL";
 	if (QueryParameters["applicationProfile"]) applicationProfile = QueryParameters["applicationProfile"];
 
-	showILLogon("container");
+	showLogon("container");
 }
 
 function getBaseApiURL(docURL)

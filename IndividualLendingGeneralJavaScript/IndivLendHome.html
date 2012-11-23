@@ -86,7 +86,7 @@
 $(document).ready(function() {
 
 //IndividualLendingCode.js is the file to look at
-	initialiseAndShowILLogon();
+	initialiseAndShowLogon();
 	
 });
 </script>
@@ -4801,43 +4801,7 @@ $(document).ready(function() {
 </script>
 
 <script id="permissionListTemplate" type="text/x-jquery-tmpl">
-<table id='permissionstable' width='100%'>
-<thead>
-	<tr>
-        <th>{{=$ctx.doI18N("table.heading.permission.type")}}</th>
-		<th>{{=$ctx.doI18N("table.heading.permission.permission")}}</th>
-		<th>{{=$ctx.doI18N("table.heading.permission.description")}}</th>
-	</tr>
-</thead>
-<tbody>
-{{#each crudRows}}
-<tr>
-    <td>
-    {{#if $ctx.number(groupType)===$ctx.number(0)}}
-		Unknown
-	{{/if}}
-	{{#if $ctx.number(groupType)===$ctx.number(1)}}
-		User Administration
-	{{/if}}
-	{{#if $ctx.number(groupType)===$ctx.number(2)}}
-		Organisation Administration
-	{{/if}}
-	{{#if $ctx.number(groupType)===$ctx.number(3)}}
-		Portfolio Management
-	{{/if}}
-	{{#if $ctx.number(groupType)===$ctx.number(4)}}
-		Reporting
-	{{/if}}
-    {{#if $ctx.number(groupType)===$ctx.number(5)}}
-		Migration
-	{{/if}}
-	</td>
-	<td>{{=name}}</td>
-	<td>{{=description}}</td>
-</tr>
-{{/each}}
-</tbody>
-</table>
+	<!-- Just a Stub - html is generated in the MifosXPermissions plugin --->
 </script>
 
 <script id="roleListTemplate" type="text/x-jquery-tmpl">
