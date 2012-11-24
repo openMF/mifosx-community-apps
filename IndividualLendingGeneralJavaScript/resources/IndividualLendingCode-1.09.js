@@ -190,8 +190,8 @@ function showMainContainer(containerDivName, username) {
 //	if (jQuery.MifosXUI.showIt("Checker") == true)
 //		htmlVar += '	<li><a href="unknown.html" onclick="showMakerCheckerListing();return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
 
-	if (jQuery.MifosXUI.showIt("GroupSearch") == true)
-		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
+//	if (jQuery.MifosXUI.showIt("GroupSearch") == true)
+//		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 

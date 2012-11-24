@@ -1506,6 +1506,7 @@ $(document).ready(function() {
 <form id="clientImageForm">
 		<table style="width:100%">
 			<tr>
+				<!--
 				<td>
 					<img id="customerImage" src="resources/img/client-image-placeholder.png" width="100" height="100"/>
 					<br/>
@@ -1515,6 +1516,7 @@ $(document).ready(function() {
 						   		<button id="deleteClientImage"></button>
 					</span>
 				</td>
+				-->
 				<td valign="top" align="left">
 					<br/>
 					<br/>
@@ -1526,10 +1528,6 @@ $(document).ready(function() {
 					<span id="toolbar" class="ui-widget-header ui-corner-all">
 						<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
 						<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
-					
-					{{#if $ctx.showIt("DepositCreate")}}
-						<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
-					{{/if}}
 					
 						<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 						<button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
@@ -2027,85 +2025,6 @@ $(document).ready(function() {
 	</div>
 </div>
 {{/if}}
-
-<p><b>{{=$ctx.doI18N("heading.client.account.depositaccount.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(pendingApprovalDespositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalDespositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each pendingApprovalDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(approvedDespositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedDespositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each approvedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(maturedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.matured")}} ({{=$ctx.number(maturedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each maturedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-{{#if $ctx.numberGreaterThanZero(closedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each closedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(preclosedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.preClosed")}} ({{=$ctx.number(preclosedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each preclosedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(rejectedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.rejected")}} ({{=$ctx.number(rejectedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each rejectedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(withdrawnByClientDespositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawnbyclient")}} ({{=$ctx.number(withdrawnByClientDespositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each withdrawnByClientDespositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-
 {{#else}}
 <div>
 	{{=$ctx.doI18N("label.client.account.no.loans.exist")}}</div>
