@@ -320,7 +320,7 @@ function setOrgAdminContent(divName) {
 //  htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
 //	htmlVar += ' | ';
 //	htmlVar += '	<a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
-	htmlVar += ' | ';
+//	htmlVar += ' | ';
 //	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
 //	htmlVar += ' | ';
 //	htmlVar += '	<a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
@@ -328,8 +328,8 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 	htmlVar += ' | ';	
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
-	htmlVar += ' | ';	
-	
+
+//	htmlVar += ' | ';	
 //	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'code'" + ');return false;" id="viewcodes">' + doI18N("administration.link.view.code") + '</a>';
 //	htmlVar += ' | ';	
 //	htmlVar += '	<a href="unknown.html" onclick="' + addCodeUrl + '" id="addcode">' + doI18N("administration.link.add.code") + '</a>';
@@ -339,8 +339,8 @@ function setOrgAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addEmployeeUrl + '" id="addemployee">' + doI18N("administration.link.add.employee") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
-	htmlVar += ' | ';
+//	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
+//	htmlVar += ' | ';
 //	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
 	htmlVar += ' <br><br> ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
