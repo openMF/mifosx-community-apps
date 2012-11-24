@@ -56,7 +56,7 @@ crudData = {
 				dialogHeight: 550
 			},
 		role: {
-				editTemplateNeeded: true,
+				editTemplateNeeded: false,
 				refreshListNeeded: true,
 				dialogWidth: 1000,
 				dialogHeight: 550
