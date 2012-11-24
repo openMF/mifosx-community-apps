@@ -56,7 +56,7 @@ crudData = {
 				dialogHeight: 550
 			},
 		role: {
-				editTemplateNeeded: true,
+				editTemplateNeeded: false,
 				refreshListNeeded: true,
 				dialogWidth: 1000,
 				dialogHeight: 550
@@ -297,14 +297,14 @@ function setOrgAdminContent(divName) {
 
 	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'POST');return false;";
 	//var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
-	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
+//	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	
-	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
+//	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
 	
 	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
-	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
+//	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
 	var bulkLoanReassignmentUrl = "maintainTable('bulkLoanReassignment', 'staff/loanreassignment', 'POST');return false;";
@@ -321,19 +321,18 @@ function setOrgAdminContent(divName) {
 //	htmlVar += ' | ';
 //	htmlVar += '	<a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
+//	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
+//	htmlVar += ' | ';
+//	htmlVar += '	<a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 	htmlVar += ' | ';	
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
 	htmlVar += ' | ';	
 	
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'code'" + ');return false;" id="viewcodes">' + doI18N("administration.link.view.code") + '</a>';
-	htmlVar += ' | ';	
-	htmlVar += '	<a href="unknown.html" onclick="' + addCodeUrl + '" id="addcode">' + doI18N("administration.link.add.code") + '</a>';
-	
+//	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'code'" + ');return false;" id="viewcodes">' + doI18N("administration.link.view.code") + '</a>';
+//	htmlVar += ' | ';	
+//	htmlVar += '	<a href="unknown.html" onclick="' + addCodeUrl + '" id="addcode">' + doI18N("administration.link.add.code") + '</a>';
 	
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'employee'" + ');return false;" id="viewemployees">' + doI18N("administration.link.view.employees") + '</a>';
@@ -342,7 +341,7 @@ function setOrgAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'charge'" + ');return false;" id="viewcharges">' + doI18N("administration.link.view.charges") + '</a>';
 	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
+//	htmlVar += '	<a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
 	htmlVar += ' <br><br> ';
 	htmlVar += '	<a href="unknown.html" onclick="' + orgCurrencyUrl + '" id="editconfiguration">' + doI18N("administration.link.currency.configuration") + '</a>';
 	htmlVar += ' | ';	

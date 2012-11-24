@@ -2721,14 +2721,6 @@ $(document).ready(function() {
 			<button id="writeoffbtn{{=$parent.parent.parent.data.id}}" class="writeoffloan">Write-off</button>
 			{{/if}}
 			
-			{{#if setGuarantorAllowed}}
-			<button id="setGuarantorbtn{{=$parent.parent.parent.data.id}}" class="setguarantor">{{=$ctx.doI18N("guarantor.button.label")}}</button>
-			{{/if}}
-			
-			{{#if editGuarantorAllowed}}
-			<button id="removeGuarantorbtn{{=$parent.parent.parent.data.id}}" class="removeguarantor">{{=$ctx.doI18N("guarantor.button.label")}}</button>
-			{{/if}}
-	
 			{{#if closeLoanAsRescheduledAllowed}}
 			<button id="closeasrescheduledbtn{{=$parent.parent.parent.data.id}}" class="closeasrescheduledloan">Close as rescheduled</button>
 			{{/if}}
