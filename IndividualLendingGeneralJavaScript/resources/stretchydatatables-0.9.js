@@ -498,7 +498,7 @@ function addUpdateBuildTemplate(requestType, updateRowIndex) {
 
 function addUpdateColDisplayHTML(columnHeader, colVal) {
 
-		var displayHTML = '<td valign="top"><label>' + columnHeader.columnName
+		var displayHTML = '<td valign="top"><label>' + doI18N(columnHeader.columnName)
 				+ ':</label></td><td valign="top">';
 
 		var colNameUnderscore = spaceToUnderscore(columnHeader.columnName);

@@ -164,6 +164,9 @@
 				
 				if (data.length > 0)
 				{
+
+					datatableArray = [];
+
 					switch (appTableName) {	
 					case "m_loan": //exclude m_guarantor_external from default m_loan data table display
 						for (var i in data)
@@ -185,7 +188,7 @@
 						tenantIdentifier: tenantIdentifier,
 						appTableName: appTableName,
 						appTablePKValue: appTablePKValue, 
-						datatableArray: data,
+						datatableArray: datatableArray,
 						globaliseFunctions: custom.helperFunctions,
 						resValue: "resources/libs/",
 
