@@ -1,6 +1,4 @@
 (function($) {
-
-
 /*
 Generate permissions tabs via javascript because didn't know how to do it effectively in jsrender 
 
@@ -67,7 +65,7 @@ This plug-in due expects doI18N function to be available
 	};
 
 
-var displayPermissionsTabs = function(permissionUsageData, outerDiv, readOnly) {
+var displayPermissionsTabs = function(permissionUsageData, outerDiv, isReadOnly) {
 
 	var innerDiv = outerDiv.substring(1) + "InnerDiv";
 	var currentGrouping = "";
@@ -134,7 +132,7 @@ var displayPermissionsTabs = function(permissionUsageData, outerDiv, readOnly) {
 		for (var j in permissionUIData[i].actionNames) permissionUIData[i].actionNamesOrdered[j] = true;
 
 		tabsHtml += '<li><a href="#' + innerDiv + i + '"><span>' + doI18N(currentGrouping) + '</span></a></li>';
-		tabsContentHtml += '<div id="' + innerDiv + i + '">' + makeRolePermissionsTabContent(currentGrouping, permissionUIData[currentGrouping], readOnly) + '</div>';
+		tabsContentHtml += '<div id="' + innerDiv + i + '">' + makeRolePermissionsTabContent(currentGrouping, permissionUIData[currentGrouping], isReadOnly) + '</div>';
 	}
 
 	var html = '<div id="' + innerDiv + '"><ul>' + tabsHtml + '</ul>' + tabsContentHtml + '</div>';
@@ -152,14 +150,15 @@ var nameFoundInArray = function(compareName, compareArray) {
 	return false;
 }
 
-var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, readOnly) {
+var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, isReadOnly) {
 
 	var permissionCode = "";
+	var checkerPermissionCode = "";
 	var contentHtml = "";
 
 	if (currentGrouping == specialRolePermissionTab)
 	{
-//permissions names are in the entityNames array
+//permissions names are in the entityNames array and no checker permissions
 
 		contentHtml = '<table width="50%">';
 		for (var i in currentTabData.entityNames)
@@ -167,7 +166,7 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, re
 			contentHtml += '<tr><td valign="top"><b>' + doI18N(i) + '</b></td>'
 			permissionCode = i;
 			contentHtml += '<td>';
-			contentHtml += htmlCheckbox(permissionCode, currentTabData.permissions[permissionCode], readOnly);
+			contentHtml += fillTaskCell(permissionCode, currentTabData.permissions, isReadOnly);
 			contentHtml += '</td>';
 		}
 		contentHtml += '</table>';
@@ -208,7 +207,7 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, re
 				{
 					permissionCode = i + "_" + singleEntityName;
 					tempLine += '<td valign="top" style="height:60px;">';
-					tempLine += htmlCheckbox(permissionCode, currentTabData.permissions[permissionCode], readOnly);
+					tempLine += fillTaskCell(permissionCode, currentTabData.permissions, isReadOnly);
 					tempLine += '</td>';
 				}
 			}
@@ -246,7 +245,7 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, re
 			if (currentTabData.permissions.hasOwnProperty(permissionCode))
 			{
 				contentHtml += '<td>';
-				contentHtml += htmlCheckbox(permissionCode, currentTabData.permissions[permissionCode], readOnly);
+				contentHtml += fillTaskCell(permissionCode, currentTabData.permissions, isReadOnly);
 				contentHtml += '</td>';
 			}
 			else contentHtml += '<td></td>';
@@ -258,18 +257,23 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, re
 	
 }
 
-var htmlCheckbox = function(permissionCode, permissionCodeValue, readOnly) {
+var fillTaskCell = function(permissionCode, permissionCodeArray, isReadOnly) {
 
-	var html = '<input id="' + permissionCode + '" name="' + permissionCode + '" type="checkbox" value="';
+	var taskCellHtml = htmlCheckBox(permissionCode, permissionCodeArray[permissionCode], isReadOnly);
+	
+	var checkerPermissionCode = permissionCode + '_CHECKER';
+	if (permissionCodeArray.hasOwnProperty(checkerPermissionCode)) taskCellHtml += htmlCheckBox(checkerPermissionCode, permissionCodeArray[checkerPermissionCode], isReadOnly);
 
-	if (permissionCodeValue == true) html += 'true" checked="true"'
+	return taskCellHtml ;
+}
+
+var htmlCheckBox = function(code, val, isReadOnly) {
+	var html = '<input id="' + code + '" name="' + code + '" type="checkbox" value="';
+	if (val == true) html += 'true" checked="true"'
 	else html += 'false"';
-
-	if (readOnly == true) html += ' disabled="disabled" ';
-
+	if (isReadOnly == true) html += ' disabled="disabled" ';
 	html += '/>';
 	return html;
 }
-
 
 })(jQuery);
