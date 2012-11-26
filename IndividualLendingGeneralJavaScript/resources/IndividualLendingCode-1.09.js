@@ -187,8 +187,8 @@ function showMainContainer(containerDivName, username) {
 	if (jQuery.MifosXUI.showIt("ClientSearch") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
 	
-//	if (jQuery.MifosXUI.showIt("Checker") == true)
-//		htmlVar += '	<li><a href="unknown.html" onclick="showMakerCheckerListing();return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
+	if (jQuery.MifosXUI.showIt("Checker") == true)
+		htmlVar += '	<li><a href="unknown.html" onclick="showMakerCheckerListing();return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
 
 	if (jQuery.MifosXUI.showIt("GroupSearch") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
@@ -465,9 +465,9 @@ function setAccountSettingsContent(divName) {
  * operationType: 	{CREATE, UPDATE, DELETE}
  * resource:    	{CLIENTS, OFFICES, etc}
  * resourceId:      	Individual id of client of office resource.
- * makerCheckerId:	Id of the maker checker entry on table
+ * commandId:	Id of the maker checker entry on table
  */
-function viewMakerCheckerEntry(operationType, resource, resourceId, makerCheckerId) {
+function viewMakerCheckerEntry(operationType, resource, resourceId, commandId) {
 
 	var getUrl = resource + '/';
 	
@@ -485,13 +485,13 @@ function viewMakerCheckerEntry(operationType, resource, resourceId, makerChecker
 	
 	switch (operationType) {
 	case "CREATE":
-		getUrl = getUrl + "template?makerCheckerId=" + makerCheckerId;
+		getUrl = getUrl + "template?commandId=" + commandId;
 		break;
 	case "UPDATE":
-		getUrl = getUrl + resourceId + "?template=true&makerCheckerId=" + makerCheckerId;
+		getUrl = getUrl + resourceId + "?template=true&commandId=" + commandId;
 		break;
 	case "DELETE":
-		getUrl = getUrl + resourceId + "?template=true&makerCheckerId=" + makerCheckerId;
+		getUrl = getUrl + resourceId + "?template=true&commandId=" + commandId;
 		break;
 	}
 	
