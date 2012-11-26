@@ -301,7 +301,6 @@ function setOrgAdminContent(divName) {
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	
-	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
 	
 	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
 	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
@@ -328,12 +327,6 @@ function setOrgAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 	htmlVar += ' | ';	
 	htmlVar += '	<a href="unknown.html" onclick="' + addFundUrl + '" id="addfund">' + doI18N("administration.link.add.fund") + '</a>';
-	htmlVar += ' | ';	
-	
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'code'" + ');return false;" id="viewcodes">' + doI18N("administration.link.view.code") + '</a>';
-	htmlVar += ' | ';	
-	htmlVar += '	<a href="unknown.html" onclick="' + addCodeUrl + '" id="addcode">' + doI18N("administration.link.add.code") + '</a>';
-	
 	
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'employee'" + ');return false;" id="viewemployees">' + doI18N("administration.link.view.employees") + '</a>';
@@ -381,8 +374,6 @@ function setUserAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'role'" + ');return false;" id="listroles">' + doI18N("administration.link.view.roles") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addRoleUrl + '" id="addrole">' + doI18N("administration.link.add.role") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'permission'" + ');return false;" id="listpermissions">' + doI18N("administration.link.view.permissions") + '</a>';
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
@@ -392,6 +383,8 @@ function setUserAdminContent(divName) {
 
 function setSysAdminContent(divName) {
 
+	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
+	var maintainMakerCheckerUrl = "maintainTable('permission', 'permissions?makerCheckerable=true', 'PUT');return false;";
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST');return false;";
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
@@ -400,6 +393,15 @@ function setSysAdminContent(divName) {
 	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listusers">' + doI18N("administration.link.view.datatables") + '</a>';
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + registerDatatableUrl + '" id="registerdatatable">' + doI18N("administration.link.register.datatable") + '</a>';
+	htmlVar += ' | ';	
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'code'" + ');return false;" id="viewcodes">' + doI18N("administration.link.view.code") + '</a>';
+	htmlVar += ' | ';	
+	htmlVar += '	<a href="unknown.html" onclick="' + addCodeUrl + '" id="addcode">' + doI18N("administration.link.add.code") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'permission'" + ');return false;" id="listpermissions">' + doI18N("administration.link.view.permissions") + '</a>';
+	htmlVar += ' | ';
+	htmlVar += '	<a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
+
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
@@ -2714,7 +2716,7 @@ function refreshLoanDocuments(loanId) {
 		if (resourceUrl.indexOf("/permissions") > -1) 
 		{
 			templateSelector = "#rolePermissionsFormTemplate";
-			dialogTitle = "dialog.title.role.permissions.details";
+			dialogTitle = "dialog.title.role.permissions.detailsxxx";
 			dialogWidth = 1200;
 			dialogHeight = 500;
 		}
@@ -3173,16 +3175,25 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 
 function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction){
 	var dialogDiv = $("#dialog-form");
-	var formHtml = $(templateSelector).render(data);
-	dialogDiv.html(formHtml);
-
+	var formHtml = "";
 	switch(templateSelector)
 	{
 			case "#rolePermissionsFormTemplate":
+				formHtml = $(templateSelector).render(data);
+				dialogDiv.html(formHtml);
 				jQuery.MifosXPermissions.addRolePermissionsTabs(data, "#rolePermissionsDiv");
   				break;
-			default: //do nothing
+			case "#permissionFormTemplate":
+				formHtml = $(templateSelector).render({dummy: true});
+				dialogDiv.html(formHtml);
+				jQuery.MifosXPermissions.maintainMakerCheckerTabs(data, "#makerCheckerPermissionsDiv");
+  				break;
+			default:
+				formHtml = $(templateSelector).render(data);
+				dialogDiv.html(formHtml);
 	}
+
+
 
 	//attaching charges to loan from popup
 	$('#chargeOptions').change(function(e) {

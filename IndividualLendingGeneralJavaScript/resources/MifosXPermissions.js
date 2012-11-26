@@ -64,6 +64,12 @@ This plug-in due expects doI18N function to be available
 		displayPermissionsTabs(data, outerDiv, true);
 	};
 
+	$.MifosXPermissions.maintainMakerCheckerTabs = function(data, outerDiv) {
+		displayPermissionsTabs(data, outerDiv, false);
+	};
+
+
+
 
 var displayPermissionsTabs = function(permissionUsageData, outerDiv, isReadOnly) {
 

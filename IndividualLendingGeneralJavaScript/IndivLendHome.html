@@ -4804,6 +4804,18 @@ $(document).ready(function() {
 		<div id=permissionsDiv></div>
 </script>
 
+<script id="permissionFormTemplate" type="text/x-jquery-tmpl">
+
+<form id="entityform">
+    <div id="formerrors"></div>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.role.maintainMC")}}</legend>
+		<div id=makerCheckerPermissionsDiv></div>
+	</fieldset>
+</form>
+
+</script>
+
 <script id="roleListTemplate" type="text/x-jquery-tmpl">
 <table id='rolestable' width='100%'>
 <thead>
