@@ -4251,6 +4251,7 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.code.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.code.systemdefined")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -4259,8 +4260,20 @@ $(document).ready(function() {
 <tr>
 	<td>{{=name}}</td>
 	<td>
+	{{#if systemDefined}}
+		{{=$ctx.doI18N("boolean.true")}}
+	{{#else}}
+		{{=$ctx.doI18N("boolean.false")}}
+	{{/if}}
+	</td>
+	<td>
 		<a id='editcode{{=id}}' class='editcode' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='deletecode{{=id}}' class='deletecode' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		{{#if systemDefined}}
+			&nbsp;
+		{{#else}}
+			<a id='deletecode{{=id}}' class='deletecode' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		{{/if}}
+		
 	</td>
 </tr>
 {{/each}}
