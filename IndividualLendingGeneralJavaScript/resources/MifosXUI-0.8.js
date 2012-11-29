@@ -3,8 +3,17 @@
 //This does know about Mifos X Permission checking
 //SUPER_USER not being checked yet
 taskPermissionsMatrix = {
-		CLIENTSEARCH: ["READ_CLIENT"]
+		CLIENTSEARCH: ["READ_CLIENT"],
+		GROUPSEARCH: ["READ_GROUP"]
 	};
+
+
+menuTasksMatrix = {
+		CLIENTSMENU: ["CLIENTSEARCH"],
+		GROUPSMENU: ["GROUPSEARCH"]
+	};
+
+
 
 
 applicationProfiles = ["ALL", "IL"];
@@ -43,7 +52,17 @@ isInitialised = false;
 		//alert("tenant: " + mTenantName );
 	};
 
-	$.MifosXUI.showIt = function(taskName) {
+	$.MifosXUI.showMenu = function(menuName) {
+		if (isInitialised == false)
+		{
+			alert("You haven't initialised MifosXUI");
+			return false;
+		}
+		
+		return showMenu(menuName.toUpperCase());	
+	};
+
+	$.MifosXUI.showTask = function(taskName) {
 		if (isInitialised == false)
 		{
 			alert("You haven't initialised MifosXUI");
@@ -54,11 +73,26 @@ isInitialised = false;
 		if ("Checker" == taskName) {
 			return true;
 		} else {
-			return showIt(taskName.toUpperCase());	
+			return showTask(taskName.toUpperCase());	
 		}
 	};
 
-	function showIt(taskName) {
+	function showMenu(menuName) {
+
+		var menuTasks = menuTasksMatrix [menuName];
+
+//If menuName not found assume 'okay to show' (true)
+		if (typeof menuTasks == "undefined") return true;
+
+		for (var i in menuTasks) 
+		{
+			if (userPermissionsCheck(menuTasks[i]) == true) return true;
+		}
+		return false;
+	}
+
+
+	function showTask(taskName) {
 
 		var tenantNameCheckResult = tenantNameCheck(taskName);
 		switch (tenantNameCheckResult) {

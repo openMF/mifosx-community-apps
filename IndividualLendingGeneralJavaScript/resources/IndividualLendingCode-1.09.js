@@ -184,13 +184,13 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
 
-	if (jQuery.MifosXUI.showIt("ClientSearch") == true)
+	if (jQuery.MifosXUI.showMenu("ClientsMenu") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
 	
-	if (jQuery.MifosXUI.showIt("Checker") == true)
+	if (jQuery.MifosXUI.showTask("Checker") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showMakerCheckerListing();return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
 
-	if (jQuery.MifosXUI.showIt("GroupSearch") == true)
+	if (jQuery.MifosXUI.showMenu("GroupsMenu") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 
 	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
@@ -343,10 +343,10 @@ function setOrgAdminContent(divName) {
 	htmlVar += ' | ';
 	htmlVar += '	<a href="unknown.html" onclick="' + addOfficeUrl + '" id="addoffice">' + doI18N("administration.link.add.office") + '</a>';
 
-	if (jQuery.MifosXUI.showIt("OfficeTransactionList") == true)
+	if (jQuery.MifosXUI.showTask("OfficeTransactionList") == true)
 		htmlVar += ' | <a href="unknown.html" onclick="refreshTableView(' + "'officetransaction'" + ');return false;" id="viewofficetransactions">' + doI18N("administration.link.view.office.money.transfers") + '</a>';
 
-	if (jQuery.MifosXUI.showIt("OfficeTransactionCreate") == true)
+	if (jQuery.MifosXUI.showTask("OfficeTransactionCreate") == true)
 		htmlVar += ' | <a href="unknown.html" onclick="' + officeMoneyTransfer + '" id="internalTransfer">' + doI18N("administration.link.office.money.transfer") + '</a>';
 
 	htmlVar += ' | ';
@@ -568,7 +568,7 @@ function showMakerCheckerListing() {
 
 function showILClientListing() {
 
-	if (jQuery.MifosXUI.showIt("clientSearch") == false)
+	if (jQuery.MifosXUI.showTask("clientSearch") == false)
 	{
 		alert(doI18N("client.search.not.allowed"));
 		return;
@@ -686,7 +686,7 @@ function applyClientSearchFilter(officeHierarchy) {
 //HOME list groups functionality
 function showILGroupListing(){
 
-	if (jQuery.MifosXUI.showIt("groupSearch") == false)
+	if (jQuery.MifosXUI.showTask("groupSearch") == false)
 	{
 		alert(doI18N("group.search.not.allowed"));
 		return;
