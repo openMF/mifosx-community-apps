@@ -304,9 +304,9 @@ function setOrgAdminContent(divName) {
 	
 	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
 	var addChargeUrl = "maintainTable('charge', 'charges', 'POST');return false;";
-	var orgCurrencyUrl = "maintainTable('orgCurrency', 'configurations/currency', 'PUT');return false;";
+	var orgCurrencyUrl = "maintainTable('orgCurrency', 'currencies', 'PUT');return false;";
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
-	var bulkLoanReassignmentUrl = "maintainTable('bulkLoanReassignment', 'staff/loanreassignment', 'POST');return false;";
+	var bulkLoanReassignmentUrl = "maintainTable('bulkLoanReassignment', 'loans/loanreassignment', 'POST');return false;";
 
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 
@@ -2657,8 +2657,8 @@ function refreshLoanDocuments(loanId) {
 
 					var officeId = $(this).attr("data-officeid");
 					var fromLoanOfficerId = $(this).attr("data-fromloanofficerid");
-					var getUrl = "staff/loanreassignment/template?officeId="+officeId+"&fromLoanOfficerId="+fromLoanOfficerId;
-					var postUrl = "staff/loanreassignment";
+					var getUrl = "loans/loanreassignment/template?officeId="+officeId+"&fromLoanOfficerId="+fromLoanOfficerId;
+					var postUrl = "loans/loanreassignment";
 
 					var saveSuccessFunction = function(data, textStatus, jqXHR) {
 					  	$("#dialog-form").dialog("close");

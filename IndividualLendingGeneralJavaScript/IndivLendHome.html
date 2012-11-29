@@ -4335,7 +4335,7 @@ $(document).ready(function() {
 	<td>{{=officeName}}</td>
 	<td>{{=displayName}}</td>
 	<td>
-		{{#if loanOfficerFlag}}
+		{{#if isLoanOfficer}}
 			Yes
 		{{#else}}
 			No
@@ -4343,7 +4343,7 @@ $(document).ready(function() {
 	</td>
 	<td>
 		<a id='editemployee{{=id}}' class='editemployee' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		{{#if loanOfficerFlag}}
+		{{#if isLoanOfficer}}
 			<a id='bulkloanreassignment' class='bulkloanreassignment' href='#' style='margin-right: 5px;' data-officeid="{{=officeId}}" data-fromloanofficerid="{{=id}}">{{=$ctx.doI18N("link.action.bulkloanreassignment")}}</a>	
 		{{/if}}
 		<a id='deleteemployee{{=id}}' class='deleteemployee' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
@@ -4388,8 +4388,8 @@ $(document).ready(function() {
 			</tr>
 			<tr>
 				<td colspan="2">
-					<label for="loanOfficerFlag">{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</label>
-					<input id="loanOfficerFlag" name="loanOfficerFlag" type="checkbox" value="{{=loanOfficerFlag}}"/>
+					<label for="isLoanOfficer">{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</label>
+					<input id="isLoanOfficer" name="isLoanOfficer" type="checkbox" value="{{=isLoanOfficer}}"/>
 				</td>
 			</tr>
 		</table>
@@ -4430,11 +4430,11 @@ $(document).ready(function() {
 			</tr>
 			<tr>
 				<td colspan="2">
-					<label for="loanOfficerFlag">{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</label>
-					{{#if loanOfficerFlag}}
-						<input id="loanOfficerFlag" name="loanOfficerFlag" type="checkbox" value="{{=loanOfficerFlag}}" checked="true"/>
+					<label for="isLoanOfficer">{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</label>
+					{{#if isLoanOfficer}}
+						<input id="isLoanOfficer" name="isLoanOfficer" type="checkbox" value="{{=isLoanOfficer}}" checked="true"/>
 					{{#else}}
-						<input id="loanOfficerFlag" name="loanOfficerFlag" type="checkbox" value="{{=loanOfficerFlag}}"/>
+						<input id="isLoanOfficer" name="isLoanOfficer" type="checkbox" value="{{=isLoanOfficer}}"/>
 					{{/if}}
 				</td>
 			</tr>
