@@ -1,22 +1,48 @@
 (function($) {
 
 //This does know about Mifos X Permission checking
-//SUPER_USER not being checked yet
+//%SUPER_USER not being checked yet
 taskPermissionsMatrix = {
 		CLIENTSEARCH: ["READ_CLIENT"],
+
+		CHECKERINBOX: ["READ_MAKERCHECKER"],
+
 		GROUPSEARCH: ["READ_GROUP"],
+
 		VIEWUSERS: ["READ_USER"],
 		ADDUSER: ["CREATE_USER"],
 		VIEWROLES: ["READ_ROLE"],
-		ADDROLE: ["CREATE_ROLE"]
+		ADDROLES: ["CREATE_ROLE"],
+
+		VIEWLOANPRODUCTS: ["READ_LOANPRODUCT"],
+		ADDLOANPRODUCT: ["CREATE_LOANPRODUCT"],
+		VIEWDEPOSITPRODUCTS: ["READ_DEPOSITPRODUCT"],
+		ADDDEPOSITPRODUCT: ["CREATE_DEPOSITPRODUCT"],
+		VIEWFUNDS: ["READ_FUND"],
+		ADDFUND: ["CREATE_FUND"],
+		VIEWEMPLOYEES: ["READ_STAFF"],
+		ADDEMPLOYEE: ["CREATE_STAFF"],
+		VIEWCHARGES: ["READ_CHARGE"],
+		ADDCHARGE: ["CREATE_CHARGE"],
+		CURRENCYCONFIGURATION: ["UPDATE_CURRENCY"],
+		VIEWOFFICES: ["READ_OFFICE"],
+		ADDOFFICE: ["CREATE_OFFICE"],
+		VIEWOFFICEMONEYTXNS: ["READ_OFFICETRANSACTION"],
+		ADDOFFICEMONEYTXN: ["CREATE_OFFICETRANSACTION"],
+		BULKLOANREASSIGNMENT: ["BULKREASSIGN_LOAN"],
+
+		ADDOFFICEX: ["CREATE_ROLE"],
 	};
 
 
 menuTasksMatrix = {
 		CLIENTSMENU: ["CLIENTSEARCH"],
+		CHECKERMENU: ["CHECKERINBOX"],
 		GROUPSMENU: ["GROUPSEARCH"],
 		USERADMINMENU: ["VIEWUSERS", "ADDUSER", "VIEWROLES", "ADDROLE"],
-		ORGADMINMENU: ["TBD"],
+		ORGADMINMENU: ["VIEWLOANPRODUCTS", "ADDLOANPRODUCT", "VIEWDEPOSITPRODUCTS", "ADDDEPOSITPRODUCT", "VIEWFUNDS", "ADDFUND",
+				"VIEWEMPLOYEES", "ADDEMPLOYEE", "VIEWCHARGES", "ADDCHARGE", "CURRENCYCONFIGURATION",
+				"VIEWOFFICES", "ADDOFFICE", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN", "BULKLOANREASSIGNMENT"],
 		SYSADMINMENU: ["TBD"],
 		REPORTSMENU: ["TBD"]
 	};
@@ -34,7 +60,7 @@ applicationProfileExclusions = {
 	};
 
 tenantNameInclusions = {
-		"HEAVENSFAMILY": ["OFFICETRANSACTIONLIST", "OFFICETRANSACTIONCREATE"]
+		"HEAVENSFAMILY": ["VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"]
 	};
 
 tenantNameExclusions = {
@@ -136,6 +162,9 @@ isInitialised = false;
 
 	function userPermissionsCheck(taskName) {
 
+//remove the next line when super user meaning is definite, till then assume they have permission
+		if (anySuperUser() == true) return true;
+
 		if (hasAllFunctions() == true) return true;
 
 		var taskPermissions = taskPermissionsMatrix[taskName];
@@ -153,6 +182,18 @@ isInitialised = false;
 		for (var i in mUserPermissions) 
 		{
 			if (mUserPermissions[i] == "ALL_FUNCTIONS") return true;
+		}
+		return false;
+	}
+
+	function anySuperUser() {
+
+		for (var i in mUserPermissions) 
+		{
+			if (mUserPermissions[i] == "USER_ADMINISTRATION_SUPER_USER") return true;
+			if (mUserPermissions[i] == "ORGANISATION_ADMINISTRATION_SUPER_USER") return true;
+			if (mUserPermissions[i] == "PORTFOLIO_MANAGEMENT_SUPER_USER") return true;
+			if (mUserPermissions[i] == "REPORTING_SUPER_USER") return true;
 		}
 		return false;
 	}
