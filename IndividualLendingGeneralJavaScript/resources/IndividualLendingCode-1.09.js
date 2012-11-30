@@ -193,20 +193,26 @@ function showMainContainer(containerDivName, username) {
 	if (jQuery.MifosXUI.showMenu("GroupsMenu") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 
-	htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
+	if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true)
+		htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 
-	htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
+	if (jQuery.MifosXUI.showMenu("OrgAdminMenu") == true)
+		htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
 	
-	htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
+	if (jQuery.MifosXUI.showMenu("SysAdminMenu") == true)
+		htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
 
-	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
-	htmlVar += '		<ul>';
-	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting();return false;">' + doI18N("link.reports.all") + '</a></li>';
-	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Client' + "'" + ');return false;">' + doI18N("link.reports.client") + '</a></li>';
-	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Loan' + "'" + ');return false;">' + doI18N("link.reports.loan") + '</a></li>';
-	htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Fund' + "'" + ');return false;">' + doI18N("link.reports.fund") + '</a></li>';
-	htmlVar += '		</ul>';
-	htmlVar += '	</li>';
+	if (jQuery.MifosXUI.showMenu("ReportsMenu") == true)
+	{
+		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
+		htmlVar += '		<ul>';
+		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting();return false;">' + doI18N("link.reports.all") + '</a></li>';
+		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Client' + "'" + ');return false;">' + doI18N("link.reports.client") + '</a></li>';
+		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Loan' + "'" + ');return false;">' + doI18N("link.reports.loan") + '</a></li>';
+		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Fund' + "'" + ');return false;">' + doI18N("link.reports.fund") + '</a></li>';
+		htmlVar += '		</ul>';
+		htmlVar += '	</li>';
+	}
 
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
 	htmlVar += '</ul>';
@@ -367,13 +373,28 @@ function setUserAdminContent(divName) {
 
 	var htmlVar = '<div>';
 	htmlVar += '<span style="float: left">';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'user'" + ');return false;" id="listusers">' + doI18N("administration.link.view.users") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addUserUrl + '" id="adduser">' + doI18N("administration.link.add.user") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'role'" + ');return false;" id="listroles">' + doI18N("administration.link.view.roles") + '</a>';
-	htmlVar += ' | ';
-	htmlVar += '	<a href="unknown.html" onclick="' + addRoleUrl + '" id="addrole">' + doI18N("administration.link.add.role") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("ViewUsers") == true)
+	{
+		htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'user'" + ');return false;" id="listusers">' + doI18N("administration.link.view.users") + '</a>';
+		htmlVar += ' | ';
+	}
+
+	if (jQuery.MifosXUI.showTask("AddUser") == true)
+	{
+		htmlVar += '	<a href="unknown.html" onclick="' + addUserUrl + '" id="adduser">' + doI18N("administration.link.add.user") + '</a>';
+		htmlVar += ' | ';
+	}
+
+	if (jQuery.MifosXUI.showTask("ViewRoles") == true)
+	{
+		htmlVar += '	<a href="unknown.html" onclick="refreshTableView(' + "'role'" + ');return false;" id="listroles">' + doI18N("administration.link.view.roles") + '</a>';
+		htmlVar += ' | ';
+	}
+
+	if (jQuery.MifosXUI.showTask("AddRole") == true)
+		htmlVar += '	<a href="unknown.html" onclick="' + addRoleUrl + '" id="addrole">' + doI18N("administration.link.add.role") + '</a>';
+	
 	htmlVar += '</span>';
 	htmlVar += '</div>';
 	htmlVar += '<br><br>';
