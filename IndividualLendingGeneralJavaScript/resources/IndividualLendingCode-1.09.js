@@ -2716,9 +2716,15 @@ function refreshLoanDocuments(loanId) {
 		if (resourceUrl.indexOf("/permissions") > -1) 
 		{
 			templateSelector = "#rolePermissionsFormTemplate";
-			dialogTitle = "dialog.title.role.permissions.detailsxxx";
+			dialogTitle = "dialog.title.role.permissions.details";
+
 			dialogWidth = 1200;
 			dialogHeight = 500;
+		}
+
+		if (resourceUrl.indexOf("makerCheckerable") > -1) 
+		{//configure maker-checker on maintenance permissions
+				dialogTitle = "dialog.title.maintainMC.details";
 		}
 
 		var getUrl = ''; 
@@ -2983,7 +2989,7 @@ function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, wi
 		executeGetUrlSuccessFunction = function(data, textStatus, jqXHR) {
 			popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height);
 			
-			// TODO - KW - need to support ability to displat 'proposed changes'
+			// TODO - KW - need to support ability to display 'proposed changes'
 			jQuery.MifosXPermissions.addRolePermissionsTabs(data, "#rolePermissionsDiv");
 	  	};
 	}
