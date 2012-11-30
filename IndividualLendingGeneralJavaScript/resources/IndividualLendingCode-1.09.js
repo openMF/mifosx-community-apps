@@ -367,17 +367,7 @@ function setOrgAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("BulkLoanReassignment") == true)
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + bulkLoanReassignmentUrl + '" id="bulkLoanReassignment">' + doI18N("administration.link.bulk.loan.reassignment") + '</a>';	
 
-
-	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
-	var htmlVar = '<div>';
-	htmlVar += '<span style="float: left">';
-	htmlVar += htmlOptions.substring(3);
-	htmlVar += htmlOptions2.substring(3);
-	htmlVar += ' <br><br> ';
-	htmlVar += '</span>';
-	htmlVar += '</div>';
-	htmlVar += '<div id="listplaceholder" ></div>';
-	$("#" + divName).html(htmlVar);
+	$("#" + divName).html(simpleOptionsHtml(htmlOptions.substring(3) + htmlOptions2.substring(3)));
 }
 
 
@@ -399,16 +389,7 @@ function setUserAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("AddRole") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + addRoleUrl + '" id="addrole">' + doI18N("administration.link.add.role") + '</a>';
 	
-
-	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
-	var htmlVar = '<div>';
-	htmlVar += '<span style="float: left">';
-	htmlVar += htmlOptions.substring(3);
-	htmlVar += '</span>';
-	htmlVar += '</div>';
-	htmlVar += '<br><br>';
-	htmlVar += '<div id="listplaceholder" ></div>';
-	$("#" + divName).html(htmlVar);
+	$("#" + divName).html(simpleOptionsHtml(htmlOptions.substring(3)));
 }
 
 function setSysAdminContent(divName) {
@@ -425,16 +406,7 @@ function setSysAdminContent(divName) {
 	htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'permission'" + ');return false;" id="listpermissions">' + doI18N("administration.link.view.permissions") + '</a>';
 	htmlOptions += ' | <a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
 
-
-	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
-	var htmlVar = '<div>';
-	htmlVar += '<span style="float: left">';
-	htmlVar += htmlOptions.substring(3);
-	htmlVar += '</span>';
-	htmlVar += '</div>';
-	htmlVar += '<br><br>';
-	htmlVar += '<div id="listplaceholder" ></div>';
-	$("#" + divName).html(htmlVar);
+	$("#" + divName).html(simpleOptionsHtml(htmlOptions.substring(3)));
 }
 
 
@@ -3761,6 +3733,20 @@ function displayListTable(tableDiv) {
 								"sSearch": doI18N("rpt.search")
 					}
 				} );
+}
+
+
+function simpleOptionsHtml(htmlOptions) {
+
+	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>';
+	htmlVar += '<div>';
+	htmlVar += '<span style="float: left">';
+	htmlVar += htmlOptions;
+	htmlVar += '</span>';
+	htmlVar += '</div>';
+	htmlVar += '<br><br>';
+	htmlVar += '<div id="listplaceholder" ></div>';
+	return htmlVar;
 }
 
 
