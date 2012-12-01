@@ -17,7 +17,6 @@ This plug-in due expects doI18N function to be available
 	permissionActionOrder.push('DELETE');
 	permissionActionOrder.push('CREATEHISTORIC');
 	permissionActionOrder.push('UPDATEHISTORIC');
-	permissionActionOrder.push('PERMISSIONS');
 	permissionActionOrder.push('BULKREASSIGN');
 	permissionActionOrder.push('APPROVE');
 	permissionActionOrder.push('APPROVEINPAST');
@@ -40,6 +39,9 @@ This plug-in due expects doI18N function to be available
 	permissionActionOrder.push('WRITEOFF');
 	permissionActionOrder.push('CLOSEASRESCHEDULED');
 	permissionActionOrder.push('RENEW');
+	permissionActionOrder.push('PERMISSIONS');
+	permissionActionOrder.push('REGISTER');
+	permissionActionOrder.push('DEREGISTER');
 	
 	var permissionGrouping = [];
 	permissionGrouping.push('special');
