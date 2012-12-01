@@ -270,7 +270,10 @@ var fillTaskCell = function(permissionCode, permissionCodeArray, isReadOnly) {
 	var taskCellHtml = htmlCheckBox(permissionCode, permissionCodeArray[permissionCode], isReadOnly);
 	
 	var checkerPermissionCode = permissionCode + '_CHECKER';
-	if (permissionCodeArray.hasOwnProperty(checkerPermissionCode)) taskCellHtml += htmlCheckBox(checkerPermissionCode, permissionCodeArray[checkerPermissionCode], isReadOnly);
+	if (permissionCodeArray.hasOwnProperty(checkerPermissionCode)) 
+	{
+		taskCellHtml += "&nbsp;&nbsp;&nbsp;mc" + htmlCheckBox(checkerPermissionCode, permissionCodeArray[checkerPermissionCode], isReadOnly);
+	}
 
 	return taskCellHtml ;
 }
