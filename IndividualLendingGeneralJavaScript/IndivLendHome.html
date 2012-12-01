@@ -1524,15 +1524,27 @@ $(document).ready(function() {
 				</td>
 				<td valign="top" style="text-align: right">
 					<span id="toolbar" class="ui-widget-header ui-corner-all">
+
+					{{#if $ctx.showTask("EditClient")}}
 						<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
+					{{/if}}
+
+					{{#if $ctx.showTask("AddLoan")}}
 						<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
-					
-					{{#if $ctx.showIt("DepositCreate")}}
+					{{/if}}
+
+					{{#if $ctx.showTask("AddDepositAccount")}}
 						<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
 					{{/if}}
 					
+					{{#if $ctx.showTask("AddClientNote")}}
 						<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
+					{{/if}}
+
+					{{#if $ctx.showTask("DeleteClient")}}
 						<button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
+					{{/if}}
+
 					</span>
 				</td>
 			<tr>

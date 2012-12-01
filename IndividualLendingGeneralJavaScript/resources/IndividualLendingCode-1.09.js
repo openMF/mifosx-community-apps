@@ -3755,8 +3755,8 @@ function displayListTable(tableDiv) {
 
 function simpleOptionsHtml(htmlOptions) {
 
-	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>';
-	htmlVar += '<div>';
+	//var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>';
+	var htmlVar = '<div>';
 	htmlVar += '<span style="float: left">';
 	htmlVar += htmlOptions;
 	htmlVar += '</span>';

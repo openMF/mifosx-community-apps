@@ -145,9 +145,9 @@
 			        return xlateStr;
 			      }
 			},
-			showIt: function(functionalityName) {
+			showTask: function(functionalityName) {
 			      try {
-			    	  return jQuery.MifosXUI.showIt(functionalityName);
+			    	  return jQuery.MifosXUI.showTask(functionalityName);
 			      } catch(e) {
 			        return false;
 			      }
