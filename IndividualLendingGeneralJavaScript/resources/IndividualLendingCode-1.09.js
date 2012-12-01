@@ -399,12 +399,23 @@ function setSysAdminContent(divName) {
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST');return false;";
 
 	var htmlOptions = "";
-	htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listusers">' + doI18N("administration.link.view.datatables") + '</a>';
-	htmlOptions += ' | <a href="unknown.html" onclick="' + registerDatatableUrl + '" id="registerdatatable">' + doI18N("administration.link.register.datatable") + '</a>';
-	htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'code'" + ');return false;" id="viewcodes">' + doI18N("administration.link.view.code") + '</a>';
-	htmlOptions += ' | <a href="unknown.html" onclick="' + addCodeUrl + '" id="addcode">' + doI18N("administration.link.add.code") + '</a>';
-	htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'permission'" + ');return false;" id="listpermissions">' + doI18N("administration.link.view.permissions") + '</a>';
-	htmlOptions += ' | <a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
+	if (jQuery.MifosXUI.showTask("ViewDatatables") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listusers">' + doI18N("administration.link.view.datatables") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("AddDatatable") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="' + registerDatatableUrl + '" id="registerdatatable">' + doI18N("administration.link.register.datatable") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("ViewCodes") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'code'" + ');return false;" id="viewcodes">' + doI18N("administration.link.view.code") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("AddCode") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="' + addCodeUrl + '" id="addcode">' + doI18N("administration.link.add.code") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("ViewPermissions") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'permission'" + ');return false;" id="listpermissions">' + doI18N("administration.link.view.permissions") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("ManagePermissions") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
 
 	$("#" + divName).html(simpleOptionsHtml(htmlOptions.substring(3)));
 }
