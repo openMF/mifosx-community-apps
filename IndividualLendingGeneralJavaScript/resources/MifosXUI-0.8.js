@@ -123,6 +123,17 @@ isInitialised = false;
 		
 	};
 
+	$.MifosXUI.hasDataTablePermission= function(permissionName) {
+		if (isInitialised == false)
+		{
+			alert("You haven't initialised MifosXUI");
+			return false;
+		}
+		
+		return hasDataTablePermission(permissionName);	
+		
+	};
+
 
 	function showMenu(menuName) {
 
@@ -138,6 +149,20 @@ isInitialised = false;
 		return false;
 	}
 
+	function hasDataTablePermission(permissionName) {
+
+//remove the next line when super user meaning is definite, till then assume they have permission
+		if (anySuperUser() == true) return true;
+
+		if (hasAllFunctions() == true) return true;
+
+		for (var i in mUserPermissions)
+		{
+			if (mUserPermissions[i] == permissionName) return true;
+		}
+
+		return false;
+	}
 
 	function showTask(taskName) {
 

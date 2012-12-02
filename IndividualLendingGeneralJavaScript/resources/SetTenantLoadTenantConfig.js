@@ -151,7 +151,15 @@
 			      } catch(e) {
 			        return false;
 			      }
+			},
+			hasDataTablePermission: function(permissionName) {
+			      try {
+			    	  return jQuery.MifosXUI.hasDataTablePermission(permissionName);
+			      } catch(e) {
+			        return false;
+			      }
 			}
+
 
 	};
 

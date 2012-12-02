@@ -138,7 +138,10 @@ function showDataTableOneToOne() {
 		if (dataLength == 0)
 		{
 			var noDataHtml = doI18N("No.Data.Found") + '<br>';
-			noDataHtml += '<button onclick="' + genAddEditPopupClick("POST", currentTableDataInfo.url) + '">' + doI18N("Datatables.Add") + '</button>';
+
+			if (jQuery.MifosXUI.hasDataTablePermission("CREATE_" + currentTableDataInfo.datatableName) == true)
+				noDataHtml += '<button onclick="' + genAddEditPopupClick("POST", currentTableDataInfo.url) + '">' + doI18N("Datatables.Add") + '</button>';
+
 			return noDataHtml ;
 		}
 
@@ -205,8 +208,18 @@ function showDataTableOneToOne() {
 		}
 		htmlVar += '</tr></table><br>';
 
-		htmlVar += '<table><tr><td><button onclick="' + genAddEditPopupClick("PUT", currentTableDataInfo.url, 0) + '">' + doI18N("Datatables.Edit") + '</button></td>';
-		htmlVar += '<td><button onclick="' + genDeletePopupClick(currentTableDataInfo.url) + '">' + doI18N("Datatables.Delete") + '</button></td></tr></table>';
+		htmlVar += '<table><tr><td>'
+
+		if (jQuery.MifosXUI.hasDataTablePermission("UPDATE_" + currentTableDataInfo.datatableName) == true)
+			htmlVar += '<button onclick="' + genAddEditPopupClick("PUT", currentTableDataInfo.url, 0) + '">' + doI18N("Datatables.Edit") + '</button>'
+
+		htmlVar += '</td>';
+		htmlVar += '<td>'
+
+		if (jQuery.MifosXUI.hasDataTablePermission("DELETE_" + currentTableDataInfo.datatableName) == true)
+			htmlVar += '<button onclick="' + genDeletePopupClick(currentTableDataInfo.url) + '">' + doI18N("Datatables.Delete") + '</button>'
+
+		htmlVar += '</td></tr></table>';
 
 		return htmlVar;
 }
@@ -320,8 +333,16 @@ function showDataTableOneToMany() {
 	for (var i in currentTableDataInfo.data.data)
 	{
 		var putUrl = currentTableDataInfo.url + "/" + currentTableDataInfo.data.data[i].row[idColIndex];
-		var buttonFunctions = '<table><tr><td style="padding: 0px;"><button onclick="' + genAddEditPopupClick("PUT", putUrl, i) + '">' + doI18N("Datatables.Edit") + '</button></td>';
-		buttonFunctions += '<td style="padding: 0px;"><button onclick="' + genDeletePopupClick(putUrl) + '">' + doI18N("Datatables.Delete") + '</button></td></tr></table>';
+		var buttonFunctions = '<table><tr><td style="padding: 0px;">'
+		if (jQuery.MifosXUI.hasDataTablePermission("UPDATE_" + currentTableDataInfo.datatableName) == true)
+			buttonFunctions += '<button onclick="' + genAddEditPopupClick("PUT", putUrl, i) + '">' + doI18N("Datatables.Edit") + '</button></td>';
+
+		buttonFunctions += '<td style="padding: 0px;">';
+
+		if (jQuery.MifosXUI.hasDataTablePermission("DELETE_" + currentTableDataInfo.datatableName) == true)
+			buttonFunctions += '<button onclick="' + genDeletePopupClick(putUrl) + '">' + doI18N("Datatables.Delete") + '</button>';
+
+		buttonFunctions += '</td></tr></table>';
 		tableData[i].unshift(buttonFunctions);
 	}
 	dataTableDef.aaData = tableData;
@@ -425,8 +446,13 @@ function showTableReport(editDeleteButtons) {
 	//if edit/delete functionality added in column 1 
 	if (editDeleteButtons == true) adjustTableColumnIndex = 1;
 
-	var htmlVar = '<button onclick="' + genAddEditPopupClick("POST", currentTableDataInfo.url) + '">' + doI18N("Datatables.Add") + '</button>';
-	htmlVar += '<button onclick="' + genDeletePopupClick(currentTableDataInfo.url) + '">' + doI18N("Datatables.DeleteAll") + '</button><br>';
+	var htmlVar = "";
+	if (jQuery.MifosXUI.hasDataTablePermission("CREATE_" + currentTableDataInfo.datatableName) == true)
+		htmlVar += '<button onclick="' + genAddEditPopupClick("POST", currentTableDataInfo.url) + '">' + doI18N("Datatables.Add") + '</button>';
+
+	if (jQuery.MifosXUI.hasDataTablePermission("DELETE_" + currentTableDataInfo.datatableName) == true)
+		htmlVar += '<button onclick="' + genDeletePopupClick(currentTableDataInfo.url) + '">' + doI18N("Datatables.DeleteAll") + '</button><br>';
+
 	htmlVar += '<table cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable" width=100%></table>';
 
 	$('#StretchyReportOutput').html(htmlVar);

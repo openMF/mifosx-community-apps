@@ -58,7 +58,9 @@
 							tabVar.tabs( "add", "#" + riskAnalysisDiv , doI18N("client.riskanalysis.tab.name"));
 							GKRA.refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
 						}
-						else alert(doI18N("gk.risk.analysis.datatable.not.registered"));
+						//user doesn't have read permission for risk_analysis
+						//or else else alert(doI18N("gk.risk.analysis.datatable.not.registered"));
+						//so will not show the tab in both cases
 						break;
 					case "m_loan": //exclude m_guarantor_external from default m_loan data table display
 						for (var i in data)

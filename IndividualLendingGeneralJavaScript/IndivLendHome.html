@@ -5065,12 +5065,19 @@ function showLockinOptions(){
 {{#if displayMode == "view"}}
   {{#if displayButtons == "editDelete"}}
 	<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+
+	{{#if $ctx.hasDataTablePermission("UPDATE_risk_analysis")}}
 		<button id="editclientriskanalysis">{{=$ctx.doI18N("Datatables.Edit")}}</button>
+	{{/if}}
+	{{#if $ctx.hasDataTablePermission("DELETE_risk_analysis")}}
 		<button id="deleteclientriskanalysis">{{=$ctx.doI18N("Datatables.Delete")}}</button>
+	{{/if}}
 	</span>
   {{#else}}
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
+	{{#if $ctx.hasDataTablePermission("CREATE_risk_analysis")}}
    		<button id="addclientriskanalysis">{{=$ctx.doI18N("Datatables.Add")}}</button>
+	{{/if}}
 	</span>
   {{/if}}
 {{/if}}
