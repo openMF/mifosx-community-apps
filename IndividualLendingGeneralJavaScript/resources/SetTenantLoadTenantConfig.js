@@ -3,7 +3,7 @@
 
 	custom = {
 //default function to display initial page after logon
-		showFirstPage: "",	
+			showFirstPage: "",	
 
 // default function to register helpers for jsViews and jsRender functionality 
 // fixes bug with display zero! Also included are some utility functions needed during rendering
@@ -159,19 +159,18 @@
 	custom.showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
   
 		var url = 'datatables?apptable=' + appTableName;
+		var datatableArray = [];
 
 		var successFunction =  function(data, textStatus, jqXHR) {
 				
 				if (data.length > 0)
 				{
 
-					datatableArray = [];
-
 					switch (appTableName) {	
 					case "m_loan": //exclude m_guarantor_external from default m_loan data table display
 						for (var i in data)
 						{
-							if (data[i].registeredTableName != "m_guarantor_external") datatableArray.push(data[i])
+							if (data[i].registeredTableName != "m_guarantor_external") datatableArray.push(data[i]);
 						}
 						break;
 					default:
@@ -199,8 +198,7 @@
 						cancelLabel: doI18N("dialog.button.cancel")				
 					};
 					jQuery.stretchyDataTables.displayAdditionalInfo(additionalInfoParams);
-
-				}
+					}
 			  };
 
 		executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction);	

@@ -822,6 +822,7 @@ function showILClient(clientId) {
 					{
 						refreshLoanSummaryInfo(clientUrl);
 						refreshNoteWidget(clientUrl);
+
 						clientDirty = false;
 					}
 				}
@@ -1349,8 +1350,11 @@ function showILGroup(groupId){
 
 	function refreshNoteWidget(clientUrl) {
 			  	
-		eval(genRefreshNoteWidgetSuccessVar(clientUrl));
-  		executeAjaxRequest(clientUrl + '/notes', 'GET', "", successFunction, formErrorFunction);	  
+		if (jQuery.MifosXUI.showTask("ViewNotes") == true)
+		{
+			eval(genRefreshNoteWidgetSuccessVar(clientUrl));
+  			executeAjaxRequest(clientUrl + '/notes', 'GET', "", successFunction, formErrorFunction);
+		}
 	}
 	function genRefreshNoteWidgetSuccessVar(clientUrl) {
 

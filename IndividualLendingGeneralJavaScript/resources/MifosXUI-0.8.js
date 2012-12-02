@@ -43,6 +43,9 @@ taskPermissionsMatrix = {
 		ADDLOAN: ["CREATE_LOAN"],
 		ADDCLIENTNOTE: ["CREATE_CLIENTNOTE"],
 
+		VIEWNOTES: ["READ_CLIENTNOTE"],
+
+
 
 		ADDDEPOSITACCOUNT: ["CREATE_DEPOSITACCOUNT"]
 	};
@@ -116,13 +119,10 @@ isInitialised = false;
 			return false;
 		}
 		
-		// temp - remove when permissions done
-		if ("Checker" == taskName) {
-			return true;
-		} else {
-			return showTask(taskName.toUpperCase());	
-		}
+		return showTask(taskName.toUpperCase());	
+		
 	};
+
 
 	function showMenu(menuName) {
 
