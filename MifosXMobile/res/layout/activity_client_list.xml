@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    >
+  
+    <LinearLayout
+        android:id="@+id/button_row"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        >
+    <Button
+        android:id="@+id/create_client_btn"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        android:padding="8dp"
+        android:layout_alignParentBottom="true"
+        android:text="Create Client"
+        />
+    
+    <Button
+        android:id="@+id/upload_clients_btn"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        android:padding="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/create_client_btn"
+        android:text="Upload Clients"
+        />
+    </LinearLayout>
+    
+    <Button
+        android:id="@+id/delete_offices_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:textAppearance="@android:style/TextAppearance.Large"
+        android:padding="8dp"
+        android:layout_below="@id/upload_clients_btn"
+        android:layout_toRightOf="@id/create_client_btn"
+        android:text="Delete Offices"
+        />
+    
+    <ListView
+        android:id="@+id/list"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/button_row"
+        android:padding="8dp"
+        android:drawSelectorOnTop="true"
+        />
+
+</RelativeLayout>
+    

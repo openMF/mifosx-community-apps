@@ -1,0 +1,94 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    >
+    
+    <TableLayout
+        android:id="@+id/create_client_form_table"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="12dp"
+        >
+        
+        <TableRow
+            android:id="@+id/first_name_row"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            >
+            <TextView 
+                android:id="@+id/first_name_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="First Name:"
+                />
+            <EditText
+                android:id="@+id/first_name_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="text"
+                />
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/surname_row"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            >
+            <TextView 
+                android:id="@+id/surname_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Surname:"
+                />
+            <EditText
+                android:id="@+id/surname_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="text"
+                />
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/office_name_row"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            >
+            <TextView 
+                android:id="@+id/office_name_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Office:"
+                />
+            <Spinner 
+                android:id="@+id/office_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/save_btn_row"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            >
+            <Button
+                android:id="@+id/save_client_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:text="Save"
+                />
+        </TableRow>
+        
+    </TableLayout>
+    
+</RelativeLayout>

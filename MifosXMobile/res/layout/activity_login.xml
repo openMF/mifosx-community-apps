@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp" >
+
+    <TextView
+        android:id="@+id/username_input_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/TextAppearance.Large"
+        android:text="Username:"
+        tools:context=".LoginActivity" 
+        android:padding="8dp"
+        />
+    
+    <EditText
+        android:id="@+id/username_input_txt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username_input_label"
+        android:inputType="text"
+        android:padding="8dp"
+        />
+    
+    <TextView
+        android:id="@+id/password_input_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username_input_txt"
+        style="@android:style/TextAppearance.Large"
+        android:text="Password:"
+        android:padding="8dp"
+        />
+    
+    <EditText
+        android:id="@+id/password_input_txt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password_input_label"
+        android:inputType="text"
+        android:padding="8dp"
+        />
+    
+	<Button
+        android:id="@+id/login_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password_input_txt"
+        android:layout_alignParentRight="true"
+        android:text="Login"
+        android:padding="8dp"
+        />
+    
+    <Button
+        android:id="@+id/quick_login_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_btn"
+        android:layout_alignParentRight="true"
+        android:text="Quick Login"
+        android:padding="8dp"
+        />
+
+</RelativeLayout>
