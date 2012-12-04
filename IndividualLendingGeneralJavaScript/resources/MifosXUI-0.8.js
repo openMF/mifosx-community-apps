@@ -95,12 +95,12 @@ isInitialised = false;
 
 	$.MifosXUI = {};
 
-	$.MifosXUI.initialise = function(userPermissions, applicationProfile, tenantName) {
+	$.MifosXUI.initialise = function(pUserPermissions, pApplicationProfile, pTenantName, pApplicationMode) {
 
-		mUserPermissions = userPermissions;
-		mApplicationProfile = applicationProfile.toUpperCase();
-		mApplicationMode = applicationMode.toUpperCase();
-		mTenantName = tenantName.toUpperCase();
+		mUserPermissions = pUserPermissions;
+		mApplicationProfile = pApplicationProfile.toUpperCase();
+		mApplicationMode = pApplicationMode.toUpperCase();
+		mTenantName = pTenantName.toUpperCase();
 
 		if (checkApplicationProfile() == false) return;
 
