@@ -1,5 +1,13 @@
 (function($) {
 
+
+//Put any dev UI work that you want on the latest branch but not in production temporarily here
+//It won't be shown unless you pass the query parameter mode=dev
+//You can then use showMenu or showTask as normal to check if it should be displayed
+//Once you are finished development, you can remove from this array and put in taskPermissionsMatrix or menuTasksMatrix 
+		inDevelopmentTasks = ["VIEWLOANPRODUCTS_only_an_example", "SYSADMINMENU_only_an_example"];
+
+
 //This does know about Mifos X Permission checking
 //%SUPER_USER not being checked yet
 taskPermissionsMatrix = {
@@ -91,15 +99,12 @@ isInitialised = false;
 
 		mUserPermissions = userPermissions;
 		mApplicationProfile = applicationProfile.toUpperCase();
+		mApplicationMode = applicationMode.toUpperCase();
 		mTenantName = tenantName.toUpperCase();
 
 		if (checkApplicationProfile() == false) return;
 
 		isInitialised = true;
-
-		//for (var i in mUserPermissions) alert("Perm: " + i + " is " + mUserPermissions[i]);
-		//alert("app: " + mApplicationProfile);
-		//alert("tenant: " + mTenantName );
 	};
 
 	$.MifosXUI.showMenu = function(menuName) {
@@ -137,6 +142,12 @@ isInitialised = false;
 
 	function showMenu(menuName) {
 
+		if (isDevTask(menuName) == true)
+		{
+			if (mApplicationMode == "DEV") return true;
+			else return false;
+		}
+
 		var menuTasks = menuTasksMatrix [menuName];
 
 //If menuName not found assume 'okay to show' (true)
@@ -165,6 +176,12 @@ isInitialised = false;
 	}
 
 	function showTask(taskName) {
+		
+		if (isDevTask(taskName) == true)
+		{
+			if (mApplicationMode == "DEV") return true;
+			else return false;
+		}
 
 		var tenantNameCheckResult = tenantNameCheck(taskName);
 		switch (tenantNameCheckResult) {
@@ -317,7 +334,13 @@ isInitialised = false;
 		return false;
 	}
 
+	function isDevTask(itemName) {
 
-
+		for (var i in inDevelopmentTasks) 
+		{
+			if (inDevelopmentTasks[i] == itemName) return true;
+		}
+		return false;	
+	}
 
 })(jQuery);

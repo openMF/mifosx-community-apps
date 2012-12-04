@@ -3512,6 +3512,9 @@ function initialiseAndShowLogon() {
 	applicationProfile = "ALL";
 	if (QueryParameters["applicationProfile"]) applicationProfile = QueryParameters["applicationProfile"];
 
+	applicationMode = "PROD";
+	if (QueryParameters["mode"]) applicationMode = QueryParameters["mode"];
+
 	showLogon("container");
 }
 
