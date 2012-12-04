@@ -1,15 +1,15 @@
 (function($) {
 
 
-//Put any dev UI work that you want on the latest branch but not in production temporarily here
-//It won't be shown unless you pass the query parameter mode=dev
+//Put any dev UI work that you want on the master branch but not in production temporarily here
+//It won't be shown unless you pass the query parameter 'mode=dev'
 //You can then use showMenu or showTask as normal to check if it should be displayed
 //Once you are finished development, you can remove from this array and put in taskPermissionsMatrix or menuTasksMatrix 
 		inDevelopmentTasks = ["VIEWLOANPRODUCTS_only_an_example", "SYSADMINMENU_only_an_example"];
 
 
-//This does know about Mifos X Permission checking
-//%SUPER_USER not being checked yet
+//This does know about Mifos X Permission checking - each piece of functionality needs to be linked to a Mifos X permission
+//Note: SUPER_USER special permissions not being checked yet and always return true
 taskPermissionsMatrix = {
 		CLIENTSEARCH: ["READ_CLIENT"],
 
@@ -73,22 +73,26 @@ menuTasksMatrix = {
 
 
 
-
-applicationProfiles = ["ALL", "IL"];
-
-applicationProfileInclusions = {
-	};
-
-applicationProfileExclusions = {
-		IL: ["GROUPSEARCH", "ADDDEPOSITACCOUNT", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"]
-	};
-
 tenantNameInclusions = {
 		"HEAVENSFAMILY": ["VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"]
 	};
 
 tenantNameExclusions = {
+		"DEFAULT": ["SYSADMINMENU_only_an_example", "VIEWLOANPRODUCTS_only_an_example"]
 	};
+
+
+//add all application profiles here
+applicationProfiles = ["ALL", "IL"];
+
+applicationProfileExclusions = {
+		IL: ["GROUPSEARCH", "ADDDEPOSITACCOUNT", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"]
+	};
+
+applicationProfileInclusions = {
+	};//probably not needed as only useful to exclude at this point (tenantName inclusions/exclusions processed first)
+
+
 
 isInitialised = false;
 
@@ -142,11 +146,7 @@ isInitialised = false;
 
 	function showMenu(menuName) {
 
-		if (isDevTask(menuName) == true)
-		{
-			if (mApplicationMode == "DEV") return true;
-			else return false;
-		}
+		if (excludeBasedOnQueryParams(menuName) == true) return false;
 
 		var menuTasks = menuTasksMatrix [menuName];
 
@@ -177,39 +177,7 @@ isInitialised = false;
 
 	function showTask(taskName) {
 		
-		if (isDevTask(taskName) == true)
-		{
-			if (mApplicationMode == "DEV") return true;
-			else return false;
-		}
-
-		var tenantNameCheckResult = tenantNameCheck(taskName);
-		switch (tenantNameCheckResult) {
-		case "EXCLUDE":
-			return false;
-			break;
-		case "INCLUDE":
-			break;
-		case "NEITHER":
-			var applicationProfileCheckResult = applicationProfileCheck(taskName);
-			switch (applicationProfileCheckResult) {
-			case "EXCLUDE":
-				return false;
-				break;
-			case "INCLUDE":
-				break;
-			case "NEITHER":
-				break;
-			default:
-				alert("Invalid applicationProfileCheckResult: " + applicationProfileCheckResult);
-				return false;
-			}
-			break;
-		default:
-			alert("Invalid tenantNameCheck: " + tenantNameCheckResult);
-			return false;
-
-		}
+		if (excludeBasedOnQueryParams(taskName) == true) return false;
 
 		return userPermissionsCheck(taskName);
 	}
@@ -281,22 +249,55 @@ isInitialised = false;
 		return false;
 	}
 
+	function excludeBasedOnQueryParams(itemName) {
 
+		if (isDevTask(itemName) == true)
+		{
+			if (mApplicationMode == "DEV") return false;
+			else return true;
+		}
 
+		var tenantNameCheckResult = tenantNameCheck(itemName);
+		switch (tenantNameCheckResult) {
+		case "EXCLUDE":
+			alert(itemName + ": " + tenantNameCheckResult);
+			return true;
+		case "INCLUDE":
+			return false;
+		case "CONTINUE":
+			var applicationProfileCheckResult = applicationProfileCheck(itemName);
+			switch (applicationProfileCheckResult) {
+			case "EXCLUDE":
+				return true;
+			case "INCLUDE":
+				return false;
+			case "CONTINUE":
+				return false;
+			default:
+				alert("Invalid applicationProfileCheckResult: " + applicationProfileCheckResult);
+				return false;
+			}
+			break;
+		default:
+			alert("Invalid tenantNameCheck: " + tenantNameCheckResult);
+			return false;
 
+		}
+
+	}
 
 	function applicationProfileCheck(taskName) {
-		return includeExcludeNeither(taskName, mApplicationProfile, applicationProfileInclusions, applicationProfileExclusions);
+		return includeExcludeCONTINUE(taskName, mApplicationProfile, applicationProfileInclusions, applicationProfileExclusions);
 	}
 
 	function tenantNameCheck(taskName) {
-		return includeExcludeNeither(taskName, mTenantName, tenantNameInclusions, tenantNameExclusions);
+		return includeExcludeCONTINUE(taskName, mTenantName, tenantNameInclusions, tenantNameExclusions);
 	}
 
-	function includeExcludeNeither(taskName, name, inclusions, exclusions) {
+	function includeExcludeCONTINUE(taskName, name, inclusions, exclusions) {
 //If name found and the taskName is included - INCLUDE
 //If name found and the taskName is excluded - EXCLUDE
-//Otherwise (NEITHER)
+//Otherwise (CONTINUE)
 
 		for (var i in inclusions) 
 		{
@@ -320,7 +321,16 @@ isInitialised = false;
 			}
 		}
 
-		return "NEITHER";
+		return "CONTINUE";
+	}
+
+	function isDevTask(itemName) {
+
+		for (var i in inDevelopmentTasks) 
+		{
+			if (inDevelopmentTasks[i] == itemName) return true;
+		}
+		return false;	
 	}
 
 	function checkApplicationProfile() {
@@ -334,13 +344,5 @@ isInitialised = false;
 		return false;
 	}
 
-	function isDevTask(itemName) {
-
-		for (var i in inDevelopmentTasks) 
-		{
-			if (inDevelopmentTasks[i] == itemName) return true;
-		}
-		return false;	
-	}
 
 })(jQuery);
