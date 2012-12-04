@@ -346,7 +346,11 @@ function setOrgAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("AddCharge") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + addChargeUrl + '" id="addcharge">' + doI18N("administration.link.add.charge") + '</a>';
 
-	htmlOptions += '<br><br>';
+	if (htmlOptions > "")
+	{
+		htmlOptions += '<br><br>';
+		htmlOptions = htmlOptions.substring(3)
+	}
 
 	var htmlOptions2 = "";
 	if (jQuery.MifosXUI.showTask("CurrencyConfiguration") == true)
@@ -367,7 +371,12 @@ function setOrgAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("BulkLoanReassignment") == true)
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + bulkLoanReassignmentUrl + '" id="bulkLoanReassignment">' + doI18N("administration.link.bulk.loan.reassignment") + '</a>';	
 
-	$("#" + divName).html(simpleOptionsHtml(htmlOptions.substring(3) + htmlOptions2.substring(3)));
+	if (htmlOptions2 > "")
+	{
+		htmlOptions2 = htmlOptions2.substring(3)
+	}
+
+	$("#" + divName).html(simpleOptionsHtml(htmlOptions + htmlOptions2));
 }
 
 
@@ -389,7 +398,9 @@ function setUserAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("AddRole") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + addRoleUrl + '" id="addrole">' + doI18N("administration.link.add.role") + '</a>';
 	
-	$("#" + divName).html(simpleOptionsHtml(htmlOptions.substring(3)));
+	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
+
+	$("#" + divName).html(simpleOptionsHtml(htmlOptions));
 }
 
 function setSysAdminContent(divName) {
@@ -417,7 +428,9 @@ function setSysAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("ManagePermissions") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
 
-	$("#" + divName).html(simpleOptionsHtml(htmlOptions.substring(3)));
+	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
+
+	$("#" + divName).html(simpleOptionsHtml(htmlOptions));
 }
 
 
