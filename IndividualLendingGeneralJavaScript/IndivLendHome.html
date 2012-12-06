@@ -1675,15 +1675,15 @@ $(document).ready(function() {
 
 	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-	<label for="joiningDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
+	<label for="joinedDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
 	{{#if currentChange}}
 		{{#if currentChange.joinedDate}}
-		<input id="joiningDate" name="joiningDate" title="Previous value was {{=$ctx.globalDate(joinedDate)}}" type="text" class="datepickerfield" value="{{=$ctx.globalDate(currentChange.joinedDate)}}" style="border: thin solid green;"/>
+		<input id="joinedDate" name="joinedDate" title="Previous value was {{=$ctx.globalDate(joinedDate)}}" type="text" class="datepickerfield" value="{{=$ctx.globalDate(currentChange.joinedDate)}}" style="border: thin solid green;"/>
 		{{#else}}
-		<input id="joiningDate" name="joiningDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
+		<input id="joinedDate" name="joinedDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
 		{{/if}}
 	{{#else}}
-	<input id="joiningDate" name="joiningDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
+	<input id="joinedDate" name="joinedDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
 	{{/if}}
 </form>
 </script>
