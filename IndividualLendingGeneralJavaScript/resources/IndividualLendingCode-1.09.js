@@ -3082,129 +3082,133 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 
 function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)  {
 
-				var dialogDiv = $("<div id='dialog-form'></div>");
-				var saveButton = doI18N('dialog.button.save');
-				var cancelButton = doI18N('dialog.button.cancel');
-
-				var serializationOptions = {};
-				serializationOptions["checkboxesAsBools"] = true;
-				
-				var buttonsOpts = {};
-				buttonsOpts[saveButton] = function() {
-					
-					$('#notSelectedClients option').each(function(i) {
-						$(this).attr("selected", "selected");
-					});
-					$('#clientMembers option').each(function(i) {
-						$(this).attr("selected", "selected");
-					});
-
-					$('#notSelectedCharges option').each(function(i) {
-						$(this).attr("selected", "selected");
-					});
-					$('#charges option').each(function(i) {
-						$(this).attr("selected", "selected");
-					});
-				    	
-
-				    $('#notSelectedRoles option').each(function(i) {  
-						$(this).attr("selected", "selected");  
-					});
-				    
-			    	$('#roles option').each(function(i) {  
-			    	   	$(this).attr("selected", "selected");  
-			    	});
-
-					$('#notSelectedItems option').each(function(i) {  
-				    	   $(this).attr("selected", "selected");  
-				    });
-					
-		    		$('#selectedItems option').each(function(i) {  
-		    	   		$(this).attr("selected", "selected");  
-		    		});
-
-					$('#notSelectedCurrencies option').each(function(i) {  
-					    	   	$(this).attr("selected", "selected");  
-					});
-					
-			    	$('#currencies option').each(function(i) {  
-			    	   		$(this).attr("selected", "selected");  
-			    	});
-
-					if (document.changeUserSettingsForm!=undefined) {
-						newUserName = document.changeUserSettingsForm.username.value;
-					}
-
-					var serializedArray = {};
-					
-					if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
-						serializationOptions["checkboxesAsBools"] = false; // send checkboxes values (which contain loans ids) instead of bools
-					} 
-					serializedArray = $('#entityform').serializeObject(serializationOptions);	
-					
-					if (!serializedArray["charges"] && postUrl.substring(0, 13) == "loanproducts/") {
-						serializedArray["charges"] = new Array();
-					}
-					
-					//manipulate serialized array for guarantors
-			    	if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
-			    	   var serializedArray = {};
-			    	   var isChecked = $('#internalGuarantorCheckbox').is(':checked')
-					   if(isChecked){
-			    	   	serializedArray["existingClientId"] = $('#selectedGuarantorIdentifier').val();
-			    	   }else{
-			    	   	serializedArray["externalGuarantor"] = true;
-			    	   	serializedArray["firstname"] = $('#guarantorFirstName').val();
-			    	   	serializedArray["lastname"] = $('#guarantorLastName').val();
-			    	   	serializedArray["dob"] = $('#guarantorDateOfBirth').val();
-			    	   	serializedArray["addressLine1"] = $('#guarantorAddressLine1').val();
-			    	   	serializedArray["addressLine2"] = $('#guarantorAddressLine2').val();
-			    	   	serializedArray["city"] = $('#guarantorCity').val();
-			    	   	serializedArray["zip"] = $('#guarantorZip').val();
-			    	   	serializedArray["mobileNumber"] = $('#guarantorMobileNumber').val();
-			    	   	serializedArray["housePhoneNumber"] = $('#guarantorHouseNumber').val();
-			    	   	serializedArray["locale"] = $('#locale').val();
-			    	   	serializedArray["dateFormat"] = $('#dateFormat').val();
-			    	   }  
-			    	}
-					
-			    	var newFormData = JSON.stringify(serializedArray);
-			    	
-			    	//spl ajax req for webcam and doc upload
-			    	if( templateSelector == '#clientImageWebcamFormTemplate'){
-			    		var imageCanvas = $('#imageCanvas')[0];
-						var imageForUpload = imageCanvas.toDataURL("image/jpeg");
-						executeAjaxRequest(postUrl, submitType, imageForUpload, saveSuccessFunction, formErrorFunction);
-			    	}
-			    	else if (postUrl.toLowerCase().indexOf("documents") >= 0 || postUrl.toLowerCase().indexOf("image") >= 0){
-			    		var formData = new FormData();    
-						formData.append( 'file', $('#file')[0].files[0] );
-						$.each(serializedArray, function (name, val) {
-					        formData.append(name, val);
-					    });	
-			    		executeMultipartUploadAjaxRequest(postUrl, submitType, formData, saveSuccessFunction, formErrorFunction);
-			    	}else{
-			    		executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
-			    	}
-					
-				};
-				
-				buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
-				
-				dialogDiv.dialog({
-				  		title: doI18N(titleCode), 
-				  		width: width, 
-				  		height: height, 
-				  		modal: true,
-				  		buttons: buttonsOpts,
-				  		close: function() {
-				  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
-				  			$(this).remove();
-						},
-				  		open: function (event, ui) {
-				  			repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
-				  		}
-				  	}).dialog('open');
+	var dialogDiv = $("<div id='dialog-form'></div>");
+	var saveButton = doI18N('dialog.button.save');
+	var cancelButton = doI18N('dialog.button.cancel');
+	
+	var serializationOptions = {};
+	serializationOptions["checkboxesAsBools"] = true;
+	
+	var buttonsOpts = {};
+	buttonsOpts[saveButton] = function() {
+		
+		$('#notSelectedClients option').each(function(i) {
+			$(this).attr("selected", "selected");
+		});
+		$('#clientMembers option').each(function(i) {
+			$(this).attr("selected", "selected");
+		});
+		
+		$('#notSelectedCharges option').each(function(i) {
+			$(this).attr("selected", "selected");
+		});
+		$('#charges option').each(function(i) {
+			$(this).attr("selected", "selected");
+		});
+		
+		$('#notSelectedRoles option').each(function(i) {  
+			$(this).attr("selected", "selected");  
+		});
+		
+		$('#roles option').each(function(i) {  
+		   	$(this).attr("selected", "selected");  
+		});
+		
+		$('#notSelectedItems option').each(function(i) {  
+			   $(this).attr("selected", "selected");  
+		});
+		
+		$('#selectedItems option').each(function(i) {  
+			$(this).attr("selected", "selected");  
+		});
+		
+		$('#notSelectedCurrencies option').each(function(i) {  
+		    	   	$(this).attr("selected", "selected");  
+		});
+		
+		$('#currencies option').each(function(i) {  
+		   		$(this).attr("selected", "selected");  
+		});
+		
+		if (document.changeUserSettingsForm!=undefined) {
+			newUserName = document.changeUserSettingsForm.username.value;
+		}
+		
+		var serializedArray = {};
+			
+		if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
+			serializationOptions["checkboxesAsBools"] = false; // send checkboxes values (which contain loans ids) instead of bools
+		} 
+		serializedArray = $('#entityform').serializeObject(serializationOptions);	
+		
+		if (!serializedArray["charges"] && postUrl.substring(0, 13) == "loanproducts/") {
+			serializedArray["charges"] = new Array();
+		}
+			
+		//manipulate serialized array for guarantors
+		if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
+		   var serializedArray = {};
+		   var isChecked = $('#internalGuarantorCheckbox').is(':checked')
+		   if(isChecked){
+		   	serializedArray["existingClientId"] = $('#selectedGuarantorIdentifier').val();
+		   }else{
+		   	serializedArray["externalGuarantor"] = true;
+		   	serializedArray["firstname"] = $('#guarantorFirstName').val();
+		   	serializedArray["lastname"] = $('#guarantorLastName').val();
+		   	serializedArray["dob"] = $('#guarantorDateOfBirth').val();
+		   	serializedArray["addressLine1"] = $('#guarantorAddressLine1').val();
+		   	serializedArray["addressLine2"] = $('#guarantorAddressLine2').val();
+		   	serializedArray["city"] = $('#guarantorCity').val();
+		   	serializedArray["zip"] = $('#guarantorZip').val();
+		   	serializedArray["mobileNumber"] = $('#guarantorMobileNumber').val();
+		   	serializedArray["housePhoneNumber"] = $('#guarantorHouseNumber').val();
+		   	serializedArray["locale"] = $('#locale').val();
+		   	serializedArray["dateFormat"] = $('#dateFormat').val();
+		   }  
+		}
+		
+		var newFormData = JSON.stringify(serializedArray);
+		if (postUrl.toLowerCase().indexOf("permissions") > -1) {
+			var permissions = {};
+			permissions.permissions = serializedArray;
+			newFormData = JSON.stringify(permissions);
+		}
+	
+		//spl ajax req for webcam and doc upload
+		if( templateSelector == '#clientImageWebcamFormTemplate'){
+			var imageCanvas = $('#imageCanvas')[0];
+			var imageForUpload = imageCanvas.toDataURL("image/jpeg");
+			executeAjaxRequest(postUrl, submitType, imageForUpload, saveSuccessFunction, formErrorFunction);
+		}
+		else if (postUrl.toLowerCase().indexOf("documents") >= 0 || postUrl.toLowerCase().indexOf("image") >= 0){
+			var formData = new FormData();    
+			formData.append( 'file', $('#file')[0].files[0] );
+			$.each(serializedArray, function (name, val) {
+		        formData.append(name, val);
+		    });	
+			executeMultipartUploadAjaxRequest(postUrl, submitType, formData, saveSuccessFunction, formErrorFunction);
+		}else{
+			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
+		}
+	};
+	// end of buttonsOpts for save button
+	
+	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+	
+	dialogDiv.dialog({
+	  		title: doI18N(titleCode), 
+	  		width: width, 
+	  		height: height, 
+	  		modal: true,
+	  		buttons: buttonsOpts,
+	  		close: function() {
+	  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+	  			$(this).remove();
+			},
+	  		open: function (event, ui) {
+	  			repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+	  		}
+	  	}).dialog('open');
 }
 
 function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction){
