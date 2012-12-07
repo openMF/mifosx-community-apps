@@ -2300,7 +2300,11 @@ $(document).ready(function() {
 		<button id="deletebtn{{=$parent.parent.parent.data.id}}" class="deletedepositapplication">Delete</button>
 		{{/if}}
 		
-		{{#if undoApprovalAllowed}}
+	    {{#if undoApprovalAllowed}}
+	     <button id="printbtn{{=$parent.parent.parent.data.id}}" class="printpdf">Print</button>
+	    {{/if}}
+	
+        {{#if undoApprovalAllowed}}
 		<button id="undoapprovebtn{{=$parent.parent.parent.data.id}}" class="undoapprovedepositapplication">Undo Approval</button>
 		{{/if}}
 	</span>
@@ -2423,7 +2427,46 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.interest.rate.on.preclose")}}</span>
 			<span class="rowvalue">{{=$ctx.decimal(preClosureInterestRate, 4)}}%</span>
 		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.lockin.period")}}</span>
+			{{#if isLockinPeriodAllowed}}
+			<span class="rowvalue">{{=lockinPeriod}} month(s).</span>
+			{{else}}
+			<span class="rowvalue">Not applicable.</span>
+			{{/if}}
+		</div>
 </div>
+<div>
+    {{#if transactions}}
+	<!-- Third loan tab -->
+	<div id="transactions{{=transactionId}}" style="margin-top: 5px;">
+		<table class="pretty displaypayments">
+		<caption>{{=$ctx.doI18N("tab.client.account.deposit.transactions.caption")}}</caption>
+			<thead>
+				<tr>
+				<th>{{=$ctx.doI18N("deposit.account.show.transactions.table.column.heading.transactiondate")}}</th>
+				<th>{{=$ctx.doI18N("deposit.account.show.transactions.table.column.heading.transactionType")}}</th>
+				<th>{{=$ctx.doI18N("deposit.account.show.transactions.table.column.heading.amount")}}</th>
+				<th>{{=$ctx.doI18N("deposit.account.show.transactions.table.column.heading.interest")}}</th>
+				<th>{{=$ctx.doI18N("deposit.account.show.transactions.table.column.heading.total")}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each transactions}}
+				<tr>
+				<td>{{=$ctx.globalDate(transactionDate)}}</td>
+				<td>{{=$ctx.doI18N(transactionType.code)}}</td>
+				<td>{{=$ctx.decimal(transactionAmount, 2)}}</td>
+				<td>{{=$ctx.decimal(interestAmount, 2)}}</td>
+				<td>{{=$ctx.decimal(total, 2)}}</td>					
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/if}}
+</div>
+
 </script>
 
 <script id="stateTransitionDepositFormTemplate" type="text/x-jquery-tmpl">
