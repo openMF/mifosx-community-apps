@@ -158,9 +158,14 @@
 			      } catch(e) {
 			        return false;
 			      }
+			},
+			showJson: function(commandAsJson) {
+			      try {
+			    	  return showJson(commandAsJson);
+			      } catch(e) {
+			        return commandAsJson;
+			      }
 			}
-
-
 	};
 
 

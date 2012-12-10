@@ -5114,14 +5114,14 @@ function showLockinOptions(){
 <table id='auditstable' width='100%'>
 	<thead>
 		<tr>
-			<th>{{=$ctx.doI18N("table.heading.audit.id")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.audit.maker")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.audit.resource")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.audit.checker")}}</th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.resource")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.checker")}}</b></th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -5131,8 +5131,8 @@ function showLockinOptions(){
 	<td>{{=id}}</td>
 	<td>{{=$ctx.globalDate(madeOnDate)}}</td>
 	<td>{{=maker}}</td>
-	<td>{{=apiOperation}}</td>
-	<td>{{=resource}}</td>
+	<td>{{=$ctx.doI18N(apiOperation)}}</td>
+	<td>{{=$ctx.doI18N(resource)}}</td>
 	<td>{{=resourceId}}</td>
 	<td>{{=$ctx.globalDate(checkedOnDate)}}</td>
 	<td>{{=checker}}</td>
@@ -5145,6 +5145,40 @@ function showLockinOptions(){
 </table>
 </script>
 
+
+<script id="auditEntryTemplate" type="text/x-jquery-tmpl">
+
+<table width='100%'>
+	<thead>
+		<tr>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.resource")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.checker")}}</b></th>
+		</tr>
+	</thead>
+	<tbody>
+<tr>
+	<td>{{=crudRows.id}}</td>
+	<td>{{=$ctx.globalDate(crudRows.madeOnDate)}}</td>
+	<td>{{=crudRows.maker}}</td>
+	<td>{{=$ctx.doI18N(crudRows.apiOperation)}}</td>
+	<td>{{=$ctx.doI18N(crudRows.resource)}}</td>
+	<td>{{=crudRows.resourceId}}</td>
+	<td>{{=$ctx.globalDate(crudRows.checkedOnDate)}}</td>
+	<td>{{=crudRows.checker}}</td>
+</tr>
+	</tbody>
+</table>
+<hr>
+
+{{=$ctx.showJson(crudRows.commandAsJson))!}}
+
+</script>
 
 
 

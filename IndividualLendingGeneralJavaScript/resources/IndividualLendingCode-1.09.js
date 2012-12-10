@@ -3570,7 +3570,7 @@ function viewAudits(auditSearchOptions) {
 					
 					var linkId = this.id;
 					var entityId = linkId.replace("viewaudit", "");
-					alert("showing: " + entityId);
+					viewAuditEntry(entityId)
 					e.preventDefault();
 				});
 				
@@ -3579,8 +3579,40 @@ function viewAudits(auditSearchOptions) {
 	};
 		
 	executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
-
 }
+
+function viewAuditEntry(auditId) {
+
+	var url = 'audit/' + auditId;
+
+	var successFunction = function(data, textStatus, jqXHR) {
+
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var obj = new Object();
+		obj.crudRows = data;
+		var html = $("#auditEntryTemplate").render(obj);
+		dialogDiv.append(html);
+		
+		var closeButton = doI18N('dialog.button.close');
+		var buttonsOpts = {};	
+		buttonsOpts[closeButton] = function() {$(this).dialog( "close" );};
+		
+		dialogDiv.dialog({
+		  		title: doI18N("view.audit.entry"), 
+		  		width: 1200, 
+		  		height: 500, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+	  			close: function() {
+	  				$(this).remove();
+				}
+		  }).dialog('open');
+
+	};
+		
+	executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
+}
+
 
 
 
@@ -3732,6 +3764,35 @@ function showNotAvailableDialog(titleCode) {
 		 }).dialog('open');
 }
 	
+function showJson(commandAsJson) {
+
+	var html = "";
+	jsonObj = JSON.parse(commandAsJson);
+	if (jsonObj.permissions) jsonObj = jsonObj.permissions;
+	//alert(jsonObj.length)
+	//if (jsonObj.length > 0)
+	//{
+		html += "<table>";
+		for (var i in jsonObj)
+		{
+			html += "<tr>";
+			html += "<td>";
+			html += "<b>" + doI18N(i) + ": </b>";
+			html += "</td>";
+
+			html += "<td>";
+			html += jsonObj[i];
+			html += "</td>";
+
+			html += "</tr>";
+		}
+		html += "</table>";
+	//}
+
+	
+	return html;
+}
+
 $.fn.serializeObject = function(serializationOptions)
 {
 	var o = {};
