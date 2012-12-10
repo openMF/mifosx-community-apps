@@ -5083,12 +5083,38 @@ function showLockinOptions(){
 </script>
 
 
+<!-- Audit Search -->
+<script id="auditSearchTemplate" type="text/x-jquery-tmpl">
+	<table><tr>
+		<td>
+			<label for="audittask">{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</label>
+			<select name="audittask" id="audittask" >
+				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
+				<option value="CREATE">{{=$ctx.doI18N("CREATE")}}</option>
+				<option value="UPDATE">{{=$ctx.doI18N("UPDATE")}}</option>
+			</select>
+		</td>
+		<td>
+			<label for="auditresource">{{=$ctx.doI18N("table.heading.audit.resource")}}</label>
+			<select name="auditresource" id="auditresource" >
+				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
+				<option value="Clients">{{=$ctx.doI18N("Clients")}}</option>
 
+			</select>
+		</td>
+		<td>
+			<button type="submit" class="searchaudit" id="searchaudit" name="_eventId_submit">{{=$ctx.doI18N("search_audit")}}</button>
+		</td>
+	</tr></table>
+	<div id="auditSearchResults"></div>
+	
+</script>
 
 <script id="auditListTemplate" type="text/x-jquery-tmpl">
 <table id='auditstable' width='100%'>
 	<thead>
 		<tr>
+			<th>{{=$ctx.doI18N("table.heading.audit.id")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.audit.maker")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</th>
@@ -5102,6 +5128,7 @@ function showLockinOptions(){
 	<tbody>
 {{#each crudRows}}
 <tr>
+	<td>{{=id}}</td>
 	<td>{{=$ctx.globalDate(madeOnDate)}}</td>
 	<td>{{=maker}}</td>
 	<td>{{=apiOperation}}</td>

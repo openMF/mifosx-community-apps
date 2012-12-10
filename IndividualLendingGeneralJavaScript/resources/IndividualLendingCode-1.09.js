@@ -429,7 +429,7 @@ function setSysAdminContent(divName) {
 		htmlOptions += ' | <a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
 
 	if (jQuery.MifosXUI.showTask("ViewAudits") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="viewAudits();return false;" id="viewaudits">' + doI18N("administration.link.view.audits") + '</a>';
+		htmlOptions += ' | <a href="unknown.html" onclick="auditSearch();return false;" id="viewaudits">' + doI18N("administration.link.view.audits") + '</a>';
 
 	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
 
@@ -3518,14 +3518,52 @@ function signOut(containerDivName) {
 	alert("Close the Browser for a Complete Sign Out");
 }
 
-function viewAudits() {
 
-		var successFunction = function(data, textStatus, jqXHR) {
+//Audit functionality
+function auditSearch() {
+
+	// not yet var successFunction = function(data, textStatus, jqXHR) {
+
+			// not yet var crudObject = new Object();
+			// not yet crudObject.crudRows = data;
+			var html = $("#auditSearchTemplate").render();
+			$("#listplaceholder").html(html);  
+			
+			$('#searchaudit').button().click(function(e) {
+				var auditSearchOptions = {};
+				var auditTask = $('#audittask').find(":selected").val();
+				if (!(auditTask == "ALL")) auditSearchOptions.apiOperation = $('#audittask').find(":selected").val();
+				var auditResource = $('#auditresource').find(":selected").val();
+				if (!(auditResource == "ALL")) auditSearchOptions.resource = $('#auditresource').find(":selected").val();
+
+				viewAudits(auditSearchOptions);
+			    	e.preventDefault();
+			});
+
+	// not yet };
+		
+  	// not yet executeAjaxRequest('audit', 'GET', "", successFunction, formErrorFunction);
+
+}
+
+function viewAudits(auditSearchOptions) {
+
+	var url = 'audit';
+	var paramCount = 1;
+	for (var i in auditSearchOptions)
+	{
+		if (paramCount > 1) url += "&"
+		else url += "?";
+		url += encodeURIComponent(i) + "=" + encodeURIComponent(auditSearchOptions[i]);
+		paramCount = paramCount + 1;
+	}	
+
+	var successFunction = function(data, textStatus, jqXHR) {
 
 				var crudObject = new Object();
 				crudObject.crudRows = data;
 				var html = $("#auditListTemplate").render(crudObject);
-				$("#listplaceholder").html(html);  
+				$("#auditSearchResults").html(html);  
 
 
 				$("a.viewaudit").click( function(e) {
@@ -3538,11 +3576,11 @@ function viewAudits() {
 				
 
 				var oTable = displayEnhancedListTable("auditstable");
-		};
+	};
 		
-  		executeAjaxRequest('audit', 'GET', "", successFunction, formErrorFunction);
+	executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
 
-	}
+}
 
 
 
@@ -3823,6 +3861,7 @@ function displayListTable(tableDiv) {
 function displayEnhancedListTable(tablediv) {
 
 	return  $("#" + tablediv).dataTable( {
+		"aaSorting": [], //disable initial sort
 		"sDom": 'lfTip<"top"<"clear">>rt',
 		"oTableTools": {
 				"aButtons": [{	"sExtends": "copy",
