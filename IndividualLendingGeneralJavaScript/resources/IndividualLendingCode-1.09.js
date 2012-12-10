@@ -91,7 +91,6 @@ crudData = {
 				dialogWidth: 900,
 				dialogHeight: 300
 			}
-
 		};
 
 saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
@@ -428,6 +427,9 @@ function setSysAdminContent(divName) {
 
 	if (jQuery.MifosXUI.showTask("ManagePermissions") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("ViewAudits") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="viewAudits();return false;" id="viewaudits">' + doI18N("administration.link.view.audits") + '</a>';
 
 	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
 
@@ -3515,6 +3517,36 @@ function signOut(containerDivName) {
 	$("#" + containerDivName).html("");
 	alert("Close the Browser for a Complete Sign Out");
 }
+
+function viewAudits() {
+
+		var successFunction = function(data, textStatus, jqXHR) {
+
+				var crudObject = new Object();
+				crudObject.crudRows = data;
+				var html = $("#auditListTemplate").render(crudObject);
+				$("#listplaceholder").html(html);  
+
+
+				$("a.viewaudit").click( function(e) {
+					
+					var linkId = this.id;
+					var entityId = linkId.replace("viewaudit", "");
+					alert("showing: " + entityId);
+					e.preventDefault();
+				});
+				
+
+				var oTable = displayEnhancedListTable("auditstable");
+		};
+		
+  		executeAjaxRequest('audit', 'GET', "", successFunction, formErrorFunction);
+
+	}
+
+
+
+
 //utility functions
 
 highlightMissingXlations = "N";
@@ -3787,6 +3819,45 @@ function displayListTable(tableDiv) {
 					}
 				} );
 }
+
+function displayEnhancedListTable(tablediv) {
+
+	return  $("#" + tablediv).dataTable( {
+		"sDom": 'lfTip<"top"<"clear">>rt',
+		"oTableTools": {
+				"aButtons": [{	"sExtends": "copy",
+							"sButtonText": doI18N("Copy to Clipboard")
+									}, 
+						{	"sExtends": "xls",
+							"sButtonText": doI18N("Save to CSV")
+						}
+						],
+				"sSwfPath": "resources/libs/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
+			        },
+			        
+		"sPaginationType": "full_numbers",
+		"oLanguage": {
+					"sEmptyTable": doI18N("rpt.no.entries"),
+					"sZeroRecords": doI18N("rpt.no.matching.entries"),
+					"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
+					"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
+        				"oPaginate": {
+            						"sFirst"    : doI18N("rpt.first"),
+            						"sLast"     : doI18N("rpt.last"),
+            						"sNext"     : doI18N("rpt.next"),
+            						"sPrevious" : doI18N("rpt.previous")
+        						},
+					"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
+					"sSearch": doI18N("rpt.search")
+				},
+		"bDeferRender": true,
+		"bProcessing": true,
+		"aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]]
+	})
+
+}
+
+
 
 
 function simpleOptionsHtml(htmlOptions) {

@@ -5,7 +5,7 @@
 //It won't be shown unless you pass the query parameter 'mode=dev'
 //You can then use showMenu or showTask as normal to check if it should be displayed
 //Once you are finished development, you can remove from this array and put in taskPermissionsMatrix or menuTasksMatrix 
-		inDevelopmentTasks = ["VIEWLOANPRODUCTS_only_an_example", "SYSADMINMENU_only_an_example"];
+		inDevelopmentTasks = ["VIEWAUDITS", "VIEWLOANPRODUCTS_only_an_example", "SYSADMINMENU_only_an_example"];
 
 
 //This does know about Mifos X Permission checking - each piece of functionality needs to be linked to a Mifos X permission
@@ -44,6 +44,7 @@ taskPermissionsMatrix = {
 		ADDCODE: ["CREATE_CODE"],
 		VIEWPERMISSIONS: ["READ_PERMISSION"],
 		MANAGEPERMISSIONS: ["UPDATE_PERMISSION"],
+		VIEWAUDITS: ["READ_AUDIT"],
 
 		EDITCLIENT: ["UPDATE_CLIENT", "PORTFOLIO_MANAGEMENT_SUPER_USER"],
 		DELETECLIENT: ["DELETE_CLIENT", "PORTFOLIO_MANAGEMENT_SUPER_USER"],
@@ -66,7 +67,7 @@ menuTasksMatrix = {
 		ORGADMINMENU: ["VIEWLOANPRODUCTS", "ADDLOANPRODUCT", "VIEWDEPOSITPRODUCTS", "ADDDEPOSITPRODUCT", "VIEWFUNDS", "ADDFUND",
 				"VIEWEMPLOYEES", "ADDEMPLOYEE", "VIEWCHARGES", "ADDCHARGE", "CURRENCYCONFIGURATION",
 				"VIEWOFFICES", "ADDOFFICE", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN", "BULKLOANREASSIGNMENT"],
-		SYSADMINMENU: ["VIEWDATATABLES", "REGISTERDATATABLE", "VIEWCODES", "ADDCODE", "VIEWPERMISSIONS", "MANAGEPERMISSIONS"]
+		SYSADMINMENU: ["VIEWDATATABLES", "REGISTERDATATABLE", "VIEWCODES", "ADDCODE", "VIEWPERMISSIONS", "MANAGEPERMISSIONS", "VIEWAUDITS"]
 		// api only brings back reports that are permitted so this is not needed REPORTSMENU: ["TBD"]
 	};
 

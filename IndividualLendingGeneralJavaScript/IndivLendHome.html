@@ -5084,6 +5084,43 @@ function showLockinOptions(){
 
 
 
+
+<script id="auditListTemplate" type="text/x-jquery-tmpl">
+<table id='auditstable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.audit.maker")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.audit.resource")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.audit.checker")}}</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+{{#each crudRows}}
+<tr>
+	<td>{{=$ctx.globalDate(madeOnDate)}}</td>
+	<td>{{=maker}}</td>
+	<td>{{=apiOperation}}</td>
+	<td>{{=resource}}</td>
+	<td>{{=resourceId}}</td>
+	<td>{{=$ctx.globalDate(checkedOnDate)}}</td>
+	<td>{{=checker}}</td>
+	<td>
+		<a id='viewaudit{{=id}}' class='viewaudit' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewaudit")}}</a>
+	</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
+
+
+
 <!--GK Risk Analysis View/Add/Edit-->
 <script id="clientRiskAnalysisFormTemplate" type="text/x-jquery-tmpl">
 
