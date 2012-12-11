@@ -3524,7 +3524,7 @@ function auditSearch() {
 
 	var successFunction = function(data, textStatus, jqXHR) {
 			var html = $("#auditSearchTemplate").render(data);
-			alert(html)
+			
 			$("#listplaceholder").html(html);  
 			
 			$('#searchaudit').button().click(function(e) {

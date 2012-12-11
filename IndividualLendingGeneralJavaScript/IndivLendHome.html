@@ -5090,16 +5090,18 @@ function showLockinOptions(){
 			<label for="audittask">{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</label>
 			<select name="audittask" id="audittask" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-				<option value="CREATE">{{=$ctx.doI18N("CREATE")}}</option>
-				<option value="UPDATE">{{=$ctx.doI18N("UPDATE")}}</option>
+			{{#each apiOperations}}
+				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
+	    		{{/each}}
 			</select>
 		</td>
 		<td>
 			<label for="auditresource">{{=$ctx.doI18N("table.heading.audit.resource")}}</label>
 			<select name="auditresource" id="auditresource" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-				<option value="Clients">{{=$ctx.doI18N("Clients")}}</option>
-
+			{{#each resources}}
+				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
+	    		{{/each}}
 			</select>
 		</td>
 		<td>
