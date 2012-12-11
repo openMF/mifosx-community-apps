@@ -3766,29 +3766,34 @@ function showNotAvailableDialog(titleCode) {
 	
 function showJson(commandAsJson) {
 
-	var html = "";
 	jsonObj = JSON.parse(commandAsJson);
 	if (jsonObj.permissions) jsonObj = jsonObj.permissions;
-	//alert(jsonObj.length)
-	//if (jsonObj.length > 0)
-	//{
-		html += "<table>";
-		for (var i in jsonObj)
+
+	var html = "";
+
+	var colNo = 0;
+	for (var i in jsonObj)
+	{
+		colNo += 1;
+		if (colNo == 1) html += "<tr>";
+		else html += '<td width="100px"></td>';
+
+		html += "<td>";
+		html += "<b>" + doI18N(i) + ": </b>";
+		html += "</td>";
+		html += "<td>";
+		html += jsonObj[i];
+		html += "</td>";
+
+		if (colNo == 2) 
 		{
-			html += "<tr>";
-			html += "<td>";
-			html += "<b>" + doI18N(i) + ": </b>";
-			html += "</td>";
-
-			html += "<td>";
-			html += jsonObj[i];
-			html += "</td>";
-
+			colNo = 0;
 			html += "</tr>";
 		}
-		html += "</table>";
-	//}
+	}
+	if (colNo == 1) html += '<td></td><td></td><td></td></tr>';
 
+	if (html > "") html = '<table width="100%">' + html + "</table>";
 	
 	return html;
 }
