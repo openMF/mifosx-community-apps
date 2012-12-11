@@ -3522,27 +3522,33 @@ function signOut(containerDivName) {
 //Audit functionality
 function auditSearch() {
 
-	// not yet var successFunction = function(data, textStatus, jqXHR) {
-
-			// not yet var crudObject = new Object();
-			// not yet crudObject.crudRows = data;
-			var html = $("#auditSearchTemplate").render();
+	var successFunction = function(data, textStatus, jqXHR) {
+			var html = $("#auditSearchTemplate").render(data);
+			alert(html)
 			$("#listplaceholder").html(html);  
 			
 			$('#searchaudit').button().click(function(e) {
 				var auditSearchOptions = {};
 				var auditTask = $('#audittask').find(":selected").val();
-				if (!(auditTask == "ALL")) auditSearchOptions.apiOperation = $('#audittask').find(":selected").val();
+				if (!(auditTask == "ALL")) auditSearchOptions.apiOperation = auditTask;
+
 				var auditResource = $('#auditresource').find(":selected").val();
-				if (!(auditResource == "ALL")) auditSearchOptions.resource = $('#auditresource').find(":selected").val();
+				if (!(auditResource == "ALL")) auditSearchOptions.resource = auditResource;
+
+				var auditMaker = $('#auditmaker').find(":selected").val();
+				if (!(auditMaker == "ALL")) auditSearchOptions.makerId = auditMaker;
+
+				var auditChecker = $('#auditchecker').find(":selected").val();
+				if (!(auditChecker == "ALL")) auditSearchOptions.checkerId = auditChecker;
+
 
 				viewAudits(auditSearchOptions);
 			    	e.preventDefault();
 			});
 
-	// not yet };
+	};
 		
-  	// not yet executeAjaxRequest('audit', 'GET', "", successFunction, formErrorFunction);
+  	executeAjaxRequest('audit/searchtemplate', 'GET', "", successFunction, formErrorFunction);
 
 }
 

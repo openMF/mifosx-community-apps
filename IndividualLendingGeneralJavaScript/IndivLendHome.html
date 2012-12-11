@@ -5103,6 +5103,25 @@ function showLockinOptions(){
 			</select>
 		</td>
 		<td>
+			<label for="auditmaker">{{=$ctx.doI18N("table.heading.audit.maker")}}</label>
+			<select name="auditmaker" id="auditmaker" >
+				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
+			{{#each appUsers}}
+				<option value="{{=id}}">{{=username}}</option>
+	    		{{/each}}
+			</select>
+		</td>
+		<td>
+			<label for="auditchecker">{{=$ctx.doI18N("table.heading.audit.checker")}}</label>
+			<select name="auditchecker" id="auditchecker" >
+				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
+			{{#each appUsers}}
+				<option value="{{=id}}">{{=username}}</option>
+	    		{{/each}}
+			</select>
+		</td>
+
+		<td>
 			<button type="submit" class="searchaudit" id="searchaudit" name="_eventId_submit">{{=$ctx.doI18N("search_audit")}}</button>
 		</td>
 	</tr></table>
