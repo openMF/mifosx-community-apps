@@ -4031,12 +4031,24 @@ function auditSearch() {
 			$("#listplaceholder").html(html);  
 			
 			$('#searchaudit').button().click(function(e) {
+				var validated = true;
 				var auditSearchOptions = {};
 				var auditTask = $('#audittask').find(":selected").val();
 				if (!(auditTask == "ALL")) auditSearchOptions.apiOperation = auditTask;
 
 				var auditResource = $('#auditresource').find(":selected").val();
 				if (!(auditResource == "ALL")) auditSearchOptions.resource = auditResource;
+
+				var auditResourceId = $('#auditresourceId').val();
+				if (auditResourceId > "") 
+				{
+					if (parseInt(auditResourceId) != auditResourceId )
+					{
+						alert(doI18N("resourceId.not.integer"));
+						validated = false;
+					}
+					else auditSearchOptions.resourceId = parseInt(auditResourceId);
+				}
 
 				var auditMaker = $('#auditmaker').find(":selected").val();
 				if (!(auditMaker == "ALL")) auditSearchOptions.makerId = auditMaker;
@@ -4045,7 +4057,8 @@ function auditSearch() {
 				if (!(auditChecker == "ALL")) auditSearchOptions.checkerId = auditChecker;
 
 
-				viewAudits(auditSearchOptions);
+				if (validated == true) viewAudits(auditSearchOptions);
+
 			    	e.preventDefault();
 			});
 

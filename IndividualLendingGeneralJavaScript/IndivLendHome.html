@@ -5089,7 +5089,7 @@ function showLockinOptions(){
 
 <!-- Audit Search -->
 <script id="auditSearchTemplate" type="text/x-jquery-tmpl">
-	<table><tr>
+	<table width="100%"><tr>
 		<td>
 			<label for="audittask">{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</label>
 			<select name="audittask" id="audittask" >
@@ -5107,6 +5107,10 @@ function showLockinOptions(){
 				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
 	    		{{/each}}
 			</select>
+		</td>
+		<td>
+			<label for="auditresourceId">{{=$ctx.doI18N("table.heading.audit.resourceId")}}</label>
+			<input id="auditresourceId" name="auditresourceId" type="text" value="" />
 		</td>
 		<td>
 			<label for="auditmaker">{{=$ctx.doI18N("table.heading.audit.maker")}}</label>
