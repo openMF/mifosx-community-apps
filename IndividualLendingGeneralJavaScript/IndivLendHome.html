@@ -29,6 +29,10 @@
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.8.16.custom/js/i18n/jquery.ui.datepicker-pt.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.8.16.custom/js/i18n/jquery.ui.datepicker-zh.js"></script>
 
+
+<!--JQuery custom combobox plugin used for sections of the accounting module-->
+<script type="text/javascript"	src="resources/libs/jquery.combobox.js"></script>
+
 <!-- JQuery I18N plug-in -->
 <script type="text/javascript"	src="resources/libs/jquery.i18n.properties-min-1.0.9.js"></script>
 
@@ -5460,6 +5464,636 @@ function showLockinOptions(){
 </div>
 </script>
 
+
+<!--Accounting section starts here-->
+<script id="accountingHomeTemplate" type="text/x-jquery-tmpl">
+
+<div id="accountingtabs">
+    <ul>
+        <li><a href="#journalentry-tab">{{=$ctx.doI18N("Journal Entries")}}</a></li>
+        <li><a href="#accountingclosure-tab">{{=$ctx.doI18N("Accounting Closures")}}</a></li>
+        <li><a href="#coa-tab">{{=$ctx.doI18N("Chart Of Accounts")}}</a></li>
+    </ul>
+    <div id="journalentry-tab">
+    </div>
+    <div id="accountingclosure-tab">
+    </div>
+    <div id="coa-tab">
+    </div>
+</div>
+</script>
+
+<!--Charts of accounts Main page template-->
+<script id="chartOfAccountsTemplate" type="text/x-jquery-tmpl">
+	<table width="100%">
+		<td align="center">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+		   		<button id="addglaccount">{{=$ctx.doI18N("coa.add.account.button.label")}}</button>
+			</span>
+		</td>
+	</table>
+	<hr/>
+	<div id="coatabs-main">
+	    <ul>
+	    	<li><a href="#coatabs-all">{{=$ctx.doI18N("coa.tabs.all.name")}}</a></li>
+	        <li><a href="#coatabs-asset">{{=$ctx.doI18N("coa.tabs.assets.name")}}</a></li>
+	        <li><a href="#coatabs-liabilities">{{=$ctx.doI18N("coa.tabs.liabilities.name")}}</a></li>
+	        <li><a href="#coatabs-equity">{{=$ctx.doI18N("coa.tabs.equity.name")}}</a></li>
+	        <li><a href="#coatabs-income">{{=$ctx.doI18N("coa.tabs.income.name")}}</a></li>
+	        <li><a href="#coatabs-expenses">{{=$ctx.doI18N("coa.tabs.expenses.name")}}</a></li>
+	    </ul>
+	    <div id="coatabs-all">
+	    </div>
+	    <div id="coatabs-asset">
+	    </div>
+	    <div id="coatabs-liabilities">
+	    </div>
+	    <div id="coatabs-equity">
+	    </div>
+	    <div id="coatabs-income">
+	    </div>
+	    <div id="coatabs-expenses">
+	    </div>
+	</div>	
+</script>
+
+
+<!--Accounts table results table-->
+<script id="accountsTableTemplate" type="text/x-jquery-tmpl">
+	<table id="accountstable" width="100%" >
+		<thead>
+			<tr>
+				<th>{{=$ctx.doI18N("coa.table.account.name")}}</th>
+				<th>{{=$ctx.doI18N("coa.table.gl.code.name")}}</th>
+				<th>{{=$ctx.doI18N("coa.table.account.classification.name")}}</th>
+				<th>{{=$ctx.doI18N("coa.table.account.disabled.name")}}</th>
+				<th>{{=$ctx.doI18N("coa.table.account.manualentries.allowed.name")}}</th>
+				<th>{{=$ctx.doI18N("coa.table.account.usage.type.name")}}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each crudRows}}
+			<tr>
+				<td>{{=name}}</td>
+				<td>{{=glCode}}</td>
+				<td>{{=classification}}</td>
+				<td>
+					{{#if disabled == true}}
+						Yes
+					{{#else}}
+					    No		
+					{{/if}}
+				</td>
+				<td>
+					{{#if manualEntriesAllowed == true}}
+						Yes
+					{{#else}}
+					    No		
+					{{/if}}
+				</td>
+				<td>
+					{{#if headerAccount == true}}
+						Header
+					{{#else}}
+					    Detail		
+					{{/if}}
+				</td>
+				<td>
+					<span class="ui-widget-header ui-corner-all">
+							<button id="glaccountinfo{{=id}}"></button>
+					   		<button id="glaccountedit{{=id}}"></button>
+					   		<button id="glaccountdelete{{=id}}"></button>
+					</span>
+				</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+</script>
+
+<!--GL Accounts info table-->
+<script id="glAccountsInfoFormTemplate" type="text/x-jquery-tmpl">
+<table width="100%" >
+	<tr>
+		<td>{{=$ctx.doI18N("coa.info.account.name")}}</td>
+		<td>{{=name}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("coa.info.gl.code")}}</td>
+		<td>{{=glCode}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("coa.info.account.classification")}}</td>
+		<td>{{=classification}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("coa.info.account.description")}}</td>
+		<td><textarea readonly rows="7" cols="50">{{=description}}</textarea></td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("coa.info.account.manual.entries.allowed")}}</td>
+		<td>
+			{{#if manualEntriesAllowed == true}}
+				Yes
+			{{#else}}
+				No		
+			{{/if}}
+		</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("coa.info.account.is.disabled")}}</td>
+		<td>
+			{{#if disabled == true}}
+				Yes
+			{{#else}}
+				No		
+			{{/if}}	
+		</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("coa.info.account.usage")}}</td>
+		<td>
+			{{#if headerAccount == true}}
+				Header Account
+			{{#else}}
+				Detail Account		
+			{{/if}}
+		</td>
+	</tr>
+</table>
+</script>
+
+<!--Add a GL Account form-->
+<script id="glAccountsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td><label for="name">{{=$ctx.doI18N("coa.info.account.name")}}</label></td>	
+			<td><input id="name" name="name" value="{{=name}}" type="text"/></td>
+		</tr>
+		<tr>
+			<td><label for="glCode">{{=$ctx.doI18N("coa.info.gl.code")}}</label></td>
+			<td><input id="glCode" name="glCode" title="" type="text" value="{{=glCode}}"/></td>
+			
+		</tr>
+		<tr>
+			<td><label for="classification">{{=$ctx.doI18N("coa.info.account.classification")}}</label></td>
+			<td>
+				<select name="classification" id="classification">
+				  {{#if classification == "ASSET" }}
+					 <option value="ASSET" selected="selected">{{=$ctx.doI18N("coa.add.classification.asset.label")}}</option>
+				  {{#else}}
+				  	 <option value="ASSET">{{=$ctx.doI18N("coa.add.classification.asset.label")}}</option>
+				  {{/if}}
+				  {{#if classification == "LIABILITY" }}
+					 <option value="LIABILITY" selected="selected">{{=$ctx.doI18N("coa.add.classification.liability.label")}}</option>
+				  {{#else}}
+				  	 <option value="LIABILITY">{{=$ctx.doI18N("coa.add.classification.liability.label")}}</option>
+				  {{/if}}
+				  {{#if classification == "EQUITY" }}
+					<option value="EQUITY" selected="selected">{{=$ctx.doI18N("coa.add.classification.equity.label")}}</option>
+				  {{#else}}
+				  	<option value="EQUITY">{{=$ctx.doI18N("coa.add.classification.equity.label")}}</option>
+				  {{/if}}
+				  {{#if classification == "INCOME" }}
+					<option value="INCOME" selected="selected">{{=$ctx.doI18N("coa.add.classification.income.label")}}</option>
+				  {{#else}}
+				  	<option value="INCOME">{{=$ctx.doI18N("coa.add.classification.income.label")}}</option>
+				  {{/if}}
+				  {{#if classification == "EXPENSE" }}
+					<option value="EXPENSE" selected="selected">{{=$ctx.doI18N("coa.add.classification.expense.label")}}</option>
+				  {{#else}}
+				  	<option value="EXPENSE">{{=$ctx.doI18N("coa.add.classification.expense.label")}}</option>
+				  {{/if}}
+				</select>
+			</td>
+		</tr> 
+		<tr>
+			<td><label for="headerAccount">{{=$ctx.doI18N("coa.info.account.usage")}}</label></td>
+			<td>
+				<select name="headerAccount" id="headerAccount">
+				  <option value="false">{{=$ctx.doI18N("coa.add.account.usage.detail.label")}}</option>
+				  {{#if headerAccount}}
+				 	 <option value="true" selected="selected">{{=$ctx.doI18N("coa.add.account.usage.header.label")}}</option>
+				  {{#else}}
+				  	 <option value="true">{{=$ctx.doI18N("coa.add.account.usage.header.label")}}</option>
+				  {{/if}} 
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="manualEntriesAllowed">{{=$ctx.doI18N("coa.info.account.manual.entries.allowed")}}</label></td>
+			<td>
+				{{#if manualEntriesAllowed}}
+					<input id="manualEntriesAllowed" name="manualEntriesAllowed" type="checkbox" checked="checked" value="{{=manualEntriesAllowed}}"/>
+				{{#else}}
+				 	<input id="manualEntriesAllowed" name="manualEntriesAllowed" type="checkbox" value="{{=manualEntriesAllowed}}"/>
+				{{/if}} 
+			</td>
+		</tr>
+		<tr>
+			<td><label for="description">{{=$ctx.doI18N("coa.info.account.description")}}</label></td>
+			<td><textarea id="description" name="description" rows="8" cols="35">{{=description}}</textarea></td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<!--Accounting Closures Main page template-->
+<script id="glAccountClosuresTemplate" type="text/x-jquery-tmpl">
+	<table width="100%">
+		<td align="center">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+		   		<button id="addglclosure">{{=$ctx.doI18N("accounting.closure.create.button.label")}}</button>
+			</span>
+		</td>
+	</table>
+	<hr/>
+	<div>
+	   <table width="100%">
+	   		<td><label for="accountClosuresOfficeId">{{=$ctx.doI18N("accounting.closure.branch.label")}}</label></td>	
+			<td>
+				<select id="accountClosuresOfficeId" name="accountClosuresOfficeId" title="">
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each crudRows}}
+						<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			        {{/each}}
+				</select>
+				<button id="searchglclosure">{{=$ctx.doI18N("accounting.closure.search.button.label")}}</button>
+			</td>
+		</table>
+	    <div id="glaccountclosuressearchresults">
+	    </div>
+	</div>	
+</script>
+
+<!--GL Closures table-->
+<script id="glAccountClosuresTableTemplate" type="text/x-jquery-tmpl">
+	<table id="closurestable" width="100%" >
+		<thead>
+			<tr>
+				<th>{{=$ctx.doI18N("accounting.closure.table.branch.name")}}</th>
+				<th>{{=$ctx.doI18N("accounting.closure.table.closure.date")}}</th>
+				<th>{{=$ctx.doI18N("accounting.closure.table.closed.by")}}</th>
+				<th>{{=$ctx.doI18N("accounting.closure.table.closed.on")}}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each crudRows}}
+			<tr>
+				<td>{{=officeName}}</td>
+				<td>{{=$ctx.globalDate(closingDate)}}</td>
+				<td>{{=createdByUsername}}</td>
+				<td>{{=$ctx.globalDate(createdDate)}}</td>
+				<td>
+					<span class="ui-widget-header ui-corner-all">
+							<button id="glclosureinfo{{=id}}"></button>
+					   		<button id="glclosureedit{{=id}}"></button>
+					   		<button id="glclosuredelete{{=id}}"></button>
+					</span>
+				</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+</script>
+
+<!-- GL Closure Info div-->
+<script id="glAccountClosuresInfoTemplate" type="text/x-jquery-tmpl">
+<table id="closurestable" width="100%" >
+	<tr>
+		<td>{{=$ctx.doI18N("accounting.closure.info.branch.name")}}</td>
+		<td>{{=officeName}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("accounting.closure.info.closure.date")}}</td>
+		<td>{{=$ctx.globalDate(closingDate)}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("accounting.closure.info.comments")}}</td>
+		<td><textarea readonly rows="7" cols="50">{{=comments}}</textarea></td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("accounting.closure.info.closed.by")}}</td>
+		<td>{{=createdByUsername}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("accounting.closure.info.closure.creation.date")}}</td>
+		<td>{{=$ctx.globalDate(createdDate)}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("accounting.closure.info.updated.by")}}</td>
+		<td>{{=lastUpdatedByUsername}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("accounting.closure.info.updated.on")}}</td>
+		<td>{{=$ctx.globalDate(lastUpdatedDate)}}</td>
+	</tr>
+</table>
+</script>
+	
+
+<!--Add a GL closure form-->
+<script id="glAccountClosuresFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td><label for="name">{{=$ctx.doI18N("accounting.closure.info.branch.name")}}</label></td>
+			<td>
+				<select id="officeId" name="officeId" title="">
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each crudRows}}
+						<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			        {{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="closingDate">{{=$ctx.doI18N("accounting.closure.info.closure.date")}}</label></td>
+			<td>
+				<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+				<input id="closingDate" name="closingDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(closingDate)}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="comments">{{=$ctx.doI18N("accounting.closure.info.comments")}}</label></td>
+			<td><textarea id="comments" name="comments" rows="8" cols="35">{{=description}}</textarea></td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<!--Edit a GL Closure form-->
+<script id="glAccountClosuresEditFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td><label for="name">{{=$ctx.doI18N("accounting.closure.info.branch.name")}}</label></td>	
+			<td>{{=officeName}}</td>
+		</tr>
+		<tr>
+			<td><label for="closingDate">{{=$ctx.doI18N("accounting.closure.info.closure.date")}}</label></td>
+			<td>{{=$ctx.globalDate(closingDate)}}</td>
+		</tr>
+		<tr>
+			<td><label for="comments">{{=$ctx.doI18N("accounting.closure.info.comments")}}</label></td>
+			<td><textarea id="comments" name="comments" rows="8" cols="35">{{=comments}}</textarea></td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<!--Journal Entries Main page template-->
+<script id="journalEntriesTemplate" type="text/x-jquery-tmpl">
+	<table width="100%">
+		<td align="center">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+		   		<button id="addjournalentry">{{=$ctx.doI18N("journalentry.create.button.label")}}</button>
+			</span>
+		</td>
+	</table>
+	<hr/>
+	<div>
+	   <input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	   <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+		
+	   	<table width="100%">
+	   		<tr>
+		   		<td>
+		   			<label for="accountId">{{=$ctx.doI18N("journalentry.search.account.name")}}</label>
+					<select id="accountId" name="accountId" title="" >
+						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+						{{#each accounts}}
+							<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+				        {{/each}}
+				    </select>  
+				</td>
+		   		<td>
+		   			<label for="journalEntryOfficeId">{{=$ctx.doI18N("journalentry.search.branch.name")}}</label>	
+					<select id="journalEntryOfficeId" name="officeId" title="">
+						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+						{{#each offices}}
+							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+				        {{/each}}
+					</select>
+				</td>
+				<td>
+		   			<label for="includePortfolioPostings">{{=$ctx.doI18N("journalentry.search.include.portfolio.postings")}}</label>
+					<input id="includePortfolioPostings" name="includePortfolioPostings" type="checkbox" checked="checked"/>
+				</td>
+				<td>
+					<label for="fromDate">{{=$ctx.doI18N("journalentry.search.from.date")}}</label>
+					<input id="fromDate" name="fromDate" title="" type="text" class="datepickerfieldforaccounting"/>
+				</td>
+				<td>
+					<label for="toDate">{{=$ctx.doI18N("journalentry.search.to.date")}}</label>
+					<input id="toDate" name="toDate" title="" type="text" class="datepickerfieldforaccounting"/>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="5" align="center">
+					<button id="searchjournalentries">{{=$ctx.doI18N("journalentry.search.button.label")}}</button>
+				</td>
+			</tr>
+		</table>
+		<br/>
+	    <div id="journalentriessearchresults">
+	    </div>
+	</div>	
+</script>
+
+<!--Journal entries table-->
+<script id="journalEntriesTableTemplate" type="text/x-jquery-tmpl">
+	<table id="journalentriestable" width="100%" >
+		<thead>
+			<tr>
+				<th>{{=$ctx.doI18N("journalentry.table.branch.name")}}</th>
+				<th>{{=$ctx.doI18N("journalentry.table.entry.date")}}</th>
+				<th>{{=$ctx.doI18N("journalentry.table.account.classification")}}</th>
+				<th>{{=$ctx.doI18N("journalentry.table.account.name")}}</th>
+				<th>{{=$ctx.doI18N("journalentry.table.created.by")}}</th>
+				<th>{{=$ctx.doI18N("journalentry.table.entry.id")}}</th>
+				<th>{{=$ctx.doI18N("journalentry.table.transaction.id")}}</th>
+				<th>{{=$ctx.doI18N("journalentry.table.credit")}}</th>
+				<th>{{=$ctx.doI18N("journalentry.table.debit")}}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each crudRows}}
+			<tr>
+				<td>{{=officeName}}</td>
+				<td>{{=$ctx.globalDate(entryDate)}}</td>
+				<td>{{=glAccountClassification}}</td>
+				<td>{{=glAccountName}}</td>
+				<td>{{=createdByUserName}}</td>
+				<td>{{=id}}</td>
+				<td>{{=transactionId}}</td>
+				<td>
+					{{#if entryType == "CREDIT"}}
+						{{=$ctx.decimal(amount, 2)}}
+					{{/if}}
+				</td>
+				<td>
+					{{#if entryType == "DEBIT"}}
+						{{=$ctx.decimal(amount, 2)}}
+					{{/if}}
+				</td>
+				<td>
+					<span class="ui-widget-header ui-corner-all">
+						<button id="glentryinfo{{=id}}"></button>
+						{{#if portfolioGenerated}}
+				   			<!-- No buttons-->
+				   		{{else}}
+							{{#if reversed == false}}
+					   			<button id="glentryreversal{{=id}}"></button>
+					   		{{/if}}
+				   		{{/if}}
+					</span>
+				</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+</script>
+
+<!-- Journal Entry Info template-->
+
+<script id="journalEntryInfoFormTemplate" type="text/x-jquery-tmpl">
+<table width="100%" >
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.branch")}}</td>
+		<td>{{=officeName}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.entry.date")}}</td>
+		<td>{{=$ctx.globalDate(entryDate)}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.entry.id")}}</td>
+		<td>{{=id}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.transaction.id")}}</td>
+		<td>{{=transactionId}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.account")}}</td>
+		<td>{{=glAccountName}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.account.classification")}}</td>
+		<td>{{=glAccountClassification}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.transaction.type")}}</td>
+		<td>{{=entryType}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.created.by")}}</td>
+		<td>{{=createdByUserName}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.created.date")}}</td>
+		<td>{{=$ctx.globalDate(createdDate)}}</td>
+	</tr>
+	<tr>
+		<td>{{=$ctx.doI18N("journalentry.info.comments")}}</td>
+		<td><textarea readonly rows="7" cols="50">{{=comments}}</textarea></td>
+	</tr>
+</table>
+</script>
+
+<!--Add a Journal entry form-->
+<script id="journalEntryFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+	<div id="formerrors"></div>
+	<div>
+		<b>{{=$ctx.doI18N("journal.entry.add.template.debits")}}</b>
+		<button id="addDebit" style="height: 20px"/>
+	</div>
+	<div id="debits">
+		<p>
+			<label for="debitAccountId1" style="display: inline">
+				<select id="debitAccountId1"  title="">
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each accounts}}
+					<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+					{{/each}}
+				</select> </label>
+			<label for="debitAmount1" style="display: inline">
+				<input type="number" id="debitAmount1" size="20" value="" placeholder="Input Amount" />
+			</label>
+		</p>
+	</div>
+	<div>
+		<b>{{=$ctx.doI18N("journal.entry.add.template.credits")}}</b>
+		<button id="addCredit" style="height: 20px"/>
+	</div>
+	<div id="credits">
+		<p>
+			<label for="creditAccountId1" style="display: inline">
+				<select id="creditAccountId1"  title="">
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each accounts}}
+					<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+					{{/each}}
+				</select> </label>
+			<label for="creditAmount1" style="display: inline">
+				<input type="number" id="creditAmount1" size="20" value="" placeholder="Input Amount" />
+			</label>
+		</p>
+	</div>
+
+	<table width="100%">
+		<tr>
+			<td><label for="officeId">{{=$ctx.doI18N("journalentry.info.branch")}}</label></td>
+			<td>
+			<select id="officeId" name="officeId" title="">
+				<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+				{{#each offices}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+				{{/each}}
+			</select></td>
+		</tr>
+		<tr>
+			<td><label for="entryDate">{{=$ctx.doI18N("journalentry.info.entry.date")}}</label></td>
+			<td>
+			<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+			<input id="entryDate" name="entryDate" title="" type="text" class="datepickerfield" />
+			</td>
+		</tr>
+		<tr>
+			<td><label for="comments">{{=$ctx.doI18N("journalentry.info.comments")}}</label></td>
+			<td><textarea id="comments" name="comments" rows="5" cols="45">{{=comments}}</textarea></td>
+		</tr>
+	</table>
+</form>
+</script>
+
+<!--Add a Journal entry sub template-->
+<script id="singleDebitOrCreditEntryTemplate" type="text/x-jquery-tmpl">
+<p>
+	<label for="{{=accountId}}" style="display: inline">
+		<select id="{{=accountId}}"  title="">
+			<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+			{{#each accounts}}
+			<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+			{{/each}}
+		</select> </label>
+	<label for="{{=amountId}}" style="display: inline">
+		<input type="number" id="{{=amountId}}" size="20" value="" placeholder="Input Amount" />
+	</label>
+	<button id="{{=deleteButtonId}}" style="height: 20px"></button>
+</p>
+</script>
 
 </body>
 </html>
