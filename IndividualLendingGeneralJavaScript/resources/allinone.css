@@ -72,3 +72,6 @@ table.pretty thead tr th.lefthighlightcolheader, table.pretty tbody tr td.lefthi
 table.pretty thead tr th.righthighlightcolheader, table.pretty tbody tr td.righthighlightcolheader, table.pretty tfoot tr th.righthighlightcolheader {border-right: solid 2px #2E6E9E;}
 
 div.loantabs {margin-top: 5px;}
+
+/**css for comboboxes**/
+.ui-autocomplete-input { margin: 0; padding: 0.48em 0 0.47em 0.45em;width: 250px }

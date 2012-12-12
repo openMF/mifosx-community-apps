@@ -201,6 +201,8 @@ function showMainContainer(containerDivName, username) {
 	if (jQuery.MifosXUI.showMenu("SysAdminMenu") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
 
+	htmlVar += '	<li><a href="unknown.html" onclick="setAccountingContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.accounting") + '</a></li>';
+	
 	if (jQuery.MifosXUI.showMenu("ReportsMenu") == true)
 	{
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
@@ -209,6 +211,7 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Client' + "'" + ');return false;">' + doI18N("link.reports.client") + '</a></li>';
 		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Loan' + "'" + ');return false;">' + doI18N("link.reports.loan") + '</a></li>';
 		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Fund' + "'" + ');return false;">' + doI18N("link.reports.fund") + '</a></li>';
+		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Accounting' + "'" + ');return false;">' + doI18N("link.reports.accounting") + '</a></li>';
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
@@ -434,6 +437,474 @@ function setSysAdminContent(divName) {
 	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
 
 	$("#" + divName).html(simpleOptionsHtml(htmlOptions));
+}
+
+function setAccountingContent(divName) {
+	//get a list of all offices (as this is required by most accounting subtabs)
+	var officesObject;
+	var getOfficesSuccessFunction = function(data, textStatus, jqXHR) {
+		officesObject = data;
+		$("#" + divName).html($("#accountingHomeTemplate").render());
+		$("#accountingtabs").tabs({
+			select : function(event, tab) {
+				fetchAccountingTabContent(tab.index);
+			}
+		});
+		var fetchAccountingTabContent = function(index) {
+			//journal entries tab selected
+			if (index == 0) {
+				handleJournalEntriesTabSelection(officesObject);
+			}//accounting closures tab selecetd
+			else if (index == 1) {
+				handleGLClosuresTabSelection(officesObject);
+			}
+			//coa tab selected
+			else if (index == 2) {
+				handleCOATabSelection();
+			}
+		}
+		//determine which tab is initially selected and load data for the same
+		var selected = $("#accountingtabs").tabs('option', 'selected');
+		fetchAccountingTabContent(selected);
+	}
+	executeAjaxRequest('offices', 'GET', "", getOfficesSuccessFunction, formErrorFunction);
+}
+
+function handleJournalEntriesTabSelection(officesObject) {
+	// get list of all offices and accounts and initialize the screen
+	var getAccountsSuccessFunction = function(data, textStatus, jqXHR) {
+		var baseObject = new Object();
+		baseObject.offices = officesObject;
+		baseObject.accounts = data;
+		var accountingClosuresTabHtml = $("#journalEntriesTemplate").render(baseObject);
+		$("#journalentry-tab").html(accountingClosuresTabHtml);
+
+		/** Account Id drop into a combo-box*/
+		$("#accountId").combobox();
+		
+		/***yyyy-mm-dd format for date picker feilds***/
+		$('.datepickerfieldforaccounting').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'yy-mm-dd'});
+
+		/** Onclick function for adding a new Journal Entry */
+		$("#addjournalentry").button({
+			icons : {
+				primary : "ui-icon-circle-plus"
+			}
+		}).click(function(e) {
+			var getUrl = "";
+			var putUrl = "journalentries";
+			var templateSelector = "#journalEntryFormTemplate";
+			var width = 600;
+			var height = 500;
+
+			var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				$("#dialog-form").dialog("close");
+				searchForJournalEntries();
+			}
+			popupDialogWithFormViewData(baseObject, putUrl, 'POST', "dialog.title.journalEntry.add", templateSelector, width, height, saveSuccessFunction);
+			//initialize default comboboxes in popup
+			$("#debitAccountId1").combobox();
+			$("#creditAccountId1").combobox();
+			
+			//init button for adding new debits
+			var debitSize = $('#debits p').size() + 1;
+			$("#addDebit").button({
+			icons : {
+				primary : "ui-icon-plusthick"
+			}
+			}).click(function(e) {
+				debitSize = debitSize + 1;
+				baseObject.accountId = "debitAccountId" + debitSize;
+				baseObject.amountId = "debitAmount" + debitSize;
+				baseObject.deleteButtonId = "removeDebitButton" + debitSize;
+				var debitTemplateHtml = $("#singleDebitOrCreditEntryTemplate").render(baseObject);
+				$("#debits").append(debitTemplateHtml);
+				//onclick funtion for newly added delete button
+				$("#" + baseObject.deleteButtonId).button({
+				icons : {
+					primary : "ui-icon-cancel"
+				}
+				}).click(function(e) {
+					if( debitSize > 1 ) {
+                        $(this).parents('p').remove();
+                        debitSize --;
+               		}
+                	e.preventDefault();
+				});
+				//make newly added select a combobox
+				$("#" + baseObject.accountId).combobox();
+				e.preventDefault();
+			});
+			
+			//init button for adding new credits
+			var creditSize = $('#credits p').size() + 1;
+			$("#addCredit").button({
+			icons : {
+				primary : "ui-icon-plusthick"
+			}
+			}).click(function(e) {
+				creditSize = creditSize + 1;
+				baseObject.accountId = "creditAccountId" + creditSize;
+				baseObject.amountId = "creditAmount" + creditSize;
+				baseObject.deleteButtonId = "removeCreditButton" + creditSize;
+				var creditTemplateHtml = $("#singleDebitOrCreditEntryTemplate").render(baseObject);
+				$("#credits").append(creditTemplateHtml);
+				//onclick funtion for newly added delete button
+				$("#" + baseObject.deleteButtonId).button({
+				icons : {
+					primary : "ui-icon-cancel"
+				}
+				}).click(function(e) {
+					if( creditSize > 1 ) {
+                        $(this).parents('p').remove();
+                        creditSize --;
+               		}
+                	e.preventDefault();
+				});
+				//make newly added select a combobox
+				$("#" + baseObject.accountId).combobox();
+				e.preventDefault();
+			});
+			e.preventDefault();
+		});
+
+		/** On-click function for searching for GL Accounts */
+		$("#searchjournalentries").button({
+			icons : {
+				primary : "ui-icon-search"
+			}
+		}).click(function(e) {
+			searchForJournalEntries();
+			e.preventDefault();
+		});
+	}
+	executeAjaxRequest('glaccounts', 'GET', "", getAccountsSuccessFunction, formErrorFunction);
+
+	/** *function called on successfully fetching Journal Account details** */
+	var journalEntriesFetchSuccessFunction = function(data) {
+		var journalEntriesObject = new Object();
+		journalEntriesObject.crudRows = data;
+		var journalEntriesTablesHtml = $("#journalEntriesTableTemplate").render(journalEntriesObject);
+		$("#journalentriessearchresults").html(journalEntriesTablesHtml);
+		oTable = displayListTable("journalentriestable");
+
+		var reverseJournalEntrySuccessFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			searchForJournalEntries();
+		}
+		// initialize info and reversal buttons
+		$.each(journalEntriesObject.crudRows, function(i, val) {
+			$("#glentryinfo" + val.id).button({
+				icons : {
+					primary : "ui-icon-info"
+				}
+			}).click(function(e) { {
+					var width = 550;
+					var height = 450;
+					var templateSelector = "#journalEntryInfoFormTemplate";
+					popupDialogWithReadOnlyFormViewData(val,"dialog.title.journalEntry.view", templateSelector, width, height);
+				}
+				e.preventDefault();
+			});
+			// button for reversal may (would not exist for portfolio generate entries)
+			if($("#glentryreversal" + val.id).length){
+				$("#glentryreversal" + val.id).button({
+					icons : {
+						primary : "ui-icon-arrowrefresh-1-s"
+					}
+				}).click(function(e) {
+					var url = "journalentries/" + val.transactionId + "/reversal";
+					var width = 400;
+					var height = 225;
+	
+					popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, reverseJournalEntrySuccessFunction);
+					e.preventDefault();
+				});
+			}
+		});
+
+	};
+
+	var searchForJournalEntries = function() {
+		var officeId = $("#journalEntryOfficeId").val();
+		var accountId = $("#accountId").val();
+		var fromdate = $("#fromDate").val();
+		var todate = $("#toDate").val();
+		var getPortfolioEntries = $('#includePortfolioPostings').is(':checked');
+
+		//populate the request substring
+		var requestString = "";
+		if (officeId != "") {
+			requestString += "officeId=" + officeId + "&";
+		}
+		if (accountId != "") {
+			requestString += "glAccountId=" + accountId + "&";
+		}
+		if (!getPortfolioEntries) {
+			requestString += "portfolioGenerated=false&";
+		}
+		if (fromdate != undefined && fromdate != "") {
+			requestString += "fromDate=" + fromdate + "&";
+		}
+		if (todate != undefined && todate != "") {
+			requestString += "toDate=" + todate + "&";
+		}
+
+		if (requestString != "") {
+			requestString = requestString.slice(0, -1)
+			executeAjaxRequest('journalentries?' + requestString, 'GET', "", journalEntriesFetchSuccessFunction, formErrorFunction);
+		} else{
+			executeAjaxRequest('journalentries', 'GET', "", journalEntriesFetchSuccessFunction, formErrorFunction);
+		}
+	}
+}
+
+function handleGLClosuresTabSelection(officesObject) {
+	var baseObject = new Object();
+	baseObject.crudRows = officesObject;
+	var accountingClosuresTabHtml = $("#glAccountClosuresTemplate").render(baseObject);
+	$("#accountingclosure-tab").html(accountingClosuresTabHtml);
+
+	/** Onclick function for adding a new Account Closure*/
+	$("#addglclosure").button({
+		icons : {
+			primary : "ui-icon-circle-plus"
+		}
+	}).click(function(e) {
+		var getUrl = "";
+		var putUrl = "glclosures";
+		var templateSelector = "#glAccountClosuresFormTemplate";
+		var width = 600;
+		var height = 400;
+
+		// update currently selected div if onclick function succeeds
+		var saveSuccessFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+		}
+		popupDialogWithFormViewData(baseObject, putUrl, 'POST', "dialog.title.glAccountClosure.add.account", templateSelector, width, height, saveSuccessFunction);
+		e.preventDefault();
+	});
+
+	/** Onclick function for searching for GL Accounts */
+	$("#searchglclosure").button({
+		icons : {
+			primary : "ui-icon-search"
+		}
+	}).click(function(e) {
+		searchForClosures();
+		e.preventDefault();
+	});
+
+	/** *function called on successfully fetching GL Closure details** */
+	var glClosuresFetchSuccessFunction = function(data) {
+		var glClosuresObject = new Object();
+		glClosuresObject.crudRows = data;
+		var accountingClosuresTablesHtml = $("#glAccountClosuresTableTemplate").render(glClosuresObject);
+		$("#glaccountclosuressearchresults").html(accountingClosuresTablesHtml);
+		oTable = displayListTable("closurestable");
+
+		var editGLClosureSuccessFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			searchForClosures();
+		}
+		// initialize info/edit and delete buttons
+		$.each(glClosuresObject.crudRows, function(i, val) {
+			$("#glclosureinfo" + val.id).button({
+				icons : {
+					primary : "ui-icon-info"
+				}
+			}).click(function(e) { {
+					var width = 550;
+					var height = 350;
+					var templateSelector = "#glAccountClosuresInfoTemplate";
+					popupDialogWithReadOnlyFormViewData(val,"dialog.title.glAccountClosure.view", templateSelector, width, height);
+				}
+				e.preventDefault();
+			});
+			$("#glclosureedit" + val.id).button({
+				icons : {
+					primary : "ui-icon-pencil"
+				}
+			}).click(function(e) {
+				var getUrl = 'glclosures/' + val.id;
+				var putUrl = 'glclosures/' + val.id;
+				var templateSelector = "#glAccountClosuresEditFormTemplate";
+				var width = 600;
+				var height = 450;
+
+				popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.glAccountClosure.edit", templateSelector, width, height, editGLClosureSuccessFunction);
+				e.preventDefault();
+			});
+			// button for delete
+			$("#glclosuredelete" + val.id).button({
+				icons : {
+					primary : "ui-icon-trash"
+				}
+			}).click(function(e) {
+				var url = "glclosures/" + val.id;
+				var width = 400;
+				var height = 225;
+
+				popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, editGLClosureSuccessFunction);
+				e.preventDefault();
+			});
+		});
+
+	};
+
+	var searchForClosures = function() {
+		var officeId = $("#accountClosuresOfficeId").val();
+		if (officeId != "") {
+			executeAjaxRequest('glclosures?officeId=' + officeId, 'GET', "", glClosuresFetchSuccessFunction, formErrorFunction);
+		} else {
+			executeAjaxRequest('glclosures', 'GET', "", glClosuresFetchSuccessFunction, formErrorFunction);
+		}
+	}
+}
+
+
+function handleCOATabSelection(){
+	//render coa tab
+	var coaTabHtml = $("#chartOfAccountsTemplate").render();
+	$("#coa-tab").html(coaTabHtml);
+
+	var divToUpdate;
+	var oTable;
+	
+	/** *function called on successfully fetching GL Account details** */
+	var glAccountsFetchSuccessFunction =  function(data) {
+		var glAccountsObject = new Object();
+	    glAccountsObject.crudRows = data;
+	    //function called on successfully updating a GL Account
+	    var editGLAccountSuccessFunction = function(data, textStatus, jqXHR) {
+		  	$("#dialog-form").dialog("close");
+		  	handleCOATabSelection();
+		}
+	    
+	    // render the data in appropriate div
+		var tableHtml = $("#accountsTableTemplate").render(glAccountsObject);
+		$(divToUpdate).html(tableHtml);
+		oTable=displayListTable("accountstable");
+		
+	    // initialize info/edit and delete buttons
+	    $.each(glAccountsObject.crudRows, function(i, val) {
+			      $("#glaccountinfo" + val.id).button({icons: {
+	                primary: "ui-icon-info"}}
+	                ).click(function(e){
+                    {
+                    var width = 600;
+					var height = 350;
+					var templateSelector = "#glAccountsInfoFormTemplate";
+					popupDialogWithReadOnlyFormViewData(val,"dialog.title.glAccount.view", templateSelector, width, height);
+                    }
+				    e.preventDefault();
+			      });
+				  $("#glaccountedit" + val.id).button({icons: {
+		            primary: "ui-icon-pencil"}
+		            }).click(function(e) {
+					var getUrl = 'glaccounts/'+val.id;
+					var putUrl = 'glaccounts/'+val.id;
+					var templateSelector = "#glAccountsFormTemplate";
+					var width = 600; 
+					var height = 450;
+				
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.glAccount.edit", templateSelector, width, height,  editGLAccountSuccessFunction);
+					e.preventDefault();
+				  });
+				// button for delete
+				  $("#glaccountdelete" + val.id).button({icons: {
+		            primary: "ui-icon-trash"}
+		            }).click(function(e){
+					var url = "glaccounts/"+ val.id;
+					var width = 400; 
+					var height = 225;
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, editGLAccountSuccessFunction);
+					e.preventDefault();
+			      });
+	    });
+	    
+	};
+	
+	
+	/** Onclick function for adding a new GL Account */
+	$("#addglaccount").button({icons: {
+	    primary: "ui-icon-circle-plus"}
+	    }).click(function(e){
+	  	var getUrl = "";
+		var putUrl = "glaccounts";
+		var templateSelector = "#glAccountsFormTemplate";
+		var width = 600; 
+		var height = 400;
+		
+		// update currently selected div if onclick function succeeds
+		var saveSuccessFunction = function(data, textStatus, jqXHR) {
+		  	$("#dialog-form").dialog("close");
+		  	handleCOATabSelection();
+		}
+		
+		popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.glAccountsFormTemplate.add.account", templateSelector, width, height,  saveSuccessFunction);
+	    e.preventDefault();
+	});
+	
+	/**
+	 * Make a call to fetch details of appropriate GL Accounts on click of
+	 * sub-tab of GL Accounts (All, ASSET, LIABILITY, EQUITY, INCOME, EXPENSES)
+	 */
+	$("#coatabs-main").tabs({
+			select: function(event, tab) {
+				/**
+				 * clear previous div contents on selection change to avoid
+				 * datatable refresh issue*
+				 */
+				$(divToUpdate).html('');
+				fetchGLAccount(tab.index);
+		 }
+	});
+	
+	var fetchGLAccount = function (index){
+		if (index == 0)
+		{
+			divToUpdate="#coatabs-all";
+			executeAjaxRequest('glaccounts', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+		}
+		// assets tab selected
+		if (index == 1)
+		{
+			divToUpdate="#coatabs-asset";
+			executeAjaxRequest('glaccounts?classification=ASSET', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+		}
+		// liabilities tab selected
+		if (index == 2)
+		{
+			divToUpdate="#coatabs-liabilities";
+			executeAjaxRequest('glaccounts?classification=LIABILITY', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+		}
+		// equity tab selected
+		if (index == 3)
+		{
+			divToUpdate="#coatabs-equity";
+			executeAjaxRequest('glaccounts?classification=EQUITY', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+		}
+		// income tab selected
+		if (index == 4)
+		{
+			divToUpdate="#coatabs-income";
+			executeAjaxRequest('glaccounts?classification=INCOME', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+		}
+		// expenses tab selected
+		if (index == 5)
+		{
+			divToUpdate="#coatabs-expenses";
+			executeAjaxRequest('glaccounts?classification=EXPENSE', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+		}
+	}
+	
+	
+	
+	//determine which tab is initially selected and reload data for the same
+	var selected = $("#coatabs-main").tabs('option', 'selected');
+	fetchGLAccount(selected);
 }
 
 
@@ -3160,26 +3631,58 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 		}
 			
 		//manipulate serialized array for guarantors
-		if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
-		   var serializedArray = {};
-		   var isChecked = $('#internalGuarantorCheckbox').is(':checked')
+    	if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
+    	   //TODO: Vishwas...var is repeated
+    	   var serializedArray = {};
+    	   var isChecked = $('#internalGuarantorCheckbox').is(':checked')
 		   if(isChecked){
-		   	serializedArray["existingClientId"] = $('#selectedGuarantorIdentifier').val();
-		   }else{
-		   	serializedArray["externalGuarantor"] = true;
-		   	serializedArray["firstname"] = $('#guarantorFirstName').val();
-		   	serializedArray["lastname"] = $('#guarantorLastName').val();
-		   	serializedArray["dob"] = $('#guarantorDateOfBirth').val();
-		   	serializedArray["addressLine1"] = $('#guarantorAddressLine1').val();
-		   	serializedArray["addressLine2"] = $('#guarantorAddressLine2').val();
-		   	serializedArray["city"] = $('#guarantorCity').val();
-		   	serializedArray["zip"] = $('#guarantorZip').val();
-		   	serializedArray["mobileNumber"] = $('#guarantorMobileNumber').val();
-		   	serializedArray["housePhoneNumber"] = $('#guarantorHouseNumber').val();
-		   	serializedArray["locale"] = $('#locale').val();
-		   	serializedArray["dateFormat"] = $('#dateFormat').val();
-		   }  
+    	   	serializedArray["existingClientId"] = $('#selectedGuarantorIdentifier').val();
+    	   }else{
+    	   	serializedArray["externalGuarantor"] = true;
+    	   	serializedArray["firstname"] = $('#guarantorFirstName').val();
+    	   	serializedArray["lastname"] = $('#guarantorLastName').val();
+    	   	serializedArray["dob"] = $('#guarantorDateOfBirth').val();
+    	   	serializedArray["addressLine1"] = $('#guarantorAddressLine1').val();
+    	   	serializedArray["addressLine2"] = $('#guarantorAddressLine2').val();
+    	   	serializedArray["city"] = $('#guarantorCity').val();
+    	   	serializedArray["zip"] = $('#guarantorZip').val();
+    	   	serializedArray["mobileNumber"] = $('#guarantorMobileNumber').val();
+    	   	serializedArray["housePhoneNumber"] = $('#guarantorHouseNumber').val();
+    	   	serializedArray["locale"] = $('#locale').val();
+    	   	serializedArray["dateFormat"] = $('#dateFormat').val();
+    	   }  
+    	}
+    	
+    	//manipulate serialized array for journal entries
+    	if (postUrl.toLowerCase().indexOf("journalentries") >= 0){
+    		serializedArray = {};
+			serializedArray["locale"] = $('#locale').val();
+    	   	serializedArray["dateFormat"] = $('#dateFormat').val();
+    	   	serializedArray["officeId"] = $('#officeId').val();
+    	   	serializedArray["entryDate"] = $('#entryDate').val();
+    	   	serializedArray["comments"] = $('#comments').val();	
+    	   	//populate debits and credits array
+    	   	var populateCreditOrDebitArray = function(type){
+    	   		serializedArray[type] = new Array();
+    	   		$("#" + type).children('p').each(function (i) {
+    	   		// "this" is the current element in the loop
+    	   		var tempObject= new Object();
+			    $(this).children('label').each(function(j){
+			    	if(j==0){
+			    		//for property of label had Id of glAccount selectbox
+			    		tempObject.glAccountId=$("#"+$(this).attr("for")).val();
+			    	}else{
+			    		//for property of label had Id of amount input
+			    		tempObject.amount=$("#"+$(this).attr("for")).val();;
+			    	}
+			    }); 
+			    serializedArray[type][i]=tempObject;
+				});
+    	   	}
+    	   	populateCreditOrDebitArray("debits");
+			populateCreditOrDebitArray("credits");
 		}
+
 		
 		var newFormData = JSON.stringify(serializedArray);
 		if (postUrl.toLowerCase().indexOf("permissions") > -1) {
@@ -3930,6 +4433,7 @@ function displayListTable(tableDiv) {
 				} );
 }
 
+
 function displayEnhancedListTable(tablediv) {
 
 	return  $("#" + tablediv).dataTable( {
@@ -3983,7 +4487,6 @@ function simpleOptionsHtml(htmlOptions) {
 	htmlVar += '<div id="listplaceholder" ></div>';
 	return htmlVar;
 }
-
 
 //Error functions		
 function removeErrors(placeholderDiv) {
