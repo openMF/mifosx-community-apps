@@ -677,10 +677,10 @@ function showILClientListing() {
 	var addClientSuccessFunction = function(data, textStatus, jqXHR) {
 		  $('#dialog-form').dialog("close");
 		  
-		  if (data.makerCheckerId) {
-			  showILClientListing();
+		  if (data.resourceId) {
+			  showILClient(data.resourceId);
 		  } else {
-			  showILClient(data.entityId);
+			  showILClientListing();
 		  }
 	}
 	
