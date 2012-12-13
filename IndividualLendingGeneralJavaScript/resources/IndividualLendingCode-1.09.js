@@ -1336,6 +1336,13 @@ function showILGroup(groupId){
 		    e.preventDefault();
 		});
 		$('button.newloanbtn span').text(doI18N('dialog.button.new.loan.application'));
+		$('.newgrouploanbtn').button().click(function(e) {
+			var linkId = this.id;
+			var groupId = linkId.replace("newloanbtn", "");
+			addGroupLoan(groupId);
+		    e.preventDefault();
+		});
+		$('button.newgrouploanbtn span').text(doI18N('dialog.button.new.group.loan.application'));
 	}
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
@@ -1591,6 +1598,14 @@ function showILGroup(groupId){
 
 		executeAjaxRequest('loans/template?groupId=' + groupId, 'GET', "", successFunction, formErrorFunction);		
 	}
+
+	function addGroupLoan(groupId) {
+		setAddLoanContent("content");
+
+		eval(genAddGroupLoanSuccessVar(groupId));
+
+		executeAjaxRequest('grouploans/template?groupId=' + groupId, 'GET', "", successFunction, formErrorFunction);
+	}
 	
 	function removeLoanCharge(loanId, loanChargeId) {
 
@@ -1643,6 +1658,17 @@ function showILGroup(groupId){
 					' repopulateFullForm(' + clientId + ', ' + groupId + ', productId);' +
 				' });' +
 			' };'
+	}
+
+	function genAddGroupLoanSuccessVar(groupId) {
+		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
+			' var formHtml = $("#newLoanFormTemplateMin").render(data);' +
+			' $("#inputarea").html(formHtml);' +
+			' $("#productId").change(function() {' +
+				' var productId = $("#productId").val();' +
+				' repopulateFullGroupLoanForm(' + groupId + ', productId);' +
+			' });' +
+		' };'
 	}
 
 	function genSaveSuccessFunctionReloadLoan(loanId) {
@@ -1858,6 +1884,205 @@ function showILGroup(groupId){
 
 	}
 	
+	function repopulateFullGroupLoanForm(groupId, productId) {
+				
+		successFunction =  function(data, textStatus, jqXHR) {
+			
+				var formHtml = $("#newGroupLoanFormTemplate").render(data);
+			
+				$("#inputarea").html(formHtml);
+
+				$('#productId').change(function() {
+					var productId = $('#productId').val();
+					repopulateFullGroupLoanForm(productId);
+				});
+				
+				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
+				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+				
+				calculateGroupLoanSchedule();
+				
+				// attaching clients logic
+				$('#addclient').click(function(e) {
+					var clientIndexInArray,
+					    selectedClient = $('#allowedClients option:selected'),
+					    clientId = selectedClient.val();
+
+					if (clientId > 0){
+						var clientDisplayName = selectedClient.text();
+
+						$.each(data["allowedClients"], function(index, value){
+							if (value["id"] == clientId) {
+								value["selected"] = true;
+							}
+						});
+
+						var clientHtml = $("#addClientToGroupLoanApplication").render({
+							"id" : clientId,
+							"displayName" : clientDisplayName
+						});
+						$("#clientsTable").append(clientHtml);
+						$(".memberCharge"+clientId).show().find(":input").removeAttr('disabled');
+
+						calculateMembersPrincipals(data["currency"]);
+						calculateMembersChargeAmountsForAllCharges(data["currency"]);
+
+						$(".removeclient"+clientId).click(function(e){
+							selectedClient.show();
+							$(this).closest("tr").remove();
+							$(".memberCharge"+clientId).hide().find(":input").attr('disabled', 'disabled');
+							$.each(data["allowedClients"], function(index, value){
+								if (value["id"] == clientId) {
+									value["selected"] = false;
+								}
+							});
+
+							calculateMembersPrincipals(data["currency"]);
+							calculateMembersChargeAmountsForAllCharges(data["currency"]);
+							e.preventDefault();
+						});
+
+						$('.clientPrincipal').change(function() {
+							calculateGroupLoanPrincipalFromMembers(data["currency"]);
+							calculateGroupLoanSchedule();
+						});
+
+	  					$('.memberChargeAmount').change(function() {
+	  						calculateChargeAmountFromMembersAmounts(data["currency"], $(this)); 
+	  			  			calculateGroupLoanSchedule();
+	  			  		});
+
+						selectedClient.hide();
+						$("#allowedClients option[value=-1]").attr('selected', 'selected');
+					}
+				});
+
+
+				// attaching charges logic
+		  		var index = data["charges"].length || 1;
+		  		$('#addloancharges').click(function(e) { 
+		  			
+	  				var chargeId = $('#chargeOptions option:selected').val();
+	  				chargeId = chargeId.replace("-1", "");
+	  				
+	  				var addLoanChargeSuccess = function (chargeData) {
+	  					index++;
+						chargeData["index"] = index;
+						chargeData["selectedClients"] = data["allowedClients"];	  					
+	  					var loanChargeHtml = $("#addNewLoanChargeFormTemplate").render(chargeData);
+	  					
+	  					$("#selectedLoanCharges").append(loanChargeHtml);
+				  		
+	  					$('.removeloancharges').click(function(e) {  
+		  					$(this).closest('.row.charge').remove();
+		  					calculateGroupLoanSchedule();
+		  					e.preventDefault();
+		  				});
+	  					
+	  					$('.chargeAmount').change(function() {
+	  						calculateMembersChargeAmounts(data["currency"], $(this)); 
+	  			  			calculateGroupLoanSchedule();
+	  			  		});
+	  					
+	  					$('.memberChargeAmount').change(function() {
+	  						calculateChargeAmountFromMembersAmounts(data["currency"], $(this)); 
+	  			  			calculateGroupLoanSchedule();
+	  			  		});
+
+	  					$("[class*=specifiedDueDate]").change(function() {
+	  			  			calculateGroupLoanSchedule();
+	  				  	});
+				  		
+				  		calculateMembersChargeAmounts(data["currency"], $(".chargeAmount").last());
+				  		calculateGroupLoanSchedule();
+	  				}
+	  				
+	  				if (chargeId) {
+	  					executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
+	  				}
+	  				
+	  				e.preventDefault();
+		  		});
+		  		
+		  		$('.removeloancharges').click(function(e) {  
+		  			$(this).closest('.row.charge').remove();
+		  			calculateGroupLoanSchedule();
+		  			e.preventDefault();
+		  		});
+		  		
+		  		$('.chargeAmount').change(function() { 
+		  			calculateMembersChargeAmounts(data["currency"], $(this)); 
+		  			calculateGroupLoanSchedule();
+		  		});
+		  		
+		  		$("[class*=specifiedDueDate]").change(function() {
+		  			calculateGroupLoanSchedule();
+			  	});
+		  		
+				// change detection
+				$('#principal').change(function() {
+					calculateMembersPrincipals(data["currency"]);
+					calculateGroupLoanSchedule();
+				});
+				
+				$('#loanTermFrequency').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#loanTermFrequencyType').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				
+				$('#numberOfRepayments').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#repaymentEvery').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#repaymentFrequencyType').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				
+				$('#expectedDisbursementDate').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#repaymentsStartingFromDate').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				
+				$('#interestRatePerPeriod').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				
+				$('#interestRateFrequencyType').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#amortizationType').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#interestType').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#interestCalculationPeriodType').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#interestChargedFromDate').change(function() {
+					calculateGroupLoanSchedule();
+				});
+				$('#submitgrouploanapp').button().click(function(e) {
+					submitGroupLoanApplication(groupId);
+				    e.preventDefault();
+				});
+				$('button#submitgrouploanapp span').text(doI18N('dialog.button.submit'));
+				
+				$('#cancelgrouploanapp').button().click(function(e) {
+	  				showILGroup(groupId);	
+				    e.preventDefault();
+				});
+				$('button#cancelgrouploanapp span').text(doI18N('dialog.button.cancel'));
+			};
+		
+			executeAjaxRequest('grouploans/template?groupId=' + groupId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
+	}
 
 	function calculateAnnualPercentageRate() {
 		var periodInterestRate = parseFloat($('#nominalInterestRate').val());
@@ -1896,6 +2121,95 @@ function showILGroup(groupId){
 		executeAjaxRequest('loans?command=calculateLoanSchedule', "POST", newFormData, successFunction, errorFunction);	  
 	}
 
+	// helper functions realted to group lending functionality
+	function calculateMembersPrincipals(currency) {
+		var principal = parseFloat($("#principal").val().replace(",","")),
+			membersCount = $(".clientPrincipal").size(),
+			memberPrincipal = principal/membersCount,
+			lastMemberPrincipal = memberPrincipal;
+		if (currency.decimalPlaces === 0){
+			memberPrincipal = parseInt(memberPrincipal);
+		} else {
+			memberPrincipal = parseFloat(memberPrincipal).toFixed(currency.decimalPlaces);
+		}
+
+		lastMemberPrincipal = parseFloat(principal - (membersCount-1) * memberPrincipal).toFixed(currency.decimalPlaces);
+
+		$(".clientPrincipal").each(function(index, element) {
+			if (index < membersCount-1){
+				$(this).val(custom.helperFunctions.monetaryValue(currency, parseFloat(memberPrincipal)));	
+			} else {
+				$(this).val(custom.helperFunctions.monetaryValue(currency, parseFloat(lastMemberPrincipal)));
+			}
+		});
+	}
+
+	function calculateGroupLoanPrincipalFromMembers(currency) {
+		var principal = 0;
+		$(".clientPrincipal").each(function(){
+			principal += parseFloat($(this).val().replace(",",""));
+		});
+		$("#principal").val(custom.helperFunctions.monetaryValue(currency, principal));
+	}
+
+	function calculateMembersChargeAmounts(currency, charge) {
+		var chargeScopeElement = charge.closest(".row.charge"),
+			chargeAmount = parseFloat(chargeScopeElement.find(".chargeAmount").val().replace(",","")),
+			membersCount = $(".clientPrincipal").size(),
+			memberChargeAmount = chargeAmount/membersCount,
+			lastMemberChargeAmount = memberChargeAmount;
+
+		if (currency.decimalPlaces === 0){
+			memberChargeAmount = parseInt(memberChargeAmount);
+		} else {
+			memberChargeAmount = parseFloat(memberChargeAmount).toFixed(currency.decimalPlaces);
+		}
+
+		lastMemberChargeAmount = parseFloat(chargeAmount - (membersCount-1) * memberChargeAmount).toFixed(currency.decimalPlaces);
+
+		chargeScopeElement.find(".memberChargeAmount:not([disabled])").each(function(index, element) {
+			if (index < membersCount-1){
+				$(this).val(custom.helperFunctions.monetaryValue(currency, parseFloat(memberChargeAmount)));	
+			} else {
+				$(this).val(custom.helperFunctions.monetaryValue(currency, parseFloat(lastMemberChargeAmount)));
+			}
+		});
+	}
+
+	function calculateMembersChargeAmountsForAllCharges(currency) {
+		$(".chargeAmount").each(function(){
+			calculateMembersChargeAmounts(currency, $(this));
+		});
+	}
+
+	function calculateChargeAmountFromMembersAmounts(currency, memberCharge){
+		var chargeScopeElement = memberCharge.closest(".row.charge"),
+			charge = chargeScopeElement.find(".chargeAmount"),
+			chargeAmount = 0;
+		
+		chargeScopeElement.find(".memberChargeAmount:not([disabled])").each(function(){
+			chargeAmount += parseFloat($(this).val().replace(",",""));
+		});	
+		charge.val(custom.helperFunctions.monetaryValue(currency, chargeAmount));
+	}
+	// end of helper functions realted to group lending functionality
+
+	function calculateGroupLoanSchedule() {
+		
+		var newFormData = JSON.stringify($('#entityform').serializeObject());
+    	
+		var successFunction = function(data, textStatus, jqXHR) {
+				  		removeErrors("#formerrors");
+				  		var loanScheduleHtml = $("#newLoanScheduleTemplate").render(data);
+				  		$("#schedulearea").html(loanScheduleHtml);
+		};
+		
+		var errorFunction = function(jqXHR, textStatus, errorThrown) {
+						 $("#schedulearea").html("");
+						 handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+		};
+		executeAjaxRequest('grouploans?command=calculateLoanSchedule', "POST", newFormData, successFunction, errorFunction);	  
+	}
 
 	function submitLoanApplication(clientId, groupId) {
 		
@@ -1913,6 +2227,17 @@ function showILGroup(groupId){
 
 	}
 
+	function submitGroupLoanApplication(groupId) {
+		
+		var newFormData = JSON.stringify($('#entityform').serializeObject());
+    	
+		var successFunction =  function(data, textStatus, jqXHR) {
+			showILGroup(groupId);
+		};
+		
+		executeAjaxRequest('grouploans', "POST", newFormData, successFunction, formErrorFunction);	  
+
+	}
 	
 	function submitDepositApplication(clientId) {
 		
@@ -2125,7 +2450,7 @@ function showILGroup(groupId){
 	
 
 
-function showILLoan(loanId, product) {
+function showILLoan(loanId, product, isGroupLoan) {
 	var newLoanTabId='loan'+loanId+'tab';
 	//show existing tab if this Id is already present
 	if(tabExists(newLoanTabId)){
@@ -2136,7 +2461,7 @@ function showILLoan(loanId, product) {
 	else{
 		var title = product + ": #" + loanId ;			    
 		$newtabs.tabs( "add", "unknown.html", title);
-		loadILLoan(loanId);
+		loadILLoan(loanId, isGroupLoan);
 		//add ids and titles to newly added div's and a'hrefs
 		var lastAHref=$('#newtabs> ul > li:last > a');
 		var lastDiv=$('#newtabs > div:last')
@@ -2161,9 +2486,13 @@ function tabExists(tabId){
 }
 
 
-function loadILLoan(loanId) {
+function loadILLoan(loanId, isGroupLoan) {
 
 	var loanUrl = 'loans/' + loanId + "?associations=all";
+
+	if (isGroupLoan){
+		loanUrl = 'grouploans/' + loanId + "?associations=all";		
+	}
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
 	        	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
@@ -2183,14 +2512,20 @@ function loadILLoan(loanId) {
 
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);
 	        		
+	        		if (isGroupLoan) {
+	        			tableHtml = $("#groupLoanDataTabTemplate").render(data);
+	        		}
+
 	        		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		currentTab.html(tableHtml);
 
 	        		var curTabID = currentTab.prop("id")
 	        		
-	        		offsetToSubmittedDate = data.convenienceData.maxSubmittedOnOffsetFromToday;
-	        		offsetToApprovalDate = data.convenienceData.maxApprovedOnOffsetFromToday;
-	        		offsetToDisbursalDate = data.convenienceData.maxDisbursedOnOffsetFromToday;
+	        		if (!isGroupLoan){
+		        		offsetToSubmittedDate = data.convenienceData.maxSubmittedOnOffsetFromToday;
+		        		offsetToApprovalDate = data.convenienceData.maxApprovedOnOffsetFromToday;
+		        		offsetToDisbursalDate = data.convenienceData.maxDisbursedOnOffsetFromToday;
+	        		}
 	        		 
 	        		//adding styles for vertical sub-tabs
 	        		//$( ".loantabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
@@ -3834,6 +4169,39 @@ function showJson(commandAsJson) {
 	return html;
 }
 
+//serialize nested objects in arrays, e.g charges[1][memberCharges][1][id]	
+function serializeNestedObjects(o, keys, value) {
+	var key = keys.shift();
+	if (key !== undefined) {
+		if (!key.match(/^\d+$/)){
+			if (o[key] === undefined && keys.length > 0){
+				o[key] = [];
+			} else if (o[key] === undefined){
+				o[key] = value;
+				return;
+			}
+			serializeNestedObjects(o[key], keys, value); 
+		} else {
+			if (o[parseInt(key)] == undefined){
+				o[parseInt(key)] = {};
+			}
+			serializeNestedObjects(o[parseInt(key)], keys, value); 
+		}
+	} 
+}
+
+//clean serialized arrays of nested objects - remove nulls 
+function cleanSerializedArrays(o){
+	$.each(o, function(key, value){
+		if (value instanceof Array){
+			o[key] = value.filter(function(e){return e}); 
+		}
+		if (value instanceof Object){
+			cleanSerializedArrays(value);
+		}
+	})	
+}
+
 $.fn.serializeObject = function(serializationOptions)
 {
 	var o = {};
@@ -3844,27 +4212,15 @@ $.fn.serializeObject = function(serializationOptions)
 		a = this.serializeArray({checkboxesAsBools: true});
 	}
 	
-	var arrayName, propertyName, index;
-
 	$.each(a, function() {
-		
+		var arrayName, propertyName, index, keys, key;
+
 		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedRoles' 
 	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges') {
 			// do not serialize
-		} else if (this.name.indexOf('[') !== -1) { //serialize as separate object
-			arrayName = this.name.substring(0, this.name.indexOf("["));
-			if (o[arrayName] === undefined){
-				o[arrayName] = [];				
-			}
-			index = parseInt(this.name.substring(this.name.indexOf("[") + 1, this.name.indexOf("]")));
-			if (index > 0){
-				index -= 1;
-			}
-			if (o[arrayName][index] === undefined){
-				o[arrayName][index] = {};
-			}
-			propertyName = this.name.substring(this.name.lastIndexOf("[") + 1, this.name.lastIndexOf("]"));
-			o[arrayName][index][propertyName] = this.value || '';
+		} else if (this.name.indexOf('[') !== -1) { //serialize nested objects
+			keys = this.name.match(/[a-zA-Z0-9_]+|(?=\[\])/g);
+			serializeNestedObjects(o, keys, this.value);
 		} else  {
 		    if (o[this.name] !== undefined) {
 		        if (!o[this.name].push) {
@@ -3884,12 +4240,7 @@ $.fn.serializeObject = function(serializationOptions)
 		}
 	});
 	
-	//clean serialized arrays - remove nulls 
-	$.each(o, function(key, value){
-		if (value instanceof Array){
-			o[key] = value.filter(function(e){return e}); 
-		}
-	})
+	cleanSerializedArrays(o);
 
 	return o;
 };
