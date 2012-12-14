@@ -3526,18 +3526,17 @@ function auditSearch() {
 			var html = $("#auditSearchTemplate").render(data);
 			
 			$("#listplaceholder").html(html);  
+			
+			var datetimeOptions = {
+							dateFormat: 'yy-mm-dd',
+							timeFormat: "HH:mm:ss",
+							showSecond: true
+							}
 
-			$('#auditdatetime').datetimepicker({
-									dateFormat: 'yy-mm-dd',
-									timeFormat: "HH:mm:ss",
-									showSecond: true
-									});
-			$('#auditcheckeddatetime').datetimepicker({
-									dateFormat: 'yy-mm-dd',
-									timeFormat: "HH:mm:ss",
-									showSecond: true
-									});
-
+			$('#auditdatetimefrom').datetimepicker(datetimeOptions);
+			$('#auditdatetimeto').datetimepicker(datetimeOptions);
+			$('#auditcheckeddatetimefrom').datetimepicker(datetimeOptions);
+			$('#auditcheckeddatetimeto').datetimepicker(datetimeOptions);
 
 			$('#searchaudit').button().click(function(e) {
 				var validated = true;
@@ -3565,11 +3564,17 @@ function auditSearch() {
 				var auditChecker = $('#auditchecker').find(":selected").val();
 				if (!(auditChecker == "ALL")) auditSearchOptions.checkerId = auditChecker;
 
-				var auditMadeOnDateTime = $('#auditdatetime').val();
-				if (auditMadeOnDateTime > "") auditSearchOptions.makerDateTime = auditMadeOnDateTime;
+				var auditMadeOnDateTimeFrom = $('#auditdatetimefrom').val();
+				if (auditMadeOnDateTimeFrom > "") auditSearchOptions.makerDateTimeFrom = auditMadeOnDateTimeFrom;
 
-				var auditCheckedOnDateTime = $('#auditcheckeddatetime').val();
-				if (auditCheckedOnDateTime > "") auditSearchOptions.checkerDateTime = auditCheckedOnDateTime;
+				var auditMadeOnDateTimeTo = $('#auditdatetimeto').val();
+				if (auditMadeOnDateTimeTo > "") auditSearchOptions.makerDateTimeTo = auditMadeOnDateTimeTo;
+
+				var auditCheckedOnDateTimeFrom = $('#auditcheckeddatetimefrom').val();
+				if (auditCheckedOnDateTimeFrom > "") auditSearchOptions.checkerDateTimeFrom = auditCheckedOnDateTimeFrom;
+
+				var auditCheckedOnDateTimeTo = $('#auditcheckeddatetimeto').val();
+				if (auditCheckedOnDateTimeTo > "") auditSearchOptions.checkerDateTimeTo = auditCheckedOnDateTimeTo;
 
 				if (validated == true) viewAudits(auditSearchOptions);
 
@@ -3747,7 +3752,7 @@ function setCulture(cultureVal) {
     	Globalize.culture(currentCulture);
     	
     	$.datepicker.setDefaults( $.datepicker.regional[currentCulture]);
-    	
+ 
     	jQuery.i18n.properties({
 			name:'messages', 
 			path: 'resources/global-translations/',
@@ -3757,6 +3762,22 @@ function setCulture(cultureVal) {
 			callback: function() {
 			}
 		});
+
+	$.timepicker.regional[currentCulture] = {
+		timeOnlyTitle: doI18N('timeOnlyTitle'),
+		timeText: doI18N('timeText'),
+		hourText: doI18N('hourText'),
+		minuteText: doI18N('minuteText'),
+		secondText: doI18N('secondText'),
+		millisecText: doI18N('millisecText'),
+		timezoneText: doI18N('timezoneText'),
+		currentText: doI18N('currentText'),
+		closeText: doI18N('closeText'),
+		amNames: ['AM', doI18N('amNames'),],
+		pmNames: ['PM', doI18N('pmNames'),],
+		isRTL: false
+	};
+	$.timepicker.setDefaults($.timepicker.regional[currentCulture]);
 }
 
 

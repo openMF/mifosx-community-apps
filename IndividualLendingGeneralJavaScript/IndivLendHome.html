@@ -34,6 +34,7 @@
 <!-- JQuery Date Time Picker -->
 <script type="text/javascript"	src="resources/libs/jquery-ui-timepicker-addon.js"></script>
 
+
 <!-- JQuery I18N plug-in -->
 <script type="text/javascript"	src="resources/libs/jquery.i18n.properties-min-1.0.9.js"></script>
 
@@ -5092,8 +5093,12 @@ function showLockinOptions(){
 <script id="auditSearchTemplate" type="text/x-jquery-tmpl">
 	<table width="100%"><tr>
 		<td>
-			<label for="auditdatetime">{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</label>
-			<input id="auditdatetime" name="auditdatetime" type="text" class="datepickerfield" />
+			<label for="auditdatetimefrom">{{=$ctx.doI18N("table.heading.audit.madeOnDateFrom")}}</label>
+			<input id="auditdatetimefrom" name="auditdatetimefrom" type="text" class="datepickerfield" />
+		</td>
+		<td>
+			<label for="auditdatetimeto">{{=$ctx.doI18N("table.heading.audit.madeOnDateTo")}}</label>
+			<input id="auditdatetimeto" name="auditdatetimeto" type="text" class="datepickerfield" />
 		</td>
 		<td>
 			<label for="auditmaker">{{=$ctx.doI18N("table.heading.audit.maker")}}</label>
@@ -5136,8 +5141,12 @@ function showLockinOptions(){
 			</select>
 		</td>
 		<td>
-			<label for="auditcheckeddatetime">{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</label>
-			<input id="auditcheckeddatetime" name="auditcheckeddatetime" type="text" class="datepickerfield" />
+			<label for="auditcheckeddatetimefrom">{{=$ctx.doI18N("table.heading.audit.checkedOnDateFrom")}}</label>
+			<input id="auditcheckeddatetimefrom" name="auditcheckeddatetimefrom" type="text" class="datepickerfield" />
+		</td>
+		<td>
+			<label for="auditcheckeddatetimeto">{{=$ctx.doI18N("table.heading.audit.checkedOnDateTo")}}</label>
+			<input id="auditcheckeddatetimeto" name="auditcheckeddatetimeto" type="text" class="datepickerfield" />
 		</td>
 		<td>
 			<button type="submit" class="searchaudit" id="searchaudit" name="_eventId_submit">{{=$ctx.doI18N("search_audit")}}</button>
