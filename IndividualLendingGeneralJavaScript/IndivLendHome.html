@@ -5113,19 +5113,19 @@ function showLockinOptions(){
 			</select>
 		</td>
 		<td>
-			<label for="audittask">{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</label>
-			<select name="audittask" id="audittask" >
+			<label for="auditaction">{{=$ctx.doI18N("table.heading.audit.actionName")}}</label>
+			<select name="auditaction" id="auditaction" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-			{{#each apiOperations}}
+			{{#each actionNames}}
 				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
 	    		{{/each}}
 			</select>
 		</td>
 		<td>
-			<label for="auditresource">{{=$ctx.doI18N("table.heading.audit.resource")}}</label>
-			<select name="auditresource" id="auditresource" >
+			<label for="auditentity">{{=$ctx.doI18N("table.heading.audit.entityName")}}</label>
+			<select name="auditentity" id="auditentity" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-			{{#each resources}}
+			{{#each entityNames}}
 				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
 	    		{{/each}}
 			</select>
@@ -5163,12 +5163,17 @@ function showLockinOptions(){
 <table id='auditstable' width='100%'>
 	<thead>
 		<tr>
+
 			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.actionName")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.entityName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.resource")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.subResource")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.subResourceId")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checker")}}</b></th>
 			<th>&nbsp;</th>
@@ -5180,9 +5185,13 @@ function showLockinOptions(){
 	<td>{{=id}}</td>
 	<td>{{=$ctx.globalDateTime(madeOnDate)}}</td>
 	<td>{{=maker}}</td>
+	<td>{{=$ctx.doI18N(actionName)}}</td>
+	<td>{{=$ctx.doI18N(entityName)}}</td>
 	<td>{{=$ctx.doI18N(apiOperation)}}</td>
 	<td>{{=$ctx.doI18N(resource)}}</td>
 	<td>{{=resourceId}}</td>
+	<td>{{=subResource}}</td>
+	<td>{{=subResourceId}}</td>
 	<td>{{=$ctx.globalDateTime(checkedOnDate)}}</td>
 	<td>{{=checker}}</td>
 	<td>
@@ -5203,9 +5212,13 @@ function showLockinOptions(){
 			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.actionName")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.entityName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.apiOperation")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.resource")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.subResource")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.subResourceId")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checker")}}</b></th>
 		</tr>
@@ -5215,9 +5228,13 @@ function showLockinOptions(){
 	<td>{{=crudRows.id}}</td>
 	<td>{{=$ctx.globalDateTime(crudRows.madeOnDate)}}</td>
 	<td>{{=crudRows.maker}}</td>
+	<td>{{=$ctx.doI18N(crudRows.actionName)}}</td>
+	<td>{{=$ctx.doI18N(crudRows.entityName)}}</td>
 	<td>{{=$ctx.doI18N(crudRows.apiOperation)}}</td>
 	<td>{{=$ctx.doI18N(crudRows.resource)}}</td>
 	<td>{{=crudRows.resourceId}}</td>
+	<td>{{=crudRows.subResource}}</td>
+	<td>{{=crudRows.subResourceId}}</td>
 	<td>{{=$ctx.globalDateTime(crudRows.checkedOnDate)}}</td>
 	<td>{{=crudRows.checker}}</td>
 </tr>

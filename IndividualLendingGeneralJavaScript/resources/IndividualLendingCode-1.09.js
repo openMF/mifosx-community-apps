@@ -4093,11 +4093,11 @@ function auditSearch() {
 			$('#searchaudit').button().click(function(e) {
 				var validated = true;
 				var auditSearchOptions = {};
-				var auditTask = $('#audittask').find(":selected").val();
-				if (!(auditTask == "ALL")) auditSearchOptions.apiOperation = auditTask;
+				var auditAction = $('#auditaction').find(":selected").val();
+				if (!(auditAction == "ALL")) auditSearchOptions.actionName = auditAction;
 
-				var auditResource = $('#auditresource').find(":selected").val();
-				if (!(auditResource == "ALL")) auditSearchOptions.resource = auditResource;
+				var auditEntity = $('#auditentity').find(":selected").val();
+				if (!(auditEntity == "ALL")) auditSearchOptions.entityName = auditEntity;
 
 				var auditResourceId = $('#auditresourceId').val();
 				if (auditResourceId > "") 
@@ -4383,21 +4383,25 @@ function showJson(commandAsJson) {
 	var colNo = 0;
 	for (var i in jsonObj)
 	{
-		colNo += 1;
-		if (colNo == 1) html += "<tr>";
-		else html += '<td width="100px"></td>';
 
-		html += "<td>";
-		html += "<b>" + doI18N(i) + ": </b>";
-		html += "</td>";
-		html += "<td>";
-		html += jsonObj[i];
-		html += "</td>";
-
-		if (colNo == 2) 
+		if ((i != "dateFormat") && (i != "locale"))
 		{
-			colNo = 0;
-			html += "</tr>";
+			colNo += 1;
+			if (colNo == 1) html += "<tr>";
+			else html += '<td width="100px"></td>';
+
+			html += "<td>";
+			html += "<b>" + doI18N(i) + ": </b>";
+			html += "</td>";
+			html += "<td>";
+			html += jsonObj[i];
+			html += "</td>";
+
+			if (colNo == 2) 
+			{
+				colNo = 0;
+				html += "</tr>";
+			}
 		}
 	}
 	if (colNo == 1) html += '<td></td><td></td><td></td></tr>';
