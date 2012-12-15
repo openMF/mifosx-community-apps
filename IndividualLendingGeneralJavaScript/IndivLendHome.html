@@ -5096,6 +5096,18 @@ function showLockinOptions(){
 <script id="auditSearchTemplate" type="text/x-jquery-tmpl">
 	<table width="100%"><tr>
 		<td>
+			<button type="submit" class="searchaudit" id="searchaudit" name="_eventId_submit">{{=$ctx.doI18N("search_audit")}}</button>
+		</td>
+		<td>
+			<label for="auditprocessingresult">{{=$ctx.doI18N("table.heading.audit.processingResult")}}</label>
+			<select name="auditprocessingresult" id="auditprocessingresult" >
+				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
+			{{#each processingResults}}
+				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(processingResult)}}</option>
+	    		{{/each}}
+			</select>
+		</td>
+		<td>
 			<label for="auditdatetimefrom">{{=$ctx.doI18N("table.heading.audit.madeOnDateFrom")}}</label>
 			<input id="auditdatetimefrom" name="auditdatetimefrom" type="text" class="datepickerfield" />
 		</td>
@@ -5132,7 +5144,7 @@ function showLockinOptions(){
 		</td>
 		<td>
 			<label for="auditresourceId">{{=$ctx.doI18N("table.heading.audit.resourceId")}}</label>
-			<input id="auditresourceId" name="auditresourceId" type="text" value="" />
+			<input id="auditresourceId" name="auditresourceId" type="text" size="10" value="" />
 		</td>
 		<td>
 			<label for="auditchecker">{{=$ctx.doI18N("table.heading.audit.checker")}}</label>
@@ -5151,9 +5163,6 @@ function showLockinOptions(){
 			<label for="auditcheckeddatetimeto">{{=$ctx.doI18N("table.heading.audit.checkedOnDateTo")}}</label>
 			<input id="auditcheckeddatetimeto" name="auditcheckeddatetimeto" type="text" class="datepickerfield" />
 		</td>
-		<td>
-			<button type="submit" class="searchaudit" id="searchaudit" name="_eventId_submit">{{=$ctx.doI18N("search_audit")}}</button>
-		</td>
 	</tr></table>
 	<div id="auditSearchResults"></div>
 	
@@ -5165,6 +5174,7 @@ function showLockinOptions(){
 		<tr>
 
 			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.processingResult")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.actionName")}}</b></th>
@@ -5183,6 +5193,7 @@ function showLockinOptions(){
 {{#each crudRows}}
 <tr>
 	<td>{{=id}}</td>
+	<td>{{=$ctx.doI18N(processingResult)}}</td>
 	<td>{{=$ctx.globalDateTime(madeOnDate)}}</td>
 	<td>{{=maker}}</td>
 	<td>{{=$ctx.doI18N(actionName)}}</td>
@@ -5210,6 +5221,7 @@ function showLockinOptions(){
 	<thead>
 		<tr>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.processingResult")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.actionName")}}</b></th>
@@ -5226,6 +5238,7 @@ function showLockinOptions(){
 	<tbody>
 <tr>
 	<td>{{=crudRows.id}}</td>
+	<td>{{=$ctx.doI18N(crudRows.processingResult)}}</td>
 	<td>{{=$ctx.globalDateTime(crudRows.madeOnDate)}}</td>
 	<td>{{=crudRows.maker}}</td>
 	<td>{{=$ctx.doI18N(crudRows.actionName)}}</td>

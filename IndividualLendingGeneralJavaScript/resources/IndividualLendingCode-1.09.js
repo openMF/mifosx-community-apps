@@ -4077,7 +4077,7 @@ function auditSearch() {
 	var successFunction = function(data, textStatus, jqXHR) {
 			var html = $("#auditSearchTemplate").render(data);
 			
-			$("#listplaceholder").html(html);  
+			$("#content").html(html);  
 			
 			var datetimeOptions = {
 							dateFormat: 'yy-mm-dd',
@@ -4127,6 +4127,9 @@ function auditSearch() {
 
 				var auditCheckedOnDateTimeTo = $('#auditcheckeddatetimeto').val();
 				if (auditCheckedOnDateTimeTo > "") auditSearchOptions.checkerDateTimeTo = auditCheckedOnDateTimeTo;
+
+				var auditProcessingResult = $('#auditprocessingresult').val();
+				if (!(auditProcessingResult == "ALL")) auditSearchOptions.processingResult = auditProcessingResult;
 
 				if (validated == true) viewAudits(auditSearchOptions);
 
