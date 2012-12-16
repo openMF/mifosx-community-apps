@@ -230,7 +230,7 @@ function showDataTableOneToOne() {
 function getDropdownValue(inColVal, columnValues) {	 
 
 	for ( var i in columnValues) {
-		if (inColVal == columnValues[i].id) return columnValues[i].value;
+		if (inColVal == columnValues[i].id) return doI18N(columnValues[i].value);
 	}
 	return "Err";
 }
