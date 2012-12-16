@@ -230,9 +230,9 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowFirstPage(' + "'" + 'zh' + "'" + ');return false;">zh</a></li>';
 	htmlVar += '		</ul>';
 	htmlVar += '	</li>';
-	htmlVar += '	<li><a href="unknown.html" onclick="showILAccountSettings();return false;" class="dmenu"><div id=displayUN>' + currentUserName + '</div></a>';
+	htmlVar += '	<li><a href="unknown.html" onclick="showAccountSettings();return false;" class="dmenu"><div id=displayUN>' + currentUserName + '</div></a>';
 	htmlVar += '		<ul>';
-	htmlVar += '			<li><a href="unknown.html" onclick="showILAccountSettings();return false;">' + doI18N("link.topnav.account.settings") + '</a></li>';
+	htmlVar += '			<li><a href="unknown.html" onclick="showAccountSettings();return false;">' + doI18N("link.topnav.account.settings") + '</a></li>';
 	htmlVar += '		</ul>';
 	htmlVar += '	</li>';
 	htmlVar += '	<li><a href="unknown.html" onclick="signOut(' + "'" + containerDivName + "'" + ');return false;">' + doI18N("link.signout") + '</a></li>';
@@ -3209,7 +3209,7 @@ function refreshLoanDocuments(loanId) {
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 							$("#dialog-form").dialog("close");
-							resetBasicAuthKeyWithOutSwitchingScreen();
+							if (currentUser == entityId) resetBasicAuthKey(false);
 						}
 						
 						popupDialogWithPostOnlyFormView(putUrl, 'PUT', 'dialog.title.update.password', templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
@@ -3401,7 +3401,7 @@ function selectNewThousandsSep(selectedVal) {
 
 
 //account settings
-function showILAccountSettings() {
+function showAccountSettings() {
 
 	setAccountSettingsContent("content"); 
 	$tabs = $("#tabs").tabs({
@@ -3427,8 +3427,7 @@ function showILAccountSettings() {
 					
 					var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						$("#dialog-form").dialog("close");
-						resetBasicAuthKey();
-						  //$("#tabs").tabs('load', 0);
+						resetBasicAuthKey(true);
 					}
 					
 					popupDialogWithPostOnlyFormView(putUrl, 'PUT', 'dialog.title.update.password', templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
@@ -3443,9 +3442,7 @@ function showILAccountSettings() {
 					
 					var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						$("#dialog-form").dialog("close");
-						resetBasicAuthKey();
-
-						  //$("#tabs").tabs('load', 0);
+						resetBasicAuthKey(true);
 					}
 					
 					popupDialogWithFormView(getAndPutUrl, getAndPutUrl, 'PUT', 'dialog.title.update.details', templateSelector, width, height, saveSuccessFunction);
@@ -3493,40 +3490,7 @@ function setBasicAuthKey(logonDivName, username, password)
 	executeAjaxRequest(url, 'POST', "", successFunction, errorFunction);
 }
 
-function resetBasicAuthKeyWithOutSwitchingScreen() 
-{ 
-	base64 = "";
-	var usePassword = currentPwd;
-	if (newPassword > "") usePassword = newPassword;
-	var useUserName = currentUserName;
-	if (newUserName > "") useUserName = newUserName;
-	
-	//alert("reset: currentUser: " + currentUser);
-
-	var url = "authentication?username=" + useUserName + "&password=" + usePassword;
-	var successFunction = function(data, textStatus, jqXHR) {
-		    //alert("success: currentUser: " + currentUser + " >> " + data.userId);
-			if (currentUser == data.userId) {
-					base64 = data.base64EncodedAuthenticationKey; 
-					currentUser = data.userId;
-					currentUserName = data.username;
-					currentPwd = usePassword;
-					$("#displayUN").html(currentUserName);
-					newPassword = "";
-					newUserName = "";
-			}
-			return false;
-	};
-
-	var errorFunction = function(jqXHR, textStatus, errorThrown) {
-		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-		return true;
-	};
-	
-	executeAjaxRequest(url, 'POST', "", successFunction, errorFunction);
-}
-
-function resetBasicAuthKey() 
+function resetBasicAuthKey(refreshAccountSettings) 
 { 
 
 	base64 = "";
@@ -3542,7 +3506,7 @@ function resetBasicAuthKey()
 					currentUserName = data.username;
 					currentPwd = usePassword;
 					$("#displayUN").html(currentUserName);
-					showILAccountSettings();
+					if (refreshAccountSettings == true) showAccountSettings();
 					newPassword = "";
 					newUserName = "";
 					return false;
