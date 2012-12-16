@@ -2041,6 +2041,7 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
+{{#if $ctx.showTask("VIEWDEPOSITPRODUCTS")}}
 <p><b>{{=$ctx.doI18N("heading.client.account.depositaccount.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(pendingApprovalDespositAccountsCount)}}
 <div class="row">
@@ -2117,7 +2118,7 @@ $(document).ready(function() {
 	</span>
 </div>
 {{/if}}
-
+{{/if}}
 
 {{#else}}
 <div>
