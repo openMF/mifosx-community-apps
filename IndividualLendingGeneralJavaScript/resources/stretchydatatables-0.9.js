@@ -793,7 +793,7 @@ function removeErrors(placeholderDiv) {
 
 function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeholderDiv) {
 
-alert("textStatus: " + textStatus + "     errorThrown: " + errorThrown);
+//alert("textStatus: " + textStatus + "     errorThrown: " + errorThrown);
 
 	  	if (jqXHR.status === 0) {
 		    alert('No connection. Verify application is running.');
@@ -842,7 +842,6 @@ alert("textStatus: " + textStatus + "     errorThrown: " + errorThrown);
 		  	  errorArray[arrayIndex] = errorObj;
 		  	  arrayIndex++
 		  	});
-		  	alert("and here");
 		  	var templateArray = new Array();
 		  	var templateErrorObj = new Object();
 		  	templateErrorObj.title = doI18N('error.msg.header');

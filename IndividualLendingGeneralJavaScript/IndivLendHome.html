@@ -365,6 +365,7 @@ $(document).ready(function() {
 							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
 							</td>
 						</tr>
+						{{#if $ctx.showTask("VIEWFUNDS")}}
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.fund")}}</td>
 							<td>
@@ -380,6 +381,7 @@ $(document).ready(function() {
 								</select>
 							</td>
 						</tr>
+						{{/if}}
 					</table>
 				</td>
 				<!-- interest details cell -->
@@ -817,6 +819,7 @@ $(document).ready(function() {
 							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
 							</td>
 						</tr>
+						{{#if $ctx.showTask("VIEWFUNDS")}}
 						<tr>
 							<td>{{=$ctx.doI18N("form.label.loan.fund")}}</td>
 							<td>
@@ -832,6 +835,7 @@ $(document).ready(function() {
 								</select>
 							</td>
 						</tr>
+						{{/if}}
 					</table>
 				</td>
 				<!-- interest details cell -->
@@ -3661,6 +3665,7 @@ $(document).ready(function() {
 		<label for="description">{{=$ctx.doI18N("form.label.loan.product.description")}}</label>
 		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
 
+		{{#if $ctx.showTask("VIEWFUNDS")}}
 		<label for="fundId">{{=$ctx.doI18N("form.label.loan.product.fund")}}</label>
 		<select id="fundId" name="fundId" title="">
 			<option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
@@ -3672,6 +3677,7 @@ $(document).ready(function() {
 				{{/if}}
             {{/each}}
 		</select>
+		{{/if}}
 	</fieldset>
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.loan.product.currency")}}</legend>

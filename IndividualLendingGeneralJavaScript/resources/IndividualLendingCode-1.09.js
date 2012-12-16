@@ -215,7 +215,8 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
-    htmlVar += '	<li><a href="unknown.html" onclick="postInterest();return false;">' + doI18N("label.interest.posting") + '</a></li>';
+	if (jQuery.MifosXUI.showMenu("POSTINTERESTMENU") == true) 
+		htmlVar += '	<li><a href="unknown.html" onclick="postInterest();return false;">' + doI18N("label.interest.posting") + '</a></li>';
 	
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
 	htmlVar += '</ul>';
