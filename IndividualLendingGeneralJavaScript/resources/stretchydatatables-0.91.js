@@ -594,7 +594,7 @@ function getSelectHTML(colName, columnValues, colVal) {
 			else
 				selectedVal = "";
 			selectHtml += '<option value="' + columnValues[i].id + '"'
-					+ selectedVal + '>' + columnValues[i].value + '</option>';
+					+ selectedVal + '>' + doI18N(columnValues[i].value) + '</option>';
 		}
 
 		selectHtml += '</select>';
@@ -619,7 +619,7 @@ function getSelectHTMLValue(colName, columnValues, colVal) {
 			else
 				selectedVal = "";
 			selectHtml += '<option value="' + columnValues[i].value + '"'
-					+ selectedVal + '>' + columnValues[i].value + '</option>';
+					+ selectedVal + '>' + doI18N(columnValues[i].value) + '</option>';
 		}
 
 		selectHtml += '</select>';
