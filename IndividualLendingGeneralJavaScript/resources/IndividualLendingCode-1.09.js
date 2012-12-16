@@ -4291,7 +4291,7 @@ function setCulture(cultureVal) {
     	$.datepicker.setDefaults( $.datepicker.regional[currentCulture]);
  
     	jQuery.i18n.properties({
-			name:'messages', 
+			name:['messages', 'messages-ceda', 'messages-elevate'], 
 			path: 'resources/global-translations/',
 			mode:'map',
 			cache: true,
