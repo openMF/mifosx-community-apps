@@ -414,10 +414,10 @@ function setSysAdminContent(divName) {
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST');return false;";
 
 	var htmlOptions = "";
-	if (jQuery.MifosXUI.showTask("ViewDatatables") == true)
+	if (jQuery.MifosXUI.showTask("VIEWDATATABLES") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listusers">' + doI18N("administration.link.view.datatables") + '</a>';
 
-	if (jQuery.MifosXUI.showTask("AddDatatable") == true)
+	if (jQuery.MifosXUI.showTask("REGISTERDATATABLE") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + registerDatatableUrl + '" id="registerdatatable">' + doI18N("administration.link.register.datatable") + '</a>';
 
 	if (jQuery.MifosXUI.showTask("ViewCodes") == true)

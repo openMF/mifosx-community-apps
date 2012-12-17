@@ -2823,77 +2823,97 @@ $(document).ready(function() {
 	
 		{{#if $ctx.showTask("AddLoanCharge")}}
 			{{#if addLoanChargeAllowed}}
-			<button id="addloanchargebtn{{=$parent.parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
+			<button id="addloanchargebtn{{=$parent.parent.parent.parent.data.id}}" class="addloancharge">Add Loan Charge</button>
 			{{/if}}
 		{{/if}}
 
 		{{#if $ctx.showTask("REJECTLOANAPPLICATION")}}
-			<button id="assignloanofficerbtn{{=$parent.parent.data.id}}" class="assignloanofficer">Assign Loan Officer</button>
+			<button id="assignloanofficerbtn{{=$parent.parent.parent.data.id}}" class="assignloanofficer">Assign Loan Officer</button>
 		{{/if}}
 
 		{{#if $ctx.showTask("RejectLoanApplication")}}
 			{{#if rejectAllowed}}
-			<button id="rejectbtn{{=$parent.parent.parent.data.id}}" class="rejectloan">Reject</button>
+			<button id="rejectbtn{{=$parent.parent.parent.parent.data.id}}" class="rejectloan">Reject</button>
 			{{/if}}
 		{{/if}}
 	
 		{{#if $ctx.showTask("LoanApplicationWithdrawn")}}
 			{{#if withdrawnByApplicantAllowed}}
-			<button id="withdrawnbyapplicantloanbtn{{=$parent.parent.parent.data.id}}" class="withdrawnbyapplicantloan">Withdrawn By Applicant</button>
+			<button id="withdrawnbyapplicantloanbtn{{=$parent.parent.parent.parent.data.id}}" class="withdrawnbyapplicantloan">Withdrawn By Applicant</button>
 			{{/if}}
 		{{/if}}
 
 		{{#if pendingApproval}}
 			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
+			<button id="modifybtn{{=$parent.parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
 			{{/if}}
 			{{#if $ctx.showTask("APPROVELOAN")}}
-			<button id="approvebtn{{=$parent.parent.parent.data.id}}" class="approveloan">Approve</button>
+			<button id="approvebtn{{=$parent.parent.parent.parent.data.id}}" class="approveloan">Approve</button>
 			{{/if}}
 			{{#if $ctx.showTask("DELETELOAN")}}
-			<button id="deletebtn{{=$parent.parent.parent.data.id}}" class="deleteloan">Delete</button>
+			<button id="deletebtn{{=$parent.parent.parent.parent.data.id}}" class="deleteloan">Delete</button>
 			{{/if}}
 		{{/if}}
 	
 		{{#if undoApprovalAllowed}}
-			<button id="undoapprovebtn{{=$parent.parent.parent.data.id}}" class="undoapproveloan">Undo Approval</button>
+			{{#if $ctx.showTask("UNDOLOANAPPROVAL")}}
+			<button id="undoapprovebtn{{=$parent.parent.parent.parent.data.id}}" class="undoapproveloan">Undo Approval</button>
+			{{/if}}
 		{{/if}}
 			
 		{{#if disbursalAllowed}}
 			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
+			<button id="modifybtn{{=$parent.parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
 			{{/if}}
-			<button id="disbursebtn{{=$parent.parent.parent.data.id}}" class="disburseloan">Disburse</button>
+			{{#if $ctx.showTask("DISBURSELOAN")}}
+			<button id="disbursebtn{{=$parent.parent.parent.parent.data.id}}" class="disburseloan">Disburse</button>
+			{{/if}}
 		{{/if}}
 			
 		{{#if undoDisbursalAllowed}}
-			<button id="undodisbursalbtn{{=$parent.parent.parent.data.id}}" class="undodisbursalloan">Undo Disbursal</button>
+			{{#if $ctx.showTask("UNDOLOANDISBURSAL")}}
+			<button id="undodisbursalbtn{{=$parent.parent.parent.parent.data.id}}" class="undodisbursalloan">Undo Disbursal</button>
+			{{/if}}
 		{{/if}}
 			
 		{{#if makeRepaymentAllowed}}
 			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="modifybtn{{=$parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
+			<button id="modifybtn{{=$parent.parent.parent.parent.data.id}}" class="modifyloan">Modify</button>
 			{{/if}}
-			<button id="repaymentbtn{{=$parent.parent.parent.data.id}}" class="repaymentloan">Make Repayment</button>
-			<button id="waiveinterestbtn{{=$parent.parent.parent.data.id}}" class="waiveinterestloan">Waive interest</button>
-			<button id="writeoffbtn{{=$parent.parent.parent.data.id}}" class="writeoffloan">Write-off</button>
+			{{#if $ctx.showTask("LOANREPAYMENT")}}
+			<button id="repaymentbtn{{=$parent.parent.parent.parent.data.id}}" class="repaymentloan">Make Repayment</button>
+			{{/if}}
+			{{#if $ctx.showTask("WAIVEINTERESTPORTIONOFLOAN")}}
+			<button id="waiveinterestbtn{{=$parent.parent.parent.parent.data.id}}" class="waiveinterestloan">Waive interest</button>
+			{{/if}}
+			{{#if $ctx.showTask("WRITEOFFLOAN")}}
+			<button id="writeoffbtn{{=$parent.parent.parent.parent.data.id}}" class="writeoffloan">Write-off</button>
+			{{/if}}
 		{{/if}}
 			
-			{{#if setGuarantorAllowed}}
-			<button id="setGuarantorbtn{{=$parent.parent.parent.data.id}}" class="setguarantor">{{=$ctx.doI18N("guarantor.button.label")}}</button>
+		{{#if setGuarantorAllowed}}
+			{{#if $ctx.showTask("ADDLOANGUARANTOR")}}
+			<button id="setGuarantorbtn{{=$parent.parent.parent.parent.data.id}}" class="setguarantor">{{=$ctx.doI18N("guarantor.button.label")}}</button>
 			{{/if}}
+		{{/if}}
 			
-			{{#if editGuarantorAllowed}}
-			<button id="removeGuarantorbtn{{=$parent.parent.parent.data.id}}" class="removeguarantor">{{=$ctx.doI18N("guarantor.button.label")}}</button>
+		{{#if editGuarantorAllowed}}
+			{{#if $ctx.showTask("REMOVELOANGUARANTOR")}}
+			<button id="removeGuarantorbtn{{=$parent.parent.parent.parent.data.id}}" class="removeguarantor">{{=$ctx.doI18N("guarantor.button.label")}}</button>
 			{{/if}}
+		{{/if}}
 	
-			{{#if closeLoanAsRescheduledAllowed}}
-			<button id="closeasrescheduledbtn{{=$parent.parent.parent.data.id}}" class="closeasrescheduledloan">Close as rescheduled</button>
+		{{#if closeLoanAsRescheduledAllowed}}
+			{{#if $ctx.showTask("CLOSEASRESCHEDULEDLOAN")}}
+			<button id="closeasrescheduledbtn{{=$parent.parent.parent.parent.data.id}}" class="closeasrescheduledloan">Close as rescheduled</button>
 			{{/if}}
+		{{/if}}
 	
-			{{#if closeLoanAllowed}}
-			<button id="closebtn{{=$parent.parent.parent.data.id}}" class="closeloan">Close</button>
+		{{#if closeLoanAllowed}}
+			{{#if $ctx.showTask("CLOSELOAN")}}
+			<button id="closebtn{{=$parent.parent.parent.parent.data.id}}" class="closeloan">Close</button>
 			{{/if}}
+		{{/if}}
 		</span>
 		</td>
 	</table>
@@ -2975,11 +2995,6 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.globalDate(closedOnDate)}}</span>
 		</div>
 		{{/if}}
-
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.term")}}</span>
-			<span class="rowvalue">{{=convenienceData.expectedLoanTermInMonths}} {{=$ctx.doI18N("label.months")}} / ({{=convenienceData.expectedLoanTermInDays}} {{=$ctx.doI18N("label.days")}})</span>
-		</div>
 
 		{{#if closedOnDate}}
 		<div class="row">
@@ -5105,7 +5120,11 @@ $(document).ready(function() {
 	<td>{{=applicationTableName}}</td>
 	<td>{{=registeredTableName}}</td>
 	<td>
+		{{#if $ctx.showTask("DEREGISTERDATATABLE")}}
 		<a id='deregisterdatatable{{=registeredTableName}}' class='deregisterdatatable' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deregister")}}</a>
+		{{#else}}
+		&nbsp;
+		{{/if}}
 	</td>
 </tr>
 {{/each}}
