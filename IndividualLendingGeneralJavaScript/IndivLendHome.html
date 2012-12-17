@@ -1542,6 +1542,8 @@ $(document).ready(function() {
 						<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 					{{/if}}
 
+						<button id="newsavingbtn{{=id}}" class="newsavingbtn">New Saving Application</button>
+
 					{{#if $ctx.showTask("DeleteClient")}}
 						<button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
 					{{/if}}
@@ -2118,6 +2120,62 @@ $(document).ready(function() {
 	</span>
 </div>
 {{/if}}
+
+<p><b>{{=$ctx.doI18N("heading.client.account.savingaccount.overview")}}</b></p>
+{{#if $ctx.numberGreaterThanZero(pendingApprovalSavingAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalSavingAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each pendingApprovalSavingAccounts}}
+		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(approvedSavingAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedSavingAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each approvedSavingAccounts}}
+		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(closedSavingAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedSavingAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each closedSavingAccounts}}
+		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+
+{{#if $ctx.numberGreaterThanZero(rejectedSavingAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.rejected")}} ({{=$ctx.number(rejectedSavingAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each rejectedSavingAccounts}}
+		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(withdrawnByClientSavingAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawnbyclient")}} ({{=$ctx.number(withdrawnByClientSavingAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each withdrawnByClientSavingAccounts}}
+		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</span>
+</div>
 {{/if}}
 
 {{#else}}
@@ -3946,11 +4004,30 @@ $(document).ready(function() {
     <div id="formerrors"></div>
 	<fieldset>
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" /> 
+		<input type="hidden" id="interestCalculationMethod" name="interestCalculationMethod" value="1" /> 
 		<legend>{{=$ctx.doI18N("form.legend.saving.product.information")}}</legend> 
-		
-		<label for="name">{{=$ctx.doI18N("form.label.saving.product.name")}}</label>
-		<input id="name" name="name" type="text" title="" value="{{=name}}"/>
-		
+		<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("form.label.saving.product.name")}}</label></td><td>
+				<input id="name" name="name" type="text" title="" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="savingProductType">{{=$ctx.doI18N("form.label.saving.product.savingProductType")}}</label></td><td>
+				<select name="savingProductType" id="savingProductType"  title="" style="width: 121px;">
+							{{#each savingsProductTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.savingProductType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        					{{/each}}
+  						</select>
+			</td>
+		</tr>
+		</table>
 		<label for="description">{{=$ctx.doI18N("form.label.saving.product.description")}}</label>
 		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
 	</fieldset>
@@ -3961,7 +4038,7 @@ $(document).ready(function() {
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
             	<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#each currencyOptions}}
-                		{{#if $parent.parent.data.currencyCode===code}}
+                {{#if $parent.parent.data.currency.code===code}}
 					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" selected="selected">{{=name}}</option>
 				{{#else}}
 					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" >{{=name}}</option>
@@ -3970,11 +4047,128 @@ $(document).ready(function() {
 		</select>
 		<label for="digitsAfterDecimal">{{=$ctx.doI18N("form.label.saving.product.decimalplaces")}}</label>
 		<input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 300px;" value="{{=$ctx.number(digitsAfterDecimal)}}" />
-	
-		<label for="interestRate">{{=$ctx.doI18N("form.label.saving.product.interestrate")}}</label>
-		<input id="interestRate" name="interestRate" title="" style="width: 70px;" value="{{=$ctx.decimal(interestRate, 4)}}" />
 	</fieldset>
 
+	<fieldset>
+	<legend>{{=$ctx.doI18N("form.legend.saving.product.deposit.terms")}}</legend>
+	<table>
+	<tr>
+		<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+			<table>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.saving.product.amount.per.period")}}</td>
+					<td>
+						<input id="savingsDepositAmount" name="savingsDepositAmount" title="" style="width: 125px;" value="{{=$ctx.decimal(savingsDepositAmount, 2)}}" />
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.saving.product.minbalforwithdrawal")}}</td>
+					<td>
+						<input id="minimumBalanceForWithdrawal" name="minimumBalanceForWithdrawal" title="" style="width: 125px;" value="{{=$ctx.decimal(minimumBalanceForWithdrawal, 2)}}" />
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.saving.product.tenure")}}</td>
+					<td>
+						<input id="tenure" name="tenure" title="" style="width: 50px;" value="{{=$ctx.number(tenure)}}"/>
+						<select name="tenureType" id="tenureType"  title="">
+							{{#each tenureTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.tenureType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        					{{/each}}
+  						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.saving.account.isLockinPeriodAllowed")}}</td>
+					<td>
+						{{#if isLockinPeriodAllowed}}
+						<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" checked=checked />
+						{{#else}}
+						<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" />
+						{{/if}}
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.saving.account.ispartialdepositallowed")}}</td>
+					<td>
+						{{#if isPartialDepositAllowed}}
+						<input type="checkbox" id="isPartialDepositAllowed" name="isPartialDepositAllowed" title="" style="width: 125px;" checked=checked />
+						{{#else}}
+						<input type="checkbox" id="isPartialDepositAllowed" name="isPartialDepositAllowed" title="" style="width: 125px;" />
+						{{/if}}
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+			<table>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.saving.product.interestRate")}}</td>
+					<td>
+						<input id="interestRate" name="interestRate" title="" style="width: 90px;" value="{{=$ctx.decimal(interestRate,2)}}"/>%-
+						<select name="interestType" id="interestType"  title="">
+							{{#each savingsInterestTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        					{{/each}}
+  						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.deposit.product.minInterestRate")}}</td>
+					<td>
+						<input id="minInterestRate" name="minInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(minInterestRate,2)}}"/>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.deposit.product.maxInterestRate")}}</td>
+					<td>
+						<input id="maxInterestRate" name="maxInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(maxInterestRate,2)}}"/>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.saving.product.deposit.every")}}</td>
+					<td>
+						<input id="depositEvery" name="depositEvery" title="" type="text" value="{{=$ctx.number(depositEvery)}}" style="width: 50px;" />
+							
+							<select name="frequency" id="frequency"  title="" style="width: 121px;">
+								{{#each savingFrequencyOptions}}
+								{{#if $ctx.number($parent.parent.data.savingFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  							</select>
+					</td>
+				</tr>
+				<tr id="lockinPeriodRow">
+					<td>{{=$ctx.doI18N("form.label.saving.product.lockin.period")}}</td>
+					<td>
+						<input id="lockinPeriod" name="lockinPeriod" title="" type="text" value="{{=$ctx.number(lockinPeriod)}}" style="width: 50px;" />
+						<select name="lockinPeriodType" id="lockinPeriodType"  title="" style="width: 121px;">
+							{{#each lockinPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.lockinPeriodType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        					{{/each}}
+  						</select>
+					</td>
+				</tr>
+			</table>	
+		</td>
+	</tr>
+	</table>	
+</fieldset>	
 </form>
 </script>
 
@@ -6221,6 +6415,236 @@ function showLockinOptions(){
 </p>
 </script>
 
+<script id="savingAccountDataTabTemplate" type="text/x-jquery-tmpl">
+<div>
+    <div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.status")}}</span>
+			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
+	</div>
+	<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.product")}}</span>
+			<span class="rowvalue">{{=productName}}</span>
+	</div>
+	{{#if externalId}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.externalid")}}</span>
+			<span class="rowvalue">{{=externalId}}</span>
+		</div>
+	{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
+			<span class="rowvalue">{{=currencyData.name}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.tenure")}}</span>
+			<span class="rowvalue">{{=tenure}} month(s)</span>
+		</div>
+</div>
 
+</script>
+<script id="newSavingAccountFormTemplateMin" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+
+<label for="clientname">{{=$ctx.doI18N("form.label.deposit.applicant")}}</label>
+<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
+
+<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
+<select name="productId" id="productId">
+<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
+{{#each productOptions}}
+{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+{{#else}}
+<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+{{/if}}
+{{/each}}
+</select>
+</form>
+</script>
+
+<script id="newSavingAccountFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<input type="hidden" id="currencyCode" name="currencyCode" value="{{=currencyData.code}}" />
+	<input type="hidden" id="digitsAfterDecimal" name="digitsAfterDecimal" value="{{=currencyData.decimalPlaces}}" />
+	<input type="hidden" id="savingProductType" name="savingProductType" value="1" />
+	<input type="hidden" id="interestCalculationMethod" name="interestCalculationMethod" value="1" />
+
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.saving.information")}}</legend>
+		<div>
+			<table id="productdetails">
+				<tr>
+					<td valign="top">
+
+						<label for="clientname">{{=$ctx.doI18N("form.label.deposit.applicant")}}</label>
+						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
+
+						<label for="productId">{{=$ctx.doI18N("form.label.product.dropdown")}}</label>
+						<select name="productId" id="productId">
+							<option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
+							{{#each productOptions}}
+							{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							{{/if}}
+							{{/each}}
+						</select>
+					</td>
+					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
+					<td valign="top">
+						<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
+						<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(projectedCommencementDate)}}" />
+						<label for="externalId">{{=$ctx.doI18N("form.label.deposit.externalId")}}</label>
+						<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.saving.product.saving.terms")}}</legend>
+			<table>
+			<tr>
+				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.saving.product.saving.amount")}}</td>
+							<td>
+								<input id="savingsDepositAmountPerPeriod" name="savingsDepositAmountPerPeriod" title="" type="text" value="{{=$ctx.decimal(savingsDepostiAmountPerPeriod, currencyData.decimalPlaces)}}" style="width: 125px;" />
+								<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currencyData.code}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+						<tr>
+						<td>{{=$ctx.doI18N("form.label.saving.product.minbalforwithdrawal")}}</td>
+						<td>
+						<input id="minimumBalanceForWithdrawal" name="minimumBalanceForWithdrawal" title="" style="width: 125px;" value="{{=$ctx.decimal(minimumBalanceForWithdrawal, currencyData.decimalPlaces)}}" />
+						<input id="currencyCode" title="" type="text" value="{{=currencyData.code}}" style="width: 40px;" disabled="disabled" />	
+						</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.tenure")}}</td>
+							<td>
+								<input id="tenure" name="tenure" title="" type="text" value="{{=$ctx.number(tenure)}}" style="width: 50px;" />
+								<select name="tenureType" id="tenureType"  title="">
+								{{#each tenureTypeOptions}}
+									{{#if $ctx.number($parent.parent.data.tenureType.id)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+									{{/if}}
+        						{{/each}}
+  								</select>	
+							</td>
+						</tr>
+					<tr>
+						<td>{{=$ctx.doI18N("form.label.deposit.account.isLockinPeriodAllowed")}}</td>
+						<td>
+							{{#if isLockinPeriodAllowed}}
+							<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" checked=checked />
+							{{#else}}
+							<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" />
+							{{/if}}
+						</td>
+					</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("form.label.saving.account.ispartialdepositallowed")}}</td>
+					<td>
+						{{#if isPartialDepositAllowed}}
+						<input type="checkbox" id="isPartialDepositAllowed" name="isPartialDepositAllowed" title="" style="width: 125px;" checked=checked />
+						{{#else}}
+						<input type="checkbox" id="isPartialDepositAllowed" name="isPartialDepositAllowed" title="" style="width: 125px;" />
+						{{/if}}
+					</td>
+				</tr>
+					</table>
+				</td>
+
+				<!-- interest details cell -->
+				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.nominal.interestrate")}}</td>
+							<td>
+								<input id="recurringInterestRate" name="recurringInterestRate" title="" type="text" value="{{=$ctx.decimal(reccuringInterestRate, currencyData.decimalPlaces)}}" style="width: 60px;" />
+							   -<select name="interestType" id="interestType"  title="">
+									{{#each savingsInterestTypeOptions}}
+										{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+										{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+										{{/if}}
+        							{{/each}}
+  								</select>	
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.nominal.interestrate")}}</td>
+							<td>
+								<input id="savingInterestRate" name="savingInterestRate" title="" type="text" value="{{=$ctx.decimal(savingInterestRate, currencyData.decimalPlaces)}}" style="width: 60px;" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
+							<td>
+								<input id="payEvery" name="payEvery" title="" type="text" value="{{=$ctx.number(depositEvery)}}" style="width: 50px;" />
+								
+								<select name="frequency" id="frequency"  title="" style="width: 121px;">
+								{{#each savingFrequencyOptions}}
+								{{#if $ctx.number($parent.parent.data.savingsFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+					</tr>
+					<tr>
+							<td>{{=$ctx.doI18N("form.label.deposit.product.lockin.period")}}</td>
+							<td>
+								<input id="lockinPeriod" name="lockinPeriod" title="" type="text" value="{{=$ctx.number(lockinPeriod)}}" style="width: 50px;" />
+								
+								<select name="lockinPeriodType" id="lockinPeriodType"  title="" style="width: 121px;">
+								{{#each lockinPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.lockinPeriodType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+					</tr>
+
+					</table>
+				</td>
+
+
+
+				<td>
+				<!-- Other options -->
+					<div>
+						<span id="toolbar" class="ui-widget-header ui-corner-all">
+							<button type="submit" class="submitsavingapp" id="submitsavingaccountapp" name="_eventId_submit"  title="Submit saving application.">Submit saving application</button>
+							<button type="submit" class="cancelsavingapp" id="cancelsavingaccountapp" name="_eventId_cancel" title="Cancel saving application.">Cancel</button>
+						</span>
+					</div>
+				<!-- other options -->
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+</form>
+</script>
 </body>
 </html>
