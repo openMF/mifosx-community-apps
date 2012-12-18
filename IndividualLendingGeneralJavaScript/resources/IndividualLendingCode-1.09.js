@@ -302,11 +302,17 @@ function setAddDepositContent(divName) {
 	$("#" + divName).html(htmlVar);
 	}
 
+function setAddSavingContent(divName) {
+
+	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
+	$("#" + divName).html(htmlVar);
+	}
+
 
 function setOrgAdminContent(divName) {
 
 	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'POST');return false;";
-	//var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
+	var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
 	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
@@ -323,8 +329,8 @@ function setOrgAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("AddLoanProduct") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + addProductUrl + '" id="addloanproduct">' + doI18N("administration.link.add.loan.product") + '</a>';
 
-//  htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
-//	htmlOptions += ' | <a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
+    htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
+	htmlOptions += ' | <a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
 
 	if (jQuery.MifosXUI.showTask("ViewDepositProducts") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
@@ -1459,7 +1465,15 @@ function showILClient(clientId) {
 						
 						e.preventDefault();
 					});
-					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));	
+					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));
+					
+					$('.newsavingbtn').button({icons: {
+              			 primary: "ui-icon-document"}
+					}).click(function(e) {
+						addILSaving(clientId);
+					    e.preventDefault();
+					});
+					$('button.newsavingbtn span').text(doI18N('dialog.button.new.saving.application'));
 					
 					$('.addnotebtn').button({icons: {
                			 primary: "ui-icon-comment"}
@@ -2200,13 +2214,13 @@ function showILGroup(groupId){
 		' $("#inputarea").html(formHtml);' +
 		' $("#productId").change(function() {' +
 		' var productId = $("#productId").val();' +
-		' repopulateSavingAccountForm(' + clientId + ', productId);' +
+		' repopulateDepositAccountForm(' + clientId + ', productId);' +
 		' });' +
 		' };'
 		}
 		
 	
-	function repopulateSavingAccountForm(clientId, productId){
+	function repopulateDepositAccountForm(clientId, productId){
 		successFunction = function(data, textStatus, jqXHR) {
 			var formHtml = $("#newDepositFormTemplate").render(data);
 			
@@ -2214,7 +2228,7 @@ function showILGroup(groupId){
 			
 			$('#productId').change(function() {
 				var productId = $('#productId').val();
-				repopulateSavingAccountForm(clientId, productId);
+				repopulateDepositAccountForm(clientId, productId);
 			});
 			
 			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
@@ -4701,3 +4715,95 @@ function postInterest(){
 	popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
 }
 
+function showSavingAccount(accountId, productName) {
+	var title = productName + ": #" + accountId ;			    
+	$newtabs.tabs( "add", "unknown.html", title);
+	loadSavingAccount(accountId);
+}
+
+function loadSavingAccount(accountId) {
+	
+	var accountUrl = 'savingaccounts/' + accountId; //+ "?associations=all";
+
+	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
+    	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
+        //$(anchor.hash).html("error occured while ajax loading.");
+	};
+	
+	var successFunction = function(data, status, xhr) {
+    	
+		var currentTabIndex = $newtabs.tabs('option', 'selected');
+    	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+    	
+    	var tableHtml = $("#savingAccountDataTabTemplate").render(data);
+    	
+    	var data = new Object();
+		
+		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+		currentTab.html(tableHtml);
+
+		var curTabID = currentTab.prop("id");
+	}
+		
+	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
+}
+function addILSaving(clientId) {
+	setAddSavingContent("content");
+
+	eval(genAddSavingSuccessVar(clientId));
+
+	   executeAjaxRequest('savingaccounts/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	
+	}	
+	function genAddSavingSuccessVar(clientId) {
+
+	return 'var successFunction = function(data, textStatus, jqXHR) { ' +
+	' var formHtml = $("#newSavingAccountFormTemplateMin").render(data);' +
+	' $("#inputarea").html(formHtml);' +
+	' $("#productId").change(function() {' +
+	' var productId = $("#productId").val();' +
+	' repopulateSavingAccountForm(' + clientId + ', productId);' +
+	' });' +
+	' };'
+	}
+
+function repopulateSavingAccountForm(clientId, productId){
+	successFunction = function(data, textStatus, jqXHR) {
+		var formHtml = $("#newSavingAccountFormTemplate").render(data);
+		
+		$("#inputarea").html(formHtml);
+		
+		$('#productId').change(function() {
+			var productId = $('#productId').val();
+			repopulateSavingAccountForm(clientId, productId);
+		});
+		
+		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
+		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+		
+		$('#submitsavingaccountapp').button().click(function(e) {
+			submitSavingAccountApplication(clientId);
+		    e.preventDefault();
+		});
+		$('button#submitsavingaccountapp span').text(doI18N('dialog.button.submit'));
+		
+		$('#cancelsavingaccountapp').button().click(function(e) {
+  			showILClient(clientId);
+		    e.preventDefault();
+		});
+		$('button#cancelsavingaccountapp span').text(doI18N('dialog.button.cancel'));
+	}
+	executeAjaxRequest('savingaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);
+}	
+
+
+	function submitSavingAccountApplication(clientId) {
+	
+	var newFormData = JSON.stringify($('#entityform').serializeObject());
+	
+	var successFunction =  function(data, textStatus, jqXHR) {
+	  				showILClient(clientId);
+		  };
+	
+	executeAjaxRequest('savingaccounts', "POST", newFormData, successFunction, formErrorFunction);	  
+
+}
