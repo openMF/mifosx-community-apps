@@ -1754,6 +1754,7 @@ $(document).ready(function() {
 </script>
 
 <script id="clientIdentifiersTemplate" type="text/x-jquery-tmpl">
+	{{#if $ctx.showTask("ADDCLIENTIDENTIFIER")}}
 	<table width="100%">
 		<td align="center">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
@@ -1761,6 +1762,7 @@ $(document).ready(function() {
 			</span>
 		</td>
 	</table>
+    {{/if}}
 	<hr/>
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
@@ -3898,6 +3900,7 @@ $(document).ready(function() {
 		</tr>
 		</table>
 	</fieldset>
+	{{#if $ctx.showTask("VIEWCHARGES")}}
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.loan.product.charges")}}</legend>
 		<table>
@@ -3927,6 +3930,7 @@ $(document).ready(function() {
 			</tr>
 		</table>	
 	</fieldset>
+	{{/if}}
 </form>
 </script>
 

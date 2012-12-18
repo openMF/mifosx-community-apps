@@ -264,7 +264,11 @@ function showLogon(logonDivName) {
 
 
 function setClientListingContent(divName) {
-	var htmlVar = '<button id="addclient" style="clear: both;">' + doI18N("link.add.new.client") + '</button>';
+	var htmlVar = "";
+	
+	if (jQuery.MifosXUI.showTask("ADDCLIENT") == true) 
+		htmlVar = '<button id="addclient" style="clear: both;">' + doI18N("link.add.new.client") + '</button>';
+	
 	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
