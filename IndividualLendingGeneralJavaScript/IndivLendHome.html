@@ -1542,7 +1542,9 @@ $(document).ready(function() {
 						<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 					{{/if}}
 
+					{{#if $ctx.showTask("AddSavingAccount")}}
 						<button id="newsavingbtn{{=id}}" class="newsavingbtn">New Saving Application</button>
+					{{/if}}
 
 					{{#if $ctx.showTask("DeleteClient")}}
 						<button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
@@ -1995,9 +1997,6 @@ $(document).ready(function() {
 </script>
 
 <script id="clientAccountSummariesTemplate" type="text/x-jquery-tmpl">
-<p><b>{{=$ctx.doI18N("heading.client.account.account.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(anyLoanCount)}}
-
 <p><b>{{=$ctx.doI18N("heading.client.account.loanaccount.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(pendingApprovalLoanCount)}}
 <div class="row">
@@ -2077,6 +2076,7 @@ $(document).ready(function() {
 	</span>
 </div>
 {{/if}}
+
 {{#if $ctx.numberGreaterThanZero(closedDepositAccountsCount)}}
 <div class="row">
 	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedDepositAccountsCount)}}):</span>
@@ -2121,6 +2121,7 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
+{{#if $ctx.showTask("VIEWSAVINGPRODUCTS")}}
 <p><b>{{=$ctx.doI18N("heading.client.account.savingaccount.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(pendingApprovalSavingAccountsCount)}}
 <div class="row">
@@ -2178,9 +2179,6 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
-{{#else}}
-<div>
-	{{=$ctx.doI18N("label.client.account.no.loans.exist")}}</div>
 {{/if}}
 </script>
 

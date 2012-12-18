@@ -200,7 +200,8 @@ function showMainContainer(containerDivName, username) {
 	
 	if (jQuery.MifosXUI.showMenu("SysAdminMenu") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
-		
+	
+	if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
 		htmlVar += '  <li><a href="unknown.html" onclick="setAccountingContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.accounting") + '</a></li>';
 
 	if (jQuery.MifosXUI.showMenu("ReportsMenu") == true)
@@ -211,7 +212,10 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Client' + "'" + ');return false;">' + doI18N("link.reports.client") + '</a></li>';
 		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Loan' + "'" + ');return false;">' + doI18N("link.reports.loan") + '</a></li>';
 		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Fund' + "'" + ');return false;">' + doI18N("link.reports.fund") + '</a></li>';
-		htmlVar += '      		<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Accounting' + "'" + ');return false;">' + doI18N("link.reports.accounting") + '</a></li>';
+		
+		if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
+			htmlVar += '      		<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Accounting' + "'" + ');return false;">' + doI18N("link.reports.accounting") + '</a></li>';
+		
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
@@ -329,8 +333,11 @@ function setOrgAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("AddLoanProduct") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + addProductUrl + '" id="addloanproduct">' + doI18N("administration.link.add.loan.product") + '</a>';
 
-    htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
-	htmlOptions += ' | <a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
+	if (jQuery.MifosXUI.showTask("ViewSavingProducts") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
+	
+	if (jQuery.MifosXUI.showTask("AddSavingProduct") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
 
 	if (jQuery.MifosXUI.showTask("ViewDepositProducts") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
