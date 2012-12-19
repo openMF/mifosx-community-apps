@@ -48,6 +48,8 @@ function initialiseReporting(params) {
 
 	tableSizeLimit = setTableSizeLimit();
 
+	xlatePrefix = "XLATE_";
+
 	showMsg("Table size limit is: " + tableSizeLimit );
 
 	nullTitleValue = "-99999999.11";
@@ -830,7 +832,11 @@ function createTable(theData) {
 			default:
   				tmpSType = 'string';
 		}
-		tableColumns.push({ "sTitle": doI18N(theData.columnHeaders[i].columnName), 
+
+		var tmpColName = theData.columnHeaders[i].columnName;
+		//if a report column name is prefixed with xlate_ the column values will be translated
+		if (tmpColName.toUpperCase().indexOf(xlatePrefix) == 0) tmpColName = tmpColName.slice(xlatePrefix.length);
+		tableColumns.push({ "sTitle": doI18N(tmpColName), 
 					"sOriginalHeading": theData.columnHeaders[i].columnName,
 					// "dataType": tmpSType,
 					"sType": tmpSType,
@@ -851,7 +857,14 @@ function createTable(theData) {
 			{
 			case "string":
 				if (tmpVal == null) tmpVal = "";
-				tmpVal = convertCRtoBR(tmpVal);
+				else
+				{
+					if (tableColumns[j].sOriginalHeading.toUpperCase().indexOf(xlatePrefix) == 0)
+					{// xlate code values
+						tmpVal = doI18N(tmpVal);
+					}
+					else tmpVal = convertCRtoBR(tmpVal);
+				}
   				break;
 			case "numeric":
 				if (tmpVal == null) tmpVal = ""
