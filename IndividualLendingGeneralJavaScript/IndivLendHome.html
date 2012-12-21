@@ -344,7 +344,7 @@ $(document).ready(function() {
 								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
 									<option value="">{{=$ctx.doI18N("form.option.repayment.strategy.dropdown.first.choice")}}</option>
 								{{#each repaymentStrategyOptions}}
-									{{#if $ctx.number($parent.parent.data.transactionStrategyId)===$ctx.number(id)}}
+									{{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 									{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
@@ -786,7 +786,7 @@ $(document).ready(function() {
 								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
 									<option value="">{{=$ctx.doI18N("form.option.repayment.strategy.dropdown.first.choice")}}</option>
 								{{#each repaymentStrategyOptions}}
-									{{#if $ctx.number($parent.parent.data.transactionStrategyId)===$ctx.number(id)}}
+									{{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 									{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=name}}</option>

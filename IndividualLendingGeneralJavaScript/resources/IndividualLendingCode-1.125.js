@@ -1331,7 +1331,7 @@ function showILGroupListing(){
 
 	var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
 		$('#dialog-form').dialog("close");
-		showILGroup(data.entityId);
+		showILGroup(data.resourceId);
 	}
 	$("#addgroup").button().click(function(e) {
 		var getUrl = 'groups/template';
