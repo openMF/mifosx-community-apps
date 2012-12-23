@@ -487,7 +487,7 @@ function popupAddUpdateDialog(requestType, postOrPutUrl, updateRowIndex) {
 	dialogDiv = $("<div id='dialog-form'></div>");
 	dialogDiv.append(addUpdateBuildTemplate(requestType, updateRowIndex));
 	addUpdateOpenDialog(requestType, postOrPutUrl, updateRowIndex);
-	$('.datepickerfield').datepicker({constrainInput: true, changeMonth : true, changeYear : true, dateFormat: 'dd MM yy'});
+	$('.datepickerfield').datepicker({constrainInput: true, changeMonth : true, changeYear : true, dateFormat: custom.datePickerDateFormat});
 
 	//alert("requestType: " + requestType + "    postOrPutUrl: " + postOrPutUrl + "    updateRowIndex: " + updateRowIndex);
 }
@@ -496,7 +496,7 @@ function addUpdateBuildTemplate(requestType, updateRowIndex) {
 
 	var htmlVar = '<form id="entityform">    <div id="formerrors"></div>';
 //hidden fields for validating date and number formats.
-	htmlVar += '<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />';
+	htmlVar += '<input type="hidden" id="dateFormat" name="dateFormat" value="' + custom.helperFunctions.currentDateFormat() + '" />';
 	htmlVar += '<input type="hidden" id="locale" name="locale" value="' + currentLocale() + '" />';
 
 	htmlVar += '<table width="100%"><tr>';

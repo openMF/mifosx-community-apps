@@ -61,7 +61,7 @@
 <script type="text/javascript"	src="resources/libs/jquery.webcam.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform additional data tables -->
-<script type="text/javascript" src="resources/stretchydatatables-1.125.js"></script>
+<script type="text/javascript" src="resources/stretchydatatables-1.26.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform reporting -->
 <script type="text/javascript"	src="resources/stretchyreporting/stretchyreporting-1.125.js"></script>
@@ -70,7 +70,7 @@
 <script type="text/javascript" src="resources/MifosXUI-1.12.js"></script>
 
 <!-- JQuery plug-in to manage permissions and role permissions in the UI as the UI code is quite elaborate -->
-<script type="text/javascript" src="resources/MifosXPermissions.js"></script>
+<script type="text/javascript" src="resources/MifosXPermissions-1.26.js"></script>
 
 
 <!-- Google charts api (used in stretchyreporting) -->
@@ -81,9 +81,9 @@
 
 <!-- This is a single Page javascript app - IndividualLendingCode.js has functions which switch functionality by replacing the html in the #container div -->
 
-<script type="text/javascript" src="resources/IndividualLendingCode-1.125.js"></script>
+<script type="text/javascript" src="resources/IndividualLendingCode-1.26.js"></script>
 
-<script type="text/javascript" src="resources/SetTenantLoadTenantConfig.js"></script>
+<script type="text/javascript" src="resources/SetTenantLoadTenantConfig-1.26.js"></script>
 
 
 </head>
@@ -231,7 +231,7 @@ $(document).ready(function() {
 
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
 	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<fieldset>
@@ -630,7 +630,7 @@ $(document).ready(function() {
 	{{/each}}
 </select>
 {{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
-<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 <label for="specifiedDueDate">Due for collection on:</label>
 <input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
 {{/if}}
@@ -643,7 +643,7 @@ $(document).ready(function() {
 	<fieldset>
 		<div>
 			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
-			<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+			<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 			<label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
@@ -693,7 +693,7 @@ $(document).ready(function() {
     <div id="formerrors"></div>
 
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<fieldset>
@@ -984,7 +984,7 @@ $(document).ready(function() {
     <div id="formerrors"></div>
 
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<fieldset>
@@ -1185,7 +1185,7 @@ $(document).ready(function() {
     <div id="formerrors"></div>
 
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<fieldset>
@@ -1678,7 +1678,7 @@ $(document).ready(function() {
 	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 	{{/if}}
 
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="joinedDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
 	{{#if currentChange}}
@@ -2533,7 +2533,7 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="eventDate">{{=$ctx.doI18N("label.loan.on")}}</label>
 	<input id="eventDate" name="eventDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(todaysDate)}}"/>
@@ -2548,7 +2548,7 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 
 	<table>
 		<tr>
@@ -2610,7 +2610,7 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
@@ -2673,7 +2673,7 @@ $(document).ready(function() {
     <div id="formerrors"></div>
 
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<fieldset>
@@ -3611,7 +3611,7 @@ $(document).ready(function() {
 	</div>
 	
 	<div id="externalGuarantorDiv">
-		 <input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+		 <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 		 <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		 <fieldset>
 	    	<legend>{{=$ctx.doI18N("guarantor.details.feildset.label")}}</legend>
@@ -3661,7 +3661,7 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="eventDate">{{=$ctx.doI18N("label.loan.on")}}</label>
 	<input id="eventDate" name="eventDate" title="" class="datepickerfield" />
@@ -3684,7 +3684,7 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
@@ -3702,7 +3702,7 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.writeoff.on")}}</label>
@@ -4434,7 +4434,7 @@ $(document).ready(function() {
 		</select>
 		{{/if}}
 
-		<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+		<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		<label for="openingDate">{{=$ctx.doI18N("form.label.office.openedon")}}</label>
 		<input id="openingDate" name="openingDate" title="" type="text" value="{{=$ctx.globalDate(openingDate)}}" size="75" class="datepickerfield" />
@@ -4477,7 +4477,7 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<fieldset>
@@ -4769,7 +4769,7 @@ $(document).ready(function() {
 					</select>
 				</td>
 				<td>
-					<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+					<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 					<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 					<label for="assignmentDate">{{=$ctx.doI18N("form.label.aassignment.date")}}</label>
 					<input id="assignmentDate" name="assignmentDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(assignmentDate)}}"/>
@@ -4804,7 +4804,7 @@ $(document).ready(function() {
 			</tr>
 			<tr>
 				<td colspan="3">
-					<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+					<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 					<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 					<label for="assignmentDate">{{=$ctx.doI18N("form.label.aassignment.date")}}</label>
 					<input id="assignmentDate" name="assignmentDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(assignmentDate)}}"/>
@@ -6137,7 +6137,7 @@ function showLockinOptions(){
 		<tr>
 			<td><label for="closingDate">{{=$ctx.doI18N("accounting.closure.info.closure.date")}}</label></td>
 			<td>
-				<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 				<input id="closingDate" name="closingDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(closingDate)}}"/>
 			</td>
@@ -6182,7 +6182,7 @@ function showLockinOptions(){
 	</table>
 	<hr/>
 	<div>
-	   <input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	   <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	   <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		
 	   	<table width="100%">
@@ -6387,7 +6387,7 @@ function showLockinOptions(){
 		<tr>
 			<td><label for="entryDate">{{=$ctx.doI18N("journalentry.info.entry.date")}}</label></td>
 			<td>
-			<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+			<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 			<input id="entryDate" name="entryDate" title="" type="text" class="datepickerfield" />
 			</td>
@@ -6472,7 +6472,7 @@ function showLockinOptions(){
     <div id="formerrors"></div>
 
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<input type="hidden" id="currencyCode" name="currencyCode" value="{{=currencyData.code}}" />
 	<input type="hidden" id="digitsAfterDecimal" name="digitsAfterDecimal" value="{{=currencyData.decimalPlaces}}" />

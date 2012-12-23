@@ -1955,8 +1955,8 @@ function showILGroup(groupId){
 				repopulateSavingAccountForm(clientId, productId);
 			});
 			
-			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
-			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 			
 		$('#submitdepositapp').button().click(function(e) {
 			submitDepositApplication(clientId);
@@ -1989,8 +1989,8 @@ function showILGroup(groupId){
 				// dont do anything for now when users switches product during modify
 			});
 			
-			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
-			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 			
 			$('#cancelloanapp').button().click(function(e) {
 	  			showILClient(clientId);
@@ -2242,8 +2242,8 @@ function showILGroup(groupId){
 				repopulateDepositAccountForm(clientId, productId);
 			});
 			
-			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
-			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 			
 			$('#submitdepositapp').button().click(function(e) {
 				submitDepositApplication(clientId);
@@ -2274,8 +2274,8 @@ function showILGroup(groupId){
 					repopulateFullForm(clientId, productId);
 				});
 				
-				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
-				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 				
 				calculateLoanSchedule();
 				
@@ -3812,7 +3812,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			var selectChargeForLoanSuccess = function(chargeData, textStatus, jqXHR){
 				var partialFormHtml = $("#loanChargeDetailsPartialFormTemplate").render(chargeData);
 				$("#loanChargeDetails").html(partialFormHtml);
-				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 			}
 			executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForLoanSuccess, formErrorFunction);    	
 		}
@@ -3900,8 +3900,8 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		return !$('#currencies option:selected').remove().appendTo('#notSelectedCurrencies');  
 	});
 
-	$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'dd MM yy'});
-	$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+	$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+	$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 	
 	$("#entityform textarea").first().focus();
 	$('#entityform input').first().focus();	
@@ -3985,7 +3985,7 @@ dialogDiv.dialog({
   				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedItems');  
   			});
   			
-  			$('.datepickerfield').datepicker({constrainInput: true, dateFormat: 'dd MM yy'});
+  			$('.datepickerfield').datepicker({constrainInput: true, dateFormat: custom.datePickerDateFormat});
   			
   			$("#entityform textarea").first().focus();
   			$('#entityform input').first().focus();
@@ -4033,7 +4033,7 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 		  				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedItems');  
 		  			});
 		  			
-		  			$('.datepickerfield').datepicker({constrainInput: true, minDate: minOffset, defaultDate: defaultOffset, maxDate: maxOffset, dateFormat: 'dd MM yy'});
+		  			$('.datepickerfield').datepicker({constrainInput: true, minDate: minOffset, defaultDate: defaultOffset, maxDate: maxOffset, dateFormat: custom.datePickerDateFormat});
 		  			
 		  			$("#entityform textarea").first().focus();
 		  			$('#entityform input').first().focus();
@@ -4789,8 +4789,8 @@ function repopulateSavingAccountForm(clientId, productId){
 			repopulateSavingAccountForm(clientId, productId);
 		});
 		
-		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
-		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: 'dd MM yy'});
+		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 		
 		$('#submitsavingaccountapp').button().click(function(e) {
 			submitSavingAccountApplication(clientId);

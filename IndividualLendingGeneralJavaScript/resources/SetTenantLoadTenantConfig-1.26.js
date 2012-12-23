@@ -10,9 +10,13 @@
 			helperFunctions: "",
 
 //default function for displaying registered data table entries (Additional Data)
-			showRelatedDataTableInfo: ""
-			};
+			showRelatedDataTableInfo: "",
 
+//default datepicker format - use yy-mm-dd for faster manual entry
+			//datePickerDateFormat: 'yy-mm-dd'
+			datePickerDateFormat: 'dd MM yy'
+
+			};
 
 	custom.showFirstPage = function () {
 
@@ -85,6 +89,19 @@
 			        return false;
 			      }
 			},
+			currentDateFormat: function() {
+			      try {
+			    	  	
+					if (custom.datePickerDateFormat == 'dd MM yy') return "dd MMMM yyyy";
+
+					if (custom.datePickerDateFormat == 'yy-mm-dd') return "yyyy-MM-dd";
+
+					return "??Format??";
+			    	  	
+			      } catch(e) {
+			        return "??";
+			      }
+			},
 			globalDate: function(dateParts) {
 			      try {
 			    	  if (undefined != dateParts)
@@ -95,8 +112,13 @@
 			    	  
 			    	  	var d = new Date();
 			    	  	d.setFullYear(year,month,day);
-			    	  
-			    	  	return Globalize.format(d,"dd MMMM yyyy");
+			    	  	
+					if (custom.datePickerDateFormat == 'dd MM yy') return Globalize.format(d,"dd MMMM yyyy");
+
+					if (custom.datePickerDateFormat == 'yy-mm-dd') return Globalize.format(d,"yyyy-MM-dd");
+
+					return "??Format??";
+			    	  	
 			    	  }
 			    	  else return "";
 			      } catch(e) {
@@ -107,14 +129,20 @@
 			      try {
 			    	  if (undefined != localDateAsISOString)
 			    	  {
-				    	  var dateParts = localDateAsISOString.split("-")
-				    	  var year = dateParts[0];
-				    	  var month = dateParts[1] - 1; // month is zero indexed
-				    	  var day = dateParts[2];
+				    	var dateParts = localDateAsISOString.split("-")
+				    	var year = dateParts[0];
+				    	var month = dateParts[1] - 1; // month is zero indexed
+				    	var day = dateParts[2];
 				    	  
-				    	  var d = new Date();
-				    	  d.setFullYear(year,month,day);
-				    	  return Globalize.format(d,"dd MMMM yyyy");
+				    	var d = new Date();
+				    	d.setFullYear(year,month,day);
+
+					if (custom.datePickerDateFormat == 'dd MM yy') return Globalize.format(d,"dd MMMM yyyy");
+
+					if (custom.datePickerDateFormat == 'yy-mm-dd') return Globalize.format(d,"yyyy-MM-dd");
+
+					return "??Format??";
+
 			    	  } else return "";
 			      } catch(e) {
 			        return "??";
