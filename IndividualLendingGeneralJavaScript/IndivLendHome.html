@@ -2046,9 +2046,9 @@ $(document).ready(function() {
 
 {{#if $ctx.showTask("VIEWDEPOSITPRODUCTS")}}
 <p><b>{{=$ctx.doI18N("heading.client.account.depositaccount.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(pendingApprovalDespositAccountsCount)}}
+{{#if $ctx.numberGreaterThanZero(pendingApprovalDepositAccountsCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalDespositAccountsCount)}}):</span>
+	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalDepositAccountsCount)}}):</span>
 	<span class="rowvalue">
 	{{#each pendingApprovalDepositAccounts}}
 		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
@@ -2057,9 +2057,9 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
-{{#if $ctx.numberGreaterThanZero(approvedDespositAccountsCount)}}
+{{#if $ctx.numberGreaterThanZero(approvedDepositAccountsCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedDespositAccountsCount)}}):</span>
+	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedDepositAccountsCount)}}):</span>
 	<span class="rowvalue">
 	{{#each approvedDepositAccounts}}
 		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
@@ -2112,11 +2112,11 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
-{{#if $ctx.numberGreaterThanZero(withdrawnByClientDespositAccountsCount)}}
+{{#if $ctx.numberGreaterThanZero(withdrawnByClientDepositAccountsCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawnbyclient")}} ({{=$ctx.number(withdrawnByClientDespositAccountsCount)}}):</span>
+	<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawnbyclient")}} ({{=$ctx.number(withdrawnByClientDepositAccountsCount)}}):</span>
 	<span class="rowvalue">
-	{{#each withdrawnByClientDespositAccounts}}
+	{{#each withdrawnByClientDepositAccounts}}
 		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
 	{{/each}}
 	</span>
