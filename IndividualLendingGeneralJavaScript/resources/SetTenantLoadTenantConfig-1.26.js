@@ -3,19 +3,20 @@
 
 	custom = {
 //default function to display initial page after logon
-			showFirstPage: "",	
+				showFirstPage: "",	
 
 // default function to register helpers for jsViews and jsRender functionality 
 // fixes bug with display zero! Also included are some utility functions needed during rendering
-			helperFunctions: "",
-
-//default function for displaying registered data table entries (Additional Data)
-			showRelatedDataTableInfo: "",
+				helperFunctions: "",
 
 //default datepicker format - use yy-mm-dd for faster manual entry
-			//datePickerDateFormat: 'yy-mm-dd'
-			datePickerDateFormat: 'dd MM yy'
+			//datePickerDateFormat: 'yy-mm-dd',
+				datePickerDateFormat: 'dd MM yy',
 
+//default function for displaying registered data table entries (Additional Data)
+				showRelatedDataTableInfo: "",
+//default variable for identifying excluded datatables and datatables to be render in a non-default way
+				datatablePresentation: "",
 			};
 
 	custom.showFirstPage = function () {
@@ -193,35 +194,114 @@
 			      } catch(e) {
 			        return commandAsJson;
 			      }
+			},
+			getDataTableFieldEntry: function(data, rowNum, fieldName, displayMode) {
+
+				return jQuery.stretchyDataTables.getDataTableFieldEntry(data, rowNum, fieldName, displayMode);
+			},
+			getDataTableFieldValueEntry: function(data, rowNum, fieldName, displayMode) {
+
+				return jQuery.stretchyDataTables.getDataTableFieldValueEntry(data, rowNum, fieldName, displayMode);
 			}
 	};
 
 
+	
+	
+	
+//default to no customised rendering but loan guarantor data table is excluded
+	custom.datatablePresentation = {
+			"M_CLIENT": {
+							renderInfo: [],
+							exclude: []
+						},
+			"M_LOAN": 	{
+							renderInfo: [],
+							exclude: ["m_guarantor_external"]
+						}
+		};
+	
 	custom.showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
-  
+
 		var url = 'datatables?apptable=' + appTableName;
-		var datatableArray = [];
 
 		var successFunction =  function(data, textStatus, jqXHR) {
 				
 				if (data.length > 0)
 				{
-
-					switch (appTableName) {	
-					case "m_loan": //exclude m_guarantor_external from default m_loan data table display
-						for (var i in data)
+					datatableArray = [];
+					var datatableExists = function(datatableName) {
+						for (var i in datatableArray)
 						{
-							if (data[i].registeredTableName != "m_guarantor_external") datatableArray.push(data[i]);
+							if (datatableArray[i].registeredTableName == datatableName) return true;
 						}
-						break;
-					default:
-						datatableArray = data;
+						return false;
+					}
+					var datatableExclude = function(datatableName) {
+						for (var i in datatableArray)
+						{
+							if (datatableArray[i].registeredTableName == datatableName)
+							{
+								datatableArray.splice(i,1);
+								//alert("excluded datatable: " + datatableName)
+							}
+						}
+					}
+					var defaultDatatableExists = function() {
+						for (var i in datatableArray)
+						{
+							var itemDiv = datatableArray[i].itemDiv
+							if (typeof itemDiv == "undefined") return true;
+						}
+						return false;
 					}
 
-					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
-					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
-					tabVar.tabs('select', 0); //back to main tab
+					//1. add any datatables that are defined as manually customised
+					var appTableRenderInfo = custom.datatablePresentation[appTableName.toUpperCase()].renderInfo;
+					if (typeof appTableRenderInfo !== "undefined")
+					{
+						for (var i in appTableRenderInfo)
+						{// add individual tab
+							tabVar.append("<div id=" + appTableRenderInfo[i].itemDiv + "></div>");
+							tabVar.tabs( "add", "#" + appTableRenderInfo[i].itemDiv , doI18N(appTableRenderInfo[i].itemDivLabel));
+							//var tmpObj = {};
+							//tmpObj.registeredTableName = appTableRenderInfo[i].registeredTableName;
+							//tmpObj.itemDiv = appTableRenderInfo[i].itemDiv;
+							//tmpObj.itemDivLabel = appTableRenderInfo[i].itemDivLabel;
+							//tmpObj.templateName = appTableRenderInfo[i].templateName;
+							datatableArray.push(appTableRenderInfo[i]);
+							//alert("added custom rendered datatable: " + appTableRenderInfo[i].registeredTableName)
+						}
+					}
+					//2. add any other datatables that are not already covered
+					for (var i in data)
+					{
+						if (datatableExists(data[i].registeredTableName) == false)
+						{
+							var tmpObj = {};
+							tmpObj.registeredTableName = data[i].registeredTableName;
+							datatableArray.push(tmpObj);
+							//alert("added general datatable: " + data[i].registeredTableName)
+						}
+					}
+					//3. exclude any datatables defined to be excluded
+					var appTableExclude = custom.datatablePresentation[appTableName.toUpperCase()].exclude;
+					if (typeof appTableExclude !== "undefined")
+					{
+						for (var i in appTableExclude) datatableExclude(appTableExclude[i]);
+					}
+						
+					//					
 
+					var datatablesDiv = "N/A";
+					if (defaultDatatableExists() == true)
+					{//add generic datatables tab
+						datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
+						tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
+					}
+					
+					tabVar.tabs('select', 0); //back to main tab
+					
 					var additionalInfoParams = {
 						baseApiUrl : baseApiUrl,
 						base64: base64,
@@ -233,23 +313,18 @@
 						resValue: "resources/libs/",
 
 						datatablesDiv: datatablesDiv,
-						labelClass: "datatableLabel ",
+						labelClass: "datatableLabel",
 						valueClass:	"",
 						saveLabel: doI18N("dialog.button.save"),	
 						cancelLabel: doI18N("dialog.button.cancel")				
 					};
 					jQuery.stretchyDataTables.displayAdditionalInfo(additionalInfoParams);
-					}
+				
+				}
 			  };
 
 		executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction);	
 	}
-
-
-
-
-
-
 
 
 

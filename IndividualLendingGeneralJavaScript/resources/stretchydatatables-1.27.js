@@ -72,12 +72,23 @@
 
 			if (params.datatableArray.length > 0)
 			{
-
 				for (var i in params.datatableArray) 
 				{
+					bbbbb = params.datatableArray;
 					if (params.datatableArray[i].itemDiv !== undefined)
-					{
-						refreshOneToOneDataTable(params.datatableArray[i].itemDiv, params.datatableArray[i].templateName, params.datatableArray[i].registeredTableName, params.appTablePKValue);
+					{//data table is a customisation
+						if (params.datatableArray[i].itemFunction !== undefined)
+						{
+							//data table is not a jsrender customisation so just execute user-defined function
+							//expects 2 params
+							var PKValue = params.appTablePKValue;
+							var itemDiv = params.datatableArray[i].itemDiv;
+							eval(params.datatableArray[i].itemFunction);
+						}
+						else
+						{
+							refreshOneToOneDataTable(params.datatableArray[i].itemDiv, params.datatableArray[i].templateName, params.datatableArray[i].registeredTableName, params.appTablePKValue);
+						}
 					}
 				}
 
@@ -89,7 +100,7 @@
 					{
 						defaultAddHtml += '<li><a href="unknown.html" onclick="jQuery.stretchyDataTables.showDataTable(' + "'";
 						defaultAddHtml += additionalDataInnerDiv + "', '" + params.datatableArray[i].registeredTableName + "', ";
-						defaultAddHtml += params.appTablePKValue + ", '" + getFKName(params.datatableArray[i].applicationTableName) + "'" + ');return false;"><span>';
+						defaultAddHtml += params.appTablePKValue + ", '" + getFKName(params.appTableName) + "'" + ');return false;"><span>';
 						defaultAddHtml += doI18N(params.datatableArray[i].registeredTableName) + '</span></a></li>';
 					}
 				}

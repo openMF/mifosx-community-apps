@@ -31,79 +31,22 @@
 
 
 //over-ride out-of-the-box data table functionality with GK specific one
-	custom.showRelatedDataTableInfo = function (tabVar, appTableName, appTablePKValue) {	 
-
-		var url = 'datatables?apptable=' + appTableName;
-
-		var successFunction =  function(data, textStatus, jqXHR) {
-				
-				if (data.length > 0)
-				{
-
-					datatableArray = [];
-
-					switch (appTableName) {	
-					case "m_client":
-					//show client risk_analysis separate to other data tables
-						var riskAnalysisFound = false;
-						for (var i in data)
-						{
-							if (data[i].registeredTableName != "risk_analysis") datatableArray.push(data[i])
-							else riskAnalysisFound = true;
-						}
-						if (riskAnalysisFound == true)
-						{
-							var riskAnalysisDiv = "GKRA_ClientRiskAnalysisTab";
-							tabVar.append("<div id=" + riskAnalysisDiv + "></div>");
-							tabVar.tabs( "add", "#" + riskAnalysisDiv , doI18N("client.riskanalysis.tab.name"));
-							GKRA.refreshRiskAnalysis(appTablePKValue, riskAnalysisDiv);
-						}
-						//user doesn't have read permission for risk_analysis
-						//or else else alert(doI18N("gk.risk.analysis.datatable.not.registered"));
-						//so will not show the tab in both cases
-						break;
-					case "m_loan": //exclude m_guarantor_external from default m_loan data table display
-						for (var i in data)
-						{
-							if (data[i].registeredTableName != "m_guarantor_external") datatableArray.push(data[i])
-						}
-						break;
-					default:
-						datatableArray = data;
-					}
-
-					var datatablesDiv = appTableName + "_" + appTablePKValue + "_addData";
-					tabVar.tabs( "add", "#" + datatablesDiv , doI18N("Additional.Data"));
-					tabVar.tabs('select', 0); //back to main tab
-
-					var additionalInfoParams = {
-						baseApiUrl : baseApiUrl,
-						base64: base64,
-						tenantIdentifier: tenantIdentifier,
-						appTableName: appTableName,
-						appTablePKValue: appTablePKValue, 
-						datatableArray: datatableArray,
-						globaliseFunctions: custom.helperFunctions,
-						resValue: "resources/libs/",
-
-						datatablesDiv: datatablesDiv,
-						labelClass: "datatableLabel",
-						valueClass:	"",
-						saveLabel: doI18N("dialog.button.save"),	
-						cancelLabel: doI18N("dialog.button.cancel")				
-					};
-					jQuery.stretchyDataTables.displayAdditionalInfo(additionalInfoParams);
-
-				}
-			  };
-
-		executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction);	
-	}
+	custom.datatablePresentation["M_CLIENT"] = {
+														renderInfo: [
+														             {
+														            	 registeredTableName: "risk_analysis",
+																         itemDiv: "GKRA_ClientRiskAnalysisTab",
+																         itemDivLabel: "client.riskanalysis.tab.name",
+																         itemFunction: "GKRA.refreshRiskAnalysis(PKValue, itemDiv)"
+														             }
+														             ],
+														exclude: []
+													};
 
 GKRA = {};
 
 GKRA.refreshRiskAnalysis = function (clientId, riskAnalysisDiv) {
-
+	
 	var datatableUrl = 'datatables/risk_analysis/' + clientId;
 
 	var templateSelector = "#clientRiskAnalysisFormTemplate";
