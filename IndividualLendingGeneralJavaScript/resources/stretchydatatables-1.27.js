@@ -59,7 +59,13 @@
 		popupDeleteDialog(deleteUrl);   
 	};
 
+	$.stretchyDataTables.getDataTableFieldEntry = function(data, rowNum, columnName, displayMode) {
+				return getDataTableFieldEntry(data, rowNum, columnName, displayMode);
+	}
 
+	$.stretchyDataTables.getDataTableFieldValueEntry = function(data, rowNum, columnName, displayMode) {
+				return getDataTableFieldValueEntry(data, rowNum, columnName, displayMode);
+	}
 
 
 	function displayAdditionalInfo(params) {
@@ -67,21 +73,35 @@
 			if (params.datatableArray.length > 0)
 			{
 
-				var additionalDataInnerDiv = params.datatablesDiv+ "_x";
-
-				var htmlVar = '<div id="' + additionalDataInnerDiv + '"><ul>';
-				htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
 				for (var i in params.datatableArray) 
 				{
-						htmlVar += '<li><a href="unknown.html" onclick="jQuery.stretchyDataTables.showDataTable(' + "'";
-						htmlVar += additionalDataInnerDiv + "', '" + params.datatableArray[i].registeredTableName + "', ";
-						htmlVar += params.appTablePKValue + ", '" + getFKName(params.datatableArray[i].applicationTableName) + "'" + ');return false;"><span>';
-						htmlVar += doI18N(params.datatableArray[i].registeredTableName) + '</span></a></li>';
+					if (params.datatableArray[i].itemDiv !== undefined)
+					{
+						refreshOneToOneDataTable(params.datatableArray[i].itemDiv, params.datatableArray[i].templateName, params.datatableArray[i].registeredTableName, params.appTablePKValue);
+					}
 				}
-				htmlVar += '</ul></div>';
-	        		$("#" + params.datatablesDiv).html(htmlVar);
 
-    				$("#" + additionalDataInnerDiv ).tabs();
+				var defaultAddHtml = "";
+				var additionalDataInnerDiv = params.datatablesDiv+ "_x";
+				for (var i in params.datatableArray) 
+				{
+					if (params.datatableArray[i].itemDiv == undefined)
+					{
+						defaultAddHtml += '<li><a href="unknown.html" onclick="jQuery.stretchyDataTables.showDataTable(' + "'";
+						defaultAddHtml += additionalDataInnerDiv + "', '" + params.datatableArray[i].registeredTableName + "', ";
+						defaultAddHtml += params.appTablePKValue + ", '" + getFKName(params.datatableArray[i].applicationTableName) + "'" + ');return false;"><span>';
+						defaultAddHtml += doI18N(params.datatableArray[i].registeredTableName) + '</span></a></li>';
+					}
+				}
+				
+				if (defaultAddHtml > "")
+				{
+					var htmlVar = '<div id="' + additionalDataInnerDiv + '"><ul>';
+					htmlVar += '<li><a href="unknown.html" onclick="return false;"><span>.</span></a></li>';
+					htmlVar += defaultAddHtml + '</ul></div>';
+	        			$("#" + params.datatablesDiv).html(htmlVar);
+    					$("#" + additionalDataInnerDiv ).tabs();
+				}
 			}
 	}
 
@@ -897,5 +917,126 @@ function invalidColumnTypeMessage(columnName, columnType) {
 		}
 		return xlateStr;
 	}
+
+// helper functions where default UI not used
+
+	var refreshOneToOneDataTable = function (itemDiv, templateName, datatableName, itemId) {
+
+		var datatableUrl = 'datatables/' + datatableName + '/' + itemId + "?genericResultSet=true";
+		var width = 1100; 
+		var height = 600;
+				
+		var saveSuccessFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			CEDA_functions.refreshOneToOneDataTable(itemDiv, templateName, datatableName, itemId);
+		}
+
+		var successFunction =  function(data, textStatus, jqXHR) {
+			var crudObject = new Object();
+			crudObject.displayMode = "view";
+			crudObject.data = data;
+
+			if (data.data.length > 0) crudObject.displayButtons = "editDelete"
+			else crudObject.displayButtons = "add";
+
+			var tableHtml = $(templateName).render(crudObject);
+			$("#" + itemDiv).html(tableHtml);
+
+			//initialize all buttons change this after
+			$("#editadditionalclientdata").button({icons: {
+	                primary: "ui-icon-pencil"}}
+	                ).click(function(e){
+					popupDialogWithFormView(datatableUrl, datatableUrl, 'PUT', "dialog.title.edit.additional.data", templateSelector, width, height,  saveSuccessFunction);
+				    	e.preventDefault();
+			      });
+			$("#deleteadditionalclientdata").button({icons: {
+	                primary: "ui-icon-circle-close"}
+	            	}).click(function(e) {									
+					popupConfirmationDialogAndPost(datatableUrl, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, saveSuccessFunction);
+					e.preventDefault();
+				});
+
+			$('#addadditionalclientdata').button({icons: {
+	                primary: "ui-icon-plusthick"}
+	            	}).click(function(e) {
+					popupDialogWithFormView("", datatableUrl, 'POST', "dialog.title.create.additional.data", templateSelector, width, height,  saveSuccessFunction);
+			    		e.preventDefault();
+			});
+		}
+
+  		executeAjaxRequest(datatableUrl, 'GET', "", successFunction, formErrorFunction);	  
+	};
+
+	var getDataTableFieldEntry = function(data, rowNum, columnName, displayMode) {
+
+		try {
+			var html = '<td valign="top" width="40%"><b>' + doI18N(columnName) + ':</b></td>';
+			html += '<td valign="top" width="60%">' + getDataTableFieldValueEntry(data, 0, columnName, displayMode) + '</td>';
+			return html;
+		} catch(e) {
+			var errorMsg = "System Error: stretchydatatables/getDataTableFieldEntry - columnName: " + columnName + "  rowNum: " + rowNum;
+			if (displayMode) errorMsg += "  displayMode: " + displayMode;
+			errorMsg += " - Error description: " + e.message;
+			return errorMsg;
+		}
+	}
+
+	var getDataTableFieldValueEntry = function(data, rowNum, columnName, displayMode) {
+
+		try {
+			if (data.data.length == 0) return "";
+			if (displayMode == "view") return getColumnValue(data, columnName, rowNum) 
+			else return "columnName: " + columnName + "  woohoo";
+
+		} catch(e) {
+			var errorMsg = "System Error: stretchydatatables/getDataTableFieldValueEntry - columnName: " + columnName + "  rowNum: " + rowNum;
+			if (displayMode) errorMsg += "  displayMode: " + displayMode;
+			errorMsg += " - Error description: " + e.message;
+			return errorMsg;
+		}
+	}
+
+function getColumnValue(data, columnName, rowNum) {
+	try {
+
+		for ( var ci in data.columnHeaders)
+		{
+			if (data.columnHeaders[ci].columnName == columnName)
+			{
+				var displayVal = getColumnDisplayValue(data.data[rowNum].row[ci], data.columnHeaders[ci].columnDisplayType, data.columnHeaders[ci].columnValues);
+				return displayVal;
+			}
+		}
+
+		return "Column Name Not Found: " + columnName;
+	} catch(e) {
+		var errorMsg = "System Error: stretchydatatables/getColumnValue - columnName: " + columnName + "  rowNum: " + rowNum;
+		errorMsg += " - Error description: " + e.message;
+		return errorMsg;
+	}
+}
+
+
+function getColumnDisplayValue(colVal, colType, columnValues) {
+
+	if (colVal == null) return "";
+	if (colVal == "") return "";
+
+	switch (colType) 
+	{
+		case "STRING": return colVal;
+		case "CODEVALUE": return colVal;
+		case "INTEGER": return globalNumber(parseInt(colVal));
+		case "DATE": return globalDateAsISOString(colVal);
+		case "DECIMAL": return globalDecimal(parseFloat(colVal), defaultDecimalPlaces);
+		case "CODELOOKUP": return getDropdownValue(colVal, columnValues);
+		case "TEXT": return '<textarea rows="3" cols="40" readonly="readonly">' + colVal + '</textarea>';
+		default:
+			invalidColumnTypeMessage("N/A", colType);
+			return "";
+	}
+
+}
+
 
 })(jQuery);

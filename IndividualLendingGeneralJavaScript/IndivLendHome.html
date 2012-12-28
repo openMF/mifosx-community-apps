@@ -61,7 +61,7 @@
 <script type="text/javascript"	src="resources/libs/jquery.webcam.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform additional data tables -->
-<script type="text/javascript" src="resources/stretchydatatables-1.26.js"></script>
+<script type="text/javascript" src="resources/stretchydatatables-1.27.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform reporting -->
 <script type="text/javascript"	src="resources/stretchyreporting/stretchyreporting-1.125.js"></script>
@@ -5781,6 +5781,153 @@ function showLockinOptions(){
 
 </div>
 </script>
+
+
+<!--Ceda client additional data-->
+<script id="cedaadditionalclientdataFormTemplate" type="text/x-jquery-tmpl">
+
+<div id=CEDA_ACD>
+
+{{#if displayMode != "view"}}
+<form id="entityform">
+    	<div id="formerrors"></div>
+{{/if}}
+
+		<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+
+	<table width="100%">
+		<tr>
+			<td width="30%"></td>
+			<td width="70%" align="right" >
+{{#if displayMode == "view"}}
+  {{#if displayButtons == "editDelete"}}
+	<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+
+	{{#if $ctx.hasDataTablePermission("UPDATE_client additional data")}}
+		<button id="editadditionalclientdata">{{=$ctx.doI18N("Datatables.Edit")}}</button>
+	{{/if}}
+	{{#if $ctx.hasDataTablePermission("DELETE_client additional data")}}
+		<button id="deleteadditionalclientdata">{{=$ctx.doI18N("Datatables.Delete")}}</button>
+	{{/if}}
+	</span>
+  {{#else}}
+	<span id="toolbar" class="ui-widget-header ui-corner-all">
+	{{#if $ctx.hasDataTablePermission("CREATE_client additional data")}}
+   		<button id="addadditionalclientdata">{{=$ctx.doI18N("Datatables.Add")}}</button>
+	{{/if}}
+	</span>
+  {{/if}}
+{{/if}}
+			</td>
+		</tr>
+	</table>
+
+	<table width="100%">
+		<tr>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Gender_cd", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Date of Birth", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "EducationLevel_cd", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "MaritalStatus_cd", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Number of children", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Citizenship", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "PovertyStatus_cd", displayMode)!}}</tr>
+			</table>
+		  </td>
+		  <td width="2%"></td>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Home address", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Telephone number", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Telephone number (2nd)", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Email address", displayMode)!}}</tr>
+			</table>
+		  </td>
+		</tr>
+	</table>
+	<hr>
+
+	<table width="100%">
+		<tr>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Employed", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "FieldOfEmployment_cd_Field of employment", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Employer name", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Number of years", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Monthly salary", displayMode)!}}</tr>
+			</table>
+		  </td>
+		  <td width="2%"></td>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Self employed", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "FieldOfEmployment_cd_Field of self-employment", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Business address", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Number of employees", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Monthly salaries paid", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Monthly net income (of business activity)", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Monthly rent", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Other income generating activities", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Bookkeeping", displayMode)!}}</tr>
+			</table>
+		  </td>
+		</tr>
+	</table>
+	<hr>
+
+	<table width="100%">
+		<tr>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Loans with other institutions", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "From whom", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Amount", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Interest rate p.a", displayMode)!}}</tr>
+			</table>
+		  </td>
+		  <td width="2%"></td>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Number of people depending on overal income", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Bank account", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Business plan provided", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Access to internet", displayMode)!}}</tr>
+			</table>
+		  </td>
+		</tr>
+	</table>
+	<hr>
+
+	<table width="100%">
+		<tr>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Introduced by", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Known to introducer since", displayMode)!}}</tr>
+			</table>
+		  </td>
+		  <td width="2%"></td>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Last visited by", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Last visited on", displayMode)!}}</tr>
+			</table>
+		  </td>
+		</tr>
+	</table>
+
+{{#if displayMode != "view"}}
+</form>
+{{/if}}
+
+</div>
+</script>
+
+
 
 <!--Accounting section starts here-->
 <script id="accountingHomeTemplate" type="text/x-jquery-tmpl">
