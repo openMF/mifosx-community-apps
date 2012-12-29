@@ -878,7 +878,6 @@
 	}
 
 	// helper functions where default UI not used
-
 	var refreshOneToOneDataTable = function(itemDiv, templateName,
 			datatableName, itemId) {
 
@@ -1076,7 +1075,7 @@
 		return str.replace(/ /g, "_")
 	}
 
-	function getSelectHTML(colName, columnValues, colVal) {
+	var getSelectHTML = function(colName, columnValues, colVal) {
 
 		var selectedVal = "";
 		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
@@ -1102,7 +1101,7 @@
 		return selectHtml;
 	}
 
-	function getSelectHTMLValue(colName, columnValues, colVal) {
+	var getSelectHTMLValue = function(colName, columnValues, colVal) {
 
 		var selectedVal = "";
 		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
@@ -1128,13 +1127,13 @@
 		return selectHtml;
 	}
 
-	function getDateHTML(colName, colVal, textSize) {
+	var getDateHTML = function(colName, colVal, textSize) {
 		return '<input id="' + colName + '" name="' + colName + '" size="'
 				+ textSize + '" class="datepickerfield" '
 				+ setValueAttr(colVal) + ' type="text"/>';
 	}
 
-	function getTextHTML(colName, colVal, textSize) {
+	var getTextHTML = function(colName, colVal, textSize) {
 		return '<input id="' + colName + '" name="' + colName + '" size="'
 				+ textSize + '" ' + setValueAttr(colVal) + ' type="text"/>';
 	}
