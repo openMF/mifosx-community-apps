@@ -5,16 +5,16 @@
 	$.stretchyDataTables.displayAdditionalInfo = function(params) {
 
 		sdt = {
-				globaliseFunctions: "",
-				indicateMandatory: ""
+			globaliseFunctions : "",
+			indicateMandatory : ""
 		}
-		
+
 		if (params.globaliseFunctions)
 			sdt.globaliseFunctions = params.globaliseFunctions;
-		
+
 		if (params.indicateMandatory)
 			sdt.indicateMandatory = params.indicateMandatory;
-				
+
 		tabledataParams = params;
 		defaultDecimalPlaces = 4;
 		nullTitleValue = "-99999999";
@@ -88,9 +88,9 @@
 			for ( var i in params.datatableArray) {
 				bbbbb = params.datatableArray;
 				if (params.datatableArray[i].itemDiv !== undefined) {// data
-																		// table
-																		// is a
-																		// customisation
+					// table
+					// is a
+					// customisation
 					if (params.datatableArray[i].itemFunction !== undefined) {
 						// data table is not a jsrender customisation so just
 						// execute user-defined function
@@ -181,7 +181,7 @@
 	}
 
 	function showDataTableOneToOne() {
-			
+
 		var dataLength = currentTableDataInfo.data.data.length;
 
 		if (dataLength == 0) {
@@ -201,7 +201,6 @@
 		var colsPerRowCount = 0;
 		var labelClassStr = "";
 		var valueClassStr = "";
-		var colVal;
 		if (tabledataParams.labelClass > "")
 			labelClassStr = ' class="' + tabledataParams.labelClass + '" ';
 		if (tabledataParams.valueClass > "")
@@ -215,11 +214,9 @@
 					colsPerRowCount = 1;
 				}
 
-				colVal = getColumnDisplayValue(
-						currentTableDataInfo.data.data[0].row[i],
-						currentTableDataInfo.data.columnHeaders[i].columnDisplayType,
-						currentTableDataInfo.data.columnHeaders[i].columnValues);
-
+				var colVal = getColumnDisplayValue(
+						currentTableDataInfo.data.columnHeaders[i],
+						currentTableDataInfo.data.data[0].row[i], "view");
 
 				htmlVar += '<td valign="top"><span '
 						+ labelClassStr
@@ -593,8 +590,10 @@
 	function addUpdateColDisplayHTML(columnHeader, colVal) {
 
 		var displayHTML = '<td valign="top"><label>';
-		if (columnHeader.isColumnNullable == false) displayHTML += sdt.indicateMandatory;
-		displayHTML += '<b>' + doI18N(columnHeader.columnName) + ':</b></label></td><td valign="top">';
+		if (columnHeader.isColumnNullable == false)
+			displayHTML += sdt.indicateMandatory;
+		displayHTML += '<b>' + doI18N(columnHeader.columnName)
+				+ ':</b></label></td><td valign="top">';
 
 		var colNameUnderscore = spaceToUnderscore(columnHeader.columnName);
 		var defaultStringLength = 40;
@@ -1094,10 +1093,17 @@
 		try {
 			if (data.data.length == 0)
 				return "";
-			if (displayMode == "view")
-				return getColumnValue(data, columnName, rowNum)
-			else
-				return "columnName: " + columnName + "  woohoo";
+
+			for ( var ci in data.columnHeaders) {
+				if (data.columnHeaders[ci].columnName == columnName) {
+					var displayVal = getColumnDisplayValue(
+							data.columnHeaders[ci], data.data[rowNum].row[ci],
+							displayMode);
+					return displayVal;
+				}
+			}
+
+			return "Column Name Not Found: " + columnName;
 
 		} catch (e) {
 			var errorMsg = "System Error: stretchydatatables/getDataTableFieldValueEntry - columnName: "
@@ -1109,36 +1115,15 @@
 		}
 	}
 
-	function getColumnValue(data, columnName, rowNum) {
-		try {
-
-			for ( var ci in data.columnHeaders) {
-				if (data.columnHeaders[ci].columnName == columnName) {
-					var displayVal = getColumnDisplayValue(
-							data.data[rowNum].row[ci],
-							data.columnHeaders[ci].columnDisplayType,
-							data.columnHeaders[ci].columnValues);
-					return displayVal;
-				}
-			}
-
-			return "Column Name Not Found: " + columnName;
-		} catch (e) {
-			var errorMsg = "System Error: stretchydatatables/getColumnValue - columnName: "
-					+ columnName + "  rowNum: " + rowNum;
-			errorMsg += " - Error description: " + e.message;
-			return errorMsg;
-		}
-	}
-
-	function getColumnDisplayValue(colVal, colType, columnValues) {
+	//
+	var getColumnDisplayValue = function(columnHeader, colVal, displayMode) {
 
 		if (colVal == null)
 			return "";
 		if (colVal == "")
 			return "";
 
-		switch (colType) {
+		switch (columnHeader.columnDisplayType) {
 		case "STRING":
 			return colVal;
 		case "CODEVALUE":
@@ -1150,12 +1135,12 @@
 		case "DECIMAL":
 			return globalDecimal(parseFloat(colVal), defaultDecimalPlaces);
 		case "CODELOOKUP":
-			return getDropdownValue(colVal, columnValues);
+			return getDropdownValue(colVal, columnHeader.columnValues);
 		case "TEXT":
 			return '<textarea rows="3" cols="40" readonly="readonly">' + colVal
 					+ '</textarea>';
 		default:
-			invalidColumnTypeMessage("N/A", colType);
+			invalidColumnTypeMessage("N/A", columnHeader.columnDisplayType);
 			return "";
 		}
 
