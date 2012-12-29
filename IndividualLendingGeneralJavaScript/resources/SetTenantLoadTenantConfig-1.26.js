@@ -264,11 +264,6 @@
 						{// add individual tab
 							tabVar.append("<div id=" + appTableRenderInfo[i].itemDiv + "></div>");
 							tabVar.tabs( "add", "#" + appTableRenderInfo[i].itemDiv , doI18N(appTableRenderInfo[i].itemDivLabel));
-							//var tmpObj = {};
-							//tmpObj.registeredTableName = appTableRenderInfo[i].registeredTableName;
-							//tmpObj.itemDiv = appTableRenderInfo[i].itemDiv;
-							//tmpObj.itemDivLabel = appTableRenderInfo[i].itemDivLabel;
-							//tmpObj.templateName = appTableRenderInfo[i].templateName;
 							datatableArray.push(appTableRenderInfo[i]);
 							//alert("added custom rendered datatable: " + appTableRenderInfo[i].registeredTableName)
 						}
@@ -313,6 +308,7 @@
 						resValue: "resources/libs/",
 
 						datatablesDiv: datatablesDiv,
+						indicateMandatory: "* ",
 						labelClass: "datatableLabel",
 						valueClass:	"",
 						saveLabel: doI18N("dialog.button.save"),	
