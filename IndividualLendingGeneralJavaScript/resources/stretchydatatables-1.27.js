@@ -590,136 +590,17 @@
 	function addUpdateColDisplayHTML(columnHeader, colVal) {
 
 		var displayHTML = '<td valign="top"><label>';
+
 		if (columnHeader.isColumnNullable == false)
 			displayHTML += sdt.indicateMandatory;
+
 		displayHTML += '<b>' + doI18N(columnHeader.columnName)
 				+ ':</b></label></td><td valign="top">';
 
-		var colNameUnderscore = spaceToUnderscore(columnHeader.columnName);
-		var defaultStringLength = 40;
-
-		var displayVal = "";
-		if (colVal != null)
-			displayVal = colVal;
-
-		var colLength = columnHeader.columnLength;
-		if (colLength > defaultStringLength)
-			colLength = defaultStringLength;
-
-		var colType = columnHeader.columnDisplayType;
-		switch (colType) {
-		case "STRING":
-			displayHTML += getTextHTML(colNameUnderscore, displayVal, colLength);
-			break;
-		case "INTEGER":
-			if (displayVal > "")
-				displayVal = globalNumber(parseInt(displayVal));
-			displayHTML += getTextHTML(colNameUnderscore, displayVal, 20);
-			break;
-		case "DATE":
-			if (displayVal > "")
-				displayVal = globalDateAsISOString(displayVal);
-			displayHTML += getDateHTML(colNameUnderscore, displayVal, 20);
-			break;
-		case "DECIMAL":
-			if (displayVal > "")
-				displayVal = globalDecimal(parseFloat(displayVal),
-						defaultDecimalPlaces);
-			displayHTML += getTextHTML(colNameUnderscore, displayVal, 20);
-			break;
-		case "CODELOOKUP":
-			displayHTML += getSelectHTML(colNameUnderscore,
-					columnHeader.columnValues, colVal);
-			break;
-		case "CODEVALUE":
-			displayHTML += getSelectHTMLValue(colNameUnderscore,
-					columnHeader.columnValues, colVal);
-			break;
-		case "TEXT":
-			displayHTML += '<textarea id="' + colNameUnderscore + '" name="'
-					+ colNameUnderscore + '" rows="4" cols="40">' + displayVal
-					+ '</textarea>';
-			break;
-		default:
-			invalidColumnTypeMessage(columnHeader.columnName, colType);
-			return "";
-		}
+		displayHTML += getColumnDisplayValue(columnHeader, colVal, "update")
 
 		displayHTML += '</td>';
 		return displayHTML;
-	}
-
-	function spaceToUnderscore(str) {
-		return str.replace(/ /g, "_")
-	}
-
-	function getSelectHTML(colName, columnValues, colVal) {
-
-		var selectedVal = "";
-		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
-
-		if ((colVal == null) || (colVal == ""))
-			selectedVal = ' selected="selected" '
-		else
-			selectedVal = "";
-		selectHtml += '<option value=""' + selectedVal + '></option>';
-
-		for ( var i in columnValues) {
-			if (colVal == columnValues[i].id)
-				selectedVal = ' selected="selected" '
-			else
-				selectedVal = "";
-			selectHtml += '<option value="' + columnValues[i].id + '"'
-					+ selectedVal + '>' + doI18N(columnValues[i].value)
-					+ '</option>';
-		}
-
-		selectHtml += '</select>';
-		// alert(selectHtml);
-		return selectHtml;
-	}
-
-	function getSelectHTMLValue(colName, columnValues, colVal) {
-
-		var selectedVal = "";
-		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
-
-		if ((colVal == null) || (colVal == ""))
-			selectedVal = ' selected="selected" '
-		else
-			selectedVal = "";
-		selectHtml += '<option value=""' + selectedVal + '></option>';
-
-		for ( var i in columnValues) {
-			if (colVal == columnValues[i].value)
-				selectedVal = ' selected="selected" '
-			else
-				selectedVal = "";
-			selectHtml += '<option value="' + columnValues[i].value + '"'
-					+ selectedVal + '>' + doI18N(columnValues[i].value)
-					+ '</option>';
-		}
-
-		selectHtml += '</select>';
-		// alert(selectHtml);
-		return selectHtml;
-	}
-
-	function getDateHTML(colName, colVal, textSize) {
-		return '<input id="' + colName + '" name="' + colName + '" size="'
-				+ textSize + '" class="datepickerfield" '
-				+ setValueAttr(colVal) + ' type="text"/>';
-	}
-
-	function getTextHTML(colName, colVal, textSize) {
-		return '<input id="' + colName + '" name="' + colName + '" size="'
-				+ textSize + '" ' + setValueAttr(colVal) + ' type="text"/>';
-	}
-
-	function setValueAttr(str) {
-		if (str > "")
-			return 'value="' + str.replace(/"/g, "&quot;") + '"';
-		return "";
 	}
 
 	function addUpdateOpenDialog(requestType, saveUrl, updateRowIndex) {
@@ -1115,35 +996,155 @@
 		}
 	}
 
-	//
+	// functions to generate the html to display or edit column values
 	var getColumnDisplayValue = function(columnHeader, colVal, displayMode) {
 
-		if (colVal == null)
-			return "";
-		if (colVal == "")
-			return "";
+		if (displayMode.toUpperCase() == "VIEW") {
+			if (colVal == null)
+				return "";
+			if (colVal == "")
+				return "";
 
-		switch (columnHeader.columnDisplayType) {
-		case "STRING":
-			return colVal;
-		case "CODEVALUE":
-			return colVal;
-		case "INTEGER":
-			return globalNumber(parseInt(colVal));
-		case "DATE":
-			return globalDateAsISOString(colVal);
-		case "DECIMAL":
-			return globalDecimal(parseFloat(colVal), defaultDecimalPlaces);
-		case "CODELOOKUP":
-			return getDropdownValue(colVal, columnHeader.columnValues);
-		case "TEXT":
-			return '<textarea rows="3" cols="40" readonly="readonly">' + colVal
-					+ '</textarea>';
-		default:
-			invalidColumnTypeMessage("N/A", columnHeader.columnDisplayType);
-			return "";
+			switch (columnHeader.columnDisplayType) {
+			case "STRING":
+				return colVal;
+			case "CODEVALUE":
+				return colVal;
+			case "INTEGER":
+				return globalNumber(parseInt(colVal));
+			case "DATE":
+				return globalDateAsISOString(colVal);
+			case "DECIMAL":
+				return globalDecimal(parseFloat(colVal), defaultDecimalPlaces);
+			case "CODELOOKUP":
+				return getDropdownValue(colVal, columnHeader.columnValues);
+			case "TEXT":
+				return '<textarea rows="3" cols="40" readonly="readonly">'
+						+ colVal + '</textarea>';
+			default:
+				invalidColumnTypeMessage(columnHeader.columnName,
+						columnHeader.columnDisplayType);
+				return "";
+			}
+		} else {// updatable field
+			var colNameUnderscore = spaceToUnderscore(columnHeader.columnName);
+
+			var displayVal = "";
+			if (colVal != null)
+				displayVal = colVal;
+
+			var defaultStringLength = 40;
+			var colLength = columnHeader.columnLength;
+			if (colLength > defaultStringLength)
+				colLength = defaultStringLength;
+
+			switch (columnHeader.columnDisplayType) {
+			case "STRING":
+				return getTextHTML(colNameUnderscore, displayVal, colLength);
+			case "INTEGER":
+				if (displayVal > "")
+					displayVal = globalNumber(parseInt(displayVal));
+				return getTextHTML(colNameUnderscore, displayVal, 20);
+			case "DATE":
+				if (displayVal > "")
+					displayVal = globalDateAsISOString(displayVal);
+				return getDateHTML(colNameUnderscore, displayVal, 20);
+			case "DECIMAL":
+				if (displayVal > "")
+					displayVal = globalDecimal(parseFloat(displayVal),
+							defaultDecimalPlaces);
+				return getTextHTML(colNameUnderscore, displayVal, 20);
+			case "CODELOOKUP":
+				return getSelectHTML(colNameUnderscore,
+						columnHeader.columnValues, colVal);
+			case "CODEVALUE":
+				return getSelectHTMLValue(colNameUnderscore,
+						columnHeader.columnValues, colVal);
+			case "TEXT":
+				return '<textarea id="' + colNameUnderscore + '" name="'
+						+ colNameUnderscore + '" rows="4" cols="40">'
+						+ displayVal + '</textarea>';
+			default:
+				invalidColumnTypeMessage(columnHeader.columnName,
+						columnHeader.columnDisplayType);
+				return "";
+			}
+		}
+	}
+
+	var spaceToUnderscore = function(str) {
+		return str.replace(/ /g, "_")
+	}
+
+	function getSelectHTML(colName, columnValues, colVal) {
+
+		var selectedVal = "";
+		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
+
+		if ((colVal == null) || (colVal == ""))
+			selectedVal = ' selected="selected" '
+		else
+			selectedVal = "";
+		selectHtml += '<option value=""' + selectedVal + '></option>';
+
+		for ( var i in columnValues) {
+			if (colVal == columnValues[i].id)
+				selectedVal = ' selected="selected" '
+			else
+				selectedVal = "";
+			selectHtml += '<option value="' + columnValues[i].id + '"'
+					+ selectedVal + '>' + doI18N(columnValues[i].value)
+					+ '</option>';
 		}
 
+		selectHtml += '</select>';
+		// alert(selectHtml);
+		return selectHtml;
 	}
+
+	function getSelectHTMLValue(colName, columnValues, colVal) {
+
+		var selectedVal = "";
+		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
+
+		if ((colVal == null) || (colVal == ""))
+			selectedVal = ' selected="selected" '
+		else
+			selectedVal = "";
+		selectHtml += '<option value=""' + selectedVal + '></option>';
+
+		for ( var i in columnValues) {
+			if (colVal == columnValues[i].value)
+				selectedVal = ' selected="selected" '
+			else
+				selectedVal = "";
+			selectHtml += '<option value="' + columnValues[i].value + '"'
+					+ selectedVal + '>' + doI18N(columnValues[i].value)
+					+ '</option>';
+		}
+
+		selectHtml += '</select>';
+		// alert(selectHtml);
+		return selectHtml;
+	}
+
+	function getDateHTML(colName, colVal, textSize) {
+		return '<input id="' + colName + '" name="' + colName + '" size="'
+				+ textSize + '" class="datepickerfield" '
+				+ setValueAttr(colVal) + ' type="text"/>';
+	}
+
+	function getTextHTML(colName, colVal, textSize) {
+		return '<input id="' + colName + '" name="' + colName + '" size="'
+				+ textSize + '" ' + setValueAttr(colVal) + ' type="text"/>';
+	}
+
+	var setValueAttr = function(str) {
+		if (str > "")
+			return 'value="' + str.replace(/"/g, "&quot;") + '"';
+		return "";
+	}
+
+	//
 
 })(jQuery);
