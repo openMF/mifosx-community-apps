@@ -86,7 +86,6 @@
 
 		if (params.datatableArray.length > 0) {
 			for ( var i in params.datatableArray) {
-				bbbbb = params.datatableArray;
 				if (params.datatableArray[i].itemDiv !== undefined) {// data
 					// table
 					// is a
@@ -886,10 +885,12 @@
 		var width = 1100;
 		var height = 600;
 
+		var datatableNameUnderscore = spaceToUnderscore(datatableName);
+
 		var saveSuccessFunction = function(data, textStatus, jqXHR) {
 			$("#dialog-form").dialog("close");
-			CEDA_functions.refreshOneToOneDataTable(itemDiv, templateName,
-					datatableName, itemId);
+			refreshOneToOneDataTable(itemDiv, templateName, datatableName,
+					itemId);
 		}
 
 		var successFunction = function(data, textStatus, jqXHR) {
@@ -906,19 +907,19 @@
 			$("#" + itemDiv).html(tableHtml);
 
 			// initialize all buttons change this after
-			$("#editadditionalclientdata").button({
+			$("#edit" + datatableNameUnderscore).button({
 				icons : {
 					primary : "ui-icon-pencil"
 				}
 			}).click(
 					function(e) {
-						popupDialogWithFormView(datatableUrl, datatableUrl,
-								'PUT', "dialog.title.edit.additional.data",
-								templateSelector, width, height,
+						editPopupDialog(datatableUrl, datatableUrl, 'PUT',
+								doI18N("Edit") + " " + doI18N(datatableName),
+								templateName, width, height,
 								saveSuccessFunction);
 						e.preventDefault();
 					});
-			$("#deleteadditionalclientdata").button({
+			$("#delete" + datatableNameUnderscore).button({
 				icons : {
 					primary : "ui-icon-circle-close"
 				}
@@ -930,15 +931,18 @@
 						e.preventDefault();
 					});
 
-			$('#addadditionalclientdata').button({
+			$("#add" + datatableNameUnderscore).button({
 				icons : {
 					primary : "ui-icon-plusthick"
 				}
 			}).click(
 					function(e) {
-						popupDialogWithFormView("", datatableUrl, 'POST',
-								"dialog.title.create.additional.data",
-								templateSelector, width, height,
+						var newData = new Object();
+						newData.columnHeaders = crudObject.data.columnHeaders;
+						newData.data = [];
+						fillPopupDialogData(newData, datatableUrl, 'POST',
+								doI18N("Create") + " " + doI18N(datatableName),
+								templateName, width, height,
 								saveSuccessFunction);
 						e.preventDefault();
 					});
@@ -947,6 +951,68 @@
 		executeAjaxRequest(datatableUrl, 'GET', "", successFunction,
 				formErrorFunction);
 	};
+
+	var editPopupDialog = function(getUrl, postUrl, submitType, titleCode,
+			templateName, width, height, saveSuccessFunction) {
+
+		var successFunction = function(data, textStatus, jqXHR) {
+			fillPopupDialogData(data, postUrl, submitType, titleCode,
+					templateName, width, height, saveSuccessFunction);
+		};
+
+		executeAjaxRequest(getUrl, "GET", "", successFunction,
+				formErrorFunction);
+	}
+
+	var fillPopupDialogData = function(data, postUrl, submitType, titleCode,
+			templateName, width, height, saveSuccessFunction) {
+
+		var serializationOptions = {};
+		serializationOptions["checkboxesAsBools"] = true;
+
+		var saveButton = doI18N('dialog.button.save');
+		var cancelButton = doI18N('dialog.button.cancel');
+		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			var serializedArray = {};
+			serializedArray = $('#entityform').serializeObject(
+					serializationOptions);
+			var newFormData = JSON.stringify(serializedArray);
+			executeAjaxRequest(postUrl, submitType, newFormData,
+					saveSuccessFunction, formErrorFunction);
+		};
+
+		buttonsOpts[cancelButton] = function() {
+			$(this).dialog("close");
+		};
+
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		dialogDiv.dialog({
+			title : doI18N(titleCode),
+			width : width,
+			height : height,
+			modal : true,
+			buttons : buttonsOpts,
+			close : function() {
+				$(this).remove();
+			},
+			open : function(event, ui) {
+				var crudObject = new Object();
+				crudObject.displayMode = "update";
+				crudObject.data = data;
+
+				var formHtml = $(templateName).render(crudObject);
+				$("#dialog-form").html(formHtml);
+				$('.datepickerfield').datepicker({
+					constrainInput : true,
+					changeMonth : true,
+					changeYear : true,
+					dateFormat : custom.datePickerDateFormat
+				});
+			}
+		}).dialog('open');
+	}
+	// end popup code
 
 	var getDataTableFieldEntry = function(data, rowNum, columnName, displayMode) {
 
@@ -971,14 +1037,21 @@
 			displayMode) {
 
 		try {
-			if (data.data.length == 0)
-				return "";
+			if (displayMode.toUpperCase() == "VIEW") {
+				if (data.data.length == 0)
+					return "";
+			}
 
+			var colVal;
 			for ( var ci in data.columnHeaders) {
 				if (data.columnHeaders[ci].columnName == columnName) {
+					if (data.data.length > 0)
+						colVal = data.data[rowNum].row[ci];
+					else
+						colVal = "";
+
 					var displayVal = getColumnDisplayValue(
-							data.columnHeaders[ci], data.data[rowNum].row[ci],
-							displayMode);
+							data.columnHeaders[ci], colVal, displayMode);
 					return displayVal;
 				}
 			}
@@ -995,7 +1068,7 @@
 		}
 	}
 
-	// functions to generate the html to display or edit column values
+	// functions that generate the html to display or edit column values
 	var getColumnDisplayValue = function(columnHeader, colVal, displayMode) {
 
 		if (displayMode.toUpperCase() == "VIEW") {

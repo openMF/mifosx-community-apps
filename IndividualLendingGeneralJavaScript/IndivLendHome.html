@@ -5806,16 +5806,16 @@ function showLockinOptions(){
 	<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
 
 	{{#if $ctx.hasDataTablePermission("UPDATE_client additional data")}}
-		<button id="editadditionalclientdata">{{=$ctx.doI18N("Datatables.Edit")}}</button>
+		<button id="editclient_additional_data">{{=$ctx.doI18N("Datatables.Edit")}}</button>
 	{{/if}}
 	{{#if $ctx.hasDataTablePermission("DELETE_client additional data")}}
-		<button id="deleteadditionalclientdata">{{=$ctx.doI18N("Datatables.Delete")}}</button>
+		<button id="deleteclient_additional_data">{{=$ctx.doI18N("Datatables.Delete")}}</button>
 	{{/if}}
 	</span>
   {{#else}}
 	<span id="toolbar" class="ui-widget-header ui-corner-all">
 	{{#if $ctx.hasDataTablePermission("CREATE_client additional data")}}
-   		<button id="addadditionalclientdata">{{=$ctx.doI18N("Datatables.Add")}}</button>
+   		<button id="addclient_additional_data">{{=$ctx.doI18N("Datatables.Add")}}</button>
 	{{/if}}
 	</span>
   {{/if}}
