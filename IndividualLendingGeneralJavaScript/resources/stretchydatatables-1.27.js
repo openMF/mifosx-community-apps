@@ -6,7 +6,7 @@
 
 		sdt = {
 			globaliseFunctions : "",
-			indicateMandatory : ""
+			indicateMandatory : "* "
 		}
 
 		if (params.globaliseFunctions)
@@ -1017,8 +1017,19 @@
 	var getDataTableFieldEntry = function(data, rowNum, columnName, displayMode) {
 
 		try {
-			var html = '<td valign="top" width="40%"><b>' + doI18N(columnName)
-					+ ':</b></td>';
+			var html = '<td valign="top" width="40%">'
+
+			if (!(displayMode.toUpperCase() == "VIEW")){
+				var columnNameIndex = getColumnNameIndex(data.columnHeaders, columnName);
+				if (columnNameIndex >= 0)
+				{
+					if (data.columnHeaders[columnNameIndex].isColumnNullable == false)
+						html += sdt.indicateMandatory;
+				}
+				else return "Column Name Not Found: " + columnName;
+			}
+			
+			html += '<b>' + doI18N(columnName)	+ ':</b></td>';
 			html += '<td valign="top" width="60%">'
 					+ getDataTableFieldValueEntry(data, 0, columnName,
 							displayMode) + '</td>';
@@ -1042,21 +1053,18 @@
 					return "";
 			}
 
-			var colVal;
-			for ( var ci in data.columnHeaders) {
-				if (data.columnHeaders[ci].columnName == columnName) {
-					if (data.data.length > 0)
-						colVal = data.data[rowNum].row[ci];
-					else
-						colVal = "";
+			var columnNameIndex = getColumnNameIndex(data.columnHeaders, columnName);
+			if (columnNameIndex >= 0)
+			{
+				var colVal = "";
+				if (data.data.length > 0)
+					colVal = data.data[rowNum].row[columnNameIndex];
 
-					var displayVal = getColumnDisplayValue(
-							data.columnHeaders[ci], colVal, displayMode);
-					return displayVal;
-				}
+				var displayVal = getColumnDisplayValue(
+						data.columnHeaders[columnNameIndex], colVal, displayMode);
+				return displayVal;
 			}
-
-			return "Column Name Not Found: " + columnName;
+			else return "Column Name Not Found: " + columnName;
 
 		} catch (e) {
 			var errorMsg = "System Error: stretchydatatables/getDataTableFieldValueEntry - columnName: "
@@ -1142,6 +1150,13 @@
 				return "";
 			}
 		}
+	}
+
+	var getColumnNameIndex = function(columnHeaders, columnName) {
+		for ( var ci in columnHeaders) {
+			if (columnHeaders[ci].columnName == columnName) return ci;
+		}
+		return -1;
 	}
 
 	var spaceToUnderscore = function(str) {
