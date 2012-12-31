@@ -131,11 +131,6 @@
 		}
 	}
 
-	generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
-		// for when an error is got but not on a create/update form -
-		alert(jqXHR.responseText);
-	};
-
 	function showDataTable(tabName, datatableName, id, fkName) {
 
 		var url = 'datatables/' + datatableName + "/" + id;
@@ -742,21 +737,6 @@
 				+ "');";
 	}
 
-	$.fn.serializeObject = function() {
-		var o = {};
-		var a = this.serializeArray();
-		$.each(a, function() {
-			if (o[this.name] !== undefined) {
-				if (!o[this.name].push) {
-					o[this.name] = [ o[this.name] ];
-				}
-				o[this.name].push(this.value || '');
-			} else {
-				o[this.name] = this.value || '';
-			}
-		});
-		return o;
-	};
 
 	// Error functions
 	function removeErrors(placeholderDiv) {
@@ -886,8 +866,6 @@
 		var datatableUrl = 'datatables/' + datatableName + '/' + itemId
 				+ "?genericResultSet=true";
 
-		var datatableNameUnderscore = spaceToUnderscore(datatableName);
-
 		var saveSuccessFunction = function(data, textStatus, jqXHR) {
 			$("#dialog-form").dialog("close");
 			refreshOneToOneDataTable(itemDiv, templateName, datatableName,
@@ -895,57 +873,27 @@
 		}
 
 		var successFunction = function(data, textStatus, jqXHR) {
-			var crudObject = new Object();
-			crudObject.displayMode = "view";
-			crudObject.data = data;
+				var crudObject = new Object();
+				crudObject.displayMode = "view";
+				crudObject.data = data;
 
-			if (data.data.length > 0)
-				crudObject.displayButtons = "editDelete"
-			else
-				crudObject.displayButtons = "add";
+				if (data.data.length > 0)
+					crudObject.displayButtons = "editDelete"
+				else
+					crudObject.displayButtons = "add";
 
-			var tableHtml = $(templateName).render(crudObject);
-			$("#" + itemDiv).html(tableHtml);
+				var tableHtml = $(templateName).render(crudObject);
+				$("#" + itemDiv).html(tableHtml);
 
-			// initialize all buttons change this after
-			$("#edit" + datatableNameUnderscore).button({
-				icons : {
-					primary : "ui-icon-pencil"
+				var params = {
+						datatableName: datatableName,
+						datatableUrl: datatableUrl, 
+						templateName: templateName, 
+						saveSuccessFunction: saveSuccessFunction, 
+						columnHeaders: crudObject.data.columnHeaders
 				}
-			}).click(
-					function(e) {
-						editPopupDialog(datatableUrl, datatableUrl, 'PUT',
-								doI18N("Edit") + " " + doI18N(datatableName),
-								templateName,
-								saveSuccessFunction);
-						e.preventDefault();
-					});
-			$("#delete" + datatableNameUnderscore).button({
-				icons : {
-					primary : "ui-icon-trash"
-				}
-			}).click(
-					function(e) {
-						popupDeleteDialog(datatableUrl, saveSuccessFunction);
-						e.preventDefault();
-					});
-
-			$("#add" + datatableNameUnderscore).button({
-				icons : {
-					primary : "ui-icon-plusthick"
-				}
-			}).click(
-					function(e) {
-						var newData = new Object();
-						newData.columnHeaders = crudObject.data.columnHeaders;
-						newData.data = [];
-						fillPopupDialogData(newData, datatableUrl, 'POST',
-								doI18N("Create") + " " + doI18N(datatableName),
-								templateName,
-								saveSuccessFunction);
-						e.preventDefault();
-					});
-		}
+				setCRUDButtonBehaviour(params);
+			}
 
 		executeAjaxRequest(datatableUrl, 'GET', "", successFunction,
 				formErrorFunction);
@@ -1232,7 +1180,69 @@
 			return 'value="' + str.replace(/"/g, "&quot;") + '"';
 		return "";
 	}
+	
+	var setCRUDButtonBehaviour = function(params) {
+			
+		var datatableNameUnderscore = spaceToUnderscore(params.datatableName);
+		
+		$("#edit" + datatableNameUnderscore).button({
+			icons : {
+				primary : "ui-icon-pencil"
+			}
+		}).click(
+				function(e) {
+					editPopupDialog(params.datatableUrl, params.datatableUrl, 'PUT',
+							doI18N("Edit") + " " + doI18N(params.datatableName),
+							params.templateName,
+							params.saveSuccessFunction);
+					e.preventDefault();
+				});
+		$("#delete" + datatableNameUnderscore).button({
+			icons : {
+				primary : "ui-icon-trash"
+			}
+		}).click(
+				function(e) {
+					popupDeleteDialog(params.datatableUrl, params.saveSuccessFunction);
+					e.preventDefault();
+				});
 
+		$("#add" + datatableNameUnderscore).button({
+			icons : {
+				primary : "ui-icon-plusthick"
+			}
+		}).click(
+				function(e) {
+					var newData = new Object();
+					newData.columnHeaders = params.columnHeaders;
+					newData.data = [];
+					fillPopupDialogData(newData, params.datatableUrl, 'POST',
+							doI18N("Create") + " " + doI18N(params.datatableName),
+							params.templateName,
+							params.saveSuccessFunction);
+					e.preventDefault();
+				});
+	}
+	
 	//
-
+	$.fn.serializeObject = function() {
+		var o = {};
+		var a = this.serializeArray();
+		$.each(a, function() {
+			if (o[this.name] !== undefined) {
+				if (!o[this.name].push) {
+					o[this.name] = [ o[this.name] ];
+				}
+				o[this.name].push(this.value || '');
+			} else {
+				o[this.name] = this.value || '';
+			}
+		});
+		return o;
+	};
+	
+	var generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
+		// for when an error is got but not on a create/update form -
+		alert("System Error - Data tables: " + jqXHR.responseText);
+	};
 })(jQuery);
