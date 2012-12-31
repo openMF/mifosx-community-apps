@@ -86,14 +86,11 @@
 
 		if (params.datatableArray.length > 0) {
 			for ( var i in params.datatableArray) {
-				if (params.datatableArray[i].itemDiv !== undefined) {// data
-					// table
-					// is a
-					// customisation
+				if (params.datatableArray[i].itemDiv !== undefined) {
+					// data table is a customisation
 					if (params.datatableArray[i].itemFunction !== undefined) {
 						// data table is not a jsrender customisation so just
-						// execute user-defined function
-						// expects 2 params
+						// execute user-defined function (expects 2 params)
 						var PKValue = params.appTablePKValue;
 						var itemDiv = params.datatableArray[i].itemDiv;
 						eval(params.datatableArray[i].itemFunction);
@@ -588,13 +585,13 @@
 
 	function addUpdateColDisplayHTML(columnHeader, colVal) {
 
-		var displayHTML = '<td valign="top"><label>';
+		var displayHTML = '<td valign="top">';
 
 		if (columnHeader.isColumnNullable == false)
 			displayHTML += sdt.indicateMandatory;
 
 		displayHTML += '<b>' + doI18N(columnHeader.columnName)
-				+ ':</b></label></td><td valign="top">';
+				+ ':</b></td><td valign="top">';
 
 		displayHTML += getColumnDisplayValue(columnHeader, colVal, "update")
 
@@ -649,8 +646,8 @@
 							title : doI18N(requestDisplay)
 									+ ": "
 									+ doI18N(currentTableDataInfo.datatableName),
-							width : 1000,
-							height : 500,
+							width : $(window).width() - 20,
+							height : $(window).height() - 20,
 							modal : true,
 							buttons : buttonsOpts,
 							close : function() {
@@ -690,8 +687,8 @@
 		return -1;
 	}
 
-	function popupDeleteDialog(deleteUrl) {
-
+	function popupDeleteDialog(deleteUrl, successFunction) {
+		
 		var dialogDiv = $("<div id='dialog-form'><div id='formerrors'></div>"
 				+ doI18N('text.confirmation.required') + "</div>");
 
@@ -700,14 +697,20 @@
 
 		var buttonsOpts = {};
 		buttonsOpts[confirmButton] = function() {
-			var successFunction = function(data, textStatus, jqXHR) {
-				dialogDiv.dialog("close");
-				showDataTable(currentTableDataInfo.tabName,
-						currentTableDataInfo.datatableName,
-						currentTableDataInfo.id, currentTableDataInfo.fkName);
+			var deleteSuccessFunction;
+			if (successFunction)
+				deleteSuccessFunction = successFunction
+			else {
+				deleteSuccessFunction = function(data, textStatus, jqXHR) {
+					dialogDiv.dialog("close");
+					showDataTable(currentTableDataInfo.tabName,
+							currentTableDataInfo.datatableName,
+							currentTableDataInfo.id,
+							currentTableDataInfo.fkName);
+				}
 			}
 
-			executeAjaxRequest(deleteUrl, 'DELETE', "", successFunction,
+			executeAjaxRequest(deleteUrl, 'DELETE', "", deleteSuccessFunction,
 					popupErrorFunction);
 		};
 
@@ -882,8 +885,6 @@
 
 		var datatableUrl = 'datatables/' + datatableName + '/' + itemId
 				+ "?genericResultSet=true";
-		var width = 1100;
-		var height = 600;
 
 		var datatableNameUnderscore = spaceToUnderscore(datatableName);
 
@@ -915,19 +916,17 @@
 					function(e) {
 						editPopupDialog(datatableUrl, datatableUrl, 'PUT',
 								doI18N("Edit") + " " + doI18N(datatableName),
-								templateName, width, height,
+								templateName,
 								saveSuccessFunction);
 						e.preventDefault();
 					});
 			$("#delete" + datatableNameUnderscore).button({
 				icons : {
-					primary : "ui-icon-circle-close"
+					primary : "ui-icon-trash"
 				}
 			}).click(
 					function(e) {
-						popupConfirmationDialogAndPost(datatableUrl, 'DELETE',
-								'dialog.title.confirmation.required', 400, 225,
-								0, saveSuccessFunction);
+						popupDeleteDialog(datatableUrl, saveSuccessFunction);
 						e.preventDefault();
 					});
 
@@ -942,7 +941,7 @@
 						newData.data = [];
 						fillPopupDialogData(newData, datatableUrl, 'POST',
 								doI18N("Create") + " " + doI18N(datatableName),
-								templateName, width, height,
+								templateName,
 								saveSuccessFunction);
 						e.preventDefault();
 					});
@@ -953,11 +952,11 @@
 	};
 
 	var editPopupDialog = function(getUrl, postUrl, submitType, titleCode,
-			templateName, width, height, saveSuccessFunction) {
+			templateName, saveSuccessFunction) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
 			fillPopupDialogData(data, postUrl, submitType, titleCode,
-					templateName, width, height, saveSuccessFunction);
+					templateName, saveSuccessFunction);
 		};
 
 		executeAjaxRequest(getUrl, "GET", "", successFunction,
@@ -965,8 +964,8 @@
 	}
 
 	var fillPopupDialogData = function(data, postUrl, submitType, titleCode,
-			templateName, width, height, saveSuccessFunction) {
-
+			templateName, saveSuccessFunction) {
+				
 		var serializationOptions = {};
 		serializationOptions["checkboxesAsBools"] = true;
 
@@ -989,8 +988,8 @@
 		var dialogDiv = $("<div id='dialog-form'></div>");
 		dialogDiv.dialog({
 			title : doI18N(titleCode),
-			width : width,
-			height : height,
+			width : $(window).width() - 20,
+			height : $(window).height() - 20,
 			modal : true,
 			buttons : buttonsOpts,
 			close : function() {
@@ -1019,17 +1018,17 @@
 		try {
 			var html = '<td valign="top" width="40%">'
 
-			if (!(displayMode.toUpperCase() == "VIEW")){
-				var columnNameIndex = getColumnNameIndex(data.columnHeaders, columnName);
-				if (columnNameIndex >= 0)
-				{
+			if (!(displayMode.toUpperCase() == "VIEW")) {
+				var columnNameIndex = getColumnNameIndex(data.columnHeaders,
+						columnName);
+				if (columnNameIndex >= 0) {
 					if (data.columnHeaders[columnNameIndex].isColumnNullable == false)
 						html += sdt.indicateMandatory;
-				}
-				else return "Column Name Not Found: " + columnName;
+				} else
+					return "Column Name Not Found: " + columnName;
 			}
-			
-			html += '<b>' + doI18N(columnName)	+ ':</b></td>';
+
+			html += '<b>' + doI18N(columnName) + ':</b></td>';
 			html += '<td valign="top" width="60%">'
 					+ getDataTableFieldValueEntry(data, 0, columnName,
 							displayMode) + '</td>';
@@ -1053,18 +1052,19 @@
 					return "";
 			}
 
-			var columnNameIndex = getColumnNameIndex(data.columnHeaders, columnName);
-			if (columnNameIndex >= 0)
-			{
+			var columnNameIndex = getColumnNameIndex(data.columnHeaders,
+					columnName);
+			if (columnNameIndex >= 0) {
 				var colVal = "";
 				if (data.data.length > 0)
 					colVal = data.data[rowNum].row[columnNameIndex];
 
 				var displayVal = getColumnDisplayValue(
-						data.columnHeaders[columnNameIndex], colVal, displayMode);
+						data.columnHeaders[columnNameIndex], colVal,
+						displayMode);
 				return displayVal;
-			}
-			else return "Column Name Not Found: " + columnName;
+			} else
+				return "Column Name Not Found: " + columnName;
 
 		} catch (e) {
 			var errorMsg = "System Error: stretchydatatables/getDataTableFieldValueEntry - columnName: "
@@ -1154,7 +1154,8 @@
 
 	var getColumnNameIndex = function(columnHeaders, columnName) {
 		for ( var ci in columnHeaders) {
-			if (columnHeaders[ci].columnName == columnName) return ci;
+			if (columnHeaders[ci].columnName == columnName)
+				return ci;
 		}
 		return -1;
 	}

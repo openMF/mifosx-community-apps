@@ -2709,7 +2709,7 @@ function tabExists(tabId){
 
 
 function loadILLoan(loanId) {
-
+	
 	var loanUrl = 'loans/' + loanId + "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
@@ -2742,7 +2742,8 @@ function loadILLoan(loanId) {
 	        		//adding styles for vertical sub-tabs
 	        		//$( ".loantabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 	        		//$( ".loantabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
-	        		var $loantabs = $(".loantabs").tabs({
+	        		//var $loantabs = $(".loantabs").tabs({
+		        	var $loantabs = $("#loantabs" + loanId).tabs({
 						"show": function(event, ui) {
 							var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
 			      			var curTabID = curTab.prop("id")
