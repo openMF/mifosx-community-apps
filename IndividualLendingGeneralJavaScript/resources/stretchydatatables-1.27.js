@@ -67,8 +67,8 @@
 		popupAddUpdateDialog(requestType, postOrPutUrl, updateRowIndex);
 	};
 
-	$.stretchyDataTables.popupDeleteDialog = function(deleteUrl) {
-		popupDeleteDialog(deleteUrl);
+	$.stretchyDataTables.deletePopupDialog = function(deleteUrl) {
+		deletePopupDialog(deleteUrl);
 	};
 
 	$.stretchyDataTables.getDataTableFieldEntry = function(data, rowNum,
@@ -241,15 +241,6 @@
 		return htmlVar;
 	}
 
-	function getDropdownValue(inColVal, columnValues) {
-
-		for ( var i in columnValues) {
-			if (inColVal == columnValues[i].id)
-				return doI18N(columnValues[i].value);
-		}
-		return "Err";
-	}
-
 	function getFKName(appTableName) {
 		return appTableName.substring(2) + "_id";
 	}
@@ -292,51 +283,6 @@
 			success : successFunction,
 			error : errorFunction
 		});
-	}
-
-	function initialiseDataTableDef() {
-		dataTableDef = {
-			// "sDom": 'lfTip<"top"<"clear">>rtlfTip<"bottom"<"clear">>',
-			"sDom" : 'lfTip<"top"<"clear">>rt',
-			"oTableTools" : {
-				"aButtons" : [ {
-					"sExtends" : "copy",
-					"sButtonText" : doI18N("Copy to Clipboard")
-				}, {
-					"sExtends" : "xls",
-					"sButtonText" : doI18N("Save to CSV")
-				} ],
-				"sSwfPath" : tabledataParams.resValue
-						+ "DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
-			},
-
-			"aaData" : [],
-			"aoColumns" : [],
-			"sPaginationType" : "full_numbers",
-			"oLanguage" : {
-				"sEmptyTable" : doI18N("rpt.no.entries"),
-				"sZeroRecords" : doI18N("rpt.no.matching.entries"),
-				"sInfo" : doI18N("rpt.showing") + " _START_ "
-						+ doI18N("rpt.to") + " _END_ " + doI18N("rpt.of")
-						+ " _TOTAL_ " + doI18N("rpt.records"),
-				"SInfoFiltered" : "(" + doI18N("rpt.filtered.from") + " _max_ "
-						+ doI18N("rpt.total.entries") + ")",
-				"oPaginate" : {
-					"sFirst" : doI18N("rpt.first"),
-					"sLast" : doI18N("rpt.last"),
-					"sNext" : doI18N("rpt.next"),
-					"sPrevious" : doI18N("rpt.previous")
-				},
-				"sLengthMenu" : doI18N("rpt.show") + " _MENU_ "
-						+ doI18N("rpt.entries"),
-				"sSearch" : doI18N("rpt.search")
-			},
-			"bDeferRender" : true,
-			"bProcessing" : true,
-			"aLengthMenu" : [ [ 5, 10, 25, 50, 100, -1 ],
-					[ 5, 10, 25, 50, 100, "All" ] ]
-		}
-
 	}
 
 	function showDataTableOneToMany() {
@@ -607,15 +553,6 @@
 
 			var form_data = JSON.stringify($('#entityform').serializeObject());
 
-			/*
-			 * could update with current data rather than refetching it. would
-			 * be less multi-user but that might not matter. updatedData =
-			 * $('#entityform').serializeObject(); var j; for (i in updatedData) {
-			 * j = getColumnIndex(i);
-			 * currentTableDataInfo.data.data[updateRowIndex].row[j] =
-			 * updatedData[i]; } showDataTableDisplay();
-			 */
-
 			var successFunction = function(data, textStatus, jqXHR) {
 				dialogDiv.dialog("close");
 				showDataTable(currentTableDataInfo.tabName,
@@ -682,7 +619,7 @@
 		return -1;
 	}
 
-	function popupDeleteDialog(deleteUrl, successFunction) {
+	function deletePopupDialog(deleteUrl, successFunction) {
 		
 		var dialogDiv = $("<div id='dialog-form'><div id='formerrors'></div>"
 				+ doI18N('text.confirmation.required') + "</div>");
@@ -733,7 +670,7 @@
 	}
 
 	function genDeletePopupClick(deleteUrl) {
-		return "jQuery.stretchyDataTables.popupDeleteDialog('" + deleteUrl
+		return "jQuery.stretchyDataTables.deletePopupDialog('" + deleteUrl
 				+ "');";
 	}
 
@@ -1112,6 +1049,15 @@
 		return str.replace(/ /g, "_")
 	}
 
+	var getDropdownValue = function(inColVal, columnValues) {
+
+		for ( var i in columnValues) {
+			if (inColVal == columnValues[i].id)
+				return doI18N(columnValues[i].value);
+		}
+		return "Err";
+	}
+	
 	var getSelectHTML = function(colName, columnValues, colVal) {
 
 		var selectedVal = "";
@@ -1203,7 +1149,7 @@
 			}
 		}).click(
 				function(e) {
-					popupDeleteDialog(params.datatableUrl, params.saveSuccessFunction);
+					deletePopupDialog(params.datatableUrl, params.saveSuccessFunction);
 					e.preventDefault();
 				});
 
@@ -1245,4 +1191,52 @@
 		// for when an error is got but not on a create/update form -
 		alert("System Error - Data tables: " + jqXHR.responseText);
 	};
+	
+	
+//
+	function initialiseDataTableDef() {
+		dataTableDef = {
+			// "sDom": 'lfTip<"top"<"clear">>rtlfTip<"bottom"<"clear">>',
+			"sDom" : 'lfTip<"top"<"clear">>rt',
+			"oTableTools" : {
+				"aButtons" : [ {
+					"sExtends" : "copy",
+					"sButtonText" : doI18N("Copy to Clipboard")
+				}, {
+					"sExtends" : "xls",
+					"sButtonText" : doI18N("Save to CSV")
+				} ],
+				"sSwfPath" : tabledataParams.resValue
+						+ "DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
+			},
+
+			"aaData" : [],
+			"aoColumns" : [],
+			"sPaginationType" : "full_numbers",
+			"oLanguage" : {
+				"sEmptyTable" : doI18N("rpt.no.entries"),
+				"sZeroRecords" : doI18N("rpt.no.matching.entries"),
+				"sInfo" : doI18N("rpt.showing") + " _START_ "
+						+ doI18N("rpt.to") + " _END_ " + doI18N("rpt.of")
+						+ " _TOTAL_ " + doI18N("rpt.records"),
+				"SInfoFiltered" : "(" + doI18N("rpt.filtered.from") + " _max_ "
+						+ doI18N("rpt.total.entries") + ")",
+				"oPaginate" : {
+					"sFirst" : doI18N("rpt.first"),
+					"sLast" : doI18N("rpt.last"),
+					"sNext" : doI18N("rpt.next"),
+					"sPrevious" : doI18N("rpt.previous")
+				},
+				"sLengthMenu" : doI18N("rpt.show") + " _MENU_ "
+						+ doI18N("rpt.entries"),
+				"sSearch" : doI18N("rpt.search")
+			},
+			"bDeferRender" : true,
+			"bProcessing" : true,
+			"aLengthMenu" : [ [ 5, 10, 25, 50, 100, -1 ],
+					[ 5, 10, 25, 50, 100, "All" ] ]
+		}
+
+	}
+
 })(jQuery);
