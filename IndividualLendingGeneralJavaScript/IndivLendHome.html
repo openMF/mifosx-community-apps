@@ -979,6 +979,264 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="bulkLoanApplicationFormTemplate" type="text/x-jquery-tmpl">
+<fieldset>
+	<table>
+		<tr>
+			<td>
+			    <div class="multiselectwidget">
+			        <label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+			        <select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:200px;height:125px;">
+			        {{#each clientMembers}}
+			            <option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+			        {{/each}}
+			        </select>
+			        <a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+			    </div>
+		    </td>
+		    <td>
+			    <div>
+			        <span id="toolbar" class="ui-widget-header ui-corner-all">
+			            <button type="submit" class="submitloanapp" id="submitloanapp" name="_eventId_submit"  title="Submit loan application.">Submit loan application</button>
+			            <button type="submit" class="cancelloanapp" id="cancelloanapp" name="_eventId_cancel" title="Cancel loan application.">Cancel</button>
+			        </span>
+			    </div>
+		    </td>
+	    </tr>
+    </table>
+</fieldset>
+<fieldset>
+    <ul id="membersLoanApplication">
+
+    </ul>
+</fieldset>
+</script>
+
+<script id="bulkLoanApplicationMemberPartial" type="text/x-jquery-tmpl">
+<form class="entityform">
+<table>
+    <tr>
+        <div class="formerrors"></div>
+    </tr>
+    <tr>
+        <td>
+            {{=clientName}}
+            <input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+        	<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+        </td>
+        <td>{{=$ctx.doI18N("form.label.product.dropdown")}}</td>
+        <td>
+            <select name="productId" id="productId" class="productId">
+                <option value="-1">{{=$ctx.doI18N("form.option.product.dropdown.first.choice")}}</option>
+                {{#each productOptions}}
+                    {{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+                    <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                    {{#else}}
+                    <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                    {{/if}}
+                {{/each}}
+            </select>
+        </td>
+        {{#if loanProductId}}
+        <td>{{=$ctx.doI18N("form.label.loan.product.loan.amount")}}</td>
+        <td>
+            <input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 125px;" />
+            <input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+        </td>
+        <td>{{=$ctx.doI18N("label.loan.officer")}}</td>
+        <td>
+            <select name="loanOfficerId" id="loanOfficerId">
+                <option value="">{{=$ctx.doI18N("form.option.loanOfficer.dropdown.first.choice")}}</option>
+                {{#each loanOfficerOptions}}
+                {{#if $ctx.number($parent.parent.data.loanOfficerId)===$ctx.number(id)}}
+                    <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+                {{#else}}
+                    <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+                {{/if}}
+                {{/each}}
+            </select>
+        </td>
+        <td>{{=$ctx.doI18N("form.label.loan.submitted.on")}}</td>
+        <td>
+            <input name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
+        </td>
+        <td>
+            <a href='#' id="toggleMemberLoanDetails{{=clientId}}" onclick="return false;">{{=$ctx.doI18N("form.label.group.toggle.member.loan.details")}}</a>
+            <a href='#' id="removeMemberFromApplication{{=clientId}}" onclick="return false;">{{=$ctx.doI18N("form.label.group.remove.member.from.loan.application")}}</span>
+        </td>
+        {{/if}}
+    </tr>
+    <tr class="memberLoanDetails" style="display: none;">
+        {{#if loanProductId}}
+        <td valign="top" style="padding-right: 5px; border-right: 1px solid;" colspan="5">
+            <table>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.loanterm")}}</td>
+                    <td>
+                        <input id="loanTermFrequency" name="loanTermFrequency" title="" type="text" value="{{=$ctx.number(termFrequency)}}" style="width: 50px;" />
+                        
+                        <select name="loanTermFrequencyType" id="loanTermFrequencyType"  title="" style="width: 121px;">
+                        {{#each termFrequencyTypeOptions}}
+                        {{#if $ctx.number($parent.parent.data.termPeriodFrequencyType.id)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                        {{/if}}
+                        {{/each}}
+                            </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.numberof.repayments")}}</td>
+                    <td>
+                        <input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.repaidevery")}}</td>
+                    <td>
+                        <input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 50px;" />
+                        
+                        <select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 121px;">
+                        {{#each repaymentFrequencyTypeOptions}}
+                        {{#if $ctx.number($parent.parent.data.repaymentFrequencyType.id)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                        {{/if}}
+                        {{/each}}
+                            </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.repayment.strategy")}}</td>
+                    <td>
+                        <select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
+                            <option value="">{{=$ctx.doI18N("form.option.repayment.strategy.dropdown.first.choice")}}</option>
+                        {{#each repaymentStrategyOptions}}
+                            {{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                            {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                            {{/if}}
+                        {{/each}}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.expected.disbursement.date.on")}}</td>
+                    <td>
+                    <input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.first.repayment.on")}}</td>
+                    <td>
+                    <input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
+                    </td>
+                </tr>
+                {{#if $ctx.showTask("VIEWFUNDS")}}
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.fund")}}</td>
+                    <td>
+                        <select id="fundId" name="fundId" title="">
+                            <option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
+                        {{#each fundOptions}}
+                            {{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
+                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                            {{#else}}
+                                <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                            {{/if}}
+                            {{/each}}
+                        </select>
+                    </td>
+                </tr>
+                {{/if}}
+            </table>
+        </td>
+        <!-- interest details cell -->
+        <td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;" colspan="5">
+            <table>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.nominal.interestrate")}}</td>
+                    <td>
+                        <input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 60px;" />
+                        
+                        <select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 115px;">
+                        {{#each interestRateFrequencyTypeOptions}}
+                        {{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                        {{/if}}
+                        {{/each}}
+                            </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.amortization")}}</td>
+                    <td>
+                        <select name="amortizationType" id="amortizationType"  title="" style="width: 178px;">
+                        {{#each amortizationTypeOptions}}
+                        {{#if $ctx.number($parent.parent.data.amortizationType.id)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                        {{/if}}
+                        {{/each}}
+                            </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.interest.method")}}</td>
+                    <td>
+                        <select name="interestType" id="interestType"  title="" style="width: 180px;">
+                        {{#each interestTypeOptions}}
+                        {{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                        {{/if}}
+                        {{/each}}
+                            </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.interest.rate.calcutated.in.period")}}</td>
+                    <td>
+                    <select id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" style="width: 220px;">
+                        {{#each interestCalculationPeriodTypeOptions}}
+                            {{#if $ctx.number($parent.parent.data.interestCalculationPeriodType.id)===$ctx.number(id)}}
+                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+                            {{#else}}
+                                <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                            {{/if}}
+                        {{/each}}
+                    </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.interest.charged.from")}}</td>
+                    <td>
+                    <input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" style="width:172px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{=$ctx.doI18N("form.label.loan.product.arrears.tolerance")}}</td>
+                    <td>
+                        <input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" style="width: 125px;" />
+                        <input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+                    </td>
+                </tr>
+            </table>
+        </td>
+        {{/if}}
+    </tr>
+</table>
+</form>
+</script>
+
 <script id="newDepositFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -2227,6 +2485,7 @@ $(document).ready(function() {
     <button id="deletegroupbtn{{=id}}" class="deletegroupbtn">Delete group</button>
 	<button id="editgroupbtn{{=id}}" class="editgroupbtn">Edit group</button>
 	<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
+	<button id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">New members loan application</button>
 </span>
 <hr/>
 

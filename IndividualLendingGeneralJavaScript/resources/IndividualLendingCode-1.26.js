@@ -304,6 +304,11 @@ function setAddLoanContent(divName) {
 	$("#" + divName).html(htmlVar);
 }
 
+function setAddBulkLoanContent(divName) {
+	var htmlVar = '<div id="selectclientsarea"></div><div id="inputarea"></div>';
+	$("#" + divName).html(htmlVar);
+}
+
 function setAddDepositContent(divName) {
 
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
@@ -1883,6 +1888,11 @@ function showILGroup(groupId){
 		    e.preventDefault();
 		});
 		$('button.newloanbtn span').text(doI18N('dialog.button.new.loan.application'));
+		$('.newbulkloanbtn').button().click(function(e) {
+			addILBulkMembersLoans(groupId, { "clientMembers" : data.clientMembers});
+		    e.preventDefault();
+		});
+		$('button.newbulkloanbtn span').text(doI18N('dialog.button.new.members.loan.application'));
 	}
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
@@ -1891,6 +1901,74 @@ function showILGroup(groupId){
     };
 
 	executeAjaxRequest(groupUrl, 'GET', "", successFunction, errorFunction);
+}
+
+function addILBulkMembersLoans(groupId, clientMembers){
+	setAddBulkLoanContent("content");
+	var html = $("#bulkLoanApplicationFormTemplate").render(clientMembers);
+	$("#selectclientsarea").html(html);	
+
+	$('#cancelloanapp').button().click(function(e) {
+		showILGroup(groupId);
+	    e.preventDefault();
+	});
+	$('button#cancelloanapp span').text(doI18N('dialog.button.cancel'));
+
+	$('#submitloanapp').button().click(function(e) {
+		
+		$('.entityform').each(function(){
+			var memberLoanData = $(this).serializeObject(),
+				memberLoanDataString = JSON.stringify(memberLoanData),
+    			entityForm = $(this);
+			
+			var successFunction =  function(data, textStatus, jqXHR) {
+				entityForm.closest("#client" + memberLoanData.clientId).remove();
+				if ($('.entityform').length === 0){
+					showILGroup(groupId);	
+				}
+			};
+			var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
+				handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#client" + memberLoanData.clientId + " .formerrors");
+			};
+		
+			executeAjaxRequest('loans', "POST", memberLoanDataString, successFunction, customFormErrorFunction);	
+		})
+
+	    e.preventDefault();
+	});
+	$('button#submitloanapp span').text(doI18N('dialog.button.submit'));
+
+	var addMemberLoanApplicationSuccess = function(data, textStatus, jqXHR) {
+		var memberHtml = $("#bulkLoanApplicationMemberPartial").render(data);
+		$("#membersLoanApplication").append($("<li id='client"+data.clientId+"'></li>").append(memberHtml));
+		$("#client" + data.clientId + "  .productId").change(function(){
+			var productId = $(this).val();
+			executeAjaxRequest('loans/template?clientId=' + data.clientId + '&productId=' + productId, 'GET', "", selectMemberLoanApplicationProductSuccess, formErrorFunction);
+		});
+	} 
+
+	var selectMemberLoanApplicationProductSuccess = function(data, textStatus, jqXHR) {
+		var memberHtml = $("#bulkLoanApplicationMemberPartial").render(data);
+		$("#membersLoanApplication > #client" + data.clientId).html(memberHtml);
+		$("#client" + data.clientId + "  .productId").change(function(){
+			var productId = $(this).val();
+			executeAjaxRequest('loans/template?clientId=' + data.clientId + '&productId=' + productId, 'GET', "", selectMemberLoanApplicationProductSuccess, formErrorFunction);
+		});
+		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'dd MM yy'});
+		$('#toggleMemberLoanDetails' + data.clientId).click(function(){
+			$("#client" + data.clientId + " .memberLoanDetails").toggle();
+		});
+		$('#removeMemberFromApplication' + data.clientId).click(function(){
+			$("#client" + data.clientId).remove();
+			$(".multiNotSelectedItems option[value='" + data.clientId +"']").show();
+		});
+	}
+
+	$('#addclientmembers').click(function() {  
+		$('.multiNotSelectedItems option:selected').each(function(){
+			executeAjaxRequest('loans/template?clientId=' + $(this).val(), 'GET', "", addMemberLoanApplicationSuccess, formErrorFunction);
+		}).hide().attr("selected", false);  
+	});
 }
 
 	// function to retrieve and display loan summary information in it placeholder
