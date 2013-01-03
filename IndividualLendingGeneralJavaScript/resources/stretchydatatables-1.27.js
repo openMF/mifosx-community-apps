@@ -26,16 +26,16 @@
 		}
 
 		sdt = {
-			globaliseFunctions: "",
-			indicateMandatory: "* ",
-			saveLabel: "dialog.button.save",
-			cancelLabel: "dialog.button.cancel",
-			confirmLabel: "dialog.button.confirm",
-			defaultDecimalPlaces: 4,
-			nullTitleValue: "-99999999",
-			tabledataParams: params,
-			dataTableDef: "",
-			genericResultSetParameter: "?genericResultSet=true"
+			globaliseFunctions : "",
+			indicateMandatory : "* ",
+			saveLabel : "dialog.button.save",
+			cancelLabel : "dialog.button.cancel",
+			confirmLabel : "dialog.button.confirm",
+			defaultDecimalPlaces : 4,
+			nullTitleValue : "-99999999",
+			tabledataParams : params,
+			dataTableDef : "",
+			genericResultSetParameter : "?genericResultSet=true"
 		}
 
 		if (params.globaliseFunctions)
@@ -799,8 +799,14 @@
 				colVal = getColumnDisplayValue(data.columnHeaders[i], colVal,
 						displayMode);
 
-				htmlVar += '<td valign="top"><span ' + labelClassStr + '><b>'
-						+ doI18N(data.columnHeaders[i].columnName)
+				htmlVar += '<td valign="top"><span ' + labelClassStr + '>'
+
+				if (!(displayMode.toUpperCase() == "VIEW")) {
+					if (data.columnHeaders[i].isColumnNullable == false)
+						htmlVar += sdt.indicateMandatory;
+				}
+
+				htmlVar += "<b>" + doI18N(data.columnHeaders[i].columnName)
 						+ ':</b></span></td><td valign="top"><span '
 						+ valueClassStr + '>' + colVal + '</span></td>';
 			}
@@ -933,8 +939,10 @@
 
 			var fullDatatableNameUnderscore = datatableNameUnderscore + "_"
 					+ params.manyButtons[i];
-			var paramPos = params.datatableUrl.indexOf(sdt.genericResultSetParameter);
-			var fullUrl = params.datatableUrl.substring(0, paramPos) + "/" + params.manyButtons[i] + sdt.genericResultSetParameter;
+			var paramPos = params.datatableUrl
+					.indexOf(sdt.genericResultSetParameter);
+			var fullUrl = params.datatableUrl.substring(0, paramPos) + "/"
+					+ params.manyButtons[i] + sdt.genericResultSetParameter;
 
 			$("#delete" + fullDatatableNameUnderscore).button({
 				icons : {
@@ -951,9 +959,8 @@
 				}
 			}).click(
 					function(e) {
-						editPopupDialog(fullUrl, fullUrl, 'PUT',
-								doI18N("Edit") + " "
-										+ doI18N(params.datatableName),
+						editPopupDialog(fullUrl, fullUrl, 'PUT', doI18N("Edit")
+								+ " " + doI18N(params.datatableName),
 								params.templateName,
 								params.saveSuccessFunction, params.fkName);
 						e.preventDefault();
