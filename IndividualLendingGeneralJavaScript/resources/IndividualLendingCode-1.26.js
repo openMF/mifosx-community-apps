@@ -1939,6 +1939,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	$('button#submitloanapp span').text(doI18N('dialog.button.submit'));
 
 	var addMemberLoanApplicationSuccess = function(data, textStatus, jqXHR) {
+		data.groupId = groupId;
 		var memberHtml = $("#bulkLoanApplicationMemberPartial").render(data);
 		$("#membersLoanApplication").append($("<li id='client"+data.clientId+"'></li>").append(memberHtml));
 		$("#client" + data.clientId + "  .productId").change(function(){
@@ -1948,6 +1949,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	} 
 
 	var selectMemberLoanApplicationProductSuccess = function(data, textStatus, jqXHR) {
+		data.groupId = groupId;
 		var memberHtml = $("#bulkLoanApplicationMemberPartial").render(data);
 		$("#membersLoanApplication > #client" + data.clientId).html(memberHtml);
 		$("#client" + data.clientId + "  .productId").change(function(){
