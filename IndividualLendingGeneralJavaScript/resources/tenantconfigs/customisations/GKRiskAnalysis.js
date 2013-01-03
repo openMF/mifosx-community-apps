@@ -31,17 +31,14 @@
 
 
 //over-ride out-of-the-box data table functionality with GK specific one
-	custom.datatablePresentation["M_CLIENT"] = {
-														renderInfo: [
-														             {
-														            	 registeredTableName: "risk_analysis",
-																         itemDiv: "GKRA_ClientRiskAnalysisTab",
-																         itemDivLabel: "client.riskanalysis.tab.name",
-																         itemFunction: "GKRA.refreshRiskAnalysis(PKValue, itemDiv)"
-														             }
-														             ],
-														exclude: []
-													};
+	custom.datatablePresentation["M_CLIENT"].renderInfo.push(
+																{
+																	registeredTableName: "risk_analysis",
+													            	type: "user-defined",
+																    itemDiv: "GKRA_ClientRiskAnalysisTab",
+																    itemDivLabel: "client.riskanalysis.tab.name",
+																    itemFunction: "GKRA.refreshRiskAnalysis(PKValue, itemDiv)"
+																});
 
 GKRA = {};
 

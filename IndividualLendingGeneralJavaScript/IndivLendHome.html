@@ -6044,65 +6044,28 @@ function showLockinOptions(){
 
 
 <!--Ceda client additional data-->
-<script id="cedaadditionalclientdataFormTemplate" type="text/x-jquery-tmpl">
-
-<div id=CEDA_ACD>
-
-{{#if displayMode != "view"}}
-<form id="entityform">
-    	<div id="formerrors"></div>
-{{/if}}
-
-		<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-
-	<table width="100%">
-		<tr>
-			<td align="right" >
-{{#if displayMode == "view"}}
-  {{#if displayButtons == "editDelete"}}
-	<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
-
-	{{#if $ctx.hasDataTablePermission("UPDATE_client additional data")}}
-		<button id="editclient_additional_data">{{=$ctx.doI18N("Datatables.Edit")}}</button>
-	{{/if}}
-	{{#if $ctx.hasDataTablePermission("DELETE_client additional data")}}
-		<button id="deleteclient_additional_data">{{=$ctx.doI18N("Datatables.Delete")}}</button>
-	{{/if}}
-	</span>
-  {{#else}}
-	<span id="toolbar" class="ui-widget-header ui-corner-all">
-	{{#if $ctx.hasDataTablePermission("CREATE_client additional data")}}
-   		<button id="addclient_additional_data">{{=$ctx.doI18N("Datatables.Add")}}</button>
-	{{/if}}
-	</span>
-  {{/if}}
-{{/if}}
-			</td>
-		</tr>
-	</table>
+<script id="ceda_client_additional_data_template" type="text/x-jquery-tmpl">
 
 	<table width="100%">
 		<tr>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Gender_cd", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Date of Birth", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "EducationLevel_cd", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "MaritalStatus_cd", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Number of children", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Citizenship", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "PovertyStatus_cd", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Gender_cd", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Date of Birth", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "EducationLevel_cd", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "MaritalStatus_cd", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Number of children", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Citizenship", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "PovertyStatus_cd", displayMode)!}}</tr>
 			</table>
 		  </td>
 		  <td width="2%"></td>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Home address", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Telephone number", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Telephone number (2nd)", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Email address", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Home address", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Telephone number", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Telephone number (2nd)", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Email address", displayMode)!}}</tr>
 			</table>
 		  </td>
 		</tr>
@@ -6113,25 +6076,25 @@ function showLockinOptions(){
 		<tr>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Employed", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "FieldOfEmployment_cd_Field of employment", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Employer name", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Number of years", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Monthly salary", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Employed", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "FieldOfEmployment_cd_Field of employment", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Employer name", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Number of years", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Monthly salary", displayMode)!}}</tr>
 			</table>
 		  </td>
 		  <td width="2%"></td>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Self employed", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "FieldOfEmployment_cd_Field of self-employment", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Business address", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Number of employees", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Monthly salaries paid", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Monthly net income (of business activity)", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Monthly rent", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Other income generating activities", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Bookkeeping", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Self employed", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "FieldOfEmployment_cd_Field of self-employment", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Business address", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Number of employees", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Monthly salaries paid", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Monthly net income (of business activity)", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Monthly rent", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Other income generating activities", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Bookkeeping", displayMode)!}}</tr>
 			</table>
 		  </td>
 		</tr>
@@ -6142,19 +6105,19 @@ function showLockinOptions(){
 		<tr>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Loans with other institutions", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "From whom", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Amount", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Interest rate p.a", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Loans with other institutions", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "From whom", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Amount", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Interest rate p.a", displayMode)!}}</tr>
 			</table>
 		  </td>
 		  <td width="2%"></td>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Number of people depending on overal income", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Bank account", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Business plan provided", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "YesNo_cd_Access to internet", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Number of people depending on overal income", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Bank account", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Business plan provided", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Access to internet", displayMode)!}}</tr>
 			</table>
 		  </td>
 		</tr>
@@ -6165,25 +6128,20 @@ function showLockinOptions(){
 		<tr>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Introduced by", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Known to introducer since", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Introduced by", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Known to introducer since", displayMode)!}}</tr>
 			</table>
 		  </td>
 		  <td width="2%"></td>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Last visited by", displayMode)!}}</tr>
-				<tr>{{=$ctx.getDataTableFieldEntry(data, 0, "Last visited on", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Last visited by", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Last visited on", displayMode)!}}</tr>
 			</table>
 		  </td>
 		</tr>
 	</table>
 
-{{#if displayMode != "view"}}
-</form>
-{{/if}}
-
-</div>
 </script>
 
 

@@ -213,10 +213,26 @@ custom.helperFunctions = {
 
 		return jQuery.stretchyDataTables.getDataTableFieldValueEntry(data,
 				rowNum, fieldName, displayMode);
+	},
+	getDataTableStartForm : function(displayMode, displayButtons, datatableName) {
+
+		return jQuery.stretchyDataTables.getDataTableStartForm(displayMode,
+				displayButtons, datatableName);
+	},
+	getDataTableEndFormIfNecessary : function(displayMode) {
+
+		return jQuery.stretchyDataTables
+				.getDataTableEndFormIfNecessary(displayMode);
 	}
+
 };
 
-// default to no customised rendering but loan guarantor data table is excluded
+/*
+ * defaults to no customised rendering and loan guarantor data table excluded
+ * All datatables for each appliation table (e.g. m_client) will be put under a
+ * general tab push an entry into the appropriate array to customise this
+ * behaviour (like in GKRiskAnalysis.js)
+ */
 custom.datatablePresentation = {
 	"M_CLIENT" : {
 		renderInfo : [],
@@ -230,13 +246,13 @@ custom.datatablePresentation = {
 
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 		appTablePKValue) {
-	
+
 	var url = 'datatables?apptable=' + appTableName;
 
 	var successFunction = function(data, textStatus, jqXHR) {
 
 		if (data.length > 0) {
-			datatableArray = [];
+			var datatableArray = [];
 			var datatableExists = function(datatableName) {
 				for ( var i in datatableArray) {
 					if (datatableArray[i].registeredTableName == datatableName)
@@ -252,24 +268,17 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 					}
 				}
 			}
-			var defaultDatatableExists = function() {
-				for ( var i in datatableArray) {
-					var itemDiv = datatableArray[i].itemDiv
-					if (typeof itemDiv == "undefined")
-						return true;
-				}
-				return false;
+
+			var spaceToUnderscore = function(str) {
+				return str.replace(/ /g, "_")
 			}
 
-			// 1. add any datatables that are defined as manually customised
+			// 1. add any datatables that are defined in
+			// custom.datatablePresentation for the current application table
 			var appTableRenderInfo = custom.datatablePresentation[appTableName
 					.toUpperCase()].renderInfo;
 			if (typeof appTableRenderInfo !== "undefined") {
-				for ( var i in appTableRenderInfo) {// add individual tab
-					tabVar.append("<div id=" + appTableRenderInfo[i].itemDiv
-							+ "></div>");
-					tabVar.tabs("add", "#" + appTableRenderInfo[i].itemDiv,
-							doI18N(appTableRenderInfo[i].itemDivLabel));
+				for ( var i in appTableRenderInfo) {
 					datatableArray.push(appTableRenderInfo[i]);
 					// alert("added custom rendered datatable: " +
 					// appTableRenderInfo[i].registeredTableName)
@@ -280,6 +289,11 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 				if (datatableExists(data[i].registeredTableName) == false) {
 					var tmpObj = {};
 					tmpObj.registeredTableName = data[i].registeredTableName;
+					tmpObj.type = "default";
+					tmpObj.itemDiv = "tab_"
+							+ spaceToUnderscore(data[i].registeredTableName)
+							+ "_id_" + appTablePKValue;
+					tmpObj.itemDivLabel = data[i].registeredTableName;
 					datatableArray.push(tmpObj);
 					// alert("added general datatable: " +
 					// data[i].registeredTableName)
@@ -292,17 +306,13 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 				for ( var i in appTableExclude)
 					datatableExclude(appTableExclude[i]);
 			}
-
-			//					
-
-			var datatablesDiv = "N/A";
-			if (defaultDatatableExists() == true) {
-				// add generic datatables tab to cater for all datatables
-				// without specific presentation info
-				datatablesDiv = appTableName + "_" + appTablePKValue
-						+ "_addData";
-				tabVar.tabs("add", "#" + datatablesDiv,
-						doI18N("Additional.Data"));
+			// 4. set up a tab for each additional table
+			for ( var i in datatableArray) {
+				tabVar.append("<div id=" + datatableArray[i].itemDiv
+						+ "></div>");
+				tabVar.tabs("add", "#" + datatableArray[i].itemDiv,
+						doI18N(datatableArray[i].itemDivLabel));
+				//alert(datatableArray[i].itemDivLabel)
 			}
 
 			tabVar.tabs('select', 0); // back to main tab
@@ -311,18 +321,19 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 				baseApiUrl : baseApiUrl,
 				base64 : base64,
 				tenantIdentifier : tenantIdentifier,
+
 				appTableName : appTableName,
 				appTablePKValue : appTablePKValue,
 				datatableArray : datatableArray,
+
 				globaliseFunctions : custom.helperFunctions,
 				resValue : "resources/libs/",
-
-				datatablesDiv : datatablesDiv,
 				indicateMandatory : "* ",
 				labelClass : "",
 				valueClass : "",
-				saveLabel : doI18N("dialog.button.save"),
-				cancelLabel : doI18N("dialog.button.cancel")
+				saveLabel : "dialog.button.save",
+				cancelLabel : "dialog.button.cancel",
+				confirmLabel : "dialog.button.confirm"
 			};
 			jQuery.stretchyDataTables
 					.displayAdditionalInfo(additionalInfoParams);
