@@ -481,7 +481,7 @@
 				 */
 
 			executeAjaxRequest(deleteUrl, 'DELETE', "", deleteSuccessFunction,
-					popupErrorFunction);
+					formErrorFunction);
 		};
 
 		buttonsOpts[cancelButton] = function() {
@@ -1106,11 +1106,6 @@
 				+ " - Not Catered For - Column Name: " + columnName);
 	}
 
-	var popupErrorFunction = function(jqXHR, textStatus, errorThrown) {
-		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate",
-				"#formerrors");
-	};
-
 	var removeErrors = function(placeholderDiv) {
 		// remove error class from all input fields
 		var $inputs = $('#entityform :input');
@@ -1127,11 +1122,13 @@
 		alert("System Error - Data tables: " + jqXHR.responseText);
 	};
 
+	var formErrorFunction = function(jqXHR, textStatus, errorThrown) {
+		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+	};
+	
 	var handleXhrError = function(jqXHR, textStatus, errorThrown,
 			templateSelector, placeholderDiv) {
-
-		// alert("textStatus: " + textStatus + " errorThrown: " + errorThrown);
-
+		
 		if (jqXHR.status === 0) {
 			alert('No connection. Verify application is running.');
 		} else if (jqXHR.status == 401) {
@@ -1153,43 +1150,25 @@
 			removeErrors(placeholderDiv);
 
 			var jsonErrors = JSON.parse(jqXHR.responseText);
-			console.log(jsonErrors);
 			var valErrors = jsonErrors.errors;
-			console.log(valErrors);
+			
 			var errorArray = new Array();
 			var arrayIndex = 0;
 			$.each(valErrors, function() {
-				var fieldId = '#' + this.parameterName;
+				var fieldId = '#' + spaceToUnderscore(this.parameterName);
 				$(fieldId).addClass("ui-state-error");
 
 				var errorObj = new Object();
-				errorObj.field = this.parameterName;
-				errorObj.code = this.userMessageGlobalisationCode;
-
-				var argArray = new Array();
-				var argArrayIndex = 0;
-				$.each(this.args, function() {
-					argArray[argArrayIndex] = this.value;
-					argArrayIndex++;
-				});
-				// hardcoded support for six arguments
-				errorObj.message = doI18N(this.userMessageGlobalisationCode,
-						argArray[0], argArray[1], argArray[2], argArray[3],
-						argArray[4], argArray[5]);
-				errorObj.value = this.value;
-
+				errorObj.message = doI18N(this.userMessageGlobalisationCode) + " - " + doI18N(this.parameterName);
 				errorArray[arrayIndex] = errorObj;
 				arrayIndex++
 			});
-			var templateArray = new Array();
+			
 			var templateErrorObj = new Object();
 			templateErrorObj.title = doI18N('error.msg.header');
 			templateErrorObj.errors = errorArray;
 
-			templateArray[0] = templateErrorObj;
-
-			var formErrorsHtml = $(templateSelector).render(templateArray);
-
+			var formErrorsHtml = $(templateSelector).render(templateErrorObj);
 			$(placeholderDiv).append(formErrorsHtml);
 		}
 	}
