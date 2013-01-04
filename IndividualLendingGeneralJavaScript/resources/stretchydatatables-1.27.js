@@ -1158,6 +1158,8 @@
 				var fieldId = '#' + spaceToUnderscore(this.parameterName);
 				$(fieldId).addClass("ui-state-error");
 
+				if (arrayIndex == 0) $(fieldId).focus();
+				
 				var errorObj = new Object();
 				errorObj.message = doI18N(this.userMessageGlobalisationCode) + " - " + doI18N(this.parameterName);
 				errorArray[arrayIndex] = errorObj;
