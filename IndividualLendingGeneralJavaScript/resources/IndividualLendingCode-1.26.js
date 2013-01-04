@@ -2350,8 +2350,8 @@ function addILBulkMembersLoans(groupId, clientMembers){
 				$("#inputarea").html(formHtml);
 
 				$('#productId').change(function() {
-					var productId = $('#productId').val();
-					repopulateFullForm(clientId, productId);
+					var selectedProductId = $('#productId').val();
+					repopulateFullForm(clientId, groupId, selectedProductId);
 				});
 				
 				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
