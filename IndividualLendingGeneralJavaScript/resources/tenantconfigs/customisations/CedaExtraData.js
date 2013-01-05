@@ -1,6 +1,4 @@
 //over-ride out-of-the-box data table presentation functionality for m_client with CEDA specific one
-//var fieldValueAttrs = [];
-//fieldValueAttrs["YesNo_cd_Employed"] = 'onChange="CEDA_Functions.onChangeEmployed(options[selectedIndex].value)"';
 
 custom.datatablePresentation["M_CLIENT"].renderInfo.push({
 	registeredTableName : "client additional data",
@@ -19,6 +17,8 @@ CEDA_Functions.onLoadForm = function() {
 	CEDA_Functions.onChangeEmployed();
 	CEDA_Functions.onChangeSelfEmployed();
 	CEDA_Functions.onChangeLoansOther();
+
+	$("#Date_of_Birth").datepicker('option', 'yearRange', "-100:-10");
 }
 // Column Names are used as the html tag id of the input elements
 // Spaces are converted to underscores but other non alphanumeric characters

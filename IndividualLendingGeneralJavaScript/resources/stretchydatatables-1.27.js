@@ -463,8 +463,7 @@
 					dateFormat : custom.datePickerDateFormat
 				});
 				// if entered, execute onLoadForm script defined for a template
-				if (templateName && onLoadForm)
-					eval(onLoadForm);
+				if (templateName && onLoadForm) eval(onLoadForm);
 			}
 		}).dialog('open');
 
@@ -580,7 +579,7 @@
 
 	// functions that generate the html to display or edit column values
 	var getColumnDisplayValue = function(columnHeader, colVal, displayMode,
-			updateColumnTagExtra) {
+			updateColumnTagExtraParam) {
 
 		if (displayMode.toUpperCase() == "VIEW") {
 			if (colVal == null)
@@ -611,6 +610,11 @@
 				return "";
 			}
 		} else {// updatable field
+
+			var updateColumnTagExtra = "";
+			if (updateColumnTagExtraParam)
+				updateColumnTagExtra = updateColumnTagExtraParam;
+
 			var colNameUnderscore = spaceToUnderscore(columnHeader.columnName);
 
 			var displayVal = "";
