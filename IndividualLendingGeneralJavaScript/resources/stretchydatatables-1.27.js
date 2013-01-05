@@ -92,7 +92,8 @@
 							params.appTablePKValue,
 							getFKName(params.appTableName),
 							params.datatableArray[i].type.toUpperCase(),
-							params.datatableArray[i].templateName);
+							params.datatableArray[i].templateName,
+							params.datatableArray[i].onLoadForm);
 					break;
 				case "USER-DEFINED":
 					// data table UI handled completely by user-defined code
@@ -116,7 +117,7 @@
 	}
 
 	var showDataTable = function(itemDiv, datatableName, id, fkName, type,
-			templateName) {
+			templateName, onLoadForm) {
 
 		var url = 'datatables/' + datatableName + "/" + id
 				+ sdt.genericResultSetParameter;
@@ -124,7 +125,7 @@
 		var saveSuccessFunction = function(data, textStatus, jqXHR) {
 			$("#dialog-form").dialog("close");
 			showDataTable(itemDiv, datatableName, id, fkName, type,
-					templateName);
+					templateName, onLoadForm);
 		}
 
 		var successFunction = function(data, status, xhr) {
@@ -135,6 +136,7 @@
 				fkName : fkName,
 				type : type,
 				templateName : templateName,
+				onLoadForm : onLoadForm,
 				data : data,
 				saveSuccessFunction : saveSuccessFunction,
 				url : url
@@ -239,6 +241,7 @@
 			datatableName : currentTableDataInfo.datatableName,
 			datatableUrl : currentTableDataInfo.url,
 			templateName : currentTableDataInfo.templateName,
+			onLoadForm : currentTableDataInfo.onLoadForm,
 			saveSuccessFunction : currentTableDataInfo.saveSuccessFunction,
 			columnHeaders : currentTableDataInfo.data.columnHeaders,
 			fkName : currentTableDataInfo.fkName,
@@ -373,6 +376,7 @@
 			datatableName : currentTableDataInfo.datatableName,
 			datatableUrl : currentTableDataInfo.url,
 			templateName : currentTableDataInfo.templateName,
+			onLoadForm : currentTableDataInfo.onLoadForm,
 			saveSuccessFunction : currentTableDataInfo.saveSuccessFunction,
 			columnHeaders : currentTableDataInfo.data.columnHeaders,
 			fkName : currentTableDataInfo.fkName
@@ -381,11 +385,11 @@
 	};
 
 	var editPopupDialog = function(getUrl, postUrl, submitType, titleCode,
-			templateName, saveSuccessFunction, fkName) {
+			templateName, onLoadForm, saveSuccessFunction, fkName) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
 			fillPopupDialogData(data, postUrl, submitType, titleCode,
-					templateName, saveSuccessFunction, fkName);
+					templateName, onLoadForm, saveSuccessFunction, fkName);
 		};
 
 		executeAjaxRequest(getUrl, "GET", "", successFunction,
@@ -393,7 +397,7 @@
 	}
 
 	var fillPopupDialogData = function(data, postUrl, submitType, titleCode,
-			templateName, saveSuccessFunction, fkName) {
+			templateName, onLoadForm, saveSuccessFunction, fkName) {
 
 		var getFormHtml = function(html) {
 			var formHtml = '<form id="entityform"><div id="formerrors"></div>';
@@ -443,6 +447,7 @@
 					crudObject.displayMode = "update";
 					crudObject.data = data;
 					html = $("#" + templateName).render(crudObject);
+
 				} else
 					html = getDefaultTemplateHtml(data, fkName, "update");
 
@@ -455,8 +460,11 @@
 					changeYear : true,
 					dateFormat : custom.datePickerDateFormat
 				});
+				// if entered, execute onLoadForm script defined for a template
+				if (templateName && onLoadForm) eval(onLoadForm);
 			}
 		}).dialog('open');
+
 	}
 
 	var deletePopupDialog = function(deleteUrl, successFunction) {
@@ -672,16 +680,17 @@
 			selectedVal = ' selected="selected" '
 		else
 			selectedVal = "";
-		selectHtml += '<option value=""' + selectedVal + '></option>';
+		selectHtml += '<option I18NValue="" value=""' + selectedVal
+				+ '></option>';
 
 		for ( var i in columnValues) {
 			if (colVal == columnValues[i].id)
 				selectedVal = ' selected="selected" '
 			else
 				selectedVal = "";
-			selectHtml += '<option value="' + columnValues[i].id + '"'
-					+ selectedVal + '>' + doI18N(columnValues[i].value)
-					+ '</option>';
+			selectHtml += '<option I18NValue="' + columnValues[i].value
+					+ '" value="' + columnValues[i].id + '"' + selectedVal
+					+ '>' + doI18N(columnValues[i].value) + '</option>';
 		}
 
 		selectHtml += '</select>';
@@ -874,8 +883,8 @@
 					editPopupDialog(params.datatableUrl, params.datatableUrl,
 							'PUT', doI18N("Edit") + " "
 									+ doI18N(params.datatableName),
-							params.templateName, params.saveSuccessFunction,
-							params.fkName);
+							params.templateName, params.onLoadForm,
+							params.saveSuccessFunction, params.fkName);
 					e.preventDefault();
 				});
 		$("#delete" + datatableNameUnderscore).button({
@@ -899,8 +908,8 @@
 					fillPopupDialogData(newData, params.datatableUrl, 'POST',
 							doI18N("Create") + " "
 									+ doI18N(params.datatableName),
-							params.templateName, params.saveSuccessFunction,
-							params.fkName);
+							params.templateName, params.onLoadForm,
+							params.saveSuccessFunction, params.fkName);
 					e.preventDefault();
 				});
 	}
@@ -930,8 +939,8 @@
 					fillPopupDialogData(newData, params.datatableUrl, 'POST',
 							doI18N("Create") + " "
 									+ doI18N(params.datatableName),
-							params.templateName, params.saveSuccessFunction,
-							params.fkName);
+							params.templateName, params.onLoadForm,
+							params.saveSuccessFunction, params.fkName);
 					e.preventDefault();
 				});
 
@@ -961,7 +970,7 @@
 					function(e) {
 						editPopupDialog(fullUrl, fullUrl, 'PUT', doI18N("Edit")
 								+ " " + doI18N(params.datatableName),
-								params.templateName,
+								params.templateName, params.onLoadForm,
 								params.saveSuccessFunction, params.fkName);
 						e.preventDefault();
 					});
@@ -1123,12 +1132,13 @@
 	};
 
 	var formErrorFunction = function(jqXHR, textStatus, errorThrown) {
-		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate",
+				"#formerrors");
 	};
-	
+
 	var handleXhrError = function(jqXHR, textStatus, errorThrown,
 			templateSelector, placeholderDiv) {
-		
+
 		if (jqXHR.status === 0) {
 			alert('No connection. Verify application is running.');
 		} else if (jqXHR.status == 401) {
@@ -1151,21 +1161,23 @@
 
 			var jsonErrors = JSON.parse(jqXHR.responseText);
 			var valErrors = jsonErrors.errors;
-			
+
 			var errorArray = new Array();
 			var arrayIndex = 0;
 			$.each(valErrors, function() {
 				var fieldId = '#' + spaceToUnderscore(this.parameterName);
 				$(fieldId).addClass("ui-state-error");
 
-				if (arrayIndex == 0) $(fieldId).focus();
-				
+				if (arrayIndex == 0)
+					$(fieldId).focus();
+
 				var errorObj = new Object();
-				errorObj.message = doI18N(this.userMessageGlobalisationCode) + " - " + doI18N(this.parameterName);
+				errorObj.message = doI18N(this.userMessageGlobalisationCode)
+						+ " - " + doI18N(this.parameterName);
 				errorArray[arrayIndex] = errorObj;
 				arrayIndex++
 			});
-			
+
 			var templateErrorObj = new Object();
 			templateErrorObj.title = doI18N('error.msg.header');
 			templateErrorObj.errors = errorArray;
