@@ -2528,6 +2528,78 @@ $(document).ready(function() {
 
 <script id="groupAccountSummariesTemplate" type="text/x-jquery-tmpl">
 <p><b>{{=$ctx.doI18N("heading.group.account.account.overview")}}</b></p>
+
+{{#if $ctx.numberGreaterThanZero(anyIndividualLoanCount)}}
+
+<p><b>{{=$ctx.doI18N("heading.group.account.individual.loanaccount.overview")}}</b></p>
+{{#if $ctx.numberGreaterThanZero(pendingApprovalIndividualLoanCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.group.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalIndividualLoanCount)}}):</span>
+	<span class="rowvalue">
+		<ul>
+		{{#each pendingApprovalIndividualLoans}}
+			<li class="loanaccount">
+				<a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
+				<a class="toggleMemberLoanDetails" href='#' onclick="return false;">{{=$ctx.doI18N("label.group.toggle.member.loan.details")}}</a>
+				<div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
+			</li>
+		{{/each}}
+		</ul>
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(awaitingDisbursalIndividualLoanCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.group.account.pending.disbursal.loans")}} ({{=$ctx.number(awaitingDisbursalIndividualLoanCount)}}):</span>
+	<span class="rowvalue">
+	<ul>
+		{{#each awaitingDisbursalIndividualLoans}}
+			<li class="loanaccount">
+				<a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
+				<a class="toggleMemberLoanDetails" href='#' onclick="return false;">{{=$ctx.doI18N("label.group.toggle.member.loan.details")}}</a>
+				<div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
+			</li>
+		{{/each}}
+		</ul>
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(activeIndividualLoanCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.group.account.active.loans")}} ({{=$ctx.number(activeIndividualLoanCount)}}):</span>
+	<span class="rowvalue">
+	<ul>
+		{{#each openIndividualLoans}}
+			<li class="loanaccount">
+				<a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
+				<a class="toggleMemberLoanDetails" href='#' onclick="return false;">{{=$ctx.doI18N("label.group.toggle.member.loan.details")}}</a>
+				<div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
+			</li>
+		{{/each}}
+	</ul>
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(closedIndividualLoanCount)}}
+<div class="row">
+	<div class="longrowlabel">{{=$ctx.doI18N("label.group.account.closed.loans")}} ({{=$ctx.number(closedIndividualLoanCount)}}):</div>
+	<div class="rowvalue">
+	{{#each closedIndividualLoans}}
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=clientName}}, {{=productName}}: &#35;{{=id}}</a></span>
+	{{/each}}
+	</div>
+</div>
+{{/if}}
+
+{{#else}}
+<div>
+	{{=$ctx.doI18N("label.group.account.no.individual.loans.exist")}}
+</div>
+{{/if}}
+
 {{#if $ctx.numberGreaterThanZero(anyLoanCount)}}
 
 <p><b>{{=$ctx.doI18N("heading.group.account.loanaccount.overview")}}</b></p>
@@ -2580,6 +2652,72 @@ $(document).ready(function() {
 	{{=$ctx.doI18N("label.client.account.no.loans.exist")}}
 </div>
 {{/if}}
+</script>
+
+<script id="memberLoanDetailsPartialTemplate" type="text/x-jquery-tmpl">
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.name")}}</span>
+		<span class="rowvalue">{{=clientName}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.status")}}</span>
+		<span class="rowvalue">{{=$ctx.doI18N(status.code)}} ({{=$ctx.doI18N("label.client.account.loan.status.since")}} {{=$ctx.globalDate(lifeCycleStatusDate)}})
+		</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.product")}}</span>
+		<span class="rowvalue">{{=loanProductName}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.externalid")}}</span>
+		<span class="rowvalue">{{=externalId}}</span>
+	</div>
+	<br/>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
+		<span class="rowvalue">{{=currency.name}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.principal")}}</span>
+		<span class="rowvalue">{{=$ctx.moneyFormatted(currency, principal)}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.repayments")}}</span>
+		<span class="rowvalue">{{=numberOfRepayments}} every {{=repaymentEvery}}&nbsp;{{=repaymentFrequencyType.value}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.amortization")}}</span>
+		<span class="rowvalue">{{=amortizationType.value}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.interest")}}</span>
+		<span class="rowvalue">{{=$ctx.decimal(annualInterestRate, 4)}}% per annum ({{=$ctx.decimal(interestRatePerPeriod, 4)}}%&nbsp; {{=interestRateFrequencyType.value}}) - {{=interestType.value}}</span>
+	</div>
+	<div class="row">
+		{{#if permissions.pendingApproval}}
+			{{#if $ctx.showTask("APPROVELOAN")}}
+			<button id="approvebtn{{=$parent.parent.data.id}}" class="approveloan">Approve</button>
+			{{/if}}
+			{{#if $ctx.showTask("DELETELOAN")}}
+			<button id="deletebtn{{=$parent.parent.data.id}}" class="deleteloan">Delete</button>
+			{{/if}}
+		{{/if}}
+		{{#if permissions.undoApprovalAllowed}}
+			{{#if $ctx.showTask("UNDOLOANAPPROVAL")}}
+			<button id="undoapprovebtn{{=$parent.parent.data.id}}" class="undoapproveloan">Undo Approval</button>
+			{{/if}}
+		{{/if}}
+		{{#if permissions.disbursalAllowed}}
+			{{#if $ctx.showTask("DISBURSELOAN")}}
+			<button id="disbursebtn{{=$parent.parent.data.id}}" class="disburseloan">Disburse</button>
+			{{/if}}
+		{{/if}}
+		{{#if permissions.undoDisbursalAllowed}}
+			{{#if $ctx.showTask("UNDOLOANDISBURSAL")}}
+			<button id="undodisbursalbtn{{=$parent.parent.data.id}}" class="undodisbursalloan">Undo Disbursal</button>
+			{{/if}}
+		{{/if}}
+	</div>
 </script>
 
 <script id="depositAccountDataTabTemplate" type="text/x-jquery-tmpl">

@@ -1985,10 +1985,103 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	// function to retrieve and display group loan summary information in it placeholder
 	function refreshGroupLoanSummaryInfo(groupUrl) {
 		var successFunction =  function(data, textStatus, jqXHR) {
-				  			var tableHtml = $("#groupAccountSummariesTemplate").render(data);
-				  			$("#groupaccountssummary").html(tableHtml);
-			  			}
+  			var tableHtml = $("#groupAccountSummariesTemplate").render(data);
+  			$("#groupaccountssummary").html(tableHtml);
+
+			$('.toggleMemberLoanDetails').click(function(e){
+				var memberLoanDetailsElement = $(this).next(".memberLoanDetails"),
+					loanId = memberLoanDetailsElement.attr("id").replace("memberLoanDetails",""),
+					showMemberLoanDetailsSuccess = function(data, textStatus, jqXHR){
+						var memberLoanDetailsHtml = $("#memberLoanDetailsPartialTemplate").render(data),
+			        		offsetToSubmittedDate = data.convenienceData.maxSubmittedOnOffsetFromToday,
+	        				offsetToApprovalDate = data.convenienceData.maxApprovedOnOffsetFromToday,
+	        				offsetToDisbursalDate = data.convenienceData.maxDisbursedOnOffsetFromToday,
+	        				maxOffset = 0;
+						
+						memberLoanDetailsElement.html(memberLoanDetailsHtml);
+						memberLoanDetailsElement.show();
+						
+						$('.approveloan').button().click(function(e) {
+							var linkId = this.id;
+							var loanId = linkId.replace("approvebtn", "");
+							var postUrl = 'loans/' + loanId + '?command=approve';
+							var templateSelector = "#stateTransitionLoanFormTemplate";
+							var width = 500; 
+							var height = 350;
+							var defaultOffset = offsetToSubmittedDate;
+							popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.approve.loan', templateSelector, width, height, reloadGroupLoanSummarySaveSuccessFunction(groupUrl),  offsetToSubmittedDate, defaultOffset, maxOffset)
+						    e.preventDefault();
+						});
+						$('button.approveloan span').text(doI18N('dialog.button.approve.loan'));
+							
+						$('.undoapproveloan').button().click(function(e) {
+							var linkId = this.id;
+							var loanId = linkId.replace("undoapprovebtn", "");
+							var postUrl = 'loans/' + loanId + '?command=undoapproval';
+							var templateSelector = "#undoStateTransitionLoanFormTemplate";
+							var width = 500; 
+							var height = 350;
+							var defaultOffset = offsetToSubmittedDate;
+							popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.loan.approval', templateSelector, width, height, reloadGroupLoanSummarySaveSuccessFunction(groupUrl), offsetToSubmittedDate, defaultOffset, maxOffset)
+						    e.preventDefault();
+						});
+						$('button.undoapproveloan span').text(doI18N('dialog.button.undo.loan.approval'));
+							
+						$('.deleteloan').button().click(function(e) {
+							var linkId = this.id;
+							var loanId = linkId.replace("deletebtn", "");
+							var url = 'loans/' + loanId;
+							var width = 400; 
+							var height = 225;
+													
+							popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, reloadGroupLoanSummarySaveSuccessFunction(groupUrl));
+						    e.preventDefault();
+						});
+						$('button.deleteloan span').text(doI18N('dialog.button.delete.loan'));
+							
+						$('.disburseloan').button().click(function(e) {
+							var linkId = this.id;
+							var loanId = linkId.replace("disbursebtn", "");
+							var postUrl = 'loans/' + loanId + '?command=disburse';
+							var templateSelector = "#stateTransitionLoanFormTemplate";
+							var width = 500; 
+							var height = 350;
+							var defaultOffset = offsetToApprovalDate;
+							popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.disburse.loan', templateSelector, width, height, reloadGroupLoanSummarySaveSuccessFunction(groupUrl),  offsetToSubmittedDate, defaultOffset, maxOffset)
+						    e.preventDefault();
+						});
+						$('button.disburseloan span').text(doI18N('dialog.button.disburse.loan'));
+
+						$('.undodisbursalloan').button().click(function(e) {
+							var linkId = this.id;
+							var loanId = linkId.replace("undodisbursalbtn", "");
+							var postUrl = 'loans/' + loanId + '?command=undodisbursal';
+							var templateSelector = "#undoStateTransitionLoanFormTemplate";
+							var width = 500; 
+							var height = 350;
+							var defaultOffset = offsetToApprovalDate;
+							popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.loan.disbursal', templateSelector, width, height, reloadGroupLoanSummarySaveSuccessFunction(groupUrl),  offsetToSubmittedDate, defaultOffset, maxOffset)
+						    e.preventDefault();
+						});
+						$('button.undodisbursalloan span').text(doI18N('dialog.button.undo.loan.disbursal'));
+					};
+
+					if (memberLoanDetailsElement.children().length > 0 ){
+						memberLoanDetailsElement.toggle();
+					} else {
+						executeAjaxRequest('loans/' + loanId + '?associations=permissions', 'GET', "", showMemberLoanDetailsSuccess, formErrorFunction);
+					}
+					e.preventDefault();
+			});
+		}
   		executeAjaxRequest(groupUrl + '/loans', 'GET', "", successFunction, formErrorFunction);	  	
+	}
+
+	function reloadGroupLoanSummarySaveSuccessFunction(groupUrl){
+		return function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			refreshGroupLoanSummaryInfo(groupUrl);
+		};
 	}
 
 	function refreshNoteWidget(clientUrl) {
