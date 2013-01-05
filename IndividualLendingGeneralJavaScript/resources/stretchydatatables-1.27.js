@@ -64,13 +64,15 @@
 	};
 
 	$.stretchyDataTables.getDataTableFieldEntry = function(data, columnName,
-			displayMode) {
-		return getDataTableFieldEntry(data, columnName, displayMode);
+			displayMode, updateColumnTagExtra) {
+		return getDataTableFieldEntry(data, columnName, displayMode,
+				updateColumnTagExtra);
 	}
 
 	$.stretchyDataTables.getDataTableFieldValueEntry = function(data,
-			columnName, displayMode) {
-		return getDataTableFieldValueEntry(data, columnName, displayMode);
+			columnName, displayMode, updateColumnTagExtra) {
+		return getDataTableFieldValueEntry(data, columnName, displayMode,
+				updateColumnTagExtra);
 	}
 
 	function displayAdditionalInfo(params) {
@@ -461,7 +463,8 @@
 					dateFormat : custom.datePickerDateFormat
 				});
 				// if entered, execute onLoadForm script defined for a template
-				if (templateName && onLoadForm) eval(onLoadForm);
+				if (templateName && onLoadForm)
+					eval(onLoadForm);
 			}
 		}).dialog('open');
 
@@ -511,7 +514,8 @@
 	}
 	// end popup code
 
-	var getDataTableFieldEntry = function(data, columnName, displayMode) {
+	var getDataTableFieldEntry = function(data, columnName, displayMode,
+			updateColumnTagExtra) {
 
 		try {
 			var html = '<td valign="top" width="40%">'
@@ -528,8 +532,8 @@
 
 			html += '<b>' + doI18N(columnName) + ':</b></td>';
 			html += '<td valign="top" width="60%">'
-					+ getDataTableFieldValueEntry(data, columnName, displayMode)
-					+ '</td>';
+					+ getDataTableFieldValueEntry(data, columnName,
+							displayMode, updateColumnTagExtra) + '</td>';
 			return html;
 		} catch (e) {
 			var errorMsg = "System Error: stretchydatatables/getDataTableFieldEntry - columnName: "
@@ -541,7 +545,8 @@
 		}
 	}
 
-	var getDataTableFieldValueEntry = function(data, columnName, displayMode) {
+	var getDataTableFieldValueEntry = function(data, columnName, displayMode,
+			updateColumnTagExtra) {
 
 		try {
 			if (displayMode.toUpperCase() == "VIEW") {
@@ -558,7 +563,7 @@
 
 				var displayVal = getColumnDisplayValue(
 						data.columnHeaders[columnNameIndex], colVal,
-						displayMode);
+						displayMode, updateColumnTagExtra);
 				return displayVal;
 			} else
 				return "Column Name Not Found: " + columnName;
@@ -574,7 +579,8 @@
 	}
 
 	// functions that generate the html to display or edit column values
-	var getColumnDisplayValue = function(columnHeader, colVal, displayMode) {
+	var getColumnDisplayValue = function(columnHeader, colVal, displayMode,
+			updateColumnTagExtra) {
 
 		if (displayMode.toUpperCase() == "VIEW") {
 			if (colVal == null)
@@ -618,30 +624,33 @@
 
 			switch (columnHeader.columnDisplayType) {
 			case "STRING":
-				return getTextHTML(colNameUnderscore, displayVal, colLength);
+				return getTextHTML(colNameUnderscore, displayVal, colLength,
+						updateColumnTagExtra);
 			case "INTEGER":
 				if (displayVal > "")
 					displayVal = globalNumber(parseInt(displayVal));
-				return getTextHTML(colNameUnderscore, displayVal, 20);
+				return getTextHTML(colNameUnderscore, displayVal, 20,
+						updateColumnTagExtra);
 			case "DATE":
 				if (displayVal > "")
 					displayVal = globalDateAsISOString(displayVal);
-				return getDateHTML(colNameUnderscore, displayVal, 20);
+				return getDateHTML(colNameUnderscore, displayVal, 20,
+						updateColumnTagExtra);
 			case "DECIMAL":
 				if (displayVal > "")
 					displayVal = globalDecimal(parseFloat(displayVal),
 							sdt.defaultDecimalPlaces);
-				return getTextHTML(colNameUnderscore, displayVal, 20);
+				return getTextHTML(colNameUnderscore, displayVal, 20,
+						updateColumnTagExtra);
 			case "CODELOOKUP":
 				return getSelectHTML(colNameUnderscore,
-						columnHeader.columnValues, colVal);
+						columnHeader.columnValues, colVal, updateColumnTagExtra);
 			case "CODEVALUE":
 				return getSelectHTMLValue(colNameUnderscore,
-						columnHeader.columnValues, colVal);
+						columnHeader.columnValues, colVal, updateColumnTagExtra);
 			case "TEXT":
-				return '<textarea id="' + colNameUnderscore + '" name="'
-						+ colNameUnderscore + '" rows="4" cols="40">'
-						+ displayVal + '</textarea>';
+				return getTextareaHTML(colNameUnderscore, displayVal,
+						updateColumnTagExtra);
 			default:
 				invalidColumnTypeMessage(columnHeader.columnName,
 						columnHeader.columnDisplayType);
@@ -671,10 +680,12 @@
 		return "Err";
 	}
 
-	var getSelectHTML = function(colName, columnValues, colVal) {
+	var getSelectHTML = function(colName, columnValues, colVal,
+			updateColumnTagExtra) {
 
 		var selectedVal = "";
-		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
+		var selectHtml = '<select id="' + colName + '" name="' + colName + '"'
+				+ updateColumnTagExtra + '>';
 
 		if ((colVal == null) || (colVal == ""))
 			selectedVal = ' selected="selected" '
@@ -698,10 +709,12 @@
 		return selectHtml;
 	}
 
-	var getSelectHTMLValue = function(colName, columnValues, colVal) {
+	var getSelectHTMLValue = function(colName, columnValues, colVal,
+			updateColumnTagExtra) {
 
 		var selectedVal = "";
-		var selectHtml = '<select id="' + colName + '" name="' + colName + '">';
+		var selectHtml = '<select id="' + colName + '" name="' + colName + '"'
+				+ updateColumnTagExtra + '>';
 
 		if ((colVal == null) || (colVal == ""))
 			selectedVal = ' selected="selected" '
@@ -724,15 +737,23 @@
 		return selectHtml;
 	}
 
-	var getDateHTML = function(colName, colVal, textSize) {
+	var getDateHTML = function(colName, colVal, textSize, updateColumnTagExtra) {
 		return '<input id="' + colName + '" name="' + colName + '" size="'
 				+ textSize + '" class="datepickerfield" '
-				+ setValueAttr(colVal) + ' type="text"/>';
+				+ setValueAttr(colVal) + ' type="text" ' + updateColumnTagExtra
+				+ '/>';
 	}
 
-	var getTextHTML = function(colName, colVal, textSize) {
+	var getTextHTML = function(colName, colVal, textSize, updateColumnTagExtra) {
 		return '<input id="' + colName + '" name="' + colName + '" size="'
-				+ textSize + '" ' + setValueAttr(colVal) + ' type="text"/>';
+				+ textSize + '" ' + setValueAttr(colVal) + ' type="text" '
+				+ updateColumnTagExtra + '/>';
+	}
+
+	var getTextareaHTML = function(colName, colVal, updateColumnTagExtra) {
+		return '<textarea id="' + colName + '" name="' + colName
+				+ '" rows="4" cols="40" ' + updateColumnTagExtra + '>' + colVal
+				+ '</textarea>';
 	}
 
 	var setValueAttr = function(str) {

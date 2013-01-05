@@ -8,6 +8,7 @@ custom.datatablePresentation["M_CLIENT"].renderInfo.push({
 	templateName : "ceda_client_additional_data_template",
 	itemDiv : "ceda_client_additional_data_tab",
 	itemDivLabel : "client.additional.data.tab.name",
+	onLoadForm : "CEDA_Functions.onLoadForm()",
 	onLoadForm : "CEDA_Functions.onLoadForm()"
 });
 
@@ -55,7 +56,8 @@ CEDA_Functions.onChangeSelfEmployed = function() {
 
 CEDA_Functions.onChangeLoansOther = function() {
 
-	var tmp = $("#YesNo_cd_Loans_with_other_institutions option:selected").attr("I18NValue");
+	var tmp = $("#YesNo_cd_Loans_with_other_institutions option:selected")
+			.attr("I18NValue");
 	var disabled = true;
 	if (tmp == "option.Yes")
 		disabled = false;
