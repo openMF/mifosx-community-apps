@@ -4376,8 +4376,8 @@ function viewAuditEntry(auditId) {
 		
 		dialogDiv.dialog({
 		  		title: doI18N("view.audit.entry"), 
-		  		width: 1200, 
-		  		height: 500, 
+				width : custom.fitPopupWidth(),
+				height : custom.fitPopupHeight(),
 		  		modal: true,
 		  		buttons: buttonsOpts,
 	  			close: function() {

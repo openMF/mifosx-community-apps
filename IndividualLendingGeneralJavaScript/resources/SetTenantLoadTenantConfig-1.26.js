@@ -21,6 +21,10 @@ custom = {
 	// default variable for identifying excluded datatables and datatables to be
 	// render in a non-default way
 	datatablePresentation : "",
+	
+	//fit popups to height & width of current window
+	fitPopupWidth: "",
+	fitPopupHeight: ""
 };
 
 custom.showFirstPage = function() {
@@ -343,6 +347,16 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 
 	executeAjaxRequest(url, 'GET', "", successFunction, generalErrorFunction);
 }
+
+custom.fitPopupWidth = function() {
+	return $(window).width() - 20;
+}
+custom.fitPopupHeight = function() {
+	return $(window).height() - 20;
+}
+
+
+
 
 // establish the tenant and include any tenant specific javascript configuration
 // file
