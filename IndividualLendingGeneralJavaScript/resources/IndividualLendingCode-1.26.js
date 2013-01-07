@@ -1040,10 +1040,11 @@ function setAccountSettingsContent(divName) {
  * resourceId:      	Individual id of client of office resource.
  * commandId:	Id of the maker checker entry on table
  */
-function viewMakerCheckerEntry(operationType, resource, resourceId, commandId) {
+function viewMakerCheckerEntry(operationType, resource, resourceId, commandId, entityHref) {
 
 	var getUrl = resource + '/';
 	
+	// TODO - KW - want to use generic ui now instead of specific formTemplate for each entity.
 	var templateSelector = "#clientFormTemplate";
 	var width = 600; 
 	var height = 350;
@@ -1056,23 +1057,10 @@ function viewMakerCheckerEntry(operationType, resource, resourceId, commandId) {
 		break;
 	}
 	
-	switch (operationType) {
-	case "CREATE":
-		getUrl = getUrl + "template?commandId=" + commandId;
-		break;
-	case "UPDATE":
-		getUrl = getUrl + resourceId + "?template=true&commandId=" + commandId;
-		break;
-	case "UPDATEPERMISSIONS":
-		getUrl = getUrl + resourceId + "/permissions?template=true&commandId=" + commandId;
-		templateSelector = "#rolePermissionsFormTemplate"
-		width=1000;
-		height=550;
-		break;
-	case "DELETE":
-		getUrl = getUrl + resourceId + "?template=true&commandId=" + commandId;
-		break;
-	}
+	// Note: on creates the 'get' url should have /template e.g. /clients/template
+	//       on updates/deletes the 'get' url should have specific resource /clients/1?template=true
+	var resourceHref = entityHref.substring(1);
+	getUrl = resourceHref + "?commandId=" + commandId;
 	
 	popupDialogWithReadOnlyFormView(getUrl, "dialog.title.proposedchanges", templateSelector, width, height);
 }

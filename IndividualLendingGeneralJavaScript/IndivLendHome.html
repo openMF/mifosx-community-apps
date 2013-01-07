@@ -121,17 +121,17 @@ $(document).ready(function() {
 {{#each crudRows}}
 <tr>
 	<td>{{=id}}</td>
-	<td>{{=apiOperation}} {{=resource}}</td>
+	<td>{{=actionName}} {{=entityName}}</td>
 	<td>{{=$ctx.globalDate(madeOnDate)}}</td>
 	<td>
 		{{#if resourceId}}
-		<a id='editmakerchecker{{=id}}' href='#' style='margin-right: 5px;' onclick="viewMakerCheckerEntry('{{=apiOperation}}', '{{=resource}}', {{=resourceId}} ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.view")}}</a>
+		<a id='editmakerchecker{{=id}}' href='#' style='margin-right: 5px;' onclick="viewMakerCheckerEntry('{{=actionName}}', '{{=entityName}}', {{=entityId}} ,{{=id}}, '{{=entityHref}}'); return false;">{{=$ctx.doI18N("link.action.view")}}</a>
 		<a id='deletemakerchecker{{=id}}' class='deletemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
-		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;' onclick="approveMakerCheckerEntry('{{=apiOperation}}', '{{=resource}}', {{=resourceId}} ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.approve")}}</a>
+		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;' onclick="approveMakerCheckerEntry('{{=actionName}}', '{{=entityName}}', {{=resourceId}} ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.approve")}}</a>
 		{{else}}
-		<a id='editmakerchecker{{=id}}' href='#' style='margin-right: 5px;' onclick="viewMakerCheckerEntry('{{=apiOperation}}', '{{=resource}}', null ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.view")}}</a>
+		<a id='editmakerchecker{{=id}}' href='#' style='margin-right: 5px;' onclick="viewMakerCheckerEntry('{{=actionName}}', '{{=entityName}}', null ,{{=id}}, '{{=entityHref}}'); return false;">{{=$ctx.doI18N("link.action.view")}}</a>
 		<a id='deletemakerchecker{{=id}}' class='deletemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
-		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;' onclick="approveMakerCheckerEntry('{{=apiOperation}}', '{{=resource}}', null ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.approve")}}</a>
+		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;' onclick="approveMakerCheckerEntry('{{=actionName}}', '{{=entityName}}', null ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.approve")}}</a>
 		{{/if}}
 		
 	</td>
