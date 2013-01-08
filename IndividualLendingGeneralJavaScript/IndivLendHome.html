@@ -4939,7 +4939,39 @@ $(document).ready(function() {
 </form>
 </script>
 
-<!-- ISMAIL -->
+<script id="configurationListTemplate" type="text/x-jquery-tmpl">
+<table id='configurationstable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.enabled")}}</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+{{#each crudRows}}
+<tr>
+	<td>{{=name}}</td>
+	<td>
+	{{#if enabled}}
+		{{=$ctx.doI18N("boolean.true")}}
+	{{#else}}
+		{{=$ctx.doI18N("boolean.false")}}
+	{{/if}}
+	</td>
+	<td>
+		{{#if enabled}}
+			<a id='disableconfiguration-{{=name}}' class='disableconfiguration' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.disable")}}</a>
+		{{#else}}
+			<a id='enableconfiguration-{{=name}}' class='enableconfiguration' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.enable")}}</a>
+		{{/if}}
+	</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
 <script id="codeListTemplate" type="text/x-jquery-tmpl">
 <table id='codestable' width='100%'>
 	<thead>

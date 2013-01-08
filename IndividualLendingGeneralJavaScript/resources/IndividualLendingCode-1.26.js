@@ -29,14 +29,18 @@ crudData = {
 				dialogWidth: 600,
 				dialogHeight: 275
 			},
-			
 		code: {
 				editTemplateNeeded: false,
 				refreshListNeeded: true,
 				dialogWidth: 600,
 				dialogHeight: 275
 			},			
-			
+	     configuration: {
+				editTemplateNeeded: false,
+				refreshListNeeded: true,
+				dialogWidth: 600,
+				dialogHeight: 275
+		 },	
 		employee: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
@@ -437,7 +441,7 @@ function setSysAdminContent(divName) {
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("VIEWDATATABLES") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listusers">' + doI18N("administration.link.view.datatables") + '</a>';
+		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listdatatables">' + doI18N("administration.link.view.datatables") + '</a>';
 
 	if (jQuery.MifosXUI.showTask("REGISTERDATATABLE") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + registerDatatableUrl + '" id="registerdatatable">' + doI18N("administration.link.register.datatable") + '</a>';
@@ -453,7 +457,10 @@ function setSysAdminContent(divName) {
 
 	if (jQuery.MifosXUI.showTask("ManagePermissions") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
-
+	
+	if (jQuery.MifosXUI.showTask("ManagePermissions") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'configuration'" + ');return false;" id="viewconfiguration">' + doI18N("administration.link.view.configuration") + '</a>';
+	
 	if (jQuery.MifosXUI.showTask("ViewAudits") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="auditSearch();return false;" id="viewaudits">' + doI18N("administration.link.view.audits") + '</a>';
 
@@ -3331,11 +3338,48 @@ function refreshLoanDocuments(loanId) {
 
 				var crudObject = new Object();
 				crudObject.crudRows = data;
+				
+				if (tableName == "configuration") {
+					crudObject.crudRows = data.globalConfiguration;
+				}
+				
 				var html = $("#" + tableName + "ListTemplate").render(crudObject);
 				$("#listplaceholder").html(html);  
 
 				if (tableName == "permission") jQuery.MifosXPermissions.addViewPermissionsTabs(data, "#permissionsDiv");
 
+				$("a.enableconfiguration").click( function(e) {
+					
+					var linkId = this.id;
+					var configName = linkId.replace("enableconfiguration-", "");
+					var resourceUrl = "configurations?" + configName + "=true";
+					
+					var width = 400; 
+					var height = 150;
+					var saveSuccessFunction = function(data, textStatus, jqXHR) {
+					  	$("#dialog-form").dialog("close");
+					  	refreshTableView(tableName);
+					};
+					popupConfirmationDialogAndPost(resourceUrl, 'PUT', 'dialog.title.confirmation.required', width, height, configName, saveSuccessFunction);
+				
+					e.preventDefault();
+				});
+				
+				$("a.disableconfiguration").click( function(e) {
+					var linkId = this.id;
+					var configName = linkId.replace("disableconfiguration-", "");
+					var resourceUrl = "configurations?" + configName + "=false";
+					
+					var width = 400; 
+					var height = 150;
+					var saveSuccessFunction = function(data, textStatus, jqXHR) {
+					  	$("#dialog-form").dialog("close");
+					  	refreshTableView(tableName);
+					};
+					popupConfirmationDialogAndPost(resourceUrl, 'PUT', 'dialog.title.confirmation.required', width, height, configName, saveSuccessFunction);
+				
+					e.preventDefault();
+				});
 				
 				$("a.edit" + tableName).click( function(e) {
 					var linkId = this.id;
