@@ -458,7 +458,7 @@ function setSysAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("ManagePermissions") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + maintainMakerCheckerUrl + '" id="maintainMC">' + doI18N("administration.link.maintain.makerCheckerable") + '</a>';
 	
-	if (jQuery.MifosXUI.showTask("ManagePermissions") == true)
+	if (jQuery.MifosXUI.showTask("ViewConfiguration") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'configuration'" + ');return false;" id="viewconfiguration">' + doI18N("administration.link.view.configuration") + '</a>';
 	
 	if (jQuery.MifosXUI.showTask("ViewAudits") == true)
