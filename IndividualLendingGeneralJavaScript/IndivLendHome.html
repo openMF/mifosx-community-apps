@@ -6236,7 +6236,7 @@ function showLockinOptions(){
 		<tr>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Employed", displayMode, 'onChange="CEDA_Functions.onChangeEmployed()"')!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Employed", displayMode, 'onChange="CEDA_Functions.onChangeCADEmployed()"')!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "FieldOfEmployment_cd_Field of employment", displayMode)!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "Employer name", displayMode)!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "Number of years", displayMode)!}}</tr>
@@ -6246,7 +6246,7 @@ function showLockinOptions(){
 		  <td width="2%"></td>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Self employed", displayMode, 'onChange="CEDA_Functions.onChangeSelfEmployed()"')!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Self employed", displayMode, 'onChange="CEDA_Functions.onChangeCADSelfEmployed()"')!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "FieldOfEmployment_cd_Field of self-employment", displayMode)!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "Business address", displayMode)!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "Number of employees", displayMode)!}}</tr>
@@ -6265,7 +6265,7 @@ function showLockinOptions(){
 		<tr>
 		  <td valign="top" width="49%">
 			<table width="100%">
-				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Loans with other institutions", displayMode, 'onChange="CEDA_Functions.onChangeLoansOther()"')!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Loans with other institutions", displayMode, 'onChange="CEDA_Functions.onChangeCADLoansOther()"')!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "From whom", displayMode)!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "Amount", displayMode)!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "Interest rate pa", displayMode)!}}</tr>
@@ -6297,6 +6297,71 @@ function showLockinOptions(){
 			<table width="100%">
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "Last visited by", displayMode)!}}</tr>
 				<tr>{{=$ctx.getDataTableFieldEntry(data, "Last visited on", displayMode)!}}</tr>
+			</table>
+		  </td>
+		</tr>
+	</table>
+
+</script>
+<script id="ceda_loan_additional_data_template" type="text/x-jquery-tmpl">
+
+	<table width="100%">
+		<tr>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "PurposeOfLoan_cd", displayMode)!}}</tr>
+			</table>
+		  </td>
+		  <td width="2%"></td>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "CollateralType_cd", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Collateral notes", displayMode)!}}</tr>
+			</table>
+		  </td>
+		</tr>
+	</table>
+	<hr>
+
+	<table width="100%">
+		<tr>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_Guarantor", displayMode, 'onChange="CEDA_Functions.onChangeLADGuarantor()"')!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Guarantor name", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Guarantor relation", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Guarantor address", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Guarantor telephone number", displayMode)!}}</tr>
+			</table>
+		  </td>
+		  <td width="2%"></td>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr><td></td></tr>
+			</table>
+		  </td>
+		</tr>
+	</table>
+
+</script>
+<script id="ceda_impact_measurement_template" type="text/x-jquery-tmpl">
+
+	<table width="100%">
+		<tr>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_RepaidOnSchedule", displayMode, 'onChange="CEDA_Functions.onChangeIMRepaid()"')!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "ReasonNotRepaidOnSchedule", displayMode)!}}</tr>
+			</table>
+		  </td>
+		  <td width="2%"></td>
+		  <td valign="top" width="49%">
+			<table width="100%">
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "How was Loan Amount Invested", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Additional Income Generated", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Additional Income Used For", displayMode)!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "YesNo_cd_NewJobsCreated", displayMode, 'onChange="CEDA_Functions.onChangeIMJobs()"')!}}</tr>
+				<tr>{{=$ctx.getDataTableFieldEntry(data, "Number of Jobs Created", displayMode)!}}</tr>
 			</table>
 		  </td>
 		</tr>

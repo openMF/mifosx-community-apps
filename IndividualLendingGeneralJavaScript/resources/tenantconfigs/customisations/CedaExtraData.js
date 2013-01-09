@@ -5,25 +5,87 @@ custom.datatablePresentation["M_CLIENT"].renderInfo.push({
 	type : "template",
 	templateName : "ceda_client_additional_data_template",
 	itemDiv : "ceda_client_additional_data_tab",
-	itemDivLabel : "client.additional.data.tab.name",
-	onLoadForm : "CEDA_Functions.onLoadForm()",
-	onLoadForm : "CEDA_Functions.onLoadForm()"
+	itemDivLabel : "client additional data",
+	onLoadForm : "CEDA_Functions.onLoadFormCAD()"
 });
 
+custom.datatablePresentation["M_LOAN"].renderInfo.push({
+	registeredTableName : "loan additional data",
+	type : "template",
+	templateName : "ceda_loan_additional_data_template",
+	itemDiv : "ceda_loan_additional_data_tab",
+	itemDivLabel : "loan additional data",
+	onLoadForm : "CEDA_Functions.onLoadFormLAD()",
+});
+
+custom.datatablePresentation["M_LOAN"].renderInfo.push({
+	registeredTableName : "impact measurement",
+	type : "template",
+	templateName : "ceda_impact_measurement_template",
+	itemDiv : "ceda_impact_measurement_tab",
+	itemDivLabel : "impact measurement",
+	onLoadForm : "CEDA_Functions.onLoadFormIM()",
+});
+
+//Notes: Column Names are used as the html tag id of the input elements
+//Spaces are converted to underscores but other non alphanumeric characters
+//aren't valid for a column name because they are not valid for a html tag id
 CEDA_Functions = {};
 
-CEDA_Functions.onLoadForm = function() {
+CEDA_Functions.onLoadFormLAD = function() {
+	
+	CEDA_Functions.onChangeLADGuarantor();
+}
 
-	CEDA_Functions.onChangeEmployed();
-	CEDA_Functions.onChangeSelfEmployed();
-	CEDA_Functions.onChangeLoansOther();
+CEDA_Functions.onChangeLADGuarantor = function() {
+
+	var tmp = $("#YesNo_cd_Guarantor option:selected").attr("I18NValue");
+	var disabled = true;
+	if (tmp == "option.Yes")
+		disabled = false;
+
+	$("#Guarantor_name").attr('disabled', disabled);
+	$("#Guarantor_relation").attr('disabled', disabled);
+	$("#Guarantor_address").attr('disabled', disabled);
+	$("#Guarantor_telephone_number").attr('disabled', disabled);
+}
+
+CEDA_Functions.onLoadFormIM = function() {
+
+	CEDA_Functions.onChangeIMRepaid();
+	CEDA_Functions.onChangeIMJobs();
+}
+
+CEDA_Functions.onChangeIMRepaid = function() {
+
+	var tmp = $("#YesNo_cd_RepaidOnSchedule option:selected").attr("I18NValue");
+	var disabled = true;
+	if (tmp == "option.No")
+		disabled = false;
+
+	$("#ReasonNotRepaidOnSchedule").attr('disabled', disabled);
+}
+
+CEDA_Functions.onChangeIMJobs = function() {
+
+	var tmp = $("#YesNo_cd_NewJobsCreated option:selected").attr("I18NValue");
+	var disabled = true;
+	if (tmp == "option.Yes")
+		disabled = false;
+
+	$("#Number_of_Jobs_Created").attr('disabled', disabled);
+}
+
+CEDA_Functions.onLoadFormCAD = function() {
+
+	CEDA_Functions.onChangeCADEmployed();
+	CEDA_Functions.onChangeCADSelfEmployed();
+	CEDA_Functions.onChangeCADLoansOther();
 
 	$("#Date_of_Birth").datepicker('option', 'yearRange', "-100:-10");
 }
-// Column Names are used as the html tag id of the input elements
-// Spaces are converted to underscores but other non alphanumeric characters
-// aren't valid for a column name because they are not valid for a html tag id
-CEDA_Functions.onChangeEmployed = function() {
+
+CEDA_Functions.onChangeCADEmployed = function() {
 
 	var tmp = $("#YesNo_cd_Employed option:selected").attr("I18NValue");
 	var disabled = true;
@@ -36,7 +98,7 @@ CEDA_Functions.onChangeEmployed = function() {
 	$("#Monthly_salary").attr('disabled', disabled);
 }
 
-CEDA_Functions.onChangeSelfEmployed = function() {
+CEDA_Functions.onChangeCADSelfEmployed = function() {
 
 	var tmp = $("#YesNo_cd_Self_employed option:selected").attr("I18NValue");
 	var disabled = true;
@@ -54,7 +116,7 @@ CEDA_Functions.onChangeSelfEmployed = function() {
 	$("#YesNo_cd_Bookkeeping").attr('disabled', disabled);
 }
 
-CEDA_Functions.onChangeLoansOther = function() {
+CEDA_Functions.onChangeCADLoansOther = function() {
 
 	var tmp = $("#YesNo_cd_Loans_with_other_institutions option:selected")
 			.attr("I18NValue");
