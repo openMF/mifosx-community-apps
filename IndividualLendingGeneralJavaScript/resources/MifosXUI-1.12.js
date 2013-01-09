@@ -10,34 +10,32 @@
 
 //This does know about Mifos X Permission checking - each piece of functionality needs to be linked to a Mifos X permission
 taskPermissionsMatrix = {
-		CLIENTSEARCH: ["READ_CLIENT", "PORTFOLIO_MANAGEMENT_SUPER_USER"],
+		CLIENTSEARCH: ["READ_CLIENT"],
 
-		CHECKERINBOX: ["READ_MAKERCHECKER"],
+		GROUPSEARCH: ["READ_GROUP"],
 
-		GROUPSEARCH: ["READ_GROUP", "PORTFOLIO_MANAGEMENT_SUPER_USER"],
+		VIEWUSERS: ["READ_USER"],
+		ADDUSER: ["CREATE_USER"],
+		VIEWROLES: ["READ_ROLE"],
+		ADDROLE: ["CREATE_ROLE"],
 
-		VIEWUSERS: ["READ_USER", "USER_ADMINISTRATION_SUPER_USER"],
-		ADDUSER: ["CREATE_USER", "USER_ADMINISTRATION_SUPER_USER"],
-		VIEWROLES: ["READ_ROLE", "USER_ADMINISTRATION_SUPER_USER"],
-		ADDROLE: ["CREATE_ROLE", "USER_ADMINISTRATION_SUPER_USER"],
-
-		VIEWLOANPRODUCTS: ["READ_LOANPRODUCT", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		ADDLOANPRODUCT: ["CREATE_LOANPRODUCT", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		VIEWDEPOSITPRODUCTS: ["READ_DEPOSITPRODUCT", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		ADDDEPOSITPRODUCT: ["CREATE_DEPOSITPRODUCT", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		VIEWSAVINGPRODUCTS: ["READ_SAVINGPRODUCT", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		ADDSAVINGPRODUCT: ["CREATE_SAVINGPRODUCT", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		VIEWFUNDS: ["READ_FUND", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		ADDFUND: ["CREATE_FUND", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		VIEWEMPLOYEES: ["READ_STAFF", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		ADDEMPLOYEE: ["CREATE_STAFF", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		VIEWCHARGES: ["READ_CHARGE", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		ADDCHARGE: ["CREATE_CHARGE", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		CURRENCYCONFIGURATION: ["UPDATE_CURRENCY", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		VIEWOFFICES: ["READ_OFFICE", "ORGANISATION_ADMINISTRATION_SUPER_USER", "PORTFOLIO_MANAGEMENT_SUPER_USER"],
-		ADDOFFICE: ["CREATE_OFFICE", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		VIEWOFFICEMONEYTXNS: ["READ_OFFICETRANSACTION", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
-		ADDOFFICEMONEYTXN: ["CREATE_OFFICETRANSACTION", "ORGANISATION_ADMINISTRATION_SUPER_USER"],
+		VIEWLOANPRODUCTS: ["READ_LOANPRODUCT"],
+		ADDLOANPRODUCT: ["CREATE_LOANPRODUCT"],
+		VIEWDEPOSITPRODUCTS: ["READ_DEPOSITPRODUCT"],
+		ADDDEPOSITPRODUCT: ["CREATE_DEPOSITPRODUCT"],
+		VIEWSAVINGPRODUCTS: ["READ_SAVINGPRODUCT"],
+		ADDSAVINGPRODUCT: ["CREATE_SAVINGPRODUCT"],
+		VIEWFUNDS: ["READ_FUND"],
+		ADDFUND: ["CREATE_FUND"],
+		VIEWEMPLOYEES: ["READ_STAFF"],
+		ADDEMPLOYEE: ["CREATE_STAFF"],
+		VIEWCHARGES: ["READ_CHARGE"],
+		ADDCHARGE: ["CREATE_CHARGE"],
+		CURRENCYCONFIGURATION: ["UPDATE_CURRENCY"],
+		VIEWOFFICES: ["READ_OFFICE"],
+		ADDOFFICE: ["CREATE_OFFICE"],
+		VIEWOFFICEMONEYTXNS: ["READ_OFFICETRANSACTION"],
+		ADDOFFICEMONEYTXN: ["CREATE_OFFICETRANSACTION"],
 		BULKLOANREASSIGNMENT: ["BULKREASSIGN_LOAN"],
 
 		VIEWDATATABLES: ["READ_DATATABLE"],
@@ -63,7 +61,7 @@ taskPermissionsMatrix = {
 		
 		ADDLOANCHARGE: ["CREATE_LOANCHARGE"],
 		
-		ASSIGNLOANOFFICER: ["PORTFOLIO_MANAGEMENT_SUPER_USER"],
+		ASSIGNLOANOFFICER: ["UPDATELOANOFFICER_LOAN"],
 		
 		REJECTLOANAPPLICATION: ["REJECT_LOAN"],
 		LOANAPPLICATIONWITHDRAWN: ["WITHDRAW_LOAN"],
@@ -79,13 +77,13 @@ taskPermissionsMatrix = {
 		WRITEOFFLOAN: ["WRITEOFF_LOAN"],
 		CLOSEASRESCHEDULEDLOAN: ["CLOSEASRESCHEDULED_LOAN"],
 		CLOSELOAN: ["CLOSE_LOAN"],
-		ADDLOANGUARANTOR: ["PORTFOLIO_MANAGEMENT_SUPER_USER"],
-		REMOVELOANGUARANTOR: ["PORTFOLIO_MANAGEMENT_SUPER_USER"],
+		ADDLOANGUARANTOR: [""],
+		REMOVELOANGUARANTOR: [""],
 		
 		POSTINTEREST: ["POSTINTEREST"],
 
-		ADDDEPOSITACCOUNT: ["CREATE_DEPOSITACCOUNT", "PORTFOLIO_MANAGEMENT_SUPER_USER"],
-		ADDSAVINGACCOUNT: ["CREATE_SAVINGACCOUNT", "PORTFOLIO_MANAGEMENT_SUPER_USER"],
+		ADDDEPOSITACCOUNT: ["CREATE_DEPOSITACCOUNT"],
+		ADDSAVINGACCOUNT: ["CREATE_SAVINGACCOUNT"],
 		
 		VIEWJOURNALENTRIES: ["READ_JOURNALENTRIES"]
 	};
@@ -93,7 +91,7 @@ taskPermissionsMatrix = {
 
 menuTasksMatrix = {
 		CLIENTSMENU: ["CLIENTSEARCH"],
-		CHECKERMENU: ["CHECKERINBOX"],
+		//CHECKERMENU: ["CHECKERINBOX"],
 		GROUPSMENU: ["GROUPSEARCH"],
 		USERADMINMENU: ["VIEWUSERS", "ADDUSER", "VIEWROLES", "ADDROLE"],
 		ORGADMINMENU: ["VIEWLOANPRODUCTS", "ADDLOANPRODUCT", "VIEWDEPOSITPRODUCTS", "ADDDEPOSITPRODUCT", "VIEWFUNDS", "ADDFUND",
@@ -192,6 +190,8 @@ isInitialised = false;
 
 		if (excludeBasedOnQueryParams(menuName) == true) return false;
 
+		if (menuName == "CHECKERMENU") return hasCheckerPermissions();
+		
 		var menuTasks = menuTasksMatrix [menuName];
 
 //If menuName not found assume 'okay to show' (true)
@@ -205,9 +205,6 @@ isInitialised = false;
 	}
 
 	function hasDataTablePermission(permissionName) {
-
-//remove the next line when super user meaning is definite, till then assume they have permission
-		if (anySuperUser() == true) return true;
 
 		if (hasAllFunctions() == true) return true;
 
@@ -228,9 +225,6 @@ isInitialised = false;
 
 
 	function userPermissionsCheck(taskName) {
-
-//remove the next line when super user meaning is definite, till then assume they have permission
-		if (anySuperUser() == true) return true;
 
 		if (hasAllFunctions() == true) return true;
 
@@ -253,21 +247,6 @@ isInitialised = false;
 		return false;
 	}
 
-	function anySuperUser() {
-//this is being bypassed as super_user permissions are now in place but would prefer to have special roles instead
-return false;
-
-
-		for (var i in mUserPermissions) 
-		{
-			if (mUserPermissions[i] == "USER_ADMINISTRATION_SUPER_USER") return true;
-			if (mUserPermissions[i] == "ORGANISATION_ADMINISTRATION_SUPER_USER") return true;
-			if (mUserPermissions[i] == "PORTFOLIO_MANAGEMENT_SUPER_USER") return true;
-			if (mUserPermissions[i] == "REPORTING_SUPER_USER") return true;
-		}
-		return false;
-	}
-
 	function hasAllFunctionsReadRelevant(taskPermissions) {
 //if any of the permissions is a read permission its okay if user has read only capability
 
@@ -284,6 +263,22 @@ return false;
 		return false;
 	}
 
+	function hasCheckerPermissions(taskPermissions) {
+		
+		if (hasAllFunctions() == true) return true;
+	
+		var endsWith = function( str, suffix ) {
+			var xx =  str.indexOf(suffix, str.length - suffix.length) !== -1;
+			return xx;
+		};
+
+		for (var i in mUserPermissions) 
+		{
+			if ((mUserPermissions[i] == "CHECKER_SUPER_USER") || (mUserPermissions[i] == "READ_MAKERCHECKER") || (endsWith(mUserPermissions[i], "_CHECKER") == true)) return true;
+		}
+		return false;
+	}
+	
 	function checkSpecificPermission(taskPermissions) {
 
 		for (var h in taskPermissions)
