@@ -4335,6 +4335,182 @@ $(document).ready(function() {
 		</table>	
 	</fieldset>
 	{{/if}}
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.loan.product.accounting.rules")}}  </legend>
+		<table style="width:100%">
+			<tr>
+				<td align="center">
+					{{#if accountingType == 1}}
+					<input type="radio" name="accountingType" value="1" checked="true">{{=$ctx.doI18N("form.label.loan.product.accounting.rules.none")}}</input>
+					{{#else}}
+					<input type="radio" name="accountingType" value="1" >{{=$ctx.doI18N("form.label.loan.product.accounting.rules.none")}}</input>
+					{{/if}}
+					{{#if accountingType == 2}}
+					<input type="radio" name="accountingType" value="2" checked="true">{{=$ctx.doI18N("form.label.loan.product.accounting.rules.cash")}}</input>
+					{{#else}}
+					<input type="radio" name="accountingType" value="2">{{=$ctx.doI18N("form.label.loan.product.accounting.rules.cash")}}</input>
+					{{/if}}
+					{{#if accountingType == 3}}
+					<input type="radio" name="accountingType" value="3" checked="true">{{=$ctx.doI18N("form.label.loan.product.accounting.rules.accrual")}}</input>
+					{{#else}}
+					<input type="radio" name="accountingType" value="3">{{=$ctx.doI18N("form.label.loan.product.accounting.rules.accrual")}}</input>
+					{{/if}}
+				</td>
+			</tr>
+		</table>
+		<div style="padding-left: 20%" id="accountingPlaceholdersDiv">
+			<fieldset style="width: 80%;border-top: 1px dotted">
+					<legend>{{=$ctx.doI18N("form.legend.loan.product.accounting.asset")}}</legend>	
+				<table style="width:100%">
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.asset.fund.source")}}</td>
+							<td>
+								<select id="fundSourceAccountId" name="fundSourceAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each assetAccountOptions}}
+										{{#if $parent.parent.data.fundSourceAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select>  
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.asset.loan.portfolio")}}</td>
+							<td>
+								<select id="loanPortfolioAccountId" name="loanPortfolioAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each assetAccountOptions}}
+										{{#if $parent.parent.data.loanPortfolioAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select>  
+							</td>
+						</tr>
+						<tr id="interestReceivableRow">
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.asset.interest.receivable")}}</td>
+							<td>
+								<select id="receivableInterestAccountId" name="receivableInterestAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each assetAccountOptions}}
+										{{#if $parent.parent.data.receivableInterestAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select> 
+							</td>
+						</tr>
+						<tr id="feeReceivableRow">
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.asset.fee.receivable")}}</td>
+							<td>
+								<select id="receivableFeeAccountId" name="receivableFeeAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each assetAccountOptions}}
+										{{#if $parent.parent.data.receivableFeeAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select> 
+							</td>
+						</tr>
+						<tr id="penaltyReceivableRow">
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.asset.penalty.receivable")}}</td>
+							<td>
+								<select id="receivablePenaltyAccountId" name="receivablePenaltyAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each assetAccountOptions}}
+										{{#if $parent.parent.data.receivablePenaltyAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select> 
+							</td>
+						</tr>
+				</table>
+			</fieldset>
+			<fieldset style="width: 80%;border-top: 1px dotted">
+					<legend>{{=$ctx.doI18N("form.legend.loan.product.accounting.income")}}</legend>	
+				<table style="width:100%">
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.income.interest")}}</td>
+							<td>
+								<select id="interestOnLoanAccountId" name="interestOnLoanAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each incomeAccountOptions}}
+										{{#if $parent.parent.data.interestOnLoanAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select> 
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.income.fee")}}</td>
+							<td>
+								<select id="incomeFromFeeAccountId" name="incomeFromFeeAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each incomeAccountOptions}}
+										{{#if $parent.parent.data.incomeFromFeeAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select> 
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.income.penalty")}}</td>
+							<td>
+								<select id="incomeFromPenaltyAccountId" name="incomeFromPenaltyAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each incomeAccountOptions}}
+										{{#if $parent.parent.data.incomeFromPenaltyAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select> 
+							</td>
+						</tr>
+				</table>
+			</fieldset>
+			<fieldset style="width: 80%;border-top: 1px dotted">
+					<legend>{{=$ctx.doI18N("form.legend.loan.product.accounting.expense")}}</legend>	
+				<table style="width:100%">
+						<tr>
+							<td>{{=$ctx.doI18N("form.label.loan.product.accounting.expense.write.off")}}</td>
+							<td>
+								<select id="writeOffAccountId" name="writeOffAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each expenseAccountOptions}}
+										{{#if $parent.parent.data.writeOffAccountId === id)}}
+												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+										{{#else}}
+												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+							        {{/each}}
+							    </select> 
+							</td>
+						</tr>
+				</table>
+			</fieldset>
+		</div>
+	</fieldset>
 </form>
 </script>
 

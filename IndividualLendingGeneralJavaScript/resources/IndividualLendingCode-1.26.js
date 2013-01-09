@@ -3515,7 +3515,7 @@ function refreshLoanDocuments(loanId) {
 		if (crudData[tableName].refreshListNeeded == true) genSSF += 'refreshTableView("' + tableName + '");';
 		genSSF += '}';
 		eval(genSSF);
-
+		
 //datatable specific code
 		if (tableName == "datatable") 
 		{
@@ -3564,7 +3564,7 @@ function refreshLoanDocuments(loanId) {
 			
 			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction);
 		}
-
+		
 	}
 
 
@@ -3821,6 +3821,59 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 				else{
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 		  		}
+		  		
+		  		//loanproduct specific code 
+				if (templateSelector == "#loanproductFormTemplate") 
+				{
+					//(initialize comboboxes)
+					$("#fundSourceAccountId").combobox();
+					$("#loanPortfolioAccountId").combobox();
+					$("#interestOnLoanAccountId").combobox();
+					$("#incomeFromFeeAccountId").combobox();
+					$("#incomeFromPenaltyAccountId").combobox();
+					$("#writeOffAccountId").combobox();
+					$("#receivableInterestAccountId").combobox();
+					$("#receivableFeeAccountId").combobox();
+					$("#receivablePenaltyAccountId").combobox();
+					
+					var showCashFinancialPlaceholders = function() {
+						 $("#accountingPlaceholdersDiv").show();
+			        	 //hide receivables
+			        	 $("#interestReceivableRow").hide();
+			        	 $("#feeReceivableRow").hide();
+			        	 $("#penaltyReceivableRow").hide();
+					};
+					
+					var showAccrualFinancialPlaceholders = function() {
+						 $("#accountingPlaceholdersDiv").show();
+			        	 //show receivables
+			        	 $("#interestReceivableRow").show();
+			        	 $("#feeReceivableRow").show();
+			        	 $("#penaltyReceivableRow").show();
+					}
+					
+					//onchange events for radio buttonaccountingType
+					 $("input[name=accountingType]").change(function() {
+				        var selectedValue = $(this).val();
+				        if(selectedValue == "1"){
+				        	 $("#accountingPlaceholdersDiv").hide();
+				        }else if (selectedValue == "2"){
+				        	 showCashFinancialPlaceholders();
+				        }else if (selectedValue == "3"){
+				        	 showAccrualFinancialPlaceholders();
+				        }
+				    }); 
+				    
+				    //hide accounting placeholders div on page load
+				    if(data.accountingType == 1){
+				    	$("#accountingPlaceholdersDiv").hide();
+				    }else if (data.accountingType == 2){
+				    	 showCashFinancialPlaceholders();
+				    }else if (data.accountingType == 3){
+				    	 showAccrualFinancialPlaceholders();
+				    }
+				}
+				//end loan product specific code
 		  	};
 		
 
