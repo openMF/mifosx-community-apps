@@ -1,8 +1,25 @@
 (function($) {
 
+	sdt = {
+		globaliseFunctions : "",
+		indicateMandatory : "* ",
+		resValue : "resources/libs/",
+		labelClass : "",
+		valueClass : "",
+		saveLabel : "dialog.button.save",
+		cancelLabel : "dialog.button.cancel",
+		confirmLabel : "dialog.button.confirm",
+		datatableParams : {},
+		defaultDecimalPlaces : 4,
+		nullTitleValue : "-99999999",
+		dataTableDef : {},
+		genericResultSetParameter : "?genericResultSet=true",
+		initialised : false
+	}
+
 	$.stretchyDataTables = {};
 
-	$.stretchyDataTables.displayAdditionalInfo = function(params) {
+	$.stretchyDataTables.initialise = function(params) {
 
 		if (!(params.baseApiUrl)) {
 			alert(doI18N("Table Data Initialisation Error - baseApiUrl parameter"));
@@ -16,28 +33,12 @@
 			alert(doI18N("Table Data Initialisation Error - tenantIdentifier parameter"));
 			return;
 		}
-		if (!(params.appTableName)) {
-			alert(doI18N("Table Data Initialisation Error - appTableName parameter"));
-			return;
-		}
-		if (!(params.appTablePKValue)) {
-			alert(doI18N("Table Data Initialisation Error - appTablePKValue parameter"));
-			return;
-		}
 
-		sdt = {
-			globaliseFunctions : "",
-			indicateMandatory : "* ",
-			saveLabel : "dialog.button.save",
-			cancelLabel : "dialog.button.cancel",
-			confirmLabel : "dialog.button.confirm",
-			defaultDecimalPlaces : 4,
-			nullTitleValue : "-99999999",
-			tabledataParams : params,
-			dataTableDef : "",
-			genericResultSetParameter : "?genericResultSet=true"
-		}
 
+		sdt.datatableParams.baseApiUrl = params.baseApiUrl;
+		sdt.datatableParams.base64 = params.base64;
+		sdt.datatableParams.tenantIdentifier = params.tenantIdentifier;
+		
 		if (params.globaliseFunctions)
 			sdt.globaliseFunctions = params.globaliseFunctions;
 
@@ -53,74 +54,65 @@
 		if (params.confirmLabel)
 			sdt.confirmLabel = params.confirmLabel;
 
+		if (params.resValue)
+			sdt.resValue = params.resValue;
+		
+		if (params.labelClass)
+			sdt.labelClass = params.labelClass;
+		
+		if (params.valueClass)
+			sdt.valueClass = params.valueClass;
+
 		initialiseDataTableDef();
 
-		displayAdditionalInfo(params);
+		sdt.initialised = true;
+
 	};
 
-	$.stretchyDataTables.showDataTable = function(tabName, datatableName, id,
-			fkName) {
-		showDataTable(tabName, datatableName, id, fkName);
+	$.stretchyDataTables.showDataTable = function(itemDiv, datatableName, id,
+			fkName, type, templateName, onLoadForm) {
+
+		if (sdt.initialised == false) {
+			alert(doI18N("stretchyDataTables not Initialised - use jQuery.stretchyDataTables.initialise(datatableParams)"));
+			return;
+		}
+
+		showDataTable(itemDiv, datatableName, id, fkName, type, templateName,
+				onLoadForm);
 	};
 
 	$.stretchyDataTables.getDataTableFieldEntry = function(data, columnName,
 			displayMode, updateColumnTagExtra) {
+
+		if (sdt.initialised == false) {
+			alert(doI18N("stretchyDataTables not Initialised - use jQuery.stretchyDataTables.initialise(datatableParams)"));
+			return;
+		}
+
 		return getDataTableFieldEntry(data, columnName, displayMode,
 				updateColumnTagExtra);
 	}
 
 	$.stretchyDataTables.getDataTableFieldValueEntry = function(data,
 			columnName, displayMode, updateColumnTagExtra) {
+
+		if (sdt.initialised == false) {
+			alert(doI18N("stretchyDataTables not Initialised - use jQuery.stretchyDataTables.initialise(datatableParams)"));
+			return;
+		}
+
 		return getDataTableFieldValueEntry(data, columnName, displayMode,
 				updateColumnTagExtra);
 	}
 
-	function displayAdditionalInfo(params) {
-
-		if (params.datatableArray.length > 0) {
-			for ( var i in params.datatableArray) {
-				var type = params.datatableArray[i].type.toUpperCase();
-
-				if (type == "DEFAULT" || type == "TEMPLATE") {
-					/*
-					 * assumption is that a jquery tab is used to display
-					 * additional data table. So, this next code is run when the
-					 * link id associated with the data table is clicked
-					 */
-					eval(getClickFunction(params.datatableArray[i].itemDiv,
-							params.datatableArray[i].registeredTableName,
-							params.appTablePKValue, params.appTableName, type,
-							params.datatableArray[i].templateName,
-							params.datatableArray[i].onLoadForm));
-
-					$('a[href=#' + params.datatableArray[i].itemDiv + ']')
-							.click(clickFunction);
-				} else {
-					if (type == "USER-DEFINED") {
-
-						// data table UI handled completely by user-defined code
-						// execute user-defined function
-						// expects 2 params: PKValue & itemDiv
-						var PKValue = params.appTablePKValue;
-						var itemDiv = params.datatableArray[i].itemDiv;
-						eval(params.datatableArray[i].itemFunction);
-					} else {
-						alert("System Error - Invalid renderInfo type: " + type
-								+ "   for registered data table: "
-								+ params.datatableArray[i].registeredTableName);
-						return;
-					}
-				}
-			}
-		}
-	}
-
+	// function provides CRUD functionality for a datatable - puts html in
+	// itemDiv.html()
 	var showDataTable = function(itemDiv, datatableName, id, fkName, type,
 			templateName, onLoadForm) {
 
 		var url = 'datatables/' + datatableName + "/" + id
 				+ sdt.genericResultSetParameter;
-
+		
 		var saveSuccessFunction = function(data, textStatus, jqXHR) {
 			$("#dialog-form").dialog("close");
 			showDataTable(itemDiv, datatableName, id, fkName, type,
@@ -803,10 +795,10 @@
 		var colsPerRowCount = 0;
 		var labelClassStr = "";
 		var valueClassStr = "";
-		if (sdt.tabledataParams.labelClass > "")
-			labelClassStr = ' class="' + sdt.tabledataParams.labelClass + '" ';
-		if (sdt.tabledataParams.valueClass > "")
-			valueClassStr = ' class="' + sdt.tabledataParams.valueClass + '" ';
+		if (sdt.datatableParams.labelClass > "")
+			labelClassStr = ' class="' + sdt.datatableParams.labelClass + '" ';
+		if (sdt.datatableParams.valueClass > "")
+			valueClassStr = ' class="' + sdt.datatableParams.valueClass + '" ';
 
 		for ( var i in data.columnHeaders) {
 			if (!((data.columnHeaders[i].columnName == fkName) || (data.columnHeaders[i].isColumnPrimaryKey == true))) {
@@ -1019,7 +1011,7 @@
 					"sExtends" : "xls",
 					"sButtonText" : doI18N("Save to CSV")
 				} ],
-				"sSwfPath" : sdt.tabledataParams.resValue
+				"sSwfPath" : sdt.datatableParams.resValue
 						+ "DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
 			},
 
@@ -1096,32 +1088,10 @@
 	}
 
 	//
-	var getClickFunction = function(itemDiv, registeredTableName,
-			appTablePKValue, appTableName, type, templateName, onLoadForm) {
-
-		var getFKName = function(appTableName) {
-			return appTableName.substring(2) + "_id";
-		}
-
-		var cf = 'var clickFunction = function() ' + '{ ' + 'showDataTable("'
-				+ itemDiv + '", "' + registeredTableName + '", '
-				+ appTablePKValue + ', "' + getFKName(appTableName) + '", "'
-				+ type + '"';
-
-		if (templateName)
-			cf += ', "' + templateName + '"';
-		if (onLoadForm)
-			cf += ', "' + onLoadForm + '"';
-
-		cf += ');};'
-
-		return cf;
-	}
-
 	var executeAjaxRequest = function(url, verbType, jsonData, successFunction,
 			errorFunction) {
 
-		var execUrl = sdt.tabledataParams.baseApiUrl + url;
+		var execUrl = sdt.datatableParams.baseApiUrl + url;
 		var jqxhr = $.ajax({
 			url : execUrl,
 			type : verbType, // POST, GET, PUT or DELETE
@@ -1130,12 +1100,12 @@
 			data : jsonData,
 			cache : false,
 			beforeSend : function(xhr) {
-				if (sdt.tabledataParams.tenantIdentifier > "")
+				if (sdt.datatableParams.tenantIdentifier > "")
 					xhr.setRequestHeader("X-Mifos-Platform-TenantId",
-							sdt.tabledataParams.tenantIdentifier);
-				if (sdt.tabledataParams.base64 > "")
+							sdt.datatableParams.tenantIdentifier);
+				if (sdt.datatableParams.base64 > "")
 					xhr.setRequestHeader("Authorization", "Basic "
-							+ sdt.tabledataParams.base64);
+							+ sdt.datatableParams.base64);
 			},
 			success : successFunction,
 			error : errorFunction

@@ -21,10 +21,10 @@ custom = {
 	// default variable for identifying excluded datatables and datatables to be
 	// render in a non-default way
 	datatablePresentation : "",
-	
-	//fit popups to height & width of current window
-	fitPopupWidth: "",
-	fitPopupHeight: ""
+
+	// fit popups to height & width of current window
+	fitPopupWidth : "",
+	fitPopupHeight : ""
 };
 
 custom.showFirstPage = function() {
@@ -256,7 +256,10 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 	var successFunction = function(data, textStatus, jqXHR) {
 
 		if (data.length > 0) {
+
+			// local function definitions
 			var datatableArray = [];
+
 			var datatableExists = function(datatableName) {
 				for ( var i in datatableArray) {
 					if (datatableArray[i].registeredTableName == datatableName)
@@ -264,6 +267,7 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 				}
 				return false;
 			}
+
 			var datatableExclude = function(datatableName) {
 				for ( var i in datatableArray) {
 					if (datatableArray[i].registeredTableName == datatableName) {
@@ -276,6 +280,86 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 			var spaceToUnderscore = function(str) {
 				return str.replace(/ /g, "_")
 			}
+
+			var getFKName = function(appTableName) {
+				return appTableName.substring(2) + "_id";
+			}
+
+			var getClickFunction = function(itemDiv, registeredTableName,
+					appTablePKValue, fkName, type, templateName, onLoadForm) {
+
+				var cf = 'var clickFunction = function() ' + '{ '
+						+ 'jQuery.stretchyDataTables.showDataTable("' + itemDiv + '", "'
+						+ registeredTableName + '", ' + appTablePKValue + ', "'
+						+ fkName + '", "' + type + '"';
+
+				if (templateName)
+					cf += ', "' + templateName + '"';
+				if (onLoadForm)
+					cf += ', "' + onLoadForm + '"';
+
+				cf += ');};'
+				return cf;
+			}
+
+			var displayAdditionalInfo = function(fkName, appTablePKValue) {
+
+				if (datatableArray.length > 0) {
+					for ( var i in datatableArray) {
+						var type = datatableArray[i].type.toUpperCase();
+
+						if (type == "DEFAULT" || type == "TEMPLATE") {
+							eval(getClickFunction(datatableArray[i].itemDiv,
+									datatableArray[i].registeredTableName,
+									appTablePKValue, fkName, type,
+									datatableArray[i].templateName,
+									datatableArray[i].onLoadForm));
+
+							$('a[href=#' + datatableArray[i].itemDiv + ']')
+									.click(clickFunction);
+							//just use method below if want to prepopulate the tab.  however many data table rendering is initially off
+							/*jQuery.stretchyDataTables.showDataTable(datatableArray[i].itemDiv,
+									datatableArray[i].registeredTableName,
+									appTablePKValue, fkName, type,
+									datatableArray[i].templateName,
+									datatableArray[i].onLoadForm);*/
+						} else {
+							if (type == "USER-DEFINED") {
+
+								// data table UI handled completely by
+								// user-defined code
+								// execute user-defined function
+								// expects 2 params: PKValue & itemDiv
+								var PKValue = appTablePKValue;
+								var itemDiv = datatableArray[i].itemDiv;
+								eval(datatableArray[i].itemFunction);
+							} else {
+								alert("System Error - Invalid renderInfo type: "
+										+ type
+										+ "   for registered data table: "
+										+ datatableArray[i].registeredTableName);
+								return;
+							}
+						}
+					}
+				}
+			}
+			// end of local function definitions
+
+			var datatableParams = {
+				baseApiUrl : baseApiUrl,
+				base64 : base64,
+				tenantIdentifier : tenantIdentifier,
+				globaliseFunctions : custom.helperFunctions,
+				resValue : "resources/libs/",
+				indicateMandatory : "* ",
+				labelClass : "",
+				valueClass : "",
+				saveLabel : "dialog.button.save",
+				cancelLabel : "dialog.button.cancel",
+				confirmLabel : "dialog.button.confirm"
+			};
+			jQuery.stretchyDataTables.initialise(datatableParams);
 
 			// 1. add any datatables that are defined in
 			// custom.datatablePresentation for the current application table
@@ -316,32 +400,12 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 						+ "></div>");
 				tabVar.tabs("add", "#" + datatableArray[i].itemDiv,
 						doI18N(datatableArray[i].itemDivLabel));
-				//alert(datatableArray[i].itemDivLabel)
+				// alert(datatableArray[i].itemDivLabel)
 			}
 
-			tabVar.tabs('select', 0); // back to main tab
+			displayAdditionalInfo(getFKName(appTableName), appTablePKValue);
 
-			var additionalInfoParams = {
-				baseApiUrl : baseApiUrl,
-				base64 : base64,
-				tenantIdentifier : tenantIdentifier,
-
-				appTableName : appTableName,
-				appTablePKValue : appTablePKValue,
-				datatableArray : datatableArray,
-
-				globaliseFunctions : custom.helperFunctions,
-				resValue : "resources/libs/",
-				indicateMandatory : "* ",
-				labelClass : "",
-				valueClass : "",
-				saveLabel : "dialog.button.save",
-				cancelLabel : "dialog.button.cancel",
-				confirmLabel : "dialog.button.confirm"
-			};
-			jQuery.stretchyDataTables
-					.displayAdditionalInfo(additionalInfoParams);
-
+			tabVar.tabs('select', 0); // ensure focus is back to main tab
 		}
 	};
 
@@ -354,9 +418,6 @@ custom.fitPopupWidth = function() {
 custom.fitPopupHeight = function() {
 	return $(window).height() - 20;
 }
-
-
-
 
 // establish the tenant and include any tenant specific javascript configuration
 // file
