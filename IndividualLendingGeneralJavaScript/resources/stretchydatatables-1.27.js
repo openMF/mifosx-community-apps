@@ -79,42 +79,39 @@
 
 		if (params.datatableArray.length > 0) {
 			for ( var i in params.datatableArray) {
+				var type = params.datatableArray[i].type.toUpperCase();
 
-				switch (params.datatableArray[i].type.toUpperCase()) {
-				case "DEFAULT":
-					showDataTable(params.datatableArray[i].itemDiv,
+				if (type == "DEFAULT" || type == "TEMPLATE") {
+					/*
+					 * assumption is that a jquery tab is used to display
+					 * additional data table. So, this next code is run when the
+					 * link id associated with the data table is clicked
+					 */
+					eval(getClickFunction(params.datatableArray[i].itemDiv,
 							params.datatableArray[i].registeredTableName,
-							params.appTablePKValue,
-							getFKName(params.appTableName),
-							params.datatableArray[i].type.toUpperCase());
-					break;
-				case "TEMPLATE":
-					showDataTable(params.datatableArray[i].itemDiv,
-							params.datatableArray[i].registeredTableName,
-							params.appTablePKValue,
-							getFKName(params.appTableName),
-							params.datatableArray[i].type.toUpperCase(),
+							params.appTablePKValue, params.appTableName, type,
 							params.datatableArray[i].templateName,
-							params.datatableArray[i].onLoadForm);
-					break;
-				case "USER-DEFINED":
-					// data table UI handled completely by user-defined code
-					// execute user-defined function
-					// expects 2 params: PKValue & itemDiv
-					var PKValue = params.appTablePKValue;
-					var itemDiv = params.datatableArray[i].itemDiv;
-					eval(params.datatableArray[i].itemFunction);
-					break;
-				default:
-					alert("System Error - Invalid renderInfo type: "
-							+ params.datatableArray[i].type
-							+ "   for registered data table: "
-							+ params.datatableArray[i].registeredTableName);
-					return;
+							params.datatableArray[i].onLoadForm));
+
+					$('a[href=#' + params.datatableArray[i].itemDiv + ']')
+							.click(clickFunction);
+				} else {
+					if (type == "USER-DEFINED") {
+
+						// data table UI handled completely by user-defined code
+						// execute user-defined function
+						// expects 2 params: PKValue & itemDiv
+						var PKValue = params.appTablePKValue;
+						var itemDiv = params.datatableArray[i].itemDiv;
+						eval(params.datatableArray[i].itemFunction);
+					} else {
+						alert("System Error - Invalid renderInfo type: " + type
+								+ "   for registered data table: "
+								+ params.datatableArray[i].registeredTableName);
+						return;
+					}
 				}
-
 			}
-
 		}
 	}
 
@@ -173,8 +170,9 @@
 
 		html += getAddAndFullDeleteButtonsHtml(
 				currentTableDataInfo.datatableName, isNew);
-		//TODO - this will probably only support having one 'many' datatable open at the same time
-		html += '<div id="dt_example"><div id=StretchyReportOutput><table cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable" width="100%" ></table></div></div>';
+		var tableDiv = "xxx_" + currentTableDataInfo.itemDiv;
+		html += '<table cellpadding="0" cellspacing="1" border="0" class="display" id="'
+				+ tableDiv + '" width="100%" ></table>';
 
 		$("#" + currentTableDataInfo.itemDiv).html(html);
 
@@ -229,8 +227,8 @@
 		// adjust for edit/delete buttons in column 1
 		adjustTableColumnIndex = 1;
 
-		oTable = $('#RshowTable').dataTable(sdt.dataTableDef);
-		oSettings = oTable.fnSettings();
+		var oTable = $('#' + tableDiv).dataTable(sdt.dataTableDef);
+		// var oSettings = oTable.fnSettings();
 
 		for ( var i in currentTableDataInfo.data.columnHeaders) {
 			if ((currentTableDataInfo.data.columnHeaders[i].isColumnPrimaryKey == true)
@@ -464,7 +462,8 @@
 					dateFormat : custom.datePickerDateFormat
 				});
 				// if entered, execute onLoadForm script defined for a template
-				if (templateName && onLoadForm) eval(onLoadForm);
+				if (templateName && onLoadForm)
+					eval(onLoadForm);
 			}
 		}).dialog('open');
 
@@ -842,10 +841,6 @@
 
 	}
 
-	var getFKName = function(appTableName) {
-		return appTableName.substring(2) + "_id";
-	}
-
 	var getTableCardinality = function(columnHeaders, fkName) {
 
 		for ( var i in columnHeaders) {
@@ -1101,6 +1096,28 @@
 	}
 
 	//
+	var getClickFunction = function(itemDiv, registeredTableName,
+			appTablePKValue, appTableName, type, templateName, onLoadForm) {
+
+		var getFKName = function(appTableName) {
+			return appTableName.substring(2) + "_id";
+		}
+
+		var cf = 'var clickFunction = function() ' + '{ ' + 'showDataTable("'
+				+ itemDiv + '", "' + registeredTableName + '", '
+				+ appTablePKValue + ', "' + getFKName(appTableName) + '", "'
+				+ type + '"';
+
+		if (templateName)
+			cf += ', "' + templateName + '"';
+		if (onLoadForm)
+			cf += ', "' + onLoadForm + '"';
+
+		cf += ');};'
+
+		return cf;
+	}
+
 	var executeAjaxRequest = function(url, verbType, jsonData, successFunction,
 			errorFunction) {
 
