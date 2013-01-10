@@ -173,6 +173,7 @@
 
 		html += getAddAndFullDeleteButtonsHtml(
 				currentTableDataInfo.datatableName, isNew);
+		//TODO - this will probably only support having one 'many' datatable open at the same time
 		html += '<div id="dt_example"><div id=StretchyReportOutput><table cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable" width="100%" ></table></div></div>';
 
 		$("#" + currentTableDataInfo.itemDiv).html(html);
@@ -479,18 +480,8 @@
 
 		var buttonsOpts = {};
 		buttonsOpts[confirmButton] = function() {
-			var deleteSuccessFunction;
-			if (successFunction)
-				deleteSuccessFunction = successFunction
-				/*
-				 * else { deleteSuccessFunction = function(data, textStatus,
-				 * jqXHR) { dialogDiv.dialog("close");
-				 * showDataTable(currentTableDataInfo.itemDiv,
-				 * currentTableDataInfo.datatableName, currentTableDataInfo.id,
-				 * currentTableDataInfo.fkName); } }
-				 */
 
-			executeAjaxRequest(deleteUrl, 'DELETE', "", deleteSuccessFunction,
+			executeAjaxRequest(deleteUrl, 'DELETE', "", successFunction,
 					formErrorFunction);
 		};
 
