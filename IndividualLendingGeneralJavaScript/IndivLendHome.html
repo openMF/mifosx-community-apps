@@ -1843,6 +1843,56 @@ $(document).ready(function() {
  </form>
 </script>
 
+<script id="editClientFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+	<select id="officeId" name="officeId" title="">
+		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+		{{#each allowedOffices}}
+			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			{{/if}}
+        {{/each}}
+	</select>
+
+	<table>
+		<tr>
+			<td>
+				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
+				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
+			</td>
+			<td>
+				<label for="middlename">{{=$ctx.doI18N("label.middlename")}}</label>
+				<input id="middlename" name="middlename" title="" type="text" value="{{=middlename}}"/>
+			</td>
+			<td>
+				<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
+				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2">
+				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
+				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>
+			</td>
+		</tr>
+	</table>
+	<label for="accountNo">{{=$ctx.doI18N("label.accountIdentifier")}}</label>
+	<input id="accountNo" name="accountNo" title="" type="text" value="{{=accountNo}}"/>
+
+    <label for="externalId">{{=$ctx.doI18N("form.label.group.externalid")}}</label>
+	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<label for="joinedDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
+	<input id="joinedDate" name="joinedDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
+</form>
+</script>
+
 <script id="clientFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -1888,41 +1938,21 @@ $(document).ready(function() {
 		<tr>
 			<td>
 				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
-				{{#if currentChange}}
-					{{#if currentChange.firstname}}
-				<input id="firstname" name="firstname" title="Previous value was {{=firstname}}" type="text" value="{{=currentChange.firstname}}" style="border: thin solid green;"/>
-					{{#else}}
 				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
-					{{/if}}
-				{{#else}}
-				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
-				{{/if}}
+			</td>
+			<td>
+				<label for="middlename">{{=$ctx.doI18N("label.middlename")}}</label>
+				<input id="middlename" name="middlename" title="" type="text" value="{{=middlename}}"/>
 			</td>
 			<td>
 				<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
-				{{#if currentChange}}
-					{{#if currentChange.lastname}}
-					<input id="lastname" name="lastname" title="Previous value was {{=lastname}}" type="text" value="{{=currentChange.lastname}}" style="border: thin solid green;"/>
-					{{#else}}
-					<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
-					{{/if}}
-				{{#else}}
 				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
-				{{/if}}
 			</td>
 		<tr>
 		<tr>
 			<td colspan="2">
-				<label for="clientOrBusinessName">{{=$ctx.doI18N("label.longname")}}</label>
-				{{#if currentChange}}
-					{{#if currentChange.clientOrBusinessName}}
-					<input id="clientOrBusinessName" name="clientOrBusinessName" title="Previous value was {{=clientOrBusinessName}}" type="text" value="{{=currentChange.clientOrBusinessName}}" style="width:100%; border: thin solid green;"/>
-					{{#else}}
-					<input id="clientOrBusinessName" name="clientOrBusinessName" title="" type="text" value="{{=clientOrBusinessName}}" style="width:100%"/>
-					{{/if}}
-				{{#else}}
-				<input id="clientOrBusinessName" name="clientOrBusinessName" title="" type="text" value="{{=clientOrBusinessName}}" style="width:100%"/>
-				{{/if}}
+				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
+				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>
 			</td>
 		</tr>
 	</table>

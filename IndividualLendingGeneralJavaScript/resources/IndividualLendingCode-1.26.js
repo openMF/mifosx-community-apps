@@ -1440,14 +1440,12 @@ function showILClient(clientId) {
 					});
 					$('button.deleteclientbtn span').text(doI18N('dialog.button.delete.client'));
 					
-					$('.editclientbtn').button({icons: {
-               			 primary: "ui-icon-pencil"}
-                	}).click(function(e) {
+					$('.editclientbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
 						var getUrl = 'clients/' + clientId + '?template=true';
 						var putUrl = 'clients/' + clientId;
-						var templateSelector = "#clientFormTemplate";
+						var templateSelector = "#editClientFormTemplate";
 						var width = 600; 
-						var height = 350;
+						var height = 400;
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						  	$("#dialog-form").dialog("close");
