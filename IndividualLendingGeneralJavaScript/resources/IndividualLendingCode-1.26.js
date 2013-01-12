@@ -223,8 +223,14 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
-	if (jQuery.MifosXUI.showMenu("POSTINTERESTMENU") == true) 
-		htmlVar += '	<li><a href="unknown.html" onclick="postInterest();return false;">' + doI18N("label.interest.posting") + '</a></li>';
+	if (jQuery.MifosXUI.showMenu("POSTINTERESTMENU") == true) {
+		htmlVar += '	<li  class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("label.interest.posting") + '</a>';
+		htmlVar += '		<ul>';
+		htmlVar += '			<li><a href="unknown.html" onclick="postInterest();return false;">' + doI18N("link.interest.posting.fixed.deposits") + '</a></li>';
+		htmlVar += '			<li><a href="unknown.html" onclick="postInterestForSavingAccounts();return false;">' + doI18N("link.interest.posting.saving.accounts") + '</a></li>';
+		htmlVar += '		</ul>';
+		htmlVar += '	</li>';
+	}	
 	
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
 	htmlVar += '</ul>';
@@ -258,7 +264,7 @@ function showMainContainer(containerDivName, username) {
 function showLogon(logonDivName) {
 	var htmlVar = '<div id=theLogonForm><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/><div id=appTitle>' + doI18N("app.name") + ' - ' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</div>';
 	htmlVar += '<form name = "logonform"><table id=logonTable><tr><td>' + doI18N("login.username") + ':</td><td><input type="text" name="username"></td></tr>';
-	htmlVar += '<tr><td>' + doI18N("login.password") + ': </td><td><input type="password" name="pwd"></td></tr>';
+	htmlVar += '<tr><td>' + doI18N("login.password") + ': </td><td><input type="password" name="pwd" onKeyPress="return checkSubmit(event, ' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td></tr>';
 	htmlVar += '<tr><td><input type="button" value="Logon" name="Submit" ';
 	htmlVar += 'onclick= "setBasicAuthKey(' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td><td></td></tr></table></form>';
 	htmlVar += '<div id=formerrors></div></div>';
@@ -5010,14 +5016,32 @@ function postInterest(){
 }
 
 function showSavingAccount(accountId, productName) {
-	var title = productName + ": #" + accountId ;			    
-	$newtabs.tabs( "add", "unknown.html", title);
-	loadSavingAccount(accountId);
+	var newSavingTabId='saving'+accountId+'tab';
+	//show existing tab if this Id is already present
+	if(tabExists(newSavingTabId)){
+		var index = $('#newtabs a[href="#'+ newSavingTabId +'"]').parent().index(); 
+		$('#newtabs').tabs('select', index);
+	}
+	//else create new tab and set identifier properties
+	else{
+		var title = productName + ": #" + accountId ;			    
+		$newtabs.tabs( "add", "unknown.html", title);
+		loadSavingAccount(accountId);
+		//add ids and titles to newly added div's and a'hrefs
+		var lastAHref=$('#newtabs> ul > li:last > a');
+		var lastDiv=$('#newtabs > div:last')
+		var lastButOneDiv=$('#newtabs > div:last').prev();
+		lastAHref.attr('href','#saving'+accountId+'tab');
+		lastButOneDiv.attr('id',newSavingTabId);
+		//the add functionality seems to be adding a dummy div at the end 
+		//am deleting the same to make div manipulation easier
+		lastDiv.remove();
+		}
 }
 
 function loadSavingAccount(accountId) {
 	
-	var accountUrl = 'savingaccounts/' + accountId; //+ "?associations=all";
+	var accountUrl = 'savingaccounts/' + accountId+ "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
     	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
@@ -5037,6 +5061,132 @@ function loadSavingAccount(accountId) {
 		currentTab.html(tableHtml);
 
 		var curTabID = currentTab.prop("id");
+		
+		var $savingtabs = $("#savingtabs" + accountId).tabs({
+			"show": function(event, ui) {
+				var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+      			var curTabID = curTab.prop("id")
+			}
+		});
+		
+		$('.rejectsavingapplication').button().click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("rejectsavingbtn", "");
+			var postUrl = 'savingaccounts/' + savingAccountId + '?command=reject';
+			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
+			var templateSelector = "#stateTransitionDepositFormTemplate";
+			var width = 400; 
+			var height = 250;
+
+			popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.button.reject.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadClient);
+		    e.preventDefault();
+		});
+		$('button.rejectsavingapplication span').text(doI18N('dialog.button.reject.depositAccount'));
+		
+		$('.approvesavingapplication').button().click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("savingapprovebtn", "");
+			var postUrl = 'savingaccounts/' + savingAccountId + '?command=approve';
+			var templateSelector = "#stateTransitionSavingFormTemplateForApprove";
+			var width = 500; 
+			var height = 425;
+			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
+			
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.approve.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    
+			e.preventDefault();
+		});
+		$('button.approvesavingapplication span').text(doI18N('dialog.title.approve.depositAccount'));
+		
+		$('.withdrawsavingamount').button().click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("savingwithdrawbtn", "");
+			var postUrl = 'savingaccounts/' + savingAccountId + '?command=withdraw';
+			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
+			var templateSelector = "#withdrawSavingAmountFormTemplate";
+			var width = 400; 
+			var height = 280;
+
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdraw.deposit.amount', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    
+			e.preventDefault();
+		});
+		$('button.withdrawsavingamount span').text(doI18N('label.withdraw.deposit.amount'));
+		
+		$('.modifysavingapplication').button().click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("modifysavingbtn", "");
+			var postUrl = 'savingaccounts/' + savingAccountId;
+			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true&?associations=all';
+			var templateSelector = "#modifySavingAccountFormTemplate";
+			var width = 850; 
+			var height = 430;
+
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupDialogWithFormView(getUrl, postUrl, 'PUT', 'dialog.title.edit.deposit.account', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    
+			e.preventDefault();
+		});
+		$('button.modifysavingapplication span').text(doI18N('label.modify.deposit.account'));
+
+		
+		$('.undoapprovesavingapplication').button().click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("undosavingapprovebtn", "");
+			var postUrl = 'savingaccounts/' + savingAccountId + '?command=undoapproval';
+			var templateSelector = "#undoStateTransitionLoanFormTemplate";
+			var width = 450; 
+			var height = 260;
+
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.deposit.approval', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    
+			e.preventDefault();
+		});
+		$('button.undoapprovesavingapplication span').text(doI18N('label.undo.approval'));
+		
+		$('.savingwithdrawnbyapplicant').button().click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("withdrawbyapplicantbtn", "");
+			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
+			var postUrl = 'savingaccounts/' + savingAccountId + '?command=withdrewbyclient';
+			var templateSelector = "#stateTransitionDepositFormTemplate";
+			var width = 400; 
+			var height = 250;
+
+			popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.title.loan.withdrawn.by.client', templateSelector, width, height, saveSuccessFunctionReloadClient);
+		    e.preventDefault();
+		});
+		$('button.savingwithdrawnbyapplicant span').text(doI18N('dialog.title.loan.withdrawn.by.client'));
+		
+		$('.paysavinginstallment').button().click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("savingpaymentbtn", "");
+			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
+			var postUrl = 'savingaccounts/' + savingAccountId + '?command=depositmoney';
+			var templateSelector = "#paySavingInstallmentsFormTemplate";
+			var width = 400; 
+			var height = 250;
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.title.saving.pay.installment.due', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    e.preventDefault();
+		});
+		$('button.paysavinginstallment span').text(doI18N('dialog.title.saving.pay.installment.due'));
+		
+		$('.deletesavingapplication').button().click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("deletesavingbtn", "");
+			var url = 'savingaccounts/' + savingAccountId;
+			var width = 400; 
+			var height = 225;
+									
+			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
+		    e.preventDefault();
+	});
+	$('button.deletesavingapplication span').text(doI18N('dialog.button.delete.loan'));
+		
 	}
 		
 	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
@@ -5074,6 +5224,47 @@ function repopulateSavingAccountForm(clientId, productId){
 		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 		
+		calculateSavingSchedule();
+		
+		$('#commencementDate').change(function() {
+			calculateSavingSchedule();
+		});
+
+		$('#externalId').change(function() {
+			calculateSavingSchedule();
+		});
+
+		$('#savingsDepositAmountPerPeriod').change(function() {
+			calculateSavingSchedule();
+		});
+
+		$('#depositEvery').change(function() {
+			calculateSavingSchedule();
+		});
+						
+		$('#tenure').change(function() {
+			calculateSavingSchedule();
+		});
+		
+		$('#tenureType').change(function() {
+			calculateSavingSchedule();
+		});
+
+		$('#savingInterestRate').change(function() {
+			calculateSavingSchedule();
+		});
+		$('#recurringInterestRate').change(function() {
+			calculateSavingSchedule();
+		});
+		
+		$('#interestCalculationMethod').change(function() {
+			calculateSavingSchedule();
+		});
+
+		$('#interestType').change(function() {
+			calculateSavingSchedule();
+		});
+		
 		$('#submitsavingaccountapp').button().click(function(e) {
 			submitSavingAccountApplication(clientId);
 		    e.preventDefault();
@@ -5100,4 +5291,57 @@ function repopulateSavingAccountForm(clientId, productId){
 	
 	executeAjaxRequest('savingaccounts', "POST", newFormData, successFunction, formErrorFunction);	  
 
-}
+  } 
+	
+  function genSaveSuccessFunctionReloadSaving(savingAccountId) {
+
+		return 'var saveSuccessFunctionReloadSaving = function(data, textStatus, jqXHR) { ' + 
+						  	' $("#dialog-form").dialog("close");' +
+							' loadSavingAccount(' + savingAccountId + ');' +
+							' clientDirty = true;' +
+						'};';
+	}	
+  
+  function checkSubmit(e, logonDivName, username, password)
+  {
+     if(e && e.keyCode == 13)
+     {
+    	 setBasicAuthKey(logonDivName, username, password);
+     }
+  }
+  
+	function calculateSavingSchedule() {
+		
+		var newFormData = JSON.stringify($('#entityform').serializeObject());
+    	
+		var successFunction = function(data, textStatus, jqXHR) {
+				  		removeErrors("#formerrors");
+				  		var savingScheduleHtml = $("#newSavingScheduleTemplate").render(data);
+				  		$("#schedulearea").html(savingScheduleHtml);
+		};
+		
+		var errorFunction = function(jqXHR, textStatus, errorThrown) {
+						 $("#schedulearea").html("");
+						 handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+		};
+		executeAjaxRequest('savingaccounts?command=calculateSavingSchedule', "POST", newFormData, successFunction, errorFunction);	  
+	}
+	
+	/*function showTenure() {
+		  var e = document.getElementById("tenureType");
+		  var str=e.options[e.selectedIndex].value;
+		  if(str == 1) {
+			document.getElementById("tenure").style.display = "inline";
+		 } else { 
+			document.getElementById("tenure").style.display = "none";
+		 }
+		}*/
+	
+	function postInterestForSavingAccounts(){
+		var url = 'savingaccounts/postinterest';
+		var width = 400; 
+		var height = 225;
+								
+		popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
+	}
+
