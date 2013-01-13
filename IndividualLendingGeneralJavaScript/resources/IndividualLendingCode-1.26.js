@@ -3250,6 +3250,23 @@ function loadILLoan(loanId) {
 				});
 				$('button.assignloanofficer span').text(doI18N('dialog.button.loan.reassignment'));
 
+				$('.editaccountnobtn').button().click(function(e){
+
+					var linkId = this.id;
+					var loanId = linkId.replace("editaccountnobtn", "");
+					var putUrl = 'loans/' + loanId;
+					var getUrl = 'loans/' + loanId;
+
+					var templateSelector = "#editAccountNoFormTemplate";
+					var width = 425; 
+					var height = 225;
+
+					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.accountno", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
+				    e.preventDefault();
+				});
+				$('button.editaccountnobtn span').text(doI18N('link.edit'));
+				
 				custom.showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
 				//also fetch loan documents for this loan

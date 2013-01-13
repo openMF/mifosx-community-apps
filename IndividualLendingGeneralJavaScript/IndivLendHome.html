@@ -2294,7 +2294,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each pendingApprovalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -2305,7 +2305,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.disbursal.loans")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each awaitingDisbursalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -2316,7 +2316,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.active.loans")}} ({{=$ctx.number(activeLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each openLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -2327,7 +2327,7 @@ $(document).ready(function() {
 	<div class="longrowlabel">{{=$ctx.doI18N("label.client.account.closed.loans")}} ({{=$ctx.number(closedLoanCount)}}):</div>
 	<div class="rowvalue">
 	{{#each closedLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</div>
 </div>
@@ -3266,7 +3266,7 @@ $(document).ready(function() {
 </script>
 
 <script id="modifyApprovedDepositApplicationFormTemplate" type="text/x-jquery-tmpl">
- <form id="entityform">
+<form id="entityform">
     <div id="formerrors"></div>
 
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
@@ -3302,6 +3302,19 @@ $(document).ready(function() {
 				</td>
 			</tr>
 		</table>
+ </form>
+</script>
+
+<script id="editAccountNoFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<label for="accountNo">{{=$ctx.doI18N("label.accountIdentifier")}}</label>
+	<input id="accountNo" name="accountNo" title="" type="text" value="{{=accountNo}}" />
+
+	<label for="externalId">{{=$ctx.doI18N("form.label.externalId")}}</label>
+	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
+	
  </form>
 </script>
 
@@ -3430,6 +3443,28 @@ $(document).ready(function() {
     <!-- first loan tab -->
 
 	<div id="details{{=id}}" style="margin-top: 5px;">
+		{{#if accountNo}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.accountIdentifier")}}</span>
+			<span class="rowvalue">
+			{{=accountNo}}
+			{{#if $ctx.showTask("MODIFYLOAN")}}
+			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn"><span>Edit</span></button>
+			{{/if}}
+			</span>
+		</div>
+		{{/if}}
+		{{#if externalId}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.externalid")}}</span>
+			<span class="rowvalue">
+			{{=externalId}}
+			{{#if $ctx.showTask("MODIFYLOAN")}}
+			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn"><span>Edit</span></button>
+			{{/if}}
+			</span>
+		</div>
+		{{/if}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.status")}}</span>
 			<span class="rowvalue">{{=$ctx.doI18N(status.code)}} ({{=$ctx.doI18N("label.client.account.loan.status.since")}} {{=$ctx.globalDate(lifeCycleStatusDate)}})
@@ -3516,10 +3551,6 @@ $(document).ready(function() {
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.fund")}}</span>
 			<span class="rowvalue">{{=fundName}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.externalid")}}</span>
-			<span class="rowvalue">{{=externalId}}</span>
 		</div>
 		<br/>
 		<div class="row">
