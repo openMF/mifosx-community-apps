@@ -2016,7 +2016,7 @@ $(document).ready(function() {
 			<td>
 				<div class="multiselectwidget">
 					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
-					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:200px;height:125px;">
+					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
 					{{#each allowedClients}}
 						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
 		            {{/each}}
@@ -2027,7 +2027,7 @@ $(document).ready(function() {
 			<td>
 				<div class="multiselectwidget">
 					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
-					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:200px;height:125px;">
+					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
 					{{#each clientMembers}}
 						{{#if officeName}}
 							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>

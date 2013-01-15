@@ -1337,8 +1337,8 @@ function showILGroupListing(){
 		var getUrl = 'groups/template';
 		var postUrl = 'groups';
 		var templateSelector = "#groupFormTemplate";
-		var width = 600; 
-		var height = 450;
+		var width = 900; 
+		var height = 500;
 		
 		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.group', templateSelector, width, height, addGroupSuccessFunction);
 		
@@ -1863,8 +1863,8 @@ function showILGroup(groupId){
 			var getUrl = 'groups/' + groupId + '?template=true';
 			var putUrl = 'groups/' + groupId;
 			var templateSelector = "#groupFormTemplate";
-			var width = 600; 
-			var height = 450;
+			var width = 900; 
+			var height = 500;
 			
 			var saveSuccessFunction = function(data, textStatus, jqXHR) {
 			  	$("#dialog-form").dialog("close");
@@ -2844,12 +2844,19 @@ function showILLoan(loanId, product, loanAccountNo) {
 	if(tabExists(newLoanTabId)){
 		var index = $('#newtabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
 		$('#newtabs').tabs('select', index);
-		var title = product + ": #" + loanAccountNo;
+		
+		var title = product + ": #" + loanAccountNo;		
+		if (undefined === loanAccountNo) {
+			title = product + ": #" + loanId;
+		}
 		$('#newtabs .ui-tabs-selected:first a').text(title);
 	}
 	//else create new tab and set identifier properties
 	else{
-		var title = product + ": #" + loanAccountNo;			    
+		var title = product + ": #" + loanAccountNo;		
+		if (undefined === loanAccountNo) {
+			title = product + ": #" + loanId;
+		}
 		$newtabs.tabs( "add", "unknown.html", title);
 		loadILLoan(loanId);
 		//add ids and titles to newly added div's and a'hrefs
