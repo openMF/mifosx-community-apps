@@ -2838,16 +2838,18 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	
 
 
-function showILLoan(loanId, product) {
+function showILLoan(loanId, product, loanAccountNo) {
 	var newLoanTabId='loan'+loanId+'tab';
 	//show existing tab if this Id is already present
 	if(tabExists(newLoanTabId)){
 		var index = $('#newtabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
 		$('#newtabs').tabs('select', index);
+		var title = product + ": #" + loanAccountNo;
+		$('#newtabs .ui-tabs-selected:first a').text(title);
 	}
 	//else create new tab and set identifier properties
 	else{
-		var title = product + ": #" + loanId ;			    
+		var title = product + ": #" + loanAccountNo;			    
 		$newtabs.tabs( "add", "unknown.html", title);
 		loadILLoan(loanId);
 		//add ids and titles to newly added div's and a'hrefs
@@ -2880,7 +2882,6 @@ function loadILLoan(loanId) {
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
 	        	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
-	        	//$(anchor.hash).html("error occured while ajax loading.");
 	};
 
 	var successFunction = function(data, status, xhr) {

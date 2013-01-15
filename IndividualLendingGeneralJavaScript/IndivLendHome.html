@@ -1691,6 +1691,7 @@ $(document).ready(function() {
 		<thead>
 			<tr>
 				<th>{{=$ctx.doI18N("client.search.table.header.office")}}</th>
+				<th>{{=$ctx.doI18N("client.search.table.header.client.accountNo")}}</th>
 				<th>{{=$ctx.doI18N("client.search.table.header.displayname")}}</th>
 			</tr>
 		</thead>
@@ -1698,6 +1699,7 @@ $(document).ready(function() {
 			{{#each crudRows}}
 			<tr>
 				<td>{{=officeName}}</td>
+				<td><a id='navigateToClient{{=id}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=id}});">{{=accountNo}}</a></td>
 				<td><a id='navigateToClient{{=id}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=id}});">{{=displayName}}</a></td>				
 			</tr>
 			{{/each}}
@@ -2294,7 +2296,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each pendingApprovalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -2305,7 +2307,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.pending.disbursal.loans")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each awaitingDisbursalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -2316,7 +2318,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.active.loans")}} ({{=$ctx.number(activeLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each openLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -2327,7 +2329,7 @@ $(document).ready(function() {
 	<div class="longrowlabel">{{=$ctx.doI18N("label.client.account.closed.loans")}} ({{=$ctx.number(closedLoanCount)}}):</div>
 	<div class="rowvalue">
 	{{#each closedLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</div>
 </div>
