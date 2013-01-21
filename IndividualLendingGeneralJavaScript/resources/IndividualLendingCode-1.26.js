@@ -614,7 +614,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 			e.preventDefault();
 		});
 	}
-	executeAjaxRequest('glaccounts?manualAdjustmentsAllowed=true&usage=DETAIL&disabled=false', 'GET', "", getAccountsSuccessFunction, formErrorFunction);
+	executeAjaxRequest('glaccounts?manualAdjustmentsAllowed=true&usage=1&disabled=false', 'GET', "", getAccountsSuccessFunction, formErrorFunction);
 
 	/** *function called on successfully fetching Journal Account details** */
 	var journalEntriesFetchSuccessFunction = function(data) {
@@ -845,7 +845,7 @@ function handleCOATabSelection(){
 		            primary: "ui-icon-pencil"},
 					text: false
 		            }).click(function(e) {
-					var getUrl = 'glaccounts/'+val.id;
+					var getUrl = 'glaccounts/'+val.id+ '?template=true';
 					var putUrl = 'glaccounts/'+val.id;
 					var templateSelector = "#glAccountsFormTemplate";
 					var width = 600; 
@@ -911,7 +911,7 @@ function handleCOATabSelection(){
 	$("#addglaccount").button({icons: {
 	    primary: "ui-icon-circle-plus"}
 	    }).click(function(e){
-	  	var getUrl = "";
+	  	var getUrl = 'glaccounts/template';
 		var putUrl = "glaccounts";
 		var templateSelector = "#glAccountsFormTemplate";
 		var width = 600; 
@@ -952,31 +952,31 @@ function handleCOATabSelection(){
 		if (index == 1)
 		{
 			divToUpdate="#coatabs-asset";
-			executeAjaxRequest('glaccounts?classification=ASSET', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?classification=1', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 		// liabilities tab selected
 		if (index == 2)
 		{
 			divToUpdate="#coatabs-liabilities";
-			executeAjaxRequest('glaccounts?classification=LIABILITY', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?classification=2', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 		// equity tab selected
 		if (index == 3)
 		{
 			divToUpdate="#coatabs-equity";
-			executeAjaxRequest('glaccounts?classification=EQUITY', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?classification=3', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 		// income tab selected
 		if (index == 4)
 		{
 			divToUpdate="#coatabs-income";
-			executeAjaxRequest('glaccounts?classification=INCOME', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?classification=4', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 		// expenses tab selected
 		if (index == 5)
 		{
 			divToUpdate="#coatabs-expenses";
-			executeAjaxRequest('glaccounts?classification=EXPENSE', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?classification=5', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 	}
 
