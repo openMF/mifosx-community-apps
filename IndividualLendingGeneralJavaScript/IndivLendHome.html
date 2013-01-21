@@ -6682,7 +6682,7 @@ function showLockinOptions(){
 			<tr>
 				<td>{{=name}}</td>
 				<td>{{=glCode}}</td>
-				<td>{{=classification}}</td>
+				<td>{{=type.value}}</td>
 				<td>
 					{{#if disabled == true}}
 						Yes
@@ -6698,11 +6698,7 @@ function showLockinOptions(){
 					{{/if}}
 				</td>
 				<td>
-					{{#if headerAccount == true}}
-						Header
-					{{#else}}
-					    Detail		
-					{{/if}}
+					{{=usage.value}}
 				</td>
 				<td>
 						<span>	
@@ -6735,7 +6731,7 @@ function showLockinOptions(){
 	</tr>
 	<tr>
 		<td>{{=$ctx.doI18N("coa.info.account.classification")}}</td>
-		<td>{{=classification}}</td>
+		<td>{{=type.value}}</td>
 	</tr>
 	<tr>
 		<td>{{=$ctx.doI18N("coa.info.account.description")}}</td>
@@ -6764,11 +6760,7 @@ function showLockinOptions(){
 	<tr>
 		<td>{{=$ctx.doI18N("coa.info.account.usage")}}</td>
 		<td>
-			{{#if headerAccount == true}}
-				Header Account
-			{{#else}}
-				Detail Account		
-			{{/if}}
+			{{=usage.value}}
 		</td>
 	</tr>
 </table>
@@ -6781,7 +6773,7 @@ function showLockinOptions(){
 	<table>
 		<tr>
 			<td><label for="name">{{=$ctx.doI18N("coa.info.account.name")}}</label></td>	
-			<td><input id="name" name="name" value="{{=name}}" type="text"/></td>
+			<td><input id="name" name="name" value="{{=name}}" type="text" style="width: 200px"/></td>
 		</tr>
 		<tr>
 			<td><label for="glCode">{{=$ctx.doI18N("coa.info.gl.code")}}</label></td>
@@ -6792,44 +6784,27 @@ function showLockinOptions(){
 			<td><label for="classification">{{=$ctx.doI18N("coa.info.account.classification")}}</label></td>
 			<td>
 				<select name="classification" id="classification">
-				  {{#if classification == "ASSET" }}
-					 <option value="ASSET" selected="selected">{{=$ctx.doI18N("coa.add.classification.asset.label")}}</option>
-				  {{#else}}
-				  	 <option value="ASSET">{{=$ctx.doI18N("coa.add.classification.asset.label")}}</option>
-				  {{/if}}
-				  {{#if classification == "LIABILITY" }}
-					 <option value="LIABILITY" selected="selected">{{=$ctx.doI18N("coa.add.classification.liability.label")}}</option>
-				  {{#else}}
-				  	 <option value="LIABILITY">{{=$ctx.doI18N("coa.add.classification.liability.label")}}</option>
-				  {{/if}}
-				  {{#if classification == "EQUITY" }}
-					<option value="EQUITY" selected="selected">{{=$ctx.doI18N("coa.add.classification.equity.label")}}</option>
-				  {{#else}}
-				  	<option value="EQUITY">{{=$ctx.doI18N("coa.add.classification.equity.label")}}</option>
-				  {{/if}}
-				  {{#if classification == "INCOME" }}
-					<option value="INCOME" selected="selected">{{=$ctx.doI18N("coa.add.classification.income.label")}}</option>
-				  {{#else}}
-				  	<option value="INCOME">{{=$ctx.doI18N("coa.add.classification.income.label")}}</option>
-				  {{/if}}
-				  {{#if classification == "EXPENSE" }}
-					<option value="EXPENSE" selected="selected">{{=$ctx.doI18N("coa.add.classification.expense.label")}}</option>
-				  {{#else}}
-				  	<option value="EXPENSE">{{=$ctx.doI18N("coa.add.classification.expense.label")}}</option>
-				  {{/if}}
+				  {{#each accountTypeOptions}}
+						{{#if $parent.parent.data.type.value === value}}
+							<option value="{{=id}}" selected="selected">{{=value}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=value}}</option>
+						{{/if}}
+			      {{/each}}
 				</select>
 			</td>
 		</tr> 
 		<tr>
-			<td><label for="headerAccount">{{=$ctx.doI18N("coa.info.account.usage")}}</label></td>
+			<td><label for="usage">{{=$ctx.doI18N("coa.info.account.usage")}}</label></td>
 			<td>
-				<select name="headerAccount" id="headerAccount">
-				  <option value="false">{{=$ctx.doI18N("coa.add.account.usage.detail.label")}}</option>
-				  {{#if headerAccount}}
-				 	 <option value="true" selected="selected">{{=$ctx.doI18N("coa.add.account.usage.header.label")}}</option>
-				  {{#else}}
-				  	 <option value="true">{{=$ctx.doI18N("coa.add.account.usage.header.label")}}</option>
-				  {{/if}} 
+				<select name="usage" id="usage">
+				  {{#each usageOptions}}
+						{{#if $parent.parent.data.usage.value === value}}
+							<option value="{{=id}}" selected="selected">{{=value}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=value}}</option>
+						{{/if}}
+			      {{/each}}
 				</select>
 			</td>
 		</tr>
@@ -7080,18 +7055,18 @@ function showLockinOptions(){
 			<tr>
 				<td>{{=officeName}}</td>
 				<td>{{=$ctx.globalDate(entryDate)}}</td>
-				<td>{{=glAccountClassification}}</td>
+				<td>{{=glAccountClassification.value}}</td>
 				<td>{{=glAccountName}}</td>
 				<td>{{=createdByUserName}}</td>
 				<td>{{=id}}</td>
 				<td>{{=transactionId}}</td>
 				<td>
-					{{#if entryType == "CREDIT"}}
+					{{#if entryType.value == "CREDIT"}}
 						{{=$ctx.decimal(amount, 2)}}
 					{{/if}}
 				</td>
 				<td>
-					{{#if entryType == "DEBIT"}}
+					{{#if entryType.value == "DEBIT"}}
 						{{=$ctx.decimal(amount, 2)}}
 					{{/if}}
 				</td>
