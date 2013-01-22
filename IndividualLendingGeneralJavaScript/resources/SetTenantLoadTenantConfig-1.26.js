@@ -208,15 +208,15 @@ custom.helperFunctions = {
 			return commandAsJson;
 		}
 	},
-	getDataTableFieldEntry : function(data, rowNum, fieldName, displayMode) {
+	getDataTableFieldEntry : function(data, fieldName, displayMode, updateColumnTagExtra) {
 
-		return jQuery.stretchyDataTables.getDataTableFieldEntry(data, rowNum,
-				fieldName, displayMode);
+		return jQuery.stretchyDataTables.getDataTableFieldEntry(data, 
+				fieldName, displayMode, updateColumnTagExtra);
 	},
-	getDataTableFieldValueEntry : function(data, rowNum, fieldName, displayMode) {
+	getDataTableFieldValueEntry : function(data, fieldName, displayMode, updateColumnTagExtra) {
 
 		return jQuery.stretchyDataTables.getDataTableFieldValueEntry(data,
-				rowNum, fieldName, displayMode);
+				fieldName, displayMode, updateColumnTagExtra);
 	},
 	getDataTableStartForm : function(displayMode, displayButtons, datatableName) {
 

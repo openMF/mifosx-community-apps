@@ -64,6 +64,7 @@ CEDA_Functions.onChangeIMRepaid = function() {
 		disabled = false;
 
 	$("#ReasonNotRepaidOnSchedule").attr('disabled', disabled);
+	
 }
 
 CEDA_Functions.onChangeIMJobs = function() {
