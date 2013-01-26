@@ -4603,9 +4603,9 @@ function setCulture(cultureVal) {
     	
     	$.datepicker.setDefaults( $.datepicker.regional[currentCulture]);
  
-	var tenantTranslation = "messages-" + tenantIdentifier;
+    	var tenantTranslation = "messages-" + tenantIdentifier;
     	jQuery.i18n.properties({
-			name:['messages', tenantTranslation], 
+			name:['messages', 'messages-platform-validation', tenantTranslation], 
 			path: 'resources/global-translations/',
 			mode:'map',
 			cache: true,
