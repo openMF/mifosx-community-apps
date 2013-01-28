@@ -5098,7 +5098,9 @@ $(document).ready(function() {
 			<th>{{=$ctx.doI18N("table.heading.officetransaction.currency")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.officetransaction.transactionAmount")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.officetransaction.description")}}</th>
-
+			{{#if $ctx.showTask("DELETEOFFICEMONEYTXN")}}
+			<th>&nbsp;</th>
+			{{/if}}
 		</tr>
 	</thead>
 	<tbody>
@@ -5110,6 +5112,11 @@ $(document).ready(function() {
 	<td>{{=currency.displayLabel}}</td>
 	<td align="right">{{=$ctx.decimal(transactionAmount, currency.decimalPlaces)}}</td>
 	<td>{{=description}}</td>
+	{{#if $ctx.showTask("DELETEOFFICEMONEYTXN")}}
+	<td>
+		<a id='deleteofficetransaction{{=id}}' class='deleteofficetransaction' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+	</td>
+	{{/if}}
 </tr>
 {{/each}}
 	</tbody>

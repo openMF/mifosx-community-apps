@@ -3433,7 +3433,7 @@ function refreshLoanDocuments(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 
