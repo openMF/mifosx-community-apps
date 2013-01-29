@@ -4585,8 +4585,6 @@ $(document).ready(function() {
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.product.name")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.fund.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.product.created")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.product.modified")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.product.active")}}</th>
 			<th>&nbsp;</th>
 		</tr>
@@ -4596,9 +4594,7 @@ $(document).ready(function() {
 <tr>
 	<td title='{{=description}}'>{{=name}}</td>
 	<td>{{=fundName}}</td>
-	<td>{{=$ctx.globalDateTime(createdOn)}}</td>
-	<td>{{=$ctx.globalDateTime(lastModifedOn)}}</td>
-	<td>Yes</td>
+	<td>{{{=$ctx.doI18N("boolean.true")}}}}</td>
 	<td>
 		<a id='deactivateloanproduct{{=id}}' class='deactivateloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deactivate")}}</a>
 		<a id='editloanproduct{{=id}}' class='editloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
