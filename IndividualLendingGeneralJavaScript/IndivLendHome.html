@@ -3404,12 +3404,6 @@ $(document).ready(function() {
 			{{/if}}
 		{{/if}}
 			
-		{{#if editGuarantorAllowed}}
-			{{#if $ctx.showTask("REMOVELOANGUARANTOR")}}
-			<button id="removeGuarantorbtn{{=$parent.parent.parent.parent.data.id}}" class="removeguarantor">{{=$ctx.doI18N("guarantor.button.label")}}</button>
-			{{/if}}
-		{{/if}}
-	
 		{{#if closeLoanAsRescheduledAllowed}}
 			{{#if $ctx.showTask("CLOSEASRESCHEDULEDLOAN")}}
 			<button id="closeasrescheduledbtn{{=$parent.parent.parent.parent.data.id}}" class="closeasrescheduledloan">Close as rescheduled</button>
@@ -3577,61 +3571,73 @@ $(document).ready(function() {
 		</div>
 		
 		<br/>
-		{{#if guarantorData}}
-		<b>{{=$ctx.doI18N("guarantor.details.feildset.label")}}</b>
-		<div class="row">
-				<span class="longrowlabel">{{=$ctx.doI18N("guarantor.name.label")}}</span>
-				<span class="rowvalue">{{=guarantorData.lastname}}, {{=guarantorData.firstname}}</span>
-		</div>
 		
-		{{#if guarantorData.externalGuarantor == false}}
-		<div class="row">
-				<span class="longrowlabel">{{=$ctx.doI18N("guarantor.branch.name.label")}}</span>
-				<span class="rowvalue">{{=guarantorData.officeName}}</span>
-		</div>
-		<div class="row">
-				<span class="longrowlabel">{{=$ctx.doI18N("guarantor.branch.joiningdate.label")}}</span>
-				<span class="rowvalue">{{=$ctx.globalDate(guarantorData.joinedDate)}}</span>
-		</div>
-		{{/if}}
-		{{#if guarantorData.externalGuarantor == true}}
-			{{#if guarantorData.dob == true}}
+		{{#if guarantors}}
+			<b>{{=$ctx.doI18N("guarantor.details.feildset.label")}}</b>
+			{{#each guarantors}}
 				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.dob.label")}}</span>
-						<span class="rowvalue">{{=$ctx.globalDate(guarantorData.dob)}}</span>
+					<span class="longrowlabel">&nbsp;</span>
+					<span class="rowvalue">
+						{{#if $ctx.showTask("REMOVELOANGUARANTOR")}}
+							<button id="removeguarantor{{=id}}" class="removeguarantor">Remove</button>
+						{{/if}}	
+					</span>
 				</div>
-			{{/if}}
-			{{#if guarantorData.addressLine1}}
 				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.address.label")}}</span>
-						<span class="rowvalue">{{=guarantorData.addressLine1}}, {{=guarantorData.addressLine2}}</span>
+						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.name.label")}}</span>
+						<span class="rowvalue">{{=lastname}}, {{=firstname}}</span>
 				</div>
-			{{/if}}
-			{{#if guarantorData.zip}}
+				
+				{{#if guarantorType.value == "CUSTOMER"}}
 				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.zip.label")}}</span>
-						<span class="rowvalue">{{=guarantorData.zip}}</span>
+						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.branch.name.label")}}</span>
+						<span class="rowvalue">{{=officeName}}</span>
 				</div>
-			{{/if}}
-			{{#if guarantorData.city}}
 				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.city.label")}}</span>
-						<span class="rowvalue">{{=guarantorData.city}}</span>
+						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.branch.joiningdate.label")}}</span>
+						<span class="rowvalue">{{=$ctx.globalDate(joinedDate)}}</span>
 				</div>
-			{{/if}}
-			{{#if guarantorData.mobileNumber}}
-				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.mobile.label")}}</span>
-						<span class="rowvalue">{{=guarantorData.mobileNumber}}</span>
-				</div>
-			{{/if}}
-			{{#if guarantorData.housePhoneNumber}}
-				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("guarantor.house.phone.number.label")}}</span>
-						<span class="rowvalue">{{=guarantorData.housePhoneNumber}}</span>
-				</div>
-			{{/if}}
-		{{/if}}
+				{{/if}}
+				{{#if guarantorType.value == "EXTERNAL"}}
+					{{#if dob == true}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("guarantor.dob.label")}}</span>
+								<span class="rowvalue">{{=$ctx.globalDate(dob)}}</span>
+						</div>
+					{{/if}}
+					{{#if addressLine1}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("guarantor.address.label")}}</span>
+								<span class="rowvalue">{{=addressLine1}}, {{=addressLine2}}</span>
+						</div>
+					{{/if}}
+					{{#if zip}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("guarantor.zip.label")}}</span>
+								<span class="rowvalue">{{=zip}}</span>
+						</div>
+					{{/if}}
+					{{#if city}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("guarantor.city.label")}}</span>
+								<span class="rowvalue">{{=city}}</span>
+						</div>
+					{{/if}}
+					{{#if mobileNumber}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("guarantor.mobile.label")}}</span>
+								<span class="rowvalue">{{=mobileNumber}}</span>
+						</div>
+					{{/if}}
+					{{#if housePhoneNumber}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("guarantor.house.phone.number.label")}}</span>
+								<span class="rowvalue">{{=housePhoneNumber}}</span>
+						</div>
+					{{/if}}
+				{{/if}}
+				<br/>
+			{{/each}}
 		{{/if}}
 
 	</div>
@@ -4031,6 +4037,7 @@ $(document).ready(function() {
 <!-- Set a guarantor-->
 <script id="guarantorFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
+	<input type="hidden" id="guaranteedLoanId" name="guaranteedLoanId" />
     <div id="formerrors"></div>
     
     <table>
@@ -4057,20 +4064,20 @@ $(document).ready(function() {
 	    	<legend>{{=$ctx.doI18N("guarantor.details.feildset.label")}}</legend>
 			<table>
 				<tr>
-					<td><label for="documentKey">{{=$ctx.doI18N("guarantor.name.label")}}</label></td>
+					<td><label for="selectedGuarantorName">{{=$ctx.doI18N("guarantor.name.label")}}</label></td>
 					<td><input readonly="true" id="selectedGuarantorName" name="selectedGuarantorName" title="" type="text" value=""/></td>
 					
 				</tr>
 				<tr>
-					<td><label for="documentKey">{{=$ctx.doI18N("guarantor.identifier.label")}}</label></td>
+					<td><label for="selectedGuarantorIdentifier">{{=$ctx.doI18N("guarantor.identifier.label")}}</label></td>
 					<td><input readonly="true" id="selectedGuarantorIdentifier" name="selectedGuarantorIdentifier" title="" type="text" value=""/></td>
 				</tr>
 				<tr>	
-					<td><label for="documentKey">{{=$ctx.doI18N("guarantor.branch.name.label")}}</label></td>
+					<td><label for="selectedGuarantorBranch">{{=$ctx.doI18N("guarantor.branch.name.label")}}</label></td>
 					<td><input readonly="true" id="selectedGuarantorBranch" name="selectedGuarantorBranch" title="" type="text" value=""/></td>
 				</tr>
 				<tr>	
-					<td><label for="documentKey">{{=$ctx.doI18N("guarantor.branch.joiningdate.label")}}</label></td>
+					<td><label for="selectedGuarantorJoinedDate">{{=$ctx.doI18N("guarantor.branch.joiningdate.label")}}</label></td>
 					<td><input readonly="true" id="selectedGuarantorJoinedDate" name="selectedGuarantorJoinedDate" title="" type="text" value=""/></td>
 				</tr>
 			</table>

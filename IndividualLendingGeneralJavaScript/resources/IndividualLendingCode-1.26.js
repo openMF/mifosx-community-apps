@@ -3179,15 +3179,19 @@ function loadILLoan(loanId) {
 	            	}).click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("setGuarantorbtn", "");
-						var postUrl = 'loans/' + loanId + '/guarantor';
+						var postUrl = 'guarantors';
 						
 						var templateSelector = "#guarantorFormTemplate";
 						var width = 600; 
 						var height = 350;
+						
+						
 						eval(genSaveSuccessFunctionReloadLoan(loanId));
 						
 	            		popupDialogWithFormView("", postUrl, 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
 	            		
+	            		//update hidden loan Id
+	            		$("#guaranteedLoanId").val(loanId);
 	            		//initially hide external guarantor div
 	            		$('#externalGuarantorDiv').hide();
 	            		$("#internalGuarantorCheckbox").change(function() {
@@ -3232,20 +3236,23 @@ function loadILLoan(loanId) {
 	            		e.preventDefault();
 	            });
 	            
-	            //remove guarantor
-				$('.removeguarantor').button(
-						{icons: {
-	                	primary: "ui-icon-trash"},
-	            	}).click(function(e) {
-						var linkId = this.id;
-						var loanId = linkId.replace("removeGuarantorbtn", "");
-						var deleteUrl = 'loans/' + loanId + '/guarantor';
-						var width = 500; 
-						var height = 350;
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
-						popupConfirmationDialogAndPost(deleteUrl, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan);
-	            		e.preventDefault();
-	            });
+	            //remove guarantor buttons
+	            if(data.guarantors !=null){
+		            $.each(data.guarantors, function(i, val) {
+		            	$('#removeguarantor'+val.id).button(
+							{icons: {
+		                	primary: "ui-icon-trash"},
+		                	text: false
+		            	}).click(function(e) {
+							var deleteUrl = 'guarantors/' + val.id;
+							var width = 500; 
+							var height = 350;
+							eval(genSaveSuccessFunctionReloadLoan(loanId));
+							popupConfirmationDialogAndPost(deleteUrl, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan);
+		            		e.preventDefault();
+		            	});
+				    });
+			    }
 	            
 				$('.assignloanofficer').button().click(function(e){
 
@@ -3980,10 +3987,12 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
     	   //TODO: Vishwas...var is repeated
     	   var serializedArray = {};
     	   var isChecked = $('#internalGuarantorCheckbox').is(':checked')
+    	   serializedArray["loanId"] = $('#guaranteedLoanId').val();
 		   if(isChecked){
-    	   	serializedArray["existingClientId"] = $('#selectedGuarantorIdentifier').val();
+    	   	serializedArray["entityId"] = $('#selectedGuarantorIdentifier').val();
+    	   	serializedArray["guarantorTypeId"] = 1;
     	   }else{
-    	   	serializedArray["externalGuarantor"] = true;
+    	   	serializedArray["guarantorTypeId"] = 3;
     	   	serializedArray["firstname"] = $('#guarantorFirstName').val();
     	   	serializedArray["lastname"] = $('#guarantorLastName').val();
     	   	serializedArray["dob"] = $('#guarantorDateOfBirth').val();
