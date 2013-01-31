@@ -273,7 +273,6 @@ function showLogon(logonDivName) {
 	$("#" + logonDivName).html(htmlVar);
 }
 
-
 function setClientListingContent(divName) {
 	var htmlVar = "";
 	
