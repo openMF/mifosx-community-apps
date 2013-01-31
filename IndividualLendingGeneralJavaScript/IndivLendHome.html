@@ -370,7 +370,7 @@ $(document).ready(function() {
 							<td>{{=$ctx.doI18N("label.fund")}}</td>
 							<td>
 								<select id="fundId" name="fundId" title="">
-									<option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
+									<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
 								{{#each fundOptions}}
 									{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
 										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
@@ -607,7 +607,7 @@ $(document).ready(function() {
 </script>
 
 <script id="loanChargeDetailsPartialFormTemplate" type="text/x-jquery-tmpl">
-<label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
+<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 <input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
 <label for="chargeCalculationType">{{=$ctx.doI18N("form.label.charge.calculation.type")}}</label>
 <select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 180px" disabled="disabled">
@@ -646,7 +646,7 @@ $(document).ready(function() {
 			<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
-			<label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
+			<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
 
 		{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
@@ -812,7 +812,7 @@ $(document).ready(function() {
 							<td>{{=$ctx.doI18N("label.fund")}}</td>
 							<td>
 								<select id="fundId" name="fundId" title="">
-									<option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
+									<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
 								{{#each fundOptions}}
 									{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
 										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
@@ -1142,7 +1142,7 @@ $(document).ready(function() {
                     <td>{{=$ctx.doI18N("label.fund")}}</td>
                     <td>
                         <select id="fundId" name="fundId" title="">
-                            <option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
+                            <option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
                         {{#each fundOptions}}
                             {{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
                                 <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
@@ -2047,7 +2047,7 @@ $(document).ready(function() {
 	<table width="100%">
 		<td align="center">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
-		   		<button id="addclientidentifier{{=clientId}}">{{=$ctx.doI18N("client.identifier.add")}}</button>
+		   		<button id="addclientidentifier{{=clientId}}">{{=$ctx.doI18N("button.add.identityType")}}</button>
 			</span>
 		</td>
 	</table>
@@ -2056,27 +2056,27 @@ $(document).ready(function() {
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
 				<tr>
-					<td colspan="3" align="center"><b>{{=$ctx.doI18N("client.identifier.label")}} {{=documentTypeName}}</b></td>
+					<td colspan="3" align="center"><b>{{=$ctx.doI18N("label.clientIdentityDocumentType")}} {{=documentTypeName}}</b></td>
 				</tr>
 				<tr>
 					<td colspan="1">
-						<label for="documentKey">{{=$ctx.doI18N("client.identifier.unique.key")}}</label>
+						<label for="documentKey">{{=$ctx.doI18N("label.identityDocumentNumber")}}</label>
 					</td>
 					<td>{{=documentKey}}</td>
 				<tr>
 				<tr>
-				   	<td><label for="description">{{=$ctx.doI18N("client.identifier.description")}}</label></td>
+				   	<td><label for="description">{{=$ctx.doI18N("label.description")}}</label></td>
 					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
 					<td>
 						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
-							<button id="addclientIdentifierdocument{{=id}}">{{=$ctx.doI18N("clientIdentifier.document.add")}}</button>
-					   		<button id="editclientidentifier{{=id}}">{{=$ctx.doI18N("client.identifier.edit")}}</button>
-					   		<button id="deleteclientidentifier{{=id}}">{{=$ctx.doI18N("client.identifier.delete")}}</button>
+							<button id="addclientIdentifierdocument{{=id}}">{{=$ctx.doI18N("link.action.upload")}}</button>
+					   		<button id="editclientidentifier{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
+					   		<button id="deleteclientidentifier{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
 						</span>
 					</td>
 				</tr>
 				<tr>
-				   	<td><label for="documents">{{=$ctx.doI18N("client.identifier.documents")}}</label></td>
+				   	<td><label for="documents">{{=$ctx.doI18N("label.identityDocuments")}}</label></td>
 				</tr>
 				<tr>
 					<td colspan="2" id="clientidentifier{{=id}}documents"></td>
@@ -2096,9 +2096,9 @@ $(document).ready(function() {
 	<table>
 		<tr>
 			<td>
-				<label for="documentTypeId">{{=$ctx.doI18N("client.identifier.document.type")}}</label>
+				<label for="documentTypeId">{{=$ctx.doI18N("label.identityDocumentType")}}</label>
 				<select id="documentTypeId" name="documentTypeId" title="">
-					<option value="">{{=$ctx.doI18N("client.identifier.document.type.option.first.choice")}}</option>
+					<option value="">{{=$ctx.doI18N("label.identityDocumentType.option.first.choice")}}</option>
 					{{#each allowedDocumentTypes}}
 				        {{#if $ctx.number($parent.parent.data.documentTypeId)===$ctx.number(id)}}
 							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
@@ -2109,13 +2109,13 @@ $(document).ready(function() {
 				</select>
 			</td>
 			<td>
-				<label for="documentKey">{{=$ctx.doI18N("client.identifier.unique.key")}}</label>
+				<label for="documentKey">{{=$ctx.doI18N("label.identityDocumentNumber")}}</label>
 				<input id="documentKey" name="documentKey" title="" type="text" value="{{=documentKey}}"/>
 			</td>
 		<tr>
 		<tr>
 			<td colspan="2" valign="top">
-				<label for="description">{{=$ctx.doI18N("client.identifier.description")}}</label>
+				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
 				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
 			</td>
 		</tr>
@@ -2194,7 +2194,7 @@ $(document).ready(function() {
 	<table width="100%">
 		<td align="center">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
-		   		<button id="addclientdocument{{=clientId}}">{{=$ctx.doI18N("client.document.add")}}</button>
+		   		<button id="addclientdocument{{=clientId}}">{{=$ctx.doI18N("button.document.add")}}</button>
 			</span>
 		</td>
 	</table>
@@ -2202,22 +2202,22 @@ $(document).ready(function() {
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
 				<tr>
-					<td>{{=$ctx.doI18N("client.document.name")}}</td>
+					<td>{{=$ctx.doI18N("label.name")}}</td>
 					<td>{{=name}}</td>
 				</tr>
 				<tr>
-				   	<td><label for="description">{{=$ctx.doI18N("client.document.description")}}</label></td>
+				   	<td><label for="description">{{=$ctx.doI18N("label.description")}}</label></td>
 					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
 					<td>
 						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
-							<button id="downloadclientdocument{{=id}}">{{=$ctx.doI18N("client.document.download")}}</button>
-					   		<button id="editclientdocument{{=id}}">{{=$ctx.doI18N("client.document.edit")}}</button>
-					   		<button id="deleteclientdocument{{=id}}">{{=$ctx.doI18N("client.document.delete")}}</button>
+							<button id="downloadclientdocument{{=id}}">{{=$ctx.doI18N("link.action.download")}}</button>
+					   		<button id="editclientdocument{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
+					   		<button id="deleteclientdocument{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
 						</span>
 					</td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("client.document.file.name")}}</td>
+					<td>{{=$ctx.doI18N("lable.filename")}}</td>
 					<td>{{=fileName}}</td>
 				</tr>
 				<tr>
@@ -2235,19 +2235,19 @@ $(document).ready(function() {
 	<table>
 		<tr>
 			<td>
-				<label for="name">{{=$ctx.doI18N("client.document.name")}}</label>
+				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<label for="description">{{=$ctx.doI18N("client.document.description")}}</label>
+				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
 				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
 			</td>
 		<tr>
 		<tr>
 			<td colspan="2" valign="top">
-				<label for="file">{{=$ctx.doI18N("client.document.file.select")}}</label>
+				<label for="file">{{=$ctx.doI18N("label.upload.browse")}}</label>
 				<input type="file" name="file" id="file" size="65"></input>
 			</td>
 		</tr>
@@ -2261,25 +2261,25 @@ $(document).ready(function() {
 	<table>
 		<tr>
 			<td>
-				<label for="name">{{=$ctx.doI18N("client.document.name")}}</label>
+				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<label for="description">{{=$ctx.doI18N("client.document.description")}}</label>
+				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
 				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
 			</td>
 		<tr>
 		<tr>
 			<td>
-				<label for="description">{{=$ctx.doI18N("client.document.current.file.name")}}</label>
+				<label for="description">{{=$ctx.doI18N("label.current.filename")}}</label>
 				{{=fileName}}
 			</td>
 		<tr>
 		<tr>
 			<td colspan="2" valign="top">
-				<label for="file">{{=$ctx.doI18N("client.document.file.new.select")}}</label>
+				<label for="file">{{=$ctx.doI18N("label.select.new.file")}}</label>
 				<input type="file" name="file" id="file" size="65"></input>
 			</td>
 		</tr>
@@ -3935,7 +3935,7 @@ $(document).ready(function() {
 	<table width="100%">
 		<td align="right">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
-		   			<button id="addloandocument{{=loanId}}">{{=$ctx.doI18N("loan.document.add")}}</button>
+		   			<button id="addloandocument{{=loanId}}">{{=$ctx.doI18N("button.document.add")}}</button>
 			</span>
 		</td>
 	</table>
@@ -3943,11 +3943,11 @@ $(document).ready(function() {
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
 				<tr>
-					<td>{{=$ctx.doI18N("loan.document.name")}}</td>
+					<td>{{=$ctx.doI18N("label.name")}}</td>
 					<td>{{=name}}</td>
 				</tr>
 				<tr>
-				   	<td><label for="description">{{=$ctx.doI18N("loan.document.description")}}</label></td>
+				   	<td><label for="description">{{=$ctx.doI18N("label.description")}}</label></td>
 					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
 					<td>
 						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
@@ -3976,19 +3976,19 @@ $(document).ready(function() {
 	<table>
 		<tr>
 			<td>
-				<label for="name">{{=$ctx.doI18N("loan.document.name")}}</label>
+				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<label for="description">{{=$ctx.doI18N("loan.document.description")}}</label>
+				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
 				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
 			</td>
 		<tr>
 		<tr>
 			<td colspan="2" valign="top">
-				<label for="file">{{=$ctx.doI18N("loan.document.file.select")}}</label>
+				<label for="file">{{=$ctx.doI18N("label.select.new.file")}}</label>
 				<input type="file" name="file" id="file" size="65"></input>
 			</td>
 		</tr>
@@ -4002,25 +4002,25 @@ $(document).ready(function() {
 	<table>
 		<tr>
 			<td>
-				<label for="name">{{=$ctx.doI18N("loan.document.name")}}</label>
+				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<label for="description">{{=$ctx.doI18N("loan.document.description")}}</label>
+				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
 				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
 			</td>
 		<tr>
 		<tr>
 			<td>
-				<label for="description">{{=$ctx.doI18N("loan.document.current.file.name")}}</label>
+				<label for="description">{{=$ctx.doI18N("label.current.filename")}}</label>
 				{{=fileName}}
 			</td>
 		<tr>
 		<tr>
 			<td colspan="2" valign="top">
-				<label for="file">{{=$ctx.doI18N("loan.document.file.new.select")}}</label>
+				<label for="file">{{=$ctx.doI18N("label.select.new.file")}}</label>
 				<input type="file" name="file" id="file" size="65"></input>
 			</td>
 		</tr>
@@ -4158,7 +4158,7 @@ $(document).ready(function() {
 	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
 	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
 
-	<label for="transactionAmount">{{=$ctx.doI18N("label.loan.transaction.amount")}}</label>
+	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
 	<input id="transactionAmount" name="transactionAmount" class="text ui-widget-content ui-corner-all" title="" value="{{=$ctx.monetaryValue(currency, amount)}}" />
 
 	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
@@ -4218,7 +4218,7 @@ $(document).ready(function() {
 		{{#if $ctx.showTask("VIEWFUNDS")}}
 		<label for="fundId">{{=$ctx.doI18N("label.fund")}}</label>
 		<select id="fundId" name="fundId" title="">
-			<option value="">{{=$ctx.doI18N("form.option.fund.dropdown.first.choice")}}</option>
+			<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
 			{{#each fundOptions}}
 				{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
 					<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
@@ -4582,9 +4582,9 @@ $(document).ready(function() {
 <table id='loanproductstable' width='100%'>
 	<thead>
 		<tr>
-			<th>{{=$ctx.doI18N("table.heading.product.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.fund.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.product.active")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.active")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -4616,7 +4616,7 @@ $(document).ready(function() {
 			<!-- <th>{{=$ctx.doI18N("table.heading.fund.name")}}</th> -->
 			<th>{{=$ctx.doI18N("table.heading.product.created")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.product.modified")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.product.active")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.active")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -4812,15 +4812,12 @@ $(document).ready(function() {
 </form>
 </script>
 
-
 <script id="depositproductListTemplate" type="text/x-jquery-tmpl">
 <table id='depositproductstable' width='100%'>
 	<thead>
 		<tr>
-			<th>{{=$ctx.doI18N("table.heading.product.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.product.created")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.product.modified")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.product.active")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.active")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -4828,8 +4825,6 @@ $(document).ready(function() {
 {{#each crudRows}}
 <tr>
 	<td title='{{=description}}'>{{=name}}</td>
-	<td>{{=$ctx.globalDateTime(createdOn)}}</td>
-	<td>{{=$ctx.globalDateTime(lastModifedOn)}}</td>
 	<td>Yes</td>
 	<td>
 		<a id='deactivatedepositproduct{{=id}}' class='deactivatedepositproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deactivate")}}</a>
@@ -5025,9 +5020,9 @@ $(document).ready(function() {
 <table id='officestable' width='100%'>
 	<thead>
 		<tr>
-			<th>{{=$ctx.doI18N("table.heading.office.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.office.externalid")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.office.openedon")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.externalId")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.openedOn")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.office.parent")}}</th>
 			<th>&nbsp;</th>
 		</tr>
@@ -5074,10 +5069,10 @@ $(document).ready(function() {
 
 		<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-		<label for="openingDate">{{=$ctx.doI18N("form.label.office.openedon")}}</label>
+		<label for="openingDate">{{=$ctx.doI18N("form.label.openedOn")}}</label>
 		<input id="openingDate" name="openingDate" title="" type="text" value="{{=$ctx.globalDate(openingDate)}}" size="75" class="datepickerfield" />
 
-		<label for="externalId">{{=$ctx.doI18N("form.label.office.externalid")}}</label>
+		<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
 		<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" size="75"/>
 	</fieldset>
 </form>
@@ -5265,8 +5260,8 @@ $(document).ready(function() {
 <table id='fundstable' width='100%'>
 	<thead>
 		<tr>
-			<th>{{=$ctx.doI18N("table.heading.fund.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.fund.externalid")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.externalId")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -5291,9 +5286,9 @@ $(document).ready(function() {
 	</div>
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.fund.details")}}</legend>
-		<label for="name">{{=$ctx.doI18N("form.label.fund.name")}}</label>
+		<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 		<input id="name" name="name" title="" type="text" value="{{=name}}" size="75"/>
-		<label for="externalId">{{=$ctx.doI18N("form.label.fund.externalid")}}</label>
+		<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
 		<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" size="75"/>
 	</fieldset>
 </form>
@@ -5303,9 +5298,9 @@ $(document).ready(function() {
 <table id='employeestable' width='100%'>
 	<thead>
 		<tr>
-			<th>{{=$ctx.doI18N("table.heading.office.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.employee.displayname")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.isLoanOfficer")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -5358,17 +5353,17 @@ $(document).ready(function() {
 			</tr>
 			<tr>
 				<td>
-					<label for="firstname">{{=$ctx.doI18N("form.label.employee.firstname")}}</label>
+					<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
 					<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}" size="15"/>
 				</td>
 				<td>	
-					<label for="lastname">{{=$ctx.doI18N("form.label.employee.lastname")}}</label>
+					<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
 					<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}" size="15"/>
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
-					<label for="isLoanOfficer">{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</label>
+					<label for="isLoanOfficer">{{=$ctx.doI18N("table.heading.isLoanOfficer")}}</label>
 					<input id="isLoanOfficer" name="isLoanOfficer" type="checkbox" value="{{=isLoanOfficer}}"/>
 				</td>
 			</tr>
@@ -5400,17 +5395,17 @@ $(document).ready(function() {
 			</tr>
 			<tr>
 				<td>
-					<label for="firstname">{{=$ctx.doI18N("form.label.employee.firstname")}}</label>
+					<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
 					<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}" size="15"/>
 				</td>
 				<td>	
-					<label for="lastname">{{=$ctx.doI18N("form.label.employee.lastname")}}</label>
+					<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
 					<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}" size="15"/>
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
-					<label for="isLoanOfficer">{{=$ctx.doI18N("table.heading.employee.isLoanOfficer")}}</label>
+					<label for="isLoanOfficer">{{=$ctx.doI18N("table.heading.isLoanOfficer")}}</label>
 					{{#if isLoanOfficer}}
 						<input id="isLoanOfficer" name="isLoanOfficer" type="checkbox" value="{{=isLoanOfficer}}" checked="true"/>
 					{{#else}}
@@ -5566,14 +5561,14 @@ $(document).ready(function() {
 <table id='chargestable' width='100%'>
 	<thead>
 		<tr>
-			<th>{{=$ctx.doI18N("table.heading.charge.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.charge.currency")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.charge.amount")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.currency")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.amount")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.charge.chargeAppliesTo")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.charge.is.penalty.charge")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.charge.chargeCalculationType")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.isPenalty")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.calculationType")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.charge.chargeTimeType")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.charge.active")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.active")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -5619,9 +5614,9 @@ $(document).ready(function() {
 		<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
 		<label for="name">{{=$ctx.doI18N("form.label.charge.name")}}</label>
 		<input id="name" name="name" title="" type="text" value="{{=name}}" size="25"/>
-		<label for="amount">{{=$ctx.doI18N("form.label.charge.amount")}}</label>
+		<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
-		<label for="currencyCode">{{=$ctx.doI18N("form.label.charge.currency")}}</label>
+		<label for="currencyCode">{{=$ctx.doI18N("label.currency")}}</label>
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
         	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 			{{#if currency}}
@@ -5689,14 +5684,14 @@ $(document).ready(function() {
 				{{/each}}
 			{{/if}}
 		</select>
-		<label for="active">{{=$ctx.doI18N("form.label.charge.active")}}</label>
+		<label for="active">{{=$ctx.doI18N("label.active")}}</label>
 		{{#if active}}
 			<input type="checkbox" id="active" name="active" title="" style="width: 125px;" checked=checked />
 		{{#else}}
 			<input type="checkbox" id="active" name="active" title="" style="width: 125px;" />
 		{{/if}}
 
-		<label for="penalty">{{=$ctx.doI18N("form.label.charge.penalty")}}</label>
+		<label for="penalty">{{=$ctx.doI18N("label.isPenalty")}}</label>
 		{{#if penalty}}
 			<input type="checkbox" id="penalty" name="penalty" title="" style="width: 125px;" checked=checked />
 		{{#else}}
@@ -6580,8 +6575,9 @@ function showLockinOptions(){
 	</table>
 
 </script>
-<script id="ceda_impact_measurement_template" type="text/x-jquery-tmpl">
 
+
+<script id="ceda_impact_measurement_template" type="text/x-jquery-tmpl">
 	<table width="100%">
 		<tr>
 		  <td valign="top" width="49%">
@@ -6602,14 +6598,10 @@ function showLockinOptions(){
 		  </td>
 		</tr>
 	</table>
-
 </script>
-
-
 
 <!--Accounting section starts here-->
 <script id="accountingHomeTemplate" type="text/x-jquery-tmpl">
-
 <div id="accountingtabs">
     <ul>
         <li><a href="#journalentry-tab">{{=$ctx.doI18N("Journal Entries")}}</a></li>
@@ -6625,24 +6617,23 @@ function showLockinOptions(){
 </div>
 </script>
 
-<!--Charts of accounts Main page template-->
 <script id="chartOfAccountsTemplate" type="text/x-jquery-tmpl">
 	<table width="100%">
 		<td align="center">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
-		   		<button id="addglaccount">{{=$ctx.doI18N("coa.add.account.button.label")}}</button>
+		   		<button id="addglaccount">{{=$ctx.doI18N("button.addGlAccount")}}</button>
 			</span>
 		</td>
 	</table>
 	<hr/>
 	<div id="coatabs-main">
 	    <ul>
-	    	<li><a href="#coatabs-all">{{=$ctx.doI18N("coa.tabs.all.name")}}</a></li>
-	        <li><a href="#coatabs-asset">{{=$ctx.doI18N("coa.tabs.assets.name")}}</a></li>
-	        <li><a href="#coatabs-liabilities">{{=$ctx.doI18N("coa.tabs.liabilities.name")}}</a></li>
-	        <li><a href="#coatabs-equity">{{=$ctx.doI18N("coa.tabs.equity.name")}}</a></li>
-	        <li><a href="#coatabs-income">{{=$ctx.doI18N("coa.tabs.income.name")}}</a></li>
-	        <li><a href="#coatabs-expenses">{{=$ctx.doI18N("coa.tabs.expenses.name")}}</a></li>
+	    	<li><a href="#coatabs-all">{{=$ctx.doI18N("tabs.all")}}</a></li>
+	        <li><a href="#coatabs-asset">{{=$ctx.doI18N("tabs.assets")}}</a></li>
+	        <li><a href="#coatabs-liabilities">{{=$ctx.doI18N("tabs.liabilities")}}</a></li>
+	        <li><a href="#coatabs-equity">{{=$ctx.doI18N("tabs.equity")}}</a></li>
+	        <li><a href="#coatabs-income">{{=$ctx.doI18N("tabs.income")}}</a></li>
+	        <li><a href="#coatabs-expenses">{{=$ctx.doI18N("tabs.expenses")}}</a></li>
 	    </ul>
 	    <div id="coatabs-all">
 	    </div>
@@ -6659,18 +6650,17 @@ function showLockinOptions(){
 	</div>	
 </script>
 
-
 <!--Accounts table results table-->
 <script id="accountsTableTemplate" type="text/x-jquery-tmpl">
 	<table id="accountstable" width="100%" >
 		<thead>
 			<tr>
-				<th>{{=$ctx.doI18N("coa.table.account.name")}}</th>
-				<th>{{=$ctx.doI18N("coa.table.gl.code.name")}}</th>
-				<th>{{=$ctx.doI18N("coa.table.account.classification.name")}}</th>
-				<th>{{=$ctx.doI18N("coa.table.account.disabled.name")}}</th>
-				<th>{{=$ctx.doI18N("coa.table.account.manualentries.allowed.name")}}</th>
-				<th>{{=$ctx.doI18N("coa.table.account.usage.type.name")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.accountName")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.glCode")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.accountType")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.disabled")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.manualEntriesAllowed")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.usedAs")}}</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -6679,34 +6669,32 @@ function showLockinOptions(){
 			<tr>
 				<td>{{=name}}</td>
 				<td>{{=glCode}}</td>
-				<td>{{=type.value}}</td>
+				<td>{{=$ctx.doI18N(type.code)}}</td>
 				<td>
 					{{#if disabled == true}}
-						Yes
+						{{=$ctx.doI18N("boolean.true")}}
 					{{#else}}
-					    No		
+						{{=$ctx.doI18N("boolean.false")}}	
 					{{/if}}
 				</td>
 				<td>
 					{{#if manualEntriesAllowed == true}}
-						Yes
+						{{=$ctx.doI18N("boolean.true")}}
 					{{#else}}
-					    No		
+					    {{=$ctx.doI18N("boolean.false")}}
 					{{/if}}
 				</td>
-				<td>
-					{{=usage.value}}
-				</td>
+				<td>{{=$ctx.doI18N(usage.code)}}</td>
 				<td>
 						<span>	
-							<button id="glaccountinfo{{=id}}">View Account Information</button>
-					   		<button id="glaccountedit{{=id}}">Edit this account</button>
+							<button id="glaccountinfo{{=id}}">{{=$ctx.doI18N("label.help.accountInfo")}}</button>
+					   		<button id="glaccountedit{{=id}}">{{=$ctx.doI18N("label.help.editAccountInfo")}}</button>
 					   		{{#if disabled == true}}
-					   			<button id="glaccountenable{{=id}}">Enable this account</button>
+					   			<button id="glaccountenable{{=id}}">{{=$ctx.doI18N("label.help.enableAccountInfo")}}</button>
 					   		{{#else}}
-					   			<button id="glaccountdisable{{=id}}">Disable This account</button>
+					   			<button id="glaccountdisable{{=id}}">{{=$ctx.doI18N("label.help.disableAccountInfo")}}</button>
 					   		{{/if}}
-					   		<button id="glaccountdelete{{=id}}">Delete this account</button>
+					   		<button id="glaccountdelete{{=id}}">{{=$ctx.doI18N("label.help.deleteAccountInfo")}}</button>
 					   	</span>
 				</td>
 			</tr>
@@ -6719,46 +6707,44 @@ function showLockinOptions(){
 <script id="glAccountsInfoFormTemplate" type="text/x-jquery-tmpl">
 <table width="100%" >
 	<tr>
-		<td>{{=$ctx.doI18N("coa.info.account.name")}}</td>
+		<td>{{=$ctx.doI18N("label.accountName")}}</td>
 		<td>{{=name}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("coa.info.gl.code")}}</td>
+		<td>{{=$ctx.doI18N("label.glCode")}}</td>
 		<td>{{=glCode}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("coa.info.account.classification")}}</td>
-		<td>{{=type.value}}</td>
+		<td>{{=$ctx.doI18N("label.classification")}}</td>
+		<td>{{=$ctx.doI18N(type.code)}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("coa.info.account.description")}}</td>
+		<td>{{=$ctx.doI18N("label.description")}}</td>
 		<td><textarea readonly rows="7" cols="50">{{=description}}</textarea></td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("coa.info.account.manual.entries.allowed")}}</td>
+		<td>{{=$ctx.doI18N("label.manualEntriesAllowed")}}</td>
 		<td>
 			{{#if manualEntriesAllowed == true}}
-				Yes
+				{{=$ctx.doI18N("boolean.true")}}
 			{{#else}}
-				No		
+				{{=$ctx.doI18N("boolean.false")}}
 			{{/if}}
 		</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("coa.info.account.is.disabled")}}</td>
+		<td>{{=$ctx.doI18N("label.isDisabled")}}</td>
 		<td>
 			{{#if disabled == true}}
-				Yes
+				{{=$ctx.doI18N("boolean.true")}}
 			{{#else}}
-				No		
+				{{=$ctx.doI18N("boolean.false")}}
 			{{/if}}	
 		</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("coa.info.account.usage")}}</td>
-		<td>
-			{{=usage.value}}
-		</td>
+		<td>{{=$ctx.doI18N("label.accountUsage")}}</td>
+		<td>{{=$ctx.doI18N(usage.code)}}</td>
 	</tr>
 </table>
 </script>
@@ -6769,44 +6755,43 @@ function showLockinOptions(){
     <div id="formerrors"></div>
 	<table>
 		<tr>
-			<td><label for="name">{{=$ctx.doI18N("coa.info.account.name")}}</label></td>	
+			<td><label for="name">{{=$ctx.doI18N("label.accountName")}}</label></td>	
 			<td><input id="name" name="name" value="{{=name}}" type="text" style="width: 200px"/></td>
 		</tr>
 		<tr>
-			<td><label for="glCode">{{=$ctx.doI18N("coa.info.gl.code")}}</label></td>
+			<td><label for="glCode">{{=$ctx.doI18N("label.glCode")}}</label></td>
 			<td><input id="glCode" name="glCode" title="" type="text" value="{{=glCode}}"/></td>
-			
 		</tr>
 		<tr>
-			<td><label for="classification">{{=$ctx.doI18N("coa.info.account.classification")}}</label></td>
+			<td><label for="classification">{{=$ctx.doI18N("label.classification")}}</label></td>
 			<td>
 				<select name="classification" id="classification">
 				  {{#each accountTypeOptions}}
 						{{#if $parent.parent.data.type.value === value}}
-							<option value="{{=id}}" selected="selected">{{=value}}</option>
+							<option value="{{=id}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
 						{{#else}}
-							<option value="{{=id}}">{{=value}}</option>
+							<option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
 						{{/if}}
 			      {{/each}}
 				</select>
 			</td>
 		</tr> 
 		<tr>
-			<td><label for="usage">{{=$ctx.doI18N("coa.info.account.usage")}}</label></td>
+			<td><label for="usage">{{=$ctx.doI18N("label.accountUsage")}}</label></td>
 			<td>
 				<select name="usage" id="usage">
 				  {{#each usageOptions}}
 						{{#if $parent.parent.data.usage.value === value}}
-							<option value="{{=id}}" selected="selected">{{=value}}</option>
+							<option value="{{=id}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
 						{{#else}}
-							<option value="{{=id}}">{{=value}}</option>
+							<option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
 						{{/if}}
 			      {{/each}}
 				</select>
 			</td>
 		</tr>
 		<tr>
-			<td><label for="manualEntriesAllowed">{{=$ctx.doI18N("coa.info.account.manual.entries.allowed")}}</label></td>
+			<td><label for="manualEntriesAllowed">{{=$ctx.doI18N("label.manualEntriesAllowed")}}</label></td>
 			<td>
 				{{#if manualEntriesAllowed}}
 					<input id="manualEntriesAllowed" name="manualEntriesAllowed" type="checkbox" checked="checked" value="{{=manualEntriesAllowed}}"/>
@@ -6816,7 +6801,7 @@ function showLockinOptions(){
 			</td>
 		</tr>
 		<tr>
-			<td><label for="description">{{=$ctx.doI18N("coa.info.account.description")}}</label></td>
+			<td><label for="description">{{=$ctx.doI18N("label.description")}}</label></td>
 			<td><textarea id="description" name="description" rows="8" cols="35">{{=description}}</textarea></td>
 		</tr>
 	</table>
@@ -6828,14 +6813,14 @@ function showLockinOptions(){
 	<table width="100%">
 		<td align="center">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
-		   		<button id="addglclosure">{{=$ctx.doI18N("accounting.closure.create.button.label")}}</button>
+		   		<button id="addglclosure">{{=$ctx.doI18N("button.addClosureDate")}}</button>
 			</span>
 		</td>
 	</table>
 	<hr/>
 	<div>
 	   <table width="100%">
-	   		<td><label for="accountClosuresOfficeId">{{=$ctx.doI18N("accounting.closure.branch.label")}}</label></td>	
+	   		<td><label for="accountClosuresOfficeId">{{=$ctx.doI18N("label.office")}}</label></td>	
 			<td>
 				<select id="accountClosuresOfficeId" name="accountClosuresOfficeId" title="">
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
@@ -6843,7 +6828,7 @@ function showLockinOptions(){
 						<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
 			        {{/each}}
 				</select>
-				<button id="searchglclosure">{{=$ctx.doI18N("accounting.closure.search.button.label")}}</button>
+				<button id="searchglclosure">{{=$ctx.doI18N("button.searchClosures")}}</button>
 			</td>
 		</table>
 	    <div id="glaccountclosuressearchresults">
@@ -6856,10 +6841,10 @@ function showLockinOptions(){
 	<table id="closurestable" width="100%" >
 		<thead>
 			<tr>
-				<th>{{=$ctx.doI18N("accounting.closure.table.branch.name")}}</th>
-				<th>{{=$ctx.doI18N("accounting.closure.table.closure.date")}}</th>
-				<th>{{=$ctx.doI18N("accounting.closure.table.closed.by")}}</th>
-				<th>{{=$ctx.doI18N("accounting.closure.table.closed.on")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.closureDate")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.closedBy")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.closedOn")}}</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -6887,36 +6872,35 @@ function showLockinOptions(){
 <script id="glAccountClosuresInfoTemplate" type="text/x-jquery-tmpl">
 <table id="closurestable" width="100%" >
 	<tr>
-		<td>{{=$ctx.doI18N("accounting.closure.info.branch.name")}}</td>
+		<td>{{=$ctx.doI18N("label.office")}}</td>
 		<td>{{=officeName}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("accounting.closure.info.closure.date")}}</td>
+		<td>{{=$ctx.doI18N("label.closureDate")}}</td>
 		<td>{{=$ctx.globalDate(closingDate)}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("accounting.closure.info.comments")}}</td>
+		<td>{{=$ctx.doI18N("label.comments")}}</td>
 		<td><textarea readonly rows="7" cols="50">{{=comments}}</textarea></td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("accounting.closure.info.closed.by")}}</td>
+		<td>{{=$ctx.doI18N("label.closedBy")}}</td>
 		<td>{{=createdByUsername}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("accounting.closure.info.closure.creation.date")}}</td>
+		<td>{{=$ctx.doI18N("label.acc.closedOn")}}</td>
 		<td>{{=$ctx.globalDate(createdDate)}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("accounting.closure.info.updated.by")}}</td>
+		<td>{{=$ctx.doI18N("label.updatedBy")}}</td>
 		<td>{{=lastUpdatedByUsername}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("accounting.closure.info.updated.on")}}</td>
+		<td>{{=$ctx.doI18N("label.updatedOn")}}</td>
 		<td>{{=$ctx.globalDate(lastUpdatedDate)}}</td>
 	</tr>
 </table>
 </script>
-	
 
 <!--Add a GL closure form-->
 <script id="glAccountClosuresFormTemplate" type="text/x-jquery-tmpl">
@@ -6924,7 +6908,7 @@ function showLockinOptions(){
     <div id="formerrors"></div>
 	<table>
 		<tr>
-			<td><label for="name">{{=$ctx.doI18N("accounting.closure.info.branch.name")}}</label></td>
+			<td><label for="name">{{=$ctx.doI18N("label.office")}}</label></td>
 			<td>
 				<select id="officeId" name="officeId" title="">
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
@@ -6935,7 +6919,7 @@ function showLockinOptions(){
 			</td>
 		</tr>
 		<tr>
-			<td><label for="closingDate">{{=$ctx.doI18N("accounting.closure.info.closure.date")}}</label></td>
+			<td><label for="closingDate">{{=$ctx.doI18N("label.closureDate")}}</label></td>
 			<td>
 				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
@@ -6943,7 +6927,7 @@ function showLockinOptions(){
 			</td>
 		</tr>
 		<tr>
-			<td><label for="comments">{{=$ctx.doI18N("accounting.closure.info.comments")}}</label></td>
+			<td><label for="comments">{{=$ctx.doI18N("label.comments")}}</label></td>
 			<td><textarea id="comments" name="comments" rows="8" cols="35">{{=description}}</textarea></td>
 		</tr>
 	</table>
@@ -6956,15 +6940,15 @@ function showLockinOptions(){
     <div id="formerrors"></div>
 	<table>
 		<tr>
-			<td><label for="name">{{=$ctx.doI18N("accounting.closure.info.branch.name")}}</label></td>	
+			<td><label for="name">{{=$ctx.doI18N("label.office")}}</label></td>	
 			<td>{{=officeName}}</td>
 		</tr>
 		<tr>
-			<td><label for="closingDate">{{=$ctx.doI18N("accounting.closure.info.closure.date")}}</label></td>
+			<td><label for="closingDate">{{=$ctx.doI18N("label.closureDate")}}</label></td>
 			<td>{{=$ctx.globalDate(closingDate)}}</td>
 		</tr>
 		<tr>
-			<td><label for="comments">{{=$ctx.doI18N("accounting.closure.info.comments")}}</label></td>
+			<td><label for="comments">{{=$ctx.doI18N("label.comments")}}</label></td>
 			<td><textarea id="comments" name="comments" rows="8" cols="35">{{=comments}}</textarea></td>
 		</tr>
 	</table>
@@ -6976,7 +6960,7 @@ function showLockinOptions(){
 	<table width="100%">
 		<td align="center">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
-		   		<button id="addjournalentry">{{=$ctx.doI18N("journalentry.create.button.label")}}</button>
+		   		<button id="addjournalentry">{{=$ctx.doI18N("button.addjournalentry")}}</button>
 			</span>
 		</td>
 	</table>
@@ -6988,16 +6972,16 @@ function showLockinOptions(){
 	   	<table width="100%">
 	   		<tr>
 		   		<td>
-		   			<label for="accountId">{{=$ctx.doI18N("journalentry.search.account.name")}}</label>
+		   			<label for="accountId">{{=$ctx.doI18N("label.accountName")}}</label>
 					<select id="accountId" name="accountId" title="" >
 						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 						{{#each accounts}}
 							<option value="{{=id}}">{{=name}}({{=glCode}})</option>
 				        {{/each}}
-				    </select>  
+				    </select>
 				</td>
 		   		<td>
-		   			<label for="journalEntryOfficeId">{{=$ctx.doI18N("journalentry.search.branch.name")}}</label>	
+		   			<label for="journalEntryOfficeId">{{=$ctx.doI18N("label.office")}}</label>	
 					<select id="journalEntryOfficeId" name="officeId" title="">
 						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 						{{#each offices}}
@@ -7006,21 +6990,21 @@ function showLockinOptions(){
 					</select>
 				</td>
 				<td>
-		   			<label for="includePortfolioPostings">{{=$ctx.doI18N("journalentry.search.include.portfolio.postings")}}</label>
+		   			<label for="includePortfolioPostings">{{=$ctx.doI18N("label.includePortfolioSavings")}}</label>
 					<input id="includePortfolioPostings" name="includePortfolioPostings" type="checkbox" checked="checked"/>
 				</td>
 				<td>
-					<label for="fromDate">{{=$ctx.doI18N("journalentry.search.from.date")}}</label>
+					<label for="fromDate">{{=$ctx.doI18N("label.fromDate")}}</label>
 					<input id="fromDate" name="fromDate" title="" type="text" class="datepickerfieldforaccounting"/>
 				</td>
 				<td>
-					<label for="toDate">{{=$ctx.doI18N("journalentry.search.to.date")}}</label>
+					<label for="toDate">{{=$ctx.doI18N("label.toDate")}}</label>
 					<input id="toDate" name="toDate" title="" type="text" class="datepickerfieldforaccounting"/>
 				</td>
 			</tr>
 			<tr>
 				<td colspan="5" align="center">
-					<button id="searchjournalentries">{{=$ctx.doI18N("journalentry.search.button.label")}}</button>
+					<button id="searchjournalentries">{{=$ctx.doI18N("button.journalentry.search")}}</button>
 				</td>
 			</tr>
 		</table>
@@ -7035,15 +7019,15 @@ function showLockinOptions(){
 	<table id="journalentriestable" width="100%" >
 		<thead>
 			<tr>
-				<th>{{=$ctx.doI18N("journalentry.table.branch.name")}}</th>
-				<th>{{=$ctx.doI18N("journalentry.table.entry.date")}}</th>
-				<th>{{=$ctx.doI18N("journalentry.table.account.classification")}}</th>
-				<th>{{=$ctx.doI18N("journalentry.table.account.name")}}</th>
-				<th>{{=$ctx.doI18N("journalentry.table.created.by")}}</th>
-				<th>{{=$ctx.doI18N("journalentry.table.entry.id")}}</th>
-				<th>{{=$ctx.doI18N("journalentry.table.transaction.id")}}</th>
-				<th>{{=$ctx.doI18N("journalentry.table.credit")}}</th>
-				<th>{{=$ctx.doI18N("journalentry.table.debit")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.entryDate")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.classification")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.accountName")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.createdBy")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.entryId")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.transactionId")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.credit")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.debit")}}</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -7090,43 +7074,43 @@ function showLockinOptions(){
 <script id="journalEntryInfoFormTemplate" type="text/x-jquery-tmpl">
 <table width="100%" >
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.branch")}}</td>
+		<td>{{=$ctx.doI18N("label.office")}}</td>
 		<td>{{=officeName}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.entry.date")}}</td>
+		<td>{{=$ctx.doI18N("label.entryDate")}}</td>
 		<td>{{=$ctx.globalDate(entryDate)}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.entry.id")}}</td>
+		<td>{{=$ctx.doI18N("label.entryId")}}</td>
 		<td>{{=id}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.transaction.id")}}</td>
+		<td>{{=$ctx.doI18N("label.transactionId")}}</td>
 		<td>{{=transactionId}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.account")}}</td>
+		<td>{{=$ctx.doI18N("label.accountName")}}</td>
 		<td>{{=glAccountName}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.account.classification")}}</td>
+		<td>{{=$ctx.doI18N("label.classification")}}</td>
 		<td>{{=glAccountClassification}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.transaction.type")}}</td>
+		<td>{{=$ctx.doI18N("label.transactionType")}}</td>
 		<td>{{=entryType}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.created.by")}}</td>
+		<td>{{=$ctx.doI18N("label.createdBy")}}</td>
 		<td>{{=createdByUserName}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.created.date")}}</td>
+		<td>{{=$ctx.doI18N("label.createdDate")}}</td>
 		<td>{{=$ctx.globalDate(createdDate)}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("journalentry.info.comments")}}</td>
+		<td>{{=$ctx.doI18N("label.comments")}}</td>
 		<td><textarea readonly rows="7" cols="50">{{=comments}}</textarea></td>
 	</tr>
 </table>
@@ -7137,8 +7121,8 @@ function showLockinOptions(){
 <form id="entityform" >
 	<div id="formerrors"></div>
 	<div>
-		<b>{{=$ctx.doI18N("journal.entry.add.template.debits")}}</b>
-		<button id="addDebit">Add a debit Entry</button>
+		<b>{{=$ctx.doI18N("label.debit")}}</b>
+		<button id="addDebit">{{=$ctx.doI18N("button.debit.add")}}</button>
 	</div>
 	<div id="debits">
 		<p>
@@ -7155,8 +7139,8 @@ function showLockinOptions(){
 		</p>
 	</div>
 	<div>
-		<b>{{=$ctx.doI18N("journal.entry.add.template.credits")}}</b>
-		<button id="addCredit">Add a credit Entry</button>
+		<b>{{=$ctx.doI18N("label.credit")}}</b>
+		<button id="addCredit">{{=$ctx.doI18N("button.credit.add")}}</button>
 	</div>
 	<div id="credits">
 		<p>
@@ -7175,7 +7159,7 @@ function showLockinOptions(){
 
 	<table width="100%">
 		<tr>
-			<td><label for="officeId">{{=$ctx.doI18N("journalentry.info.branch")}}</label></td>
+			<td><label for="officeId">{{=$ctx.doI18N("label.office")}}</label></td>
 			<td>
 			<select id="officeId" name="officeId" title="">
 				<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
@@ -7185,7 +7169,7 @@ function showLockinOptions(){
 			</select></td>
 		</tr>
 		<tr>
-			<td><label for="entryDate">{{=$ctx.doI18N("journalentry.info.entry.date")}}</label></td>
+			<td><label for="entryDate">{{=$ctx.doI18N("label.entryDate")}}</label></td>
 			<td>
 			<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
@@ -7193,7 +7177,7 @@ function showLockinOptions(){
 			</td>
 		</tr>
 		<tr>
-			<td><label for="comments">{{=$ctx.doI18N("journalentry.info.comments")}}</label></td>
+			<td><label for="comments">{{=$ctx.doI18N("label.comments")}}</label></td>
 			<td><textarea id="comments" name="comments" rows="5" cols="45">{{=comments}}</textarea></td>
 		</tr>
 	</table>
@@ -7472,7 +7456,6 @@ function showLockinOptions(){
 	</table>
 	</div>
 	{{/if}}
-
 </div>
 </script>
 
@@ -7694,9 +7677,6 @@ function showLockinOptions(){
 
 					</table>
 				</td>
-
-
-
 				<td>
 				<!-- Other options -->
 					<div>
