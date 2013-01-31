@@ -1,5 +1,7 @@
 (function($) {
 
+srVars = {};
+	
 $.stretchyReporting = {};
     
 $.stretchyReporting.initialise  = function(params) {
@@ -104,6 +106,24 @@ function initialiseReporting(params) {
 		return;
 	}
 
+ 	if (params.reportOutputOptionsDiv) srVars.reportOutputOptionsDiv = '#' + params.reportOutputOptionsDiv;	
+	else
+	{
+		alert(doI18N("reportingInitError", ['reportOutputOptionsDiv']));
+		return;
+	}
+ 	
+	var reportOutputOptionsHtml = '<select id=rptOutputType><option value="HTML" selected="selected" >' 
+		+ doI18N("Show Report") + '</option><option value="XLS">' 
+		+ doI18N("Export Excel Format") + '</option><option value="CSV">' 
+		+ doI18N("Export CSV Format") + '</option><option value="PDF">' 
+		+ doI18N("PDF Format") + '</option></select>';
+	reportOutputOptionsHtml += '<select id=rptShowType><option value="HTML" selected="selected" >' 
+		+ doI18N("Show Table") + '</option><option value="XLS">' 
+		+ doI18N("Full CSV Export") +'</option><option value="PDF">' 
+		+ doI18N("PDF Format") +'</option></select>';
+ 	$(srVars.reportOutputOptionsDiv).html(reportOutputOptionsHtml);
+ 	
  	if (params.runReportDiv) runReportDiv = '#' + params.runReportDiv;	
 	else
 	{
@@ -416,8 +436,16 @@ function newReportSelected(selectedRpt) {
 
 function showTypeChanged() {
 
-	if ($(reportsListDiv + ' select option:selected').val() != "0") runTheReport()
-	else showMsg("was select one");
+
+	var xx = $('#rptShowType option:selected').val();
+	var yy = $('##rptOutputType option:selected').val();
+	
+	alert("show type: " + xx + "show pent: " + yy);
+	
+	/*
+	 * if ($(reportsListDiv + ' select option:selected').val() != "0")
+	 * runTheReport() else showMsg("was select one");
+	 */
 
 }
 
@@ -456,7 +484,7 @@ function runTheReport()
 		if (reportListing[reportListingIndex].type == 'Pentaho') reportParameterName = reportListing[reportListingIndex].parameters[i][0]
 		else reportParameterName = paramDetails.variable;
 
-		//alert("jpw: Variable: " + reportParameterName + " Value: " + pValue);
+		// alert("jpw: Variable: " + reportParameterName + " Value: " + pValue);
 		theParams[reportParameterName] = pValue ;
 	}
 
@@ -523,8 +551,6 @@ var parameterTableHtml = '<table><tr>';
 				return 1;
 		}
 	}
-	parameterTableHtml += '<td valign="bottom"><select id=rptOutputType onChange="jQuery.stretchyReporting.showTypeChanged()"><option value="HTML" selected="selected" >Show Report</option><option value="XLS">Export Excel Format</option><option value="CSV">Export CSV Format</option><option value="PDF">PDF Format</option></select></td>';
-	parameterTableHtml += '<td valign="bottom"><select id=rptShowType onChange="jQuery.stretchyReporting.showTypeChanged()"><option value="HTML" selected="selected" >' + doI18N("Show Table") + '</option><option value="XLS">' + doI18N("Full CSV Export") +'</option><option value="PDF">' + doI18N("PDF Format") +'</option></select></td>';
 	parameterTableHtml += '</tr></table>';
 
 	$(inputParametersDiv).html(parameterTableHtml);
@@ -834,7 +860,8 @@ function createTable(theData) {
 		}
 
 		var tmpColName = theData.columnHeaders[i].columnName;
-		//if a report column name is prefixed with xlate_ the column values will be translated
+		// if a report column name is prefixed with xlate_ the column values
+		// will be translated
 		if (tmpColName.toUpperCase().indexOf(xlatePrefix) == 0) tmpColName = tmpColName.slice(xlatePrefix.length);
 		tableColumns.push({ "sTitle": doI18N(tmpColName), 
 					"sOriginalHeading": theData.columnHeaders[i].columnName,
@@ -920,8 +947,7 @@ function showChartReport(rptSubType) {
 /*
  * $('#StretchyReportOutput').html( '<table><tr><td width="25%" valign="top"><table
  * cellpadding="0" cellspacing="1" border="0" class="display" id="RshowTable"
- * width=100%></table></td><td width="75%" align="right"><div
- * id=RshowChart></div></td></tr></table>' );
+ * width=100%></table></td><td width="75%" align="right"><div id=RshowChart></div></td></tr></table>' );
  * $('#RshowTable').dataTable(dataTableDef);
  */
 
@@ -1102,9 +1128,12 @@ function getExportPDF(rptName, inParams, isParameterType) {
 	if (isParameterType == true) inQueryParameters += "&parameterType=true";
 	var fullUrl = RESTUrl + "/" + rptName + inQueryParameters;
 	showMsg("full export url: " + fullUrl );
-	//executeAjaxOctetStreamDownloadRequest(loadingImg);
-	//var loadHTML = '<iframe id=rptLoadingFrame src="' + fullUrl + '" frameborder="0" onload="jQuery.stretchyReporting.clearLoadingImg();" width="100%" height="600px" style="background:url(';
-	//loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50% 100px;"><p>Your browser does not support iframes.</p></iframe>';
+	// executeAjaxOctetStreamDownloadRequest(loadingImg);
+	// var loadHTML = '<iframe id=rptLoadingFrame src="' + fullUrl + '"
+	// frameborder="0" onload="jQuery.stretchyReporting.clearLoadingImg();"
+	// width="100%" height="600px" style="background:url(';
+	// loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50%
+	// 100px;"><p>Your browser does not support iframes.</p></iframe>';
 var loadHTML='<iframe src="'+fullUrl+'"style="width:600px; height:500px;" frameborder="0"></iframe>'
 var loadHTML = '<iframe id=rptLoadingFrame src="' + fullUrl + '" frameborder="0" onload="jQuery.stretchyReporting.clearLoadingImg();" width="100%" height="600px" style="background:url(';
 loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50% 100px;"><p>Your browser does not support iframes.</p></iframe>';
@@ -1123,8 +1152,10 @@ function getPentahoReport(rptName, inParams) {
 	var loadHTML = '<iframe id=rptLoadingFrame src="' + fullUrl + '" frameborder="0" onload="jQuery.stretchyReporting.clearLoadingImg();" width="100%" height="600px" style="background:url(';
 			loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50% 100px;"><p>Your browser does not support iframes.</p></iframe>';
 
-	//var loadHTML = '<iframe src="' + fullUrl + '" frameborder="1" width="100%" height="600px" style="background:url(';
-	//	loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50% 100px;"><p>Your browser does not support iframes.</p></iframe>';
+	// var loadHTML = '<iframe src="' + fullUrl + '" frameborder="1"
+	// width="100%" height="600px" style="background:url(';
+	// loadHTML += "'" + loadingImg + "'" + ') no-repeat scroll 50%
+	// 100px;"><p>Your browser does not support iframes.</p></iframe>';
 
 	$('#StretchyReportOutput').html(loadHTML);
 

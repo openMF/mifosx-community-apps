@@ -999,9 +999,7 @@ function setReportingContent(divName) {
 	var htmlVar = '<table id=toptable>';
  	htmlVar += '<tr>';
  	htmlVar += '  <td valign="top"><div id=myListOfReports></div></td>';
- 	htmlVar += '  <td valign="bottom"><div id=myInputParameters></div></td>';
- 	htmlVar += '  <td valign="top"><div id=myRunReportButton></div></td>';
- 	htmlVar += '  <td valign="top"><div id=myClearReportButton></div></td>';
+ 	htmlVar += '  <td width="100px"></td>';
  	htmlVar += '  <td valign="bottom">';
  	htmlVar += '		<select id=decimalsChoice onChange="selectNewDecimals(options[selectedIndex].value)" >';
  	htmlVar += '		<option value="" selected="selected">' + doI18N("reporting.decimals") + '</option>';
@@ -1028,8 +1026,12 @@ function setReportingContent(divName) {
  	htmlVar += '		<option value="NONE">None 1234567.89</option>';
  	htmlVar += '		</select>';
  	htmlVar += '   </td>';
- 	htmlVar += ' </tr>';
+ 	htmlVar += '  <td valign="top"><div id=myRunReportButton></div></td>';
+ 	htmlVar += '  <td valign="top"><div id=myClearReportButton></div></td>';
+ 	htmlVar += '  <td valign="bottom"><div id=reportOutputOptionsDiv></div></td>';
+ 	htmlVar += '</tr>';
  	htmlVar += '</table>';
+ 	htmlVar += '<div id=myInputParameters></div>';
  	htmlVar += '<div id=myOutput></div>'; 
 
 	$("#" + divName).html(htmlVar);
@@ -3613,6 +3615,7 @@ function showILReporting(reportCategory) {
 	initialLanguage: currentCulture,
 	bundleDir: "resources/stretchyreporting/mifosngbundle/",
 	reportsListDiv: "myListOfReports",
+	reportOutputOptionsDiv: "reportOutputOptionsDiv",
 	runReportDiv: "myRunReportButton",
 	clearReportDiv: "myClearReportButton",
 	inputParametersDiv: "myInputParameters",
