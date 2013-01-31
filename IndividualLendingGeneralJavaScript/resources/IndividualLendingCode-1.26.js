@@ -263,8 +263,8 @@ function showMainContainer(containerDivName, username) {
 
 function showLogon(logonDivName) {
 	var htmlVar = '<div id=theLogonForm><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/><div id=appTitle>' + doI18N("app.name") + ' - ' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</div>';
-	htmlVar += '<form name = "logonform"><table id=logonTable><tr><td>' + doI18N("login.username") + ':</td><td><input type="text" name="username"></td></tr>';
-	htmlVar += '<tr><td>' + doI18N("login.password") + ': </td><td><input type="password" name="pwd" onKeyPress="return checkSubmit(event, ' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td></tr>';
+	htmlVar += '<form name = "logonform"><table id=logonTable><tr><td>' + doI18N("label.username") + '</td><td><input type="text" name="username"></td></tr>';
+	htmlVar += '<tr><td>' + doI18N("label.password") + '</td><td><input type="password" name="pwd" onKeyPress="return checkSubmit(event, ' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td></tr>';
 	htmlVar += '<tr><td><input type="button" value="Logon" name="Submit" ';
 	htmlVar += 'onclick= "setBasicAuthKey(' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td><td></td></tr></table></form>';
 	htmlVar += '<div id=formerrors></div></div>';
@@ -2935,19 +2935,19 @@ function loadILLoan(loanId) {
    						}
 					});
 	        		
-	        		$('.rejectloan').button().click(function(e) {
-						var linkId = this.id;
-						var loanId = linkId.replace("rejectbtn", "");
-						var postUrl = 'loans/' + loanId + '?command=reject';
-						var templateSelector = "#stateTransitionLoanFormTemplate";
-						var width = 500; 
-						var height = 350;
-						var defaultOffset = offsetToSubmittedDate;
-
-						popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.reject.loan', templateSelector, width, height, saveSuccessFunctionReloadClient, offsetToSubmittedDate, defaultOffset, maxOffset);
-					    e.preventDefault();
-					});
-	        		$('button.rejectloan span').text(doI18N('dialog.button.reject.loan'));
+	        	$('.rejectloan').button().click(function(e) {
+					var linkId = this.id;
+					var loanId = linkId.replace("rejectbtn", "");
+					var postUrl = 'loans/' + loanId + '?command=reject';
+					var templateSelector = "#stateTransitionLoanFormTemplate";
+					var width = 500; 
+					var height = 350;
+					var defaultOffset = offsetToSubmittedDate;
+	
+					popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.reject.loan', templateSelector, width, height, saveSuccessFunctionReloadClient, offsetToSubmittedDate, defaultOffset, maxOffset);
+				    e.preventDefault();
+				});
+	        	$('button.rejectloan span').text(doI18N('button.application.reject'));
 					
 				$('.withdrawnbyapplicantloan').button().click(function(e) {
 						var linkId = this.id;
@@ -2960,7 +2960,7 @@ function loadILLoan(loanId) {
 						popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.loan.withdrawn.by.client', templateSelector, width, height, saveSuccessFunctionReloadClient,  offsetToSubmittedDate, defaultOffset, maxOffset)
 					    e.preventDefault();
 				});
-				$('button.withdrawnbyapplicantloan span').text(doI18N('dialog.button.withdrawn.by.client.loan'));
+				$('button.withdrawnbyapplicantloan span').text(doI18N('button.application.withdrawnByApplicant'));
 				
 				$('.modifyloan').button().click(function(e) {
 					var linkId = this.id;
@@ -2968,7 +2968,7 @@ function loadILLoan(loanId) {
 					modifyILLoan(loanId);
 				    e.preventDefault();
 				});
-				$('button.approveloan span').text(doI18N('dialog.button.modify'));
+				$('button.approveloan span').text(doI18N('button.application.modify'));
 					
 				$('.approveloan').button().click(function(e) {
 						var linkId = this.id;
@@ -2982,7 +2982,7 @@ function loadILLoan(loanId) {
 						popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.approve.loan', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
 					    e.preventDefault();
 				});
-				$('button.approveloan span').text(doI18N('dialog.button.approve.loan'));
+				$('button.approveloan span').text(doI18N('button.application.approve'));
 					
 				$('.undoapproveloan').button().click(function(e) {
 						var linkId = this.id;
@@ -2996,68 +2996,64 @@ function loadILLoan(loanId) {
 						popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.loan.approval', templateSelector, width, height, saveSuccessFunctionReloadLoan, offsetToSubmittedDate, defaultOffset, maxOffset)
 					    e.preventDefault();
 				});
-				$('button.undoapproveloan span').text(doI18N('dialog.button.undo.loan.approval'));
+				$('button.undoapproveloan span').text(doI18N('button.application.undoApproval'));
 					
 				$('.deleteloan').button().click(function(e) {
-						var linkId = this.id;
-						var loanId = linkId.replace("deletebtn", "");
-						var url = 'loans/' + loanId;
-						var width = 400; 
-						var height = 225;
-												
-						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
-					    e.preventDefault();
+					var linkId = this.id;
+					var loanId = linkId.replace("deletebtn", "");
+					var url = 'loans/' + loanId;
+					var width = 400; 
+					var height = 225;
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
+				    e.preventDefault();
 				});
-				$('button.deleteloan span').text(doI18N('dialog.button.delete.loan'));
+				$('button.deleteloan span').text(doI18N('button.application.delete'));
 					
 				$('.disburseloan').button().click(function(e) {
-						
-						var linkId = this.id;
-						var loanId = linkId.replace("disbursebtn", "");
-						var postUrl = 'loans/' + loanId + '?command=disburse';
-						var templateSelector = "#stateTransitionLoanFormTemplate";
-						var width = 500; 
-						var height = 350;
-						var defaultOffset = offsetToApprovalDate;
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
-						popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.disburse.loan', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
-					    e.preventDefault();
+					var linkId = this.id;
+					var loanId = linkId.replace("disbursebtn", "");
+					var postUrl = 'loans/' + loanId + '?command=disburse';
+					var templateSelector = "#stateTransitionLoanFormTemplate";
+					var width = 500; 
+					var height = 350;
+					var defaultOffset = offsetToApprovalDate;
+					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.disburse.loan', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
+				    e.preventDefault();
 				});
-				$('button.disburseloan span').text(doI18N('dialog.button.disburse.loan'));
+				$('button.disburseloan span').text(doI18N('button.loan.disburse'));
 					
 				$('.undodisbursalloan').button().click(function(e) {
-						
-						var linkId = this.id;
-						var loanId = linkId.replace("undodisbursalbtn", "");
-						var postUrl = 'loans/' + loanId + '?command=undodisbursal';
-						var templateSelector = "#undoStateTransitionLoanFormTemplate";
-						var width = 500; 
-						var height = 350;
-						var defaultOffset = offsetToApprovalDate;
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
-						popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.loan.disbursal', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
-					    e.preventDefault();
+					var linkId = this.id;
+					var loanId = linkId.replace("undodisbursalbtn", "");
+					var postUrl = 'loans/' + loanId + '?command=undodisbursal';
+					var templateSelector = "#undoStateTransitionLoanFormTemplate";
+					var width = 500; 
+					var height = 350;
+					var defaultOffset = offsetToApprovalDate;
+					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.loan.disbursal', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
+				    e.preventDefault();
 				});
-				$('button.undodisbursalloan span').text(doI18N('dialog.button.undo.loan.disbursal'));
+				$('button.undodisbursalloan span').text(doI18N('button.loan.undoDisbursal'));
 					
 				$('.repaymentloan').button().click(function(e) {
-						
-						var linkId = this.id;
-						var loanId = linkId.replace("repaymentbtn", "");
-						var getUrl = 'loans/' + loanId + '/transactions/template?command=repayment';
-						var postUrl = 'loans/' + loanId + '/transactions?command=repayment';
-						
-						var templateSelector = "#transactionLoanFormTemplate";
-						var width = 500; 
-						var height = 350;
-						var defaultOffset = offsetToApprovalDate;
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
-			
-						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.repayment", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
-						//popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.loan.repayment', templateSelector, width, height, currentTabIndex,  offsetToSubmittedDate, defaultOffset, maxOffset)
-					    e.preventDefault();
+					var linkId = this.id;
+					var loanId = linkId.replace("repaymentbtn", "");
+					var getUrl = 'loans/' + loanId + '/transactions/template?command=repayment';
+					var postUrl = 'loans/' + loanId + '/transactions?command=repayment';
+					
+					var templateSelector = "#transactionLoanFormTemplate";
+					var width = 500; 
+					var height = 350;
+					var defaultOffset = offsetToApprovalDate;
+					eval(genSaveSuccessFunctionReloadLoan(loanId));
+		
+					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.repayment", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
+				    e.preventDefault();
 				});
-				$('button.repaymentloan span').text(doI18N('dialog.button.loan.repayment'));
+				$('button.repaymentloan span').text(doI18N('button.loan.repayment'));
 					
 				$('.waiveinterestloan').button().click(function(e) {
 						var linkId = this.id;
@@ -3076,7 +3072,7 @@ function loadILLoan(loanId) {
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.waive.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
-				$('button.waiveloan span').text(doI18N('dialog.button.loan.waive'));
+				$('button.waiveloan span').text(doI18N('button.loan.waiveInterest'));
 				
 				$('.writeoffloan').button().click(function(e) {
 					var linkId = this.id;
@@ -3095,7 +3091,7 @@ function loadILLoan(loanId) {
 					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.writeoff.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
-				$('button.writeoffloan span').text(doI18N('dialog.button.loan.writeoff'));
+				$('button.writeoffloan span').text(doI18N('button.loan.writeOff'));
 				
 				$('.closeasrescheduledloan').button().click(function(e) {
 					var linkId = this.id;
@@ -3114,7 +3110,7 @@ function loadILLoan(loanId) {
 					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.closeasrescheduledloan.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
-				$('button.closeasrescheduledloan span').text(doI18N('dialog.button.loan.closeasrescheduledloan'));
+				$('button.closeasrescheduledloan span').text(doI18N('button.loan.closeAsRescheduled'));
 				
 				$('.closeloan').button().click(function(e) {
 					var linkId = this.id;
@@ -3133,30 +3129,28 @@ function loadILLoan(loanId) {
 					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.close.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
-				$('button.closeloan span').text(doI18N('dialog.button.loan.close'));
+				$('button.closeloan span').text(doI18N('button.loan.close'));
 					
 				$('.adjustloanrepayment').button().click(function(e) {
-						
-						var linkId = this.id;
-						var loanAndRepaymentId = linkId.replace("adjustrepaymentbtn", "");
-						var ids = loanAndRepaymentId.split("_");
-						var loanId = ids[0];
-						var transactionId = ids[1];
-						var getAndPostUrl = 'loans/' + loanId + '/transactions/' + transactionId;
-						
-						var templateSelector = "#transactionLoanFormTemplate";
-						var width = 500; 
-						var height = 350;
-						var defaultOffset = offsetToApprovalDate;
+					var linkId = this.id;
+					var loanAndRepaymentId = linkId.replace("adjustrepaymentbtn", "");
+					var ids = loanAndRepaymentId.split("_");
+					var loanId = ids[0];
+					var transactionId = ids[1];
+					var getAndPostUrl = 'loans/' + loanId + '/transactions/' + transactionId;
+					
+					var templateSelector = "#transactionLoanFormTemplate";
+					var width = 500; 
+					var height = 350;
+					var defaultOffset = offsetToApprovalDate;
 
-						eval(genSaveSuccessFunctionReloadLoan(loanId));						
-						popupDialogWithFormView(getAndPostUrl, getAndPostUrl, 'POST', "dialog.title.adjust.loan.repayment", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
-					    e.preventDefault();
+					eval(genSaveSuccessFunctionReloadLoan(loanId));						
+					popupDialogWithFormView(getAndPostUrl, getAndPostUrl, 'POST', "dialog.title.adjust.loan.repayment", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
+				    e.preventDefault();
 				});
-				$('button.adjustloanrepayment span').text(doI18N('dialog.button.adjust.loan.repayment'));
+				$('button.adjustloanrepayment span').text(doI18N('button.loanTransaction.adjust'));
 				
 				$('.addloancharge').button().click(function(e){
-
 						var linkId = this.id;
 						var loanId = linkId.replace("addloanchargebtn", "");
 						var postUrl = 'loans/' + loanId + '/charges';
@@ -3170,7 +3164,7 @@ function loadILLoan(loanId) {
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.button.add.loan.charge", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
-				$('button.addloancharge span').text(doI18N('dialog.button.add.loan.charge'));
+				$('button.addloancharge span').text(doI18N('button.addLoanCharge'));
 				
 				//Guarantor for loan functionality
 				$('.setguarantor').button(
@@ -3269,7 +3263,7 @@ function loadILLoan(loanId) {
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.loan.officer", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
-				$('button.assignloanofficer span').text(doI18N('dialog.button.loan.reassignment'));
+				$('button.assignloanofficer span').text(doI18N('button.assignLoanOfficer'));
 
 				$('.editaccountnobtn').button().click(function(e){
 
@@ -3286,7 +3280,7 @@ function loadILLoan(loanId) {
 					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.accountno", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
-				$('button.editaccountnobtn span').text(doI18N('link.edit'));
+				$('button.editaccountnobtn span').text(doI18N('link.action.edit'));
 				
 				custom.showRelatedDataTableInfo($loantabs, "m_loan", loanId); 
 
@@ -4612,9 +4606,9 @@ function setCulture(cultureVal) {
     	
     	$.datepicker.setDefaults( $.datepicker.regional[currentCulture]);
  
-    	var tenantTranslation = "messages-" + tenantIdentifier;
+    	var tenantTranslation = "messages-tenant-" + tenantIdentifier;
     	jQuery.i18n.properties({
-			name:['messages', 'messages-platform-validation', tenantTranslation], 
+			name:['messages', 'messages-platform-validation', 'messages-savings', tenantTranslation], 
 			path: 'resources/global-translations/',
 			mode:'map',
 			cache: true,

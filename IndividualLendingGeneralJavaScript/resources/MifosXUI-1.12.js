@@ -1,12 +1,9 @@
 (function($) {
-
-
 //Put any dev UI work that you want on the master branch but not in production temporarily here
 //It won't be shown unless you pass the query parameter 'mode=dev'
 //You can then use showMenu or showTask as normal to check if it should be displayed
 //Once you are finished development, you can remove from this array and put in taskPermissionsMatrix or menuTasksMatrix 
-		inDevelopmentTasks = ["VIEWLOANPRODUCTS_only_an_example", "SYSADMINMENU_only_an_example"];
-
+inDevelopmentTasks = ["VIEWLOANPRODUCTS_only_an_example", "SYSADMINMENU_only_an_example"];
 
 //This does know about Mifos X Permission checking - each piece of functionality needs to be linked to a Mifos X permission
 taskPermissionsMatrix = {
@@ -110,7 +107,7 @@ tenantNameInclusions = {
 	};
 
 tenantNameExclusions = {
-		"DEFAULT": ["SYSADMINMENU_only_an_example", "VIEWLOANPRODUCTS_only_an_example"],
+		"DEFAULT": ["SYSADMINMENU_only_an_example", "VIEWLOANPRODUCTS_only_an_example", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN",],
 		
 		"CEDA-MICROFINANCE": ["CHECKERMENU", "GROUPSMENU", "POSTINTERESTMENU", "VIEWFUNDS", "ADDFUND", "VIEWDEPOSITPRODUCTS", "ADDDEPOSITPRODUCT", 
 		                      "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN", "ADDDEPOSITACCOUNT", "ADDSAVINGACCOUNT", "VIEWCONFIGURATION"],
