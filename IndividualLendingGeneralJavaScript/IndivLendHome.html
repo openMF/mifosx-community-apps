@@ -1883,7 +1883,7 @@ $(document).ready(function() {
 	<label for="accountNo">{{=$ctx.doI18N("label.accountNo")}}</label>
 	<input id="accountNo" name="accountNo" title="" type="text" value="{{=accountNo}}"/>
 
-    <label for="externalId">{{=$ctx.doI18N("form.label.group.externalid")}}</label>
+    <label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
 	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 
 	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
@@ -1956,7 +1956,7 @@ $(document).ready(function() {
 			</td>
 		</tr>
 	</table>
-    <label for="externalId">{{=$ctx.doI18N("form.label.group.externalid")}}</label>
+    <label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
 	{{#if currentChange}}
 		{{#if currentChange.externalId}}
 		<input id="externalId" name="externalId" title="Previous value was {{=externalId}}" type="text" value="{{=currentChange.externalId}}" style="border: thin solid green;"/>
@@ -2006,7 +2006,7 @@ $(document).ready(function() {
 		<tr>
 		<tr>
 			<td colspan="2">
-				<label for="externalId">{{=$ctx.doI18N("form.label.group.externalid")}}</label>
+				<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
 				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 			</td>
 		</tr>
@@ -2148,13 +2148,13 @@ $(document).ready(function() {
 	<table>
 		<tr>
 			<td>
-				<label for="name">{{=$ctx.doI18N("clientIdentifier.document.name")}}</label>
+				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 				<input id="name" name="name" title="" type="text"/>
 			</td>
 		</tr>
 		<tr>
 			<td colspan="2" valign="top">
-				<label for="file">{{=$ctx.doI18N("clientIdentifier.document.file.select")}}</label>
+				<label for="file">{{=$ctx.doI18N("label.select.new.file")}}</label>
 				<input type="file" name="file" id="file" size="65"></input>
 			</td>
 		</tr>
@@ -2168,7 +2168,7 @@ $(document).ready(function() {
 	<table>
 		<tr>
 			<td>
-				<label for="name">{{=$ctx.doI18N("clientIdentifier.document.name")}}</label>
+				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
 			</td>
 		</tr>
@@ -2217,7 +2217,7 @@ $(document).ready(function() {
 					</td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("lable.filename")}}</td>
+					<td>{{=$ctx.doI18N("label.filename")}}</td>
 					<td>{{=fileName}}</td>
 				</tr>
 				<tr>
@@ -2702,7 +2702,7 @@ $(document).ready(function() {
 	</div>
 	<br/>
 	<div class="row">
-		<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
+		<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
 		<span class="rowvalue">{{=currency.name}}</span>
 	</div>
 	<div class="row">
@@ -2850,7 +2850,7 @@ $(document).ready(function() {
 		</div>
 	{{/if}}
 		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
+			<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
 			<span class="rowvalue">{{=currency.name}}</span>
 		</div>
 		<div class="row">
@@ -3546,7 +3546,7 @@ $(document).ready(function() {
 		</div>
 		<br/>
 		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
+			<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
 			<span class="rowvalue">{{=currency.name}}</span>
 		</div>
 		<div class="row">
@@ -3590,7 +3590,7 @@ $(document).ready(function() {
 						<span class="rowvalue">{{=officeName}}</span>
 				</div>
 				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("label.joinedOn")}}</span>
+						<span class="longrowlabel">{{=$ctx.doI18N("label.joinedon")}}</span>
 						<span class="rowvalue">{{=$ctx.globalDate(joinedDate)}}</span>
 				</div>
 				{{/if}}
@@ -3951,14 +3951,14 @@ $(document).ready(function() {
 					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
 					<td>
 						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
-							<button id="downloadloandocument{{=id}}">{{=$ctx.doI18N("loan.document.download")}}</button>
-					   		<button id="editloandocument{{=id}}">{{=$ctx.doI18N("loan.document.edit")}}</button>
-					   		<button id="deleteloandocument{{=id}}">{{=$ctx.doI18N("loan.document.delete")}}</button>
+							<button id="downloadloandocument{{=id}}">{{=$ctx.doI18N("link.action.download")}}</button>
+					   		<button id="editloandocument{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
+					   		<button id="deleteloandocument{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
 						</span>
 					</td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("loan.document.file.name")}}</td>
+					<td>{{=$ctx.doI18N("label.filename")}}</td>
 					<td>{{=fileName}}</td>
 				</tr>
 				<tr>
@@ -4071,7 +4071,7 @@ $(document).ready(function() {
 					<td><input readonly="true" id="selectedGuarantorBranch" name="selectedGuarantorBranch" title="" type="text" value=""/></td>
 				</tr>
 				<tr>	
-					<td><label for="selectedGuarantorJoinedDate">{{=$ctx.doI18N("label.joinedOn")}}</label></td>
+					<td><label for="selectedGuarantorJoinedDate">{{=$ctx.doI18N("label.joinedon")}}</label></td>
 					<td><input readonly="true" id="selectedGuarantorJoinedDate" name="selectedGuarantorJoinedDate" title="" type="text" value=""/></td>
 				</tr>
 			</table>
@@ -4583,7 +4583,7 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.fund.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.fundname")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.active")}}</th>
 			<th>&nbsp;</th>
 		</tr>
@@ -4613,7 +4613,7 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.product.name")}}</th>
-			<!-- <th>{{=$ctx.doI18N("table.heading.fund.name")}}</th> -->
+			<!-- <th>{{=$ctx.doI18N("table.heading.fundname")}}</th> -->
 			<th>{{=$ctx.doI18N("table.heading.product.created")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.product.modified")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.active")}}</th>
@@ -5612,7 +5612,7 @@ $(document).ready(function() {
 	<fieldset>
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
-		<label for="name">{{=$ctx.doI18N("form.label.charge.name")}}</label>
+		<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 		<input id="name" name="name" title="" type="text" value="{{=name}}" size="25"/>
 		<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
@@ -5920,16 +5920,16 @@ $(document).ready(function() {
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.user.details")}}</legend>
 
-		<label for="username">{{=$ctx.doI18N("form.label.user.username")}}</label>
+		<label for="username">{{=$ctx.doI18N("label.username")}}</label>
 		<input id="username" name="username" title="" type="text" value="{{=username}}" size="75"/>
 
-        <label for="firstname">{{=$ctx.doI18N("form.label.user.firstname")}}</label>
+        <label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
 		<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}" size="75"/>
 
-        <label for="lastname">{{=$ctx.doI18N("form.label.user.lastname")}}</label>
+        <label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
 		<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}" size="75"/>
 
-		<label for="email">{{=$ctx.doI18N("form.label.user.email")}}</label>
+		<label for="email">{{=$ctx.doI18N("label.email")}}</label>
 		<input id="email" name="email" title="" type="text" value="{{=email}}" size="75"/>
 
 		<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
@@ -7311,7 +7311,7 @@ function showLockinOptions(){
 		{{/if}}
 		
 		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.loan.currency")}}</span>
+			<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
 			<span class="rowvalue">{{=currencyData.name}}</span>
 		</div>
 		

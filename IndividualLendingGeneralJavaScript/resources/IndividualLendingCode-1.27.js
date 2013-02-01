@@ -2178,7 +2178,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 				modifyLoanApplication(clientId, loanId);
 			    e.preventDefault();
 			});
-			$('button#modifyloanapp span').text(doI18N('dialog.button.modify'));
+			$('button#modifyloanapp span').text(doI18N('dialog.button.submit'));
 			
 			// attaching charges logic
 			var index = 0;
@@ -3163,7 +3163,7 @@ function loadILLoan(loanId) {
 						var height = 300;
 
 						eval(genSaveSuccessFunctionReloadLoan(loanId));
-						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.button.add.loan.charge", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addLoanCharge", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
 				$('button.addloancharge span').text(doI18N('button.addLoanCharge'));
