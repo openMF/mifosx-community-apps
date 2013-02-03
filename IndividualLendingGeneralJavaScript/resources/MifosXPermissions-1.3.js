@@ -272,7 +272,7 @@ var fillTaskCell = function(permissionCode, permissionCodeArray, isReadOnly) {
 	var checkerPermissionCode = permissionCode + '_CHECKER';
 	if (permissionCodeArray.hasOwnProperty(checkerPermissionCode)) 
 	{
-		taskCellHtml += "&nbsp;&nbsp;&nbsp;mc" + htmlCheckBox(checkerPermissionCode, permissionCodeArray[checkerPermissionCode], isReadOnly);
+		taskCellHtml += '&nbsp;&nbsp;&nbsp;<img border="0" src="resources/img/RubberStamp16_iconki.com.png" alt="' + doI18N("Checker Permission") + '" >' + htmlCheckBox(checkerPermissionCode, permissionCodeArray[checkerPermissionCode], isReadOnly);
 	}
 
 	return taskCellHtml ;
