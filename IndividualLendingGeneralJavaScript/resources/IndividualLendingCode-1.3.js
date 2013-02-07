@@ -2210,6 +2210,9 @@ function addILBulkMembersLoans(groupId, clientMembers){
   			  			calculateLoanSchedule();
   				  	});
   					
+  					console.log("loancharge added: datepicker support on: datepickerfieldnoconstraint");
+  					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+  					
 			  		calculateLoanSchedule();
   				}
   				
@@ -2480,6 +2483,9 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	  					$("[class*=specifiedDueDate]").change(function() {
 	  			  			calculateLoanSchedule();
 	  				  	});
+
+	  					console.log("loancharge added: datepicker support on: datepickerfieldnoconstraint");
+	  					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 				  		
 				  		calculateLoanSchedule();
 	  				}
@@ -4097,8 +4103,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				formHtml = $(templateSelector).render(data);
 				dialogDiv.html(formHtml);
 	}
-
-
 
 	//attaching charges to loan from popup
 	$('#chargeOptions').change(function(e) {
