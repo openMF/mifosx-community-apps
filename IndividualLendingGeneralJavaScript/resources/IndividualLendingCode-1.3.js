@@ -3904,11 +3904,11 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 				    }); 
 				    
 				    //hide accounting placeholders div on page load
-				    if(data.accountingType == 1){
+				    if(data.accountingType.value == "NONE"){
 				    	$("#accountingPlaceholdersDiv").hide();
-				    }else if (data.accountingType == 2){
+				    }else if (data.accountingType.value == "CASH BASED"){
 				    	 showCashFinancialPlaceholders();
-				    }else if (data.accountingType == 3){
+				    }else if (data.accountingType.value == "ACCRUAL BASED"){
 				    	 showAccrualFinancialPlaceholders();
 				    }
 				}
