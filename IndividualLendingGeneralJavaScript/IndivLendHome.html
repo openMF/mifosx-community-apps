@@ -3474,6 +3474,15 @@ $(document).ready(function() {
 		</div>
 		{{/if}}
 		
+
+		{{#if loanOfficerName}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.loanOfficer")}}</span>
+			<span class="rowvalue">{{=loanOfficerName}}</span>
+			<button id="unassignloanofficerbtn{{=id}}" class="unassignloanofficer">{{=$ctx.doI18N("label.unassignloanOfficer")}}</button>
+		</div>
+		{{/if}}
+
 		{{#if approvedOnDate}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.approved.on")}}</span>

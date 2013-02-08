@@ -3273,7 +3273,21 @@ function loadILLoan(loanId) {
 				});
 				$('button.assignloanofficer span').text(doI18N('button.assignLoanOfficer'));
 
-				$('.editaccountnobtn').button().click(function(e){
+				$('.unassignloanofficer').button({icons: {primary: "ui-icon-circle-close"}}).click(function(e){
+
+						var linkId = this.id;
+						var loanId = linkId.replace("unassignloanofficerbtn", "");
+						var url = 'loans/' + loanId + '/unassign';
+						var width = 400; 
+						var height = 225;
+						var jsonbody = '{"dateFormat": "dd MMMM yyyy", "locale": "en_GB","unassignedDate":"'+$.datepicker.formatDate('dd MM yy', new Date())+'"}';
+						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan , jsonbody);
+						    
+						e.preventDefault();
+				});
+
+				$('.editaccountnobtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
 
 					var linkId = this.id;
 					var loanId = linkId.replace("editaccountnobtn", "");
