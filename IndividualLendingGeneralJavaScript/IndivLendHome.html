@@ -4403,17 +4403,17 @@ $(document).ready(function() {
 		<table style="width:100%">
 			<tr>
 				<td align="center">
-					{{#if accountingType == 1}}
+					{{#if accountingType.value == "NONE"}}
 					<input type="radio" name="accountingType" value="1" checked="true">{{=$ctx.doI18N("label.none")}}</input>
 					{{#else}}
 					<input type="radio" name="accountingType" value="1" >{{=$ctx.doI18N("label.none")}}</input>
 					{{/if}}
-					{{#if accountingType == 2}}
+					{{#if accountingType.value == "CASH BASED"}}
 					<input type="radio" name="accountingType" value="2" checked="true">{{=$ctx.doI18N("label.cash")}}</input>
 					{{#else}}
 					<input type="radio" name="accountingType" value="2">{{=$ctx.doI18N("label.cash")}}</input>
 					{{/if}}
-					{{#if accountingType == 3}}
+					{{#if accountingType.value == "ACCRUAL BASED"}}
 					<input type="radio" name="accountingType" value="3" checked="true">{{=$ctx.doI18N("label.accrual")}}</input>
 					{{#else}}
 					<input type="radio" name="accountingType" value="3">{{=$ctx.doI18N("label.accrual")}}</input>
@@ -4431,11 +4431,15 @@ $(document).ready(function() {
 								<select id="fundSourceAccountId" name="fundSourceAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each assetAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.fundSourceAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									   {{#if $parent.parent.data.accountingMappings}}
+    										{{#if $parent.parent.parent.data.accountingMappings.fundSourceAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                            <option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+    									{{/if}}
 							        {{/each}}
 							    </select>  
 							</td>
@@ -4446,11 +4450,15 @@ $(document).ready(function() {
 								<select id="loanPortfolioAccountId" name="loanPortfolioAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each assetAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.loanPortfolioAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									     {{#if $parent.parent.data.accountingMappings}}
+    										{{#if $parent.parent.parent.data.accountingMappings.loanPortfolioAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                             <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                        {{/if}}
 							        {{/each}}
 							    </select>  
 							</td>
@@ -4461,11 +4469,15 @@ $(document).ready(function() {
 								<select id="receivableInterestAccountId" name="receivableInterestAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each assetAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.receivableInterestAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									   {{#if $parent.parent.data.accountingMappings}}
+    										{{#if $parent.parent.parent.data.accountingMappings.receivableInterestAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                             <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                        {{/if}}
 							        {{/each}}
 							    </select> 
 							</td>
@@ -4476,11 +4488,15 @@ $(document).ready(function() {
 								<select id="receivableFeeAccountId" name="receivableFeeAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each assetAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.receivableFeeAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									    {{#if $parent.parent.data.accountingMappings}}
+										    {{#if $parent.parent.parent.data.accountingMappings.receivableFeeAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                             <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                        {{/if}}
 							        {{/each}}
 							    </select> 
 							</td>
@@ -4491,11 +4507,15 @@ $(document).ready(function() {
 								<select id="receivablePenaltyAccountId" name="receivablePenaltyAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each assetAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.receivablePenaltyAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									    {{#if $parent.parent.data.accountingMappings}}
+    										{{#if $parent.parent.parent.data.accountingMappings.receivablePenaltyAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                             <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                        {{/if}}
 							        {{/each}}
 							    </select> 
 							</td>
@@ -4511,11 +4531,15 @@ $(document).ready(function() {
 								<select id="interestOnLoanAccountId" name="interestOnLoanAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each incomeAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.interestOnLoanAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									    {{#if $parent.parent.data.accountingMappings}}
+    										{{#if $parent.parent.parent.data.accountingMappings.interestOnLoanAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                             <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                        {{/if}}
 							        {{/each}}
 							    </select> 
 							</td>
@@ -4526,11 +4550,15 @@ $(document).ready(function() {
 								<select id="incomeFromFeeAccountId" name="incomeFromFeeAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each incomeAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.incomeFromFeeAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									    {{#if $parent.parent.data.accountingMappings}}
+    										{{#if $parent.parent.parent.data.accountingMappings.incomeFromFeeAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                            <option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+                                        {{/if}}
 							        {{/each}}
 							    </select> 
 							</td>
@@ -4541,11 +4569,15 @@ $(document).ready(function() {
 								<select id="incomeFromPenaltyAccountId" name="incomeFromPenaltyAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each incomeAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.incomeFromPenaltyAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									    {{#if $parent.parent.data.accountingMappings}}
+    										{{#if $parent.parent.parent.data.accountingMappings.incomeFromPenaltyAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                            <option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+                                        {{/if}}
 							        {{/each}}
 							    </select> 
 							</td>
@@ -4561,11 +4593,15 @@ $(document).ready(function() {
 								<select id="writeOffAccountId" name="writeOffAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
 									{{#each expenseAccountOptions}}
-										{{#if $parent.parent.data.accountingMappings.writeOffAccountId === id)}}
-												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
-										{{#else}}
-												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
-										{{/if}}
+									    {{#if $parent.parent.data.accountingMappings}}
+    										{{#if $parent.parent.parent.data.accountingMappings.writeOffAccountId === id)}}
+    												<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+    										{{#else}}
+    												<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+    										{{/if}}
+    									{{#else}}
+                                            <option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+                                        {{/if}}
 							        {{/each}}
 							    </select> 
 							</td>
@@ -6755,7 +6791,7 @@ function showLockinOptions(){
 	<table>
 		<tr>
 			<td><label for="name">{{=$ctx.doI18N("label.accountName")}}</label></td>	
-			<td><input id="name" name="name" value="{{=name}}" type="text" style="width: 200px"/></td>
+			<td><input id="name" name="name" value="{{=name}}" type="text" style="width: 250px"/></td>
 		</tr>
 		<tr>
 			<td><label for="glCode">{{=$ctx.doI18N("label.glCode")}}</label></td>
@@ -7022,6 +7058,7 @@ function showLockinOptions(){
 				<th>{{=$ctx.doI18N("table.heading.entryDate")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.classification")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.accountName")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.accountCode")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.createdBy")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.entryId")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.transactionId")}}</th>
@@ -7037,6 +7074,7 @@ function showLockinOptions(){
 				<td>{{=$ctx.globalDate(entryDate)}}</td>
 				<td>{{=glAccountClassification.value}}</td>
 				<td>{{=glAccountName}}</td>
+				<td>{{=glAccountCode}}</td>
 				<td>{{=createdByUserName}}</td>
 				<td>{{=id}}</td>
 				<td>{{=transactionId}}</td>
@@ -7094,11 +7132,11 @@ function showLockinOptions(){
 	</tr>
 	<tr>
 		<td>{{=$ctx.doI18N("label.classification")}}</td>
-		<td>{{=glAccountClassification}}</td>
+		<td>{{=glAccountClassification.value}}</td>
 	</tr>
 	<tr>
 		<td>{{=$ctx.doI18N("label.transactionType")}}</td>
-		<td>{{=entryType}}</td>
+		<td>{{=entryType.value}}</td>
 	</tr>
 	<tr>
 		<td>{{=$ctx.doI18N("label.createdBy")}}</td>
