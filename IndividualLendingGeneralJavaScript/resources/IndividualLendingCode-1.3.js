@@ -657,7 +657,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 					},
 					text: false
 				}).click(function(e) {
-					var url = "journalentries/" + val.transactionId + "/reversal";
+					var url = "journalentries/" + val.transactionId + "?command=reverse";
 					var width = 400;
 					var height = 225;
 
@@ -958,31 +958,31 @@ function handleCOATabSelection(){
 		if (index == 1)
 		{
 			divToUpdate="#coatabs-asset";
-			executeAjaxRequest('glaccounts?classification=1', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?type=1', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 		// liabilities tab selected
 		if (index == 2)
 		{
 			divToUpdate="#coatabs-liabilities";
-			executeAjaxRequest('glaccounts?classification=2', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?type=2', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 		// equity tab selected
 		if (index == 3)
 		{
 			divToUpdate="#coatabs-equity";
-			executeAjaxRequest('glaccounts?classification=3', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?type=3', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 		// income tab selected
 		if (index == 4)
 		{
 			divToUpdate="#coatabs-income";
-			executeAjaxRequest('glaccounts?classification=4', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?type=4', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 		// expenses tab selected
 		if (index == 5)
 		{
 			divToUpdate="#coatabs-expenses";
-			executeAjaxRequest('glaccounts?classification=5', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
+			executeAjaxRequest('glaccounts?type=5', 'GET', "", glAccountsFetchSuccessFunction, formErrorFunction);
 		}
 	}
 
@@ -3328,7 +3328,7 @@ function loadILLoan(loanId) {
 	            	}).click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("setGuarantorbtn", "");
-						var postUrl = 'guarantors';
+						var postUrl = 'loans/'+loanId+'/guarantors';
 						
 						var templateSelector = "#guarantorFormTemplate";
 						var width = 600; 
@@ -3393,7 +3393,7 @@ function loadILLoan(loanId) {
 		                	primary: "ui-icon-trash"},
 		                	text: false
 		            	}).click(function(e) {
-							var deleteUrl = 'guarantors/' + val.id;
+							var deleteUrl = 'loans/'+loanId+'/guarantors/' + val.id;
 							var width = 500; 
 							var height = 350;
 							eval(genSaveSuccessFunctionReloadLoan(loanId));
@@ -4059,8 +4059,8 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 			        	 $("#penaltyReceivableRow").show();
 					}
 					
-					//onchange events for radio buttonaccountingType
-					 $("input[name=accountingType]").change(function() {
+					//onchange events for radio buttonaccountingRule
+					 $("input[name=accountingRule]").change(function() {
 				        var selectedValue = $(this).val();
 				        if(selectedValue == "1"){
 				        	 $("#accountingPlaceholdersDiv").hide();
@@ -4072,11 +4072,11 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 				    }); 
 				    
 				    //hide accounting placeholders div on page load
-				    if(data.accountingType.value == "NONE"){
+				    if(data.accountingRule.value == "NONE"){
 				    	$("#accountingPlaceholdersDiv").hide();
-				    }else if (data.accountingType.value == "CASH BASED"){
+				    }else if (data.accountingRule.value == "CASH BASED"){
 				    	 showCashFinancialPlaceholders();
-				    }else if (data.accountingType.value == "ACCRUAL BASED"){
+				    }else if (data.accountingRule.value == "ACCRUAL BASED"){
 				    	 showAccrualFinancialPlaceholders();
 				    }
 				}
