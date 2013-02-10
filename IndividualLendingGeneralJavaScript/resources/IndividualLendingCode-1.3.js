@@ -993,6 +993,153 @@ function handleCOATabSelection(){
 	fetchGLAccount(selected);
 }
 
+//Handle Code Value Create and Update
+
+function editCodeValueFunction(linkId, tableName){
+
+    var entityId = linkId.replace("editcodevalue", "");
+    var getUrl = tableName + "s/" + entityId + "/codevalues";
+    var submitType = "GET";
+    var dialogTitle = 'dialog.title.add.edit.code.value';
+    var templateSelector = "#codeValueFormTemplate";
+    var dialogWidth = 700;
+    var dialogHeight = 500;
+
+    var clearErrorsClass = function(){
+        //clear previous error messages
+        
+        $(':input','#entityform').removeClass("ui-state-error");
+        $('table td .ui-state-error').removeClass("ui-state-error");
+    }
+
+    var refreshCodeValues = function(data){
+        //Load Code Values separately
+        var codeValueFormDiv = $('#codeValue-table');
+        var formHtml = $('#codeValueTableTemplate').render(data);
+        codeValueFormDiv.html(formHtml);
+
+        $(".codeValueName").editable(function(value, settings){
+                $('#formerrors').html("");
+                clearErrorsClass();                               
+                value = value.trim();
+                var ele = this;
+                var searializedArray= {};
+                var codeValueId = $(ele).attr("id").replace('name', "");
+                searializedArray['name']= value;
+
+                var jsonString =JSON.stringify(searializedArray);
+                var codeValuesPostUrl = getUrl + '/' + codeValueId;
+                var codeValueSubmitType = "PUT";
+                var original = this.revert;
+                var errorFormFunction = function(jqXHR, textStatus, errorThrown){
+                    $('#formerrors').html("");
+                    //Revert original value if error in response
+                    $(ele).text(original);
+                    formErrorFunction(jqXHR, textStatus, errorThrown);
+                    clearErrorsClass();
+                    $(ele).addClass("ui-state-error");
+                }
+
+                var updateSuccess = function(data, textStatus, jqXHR){
+                    $('#formerrors').html("");
+                    clearErrorsClass();
+                    $(ele).text(value);
+                }
+
+                executeAjaxRequest(codeValuesPostUrl, codeValueSubmitType, jsonString, updateSuccess, errorFormFunction);
+                return("");
+            },
+            {
+                type: 'text',
+                cancel: 'Cancel',
+                submit: 'Update',
+                placeholder: '',
+                width: 150
+        });
+
+        $(".codeValuePosition").editable(function(value, settings){
+                //clear previous error messages
+                $('#formerrors').html("");
+                clearErrorsClass();
+                value = value.trim();
+                var ele = this;
+                var searializedArray= {};
+                var codeValueId = $(this).attr("id").replace('position', "");
+                searializedArray['position']= value;
+
+                var jsonString =JSON.stringify(searializedArray);
+                var codeValuesPostUrl = getUrl + '/' + codeValueId;
+                var codeValueSubmitType = "PUT";
+                var original = this.revert;
+
+                var errorFormFunction = function(jqXHR, textStatus, errorThrown){
+                    //clear previous error messages
+                    $('#formerrors').html("");
+                    //Revert original value if error in response
+                    $(ele).text(original);
+                    
+                    formErrorFunction(jqXHR, textStatus, errorThrown);
+                    
+                    clearErrorsClass();
+                    $(ele).addClass("ui-state-error");
+                }
+
+                var updateSuccess = function(data, textStatus, jqXHR){
+                    $('#formerrors').html("");
+                    clearErrorsClass();
+                    $(ele).text(value);
+                }
+
+                executeAjaxRequest(codeValuesPostUrl, codeValueSubmitType, jsonString, updateSuccess, errorFormFunction);
+
+                return("");
+            },
+            {
+                type: 'text',
+                cancel: 'Cancel',
+                submit: 'Update',
+                placeholder: '',
+                width: 100
+        });
+        
+    }
+
+    var successFunction = function(data, textStatus, jqXHR) {
+
+        var codeValues = new Object();
+        codeValues.crudRows = data;
+        codeValues.codeId = entityId;
+        popupDialogWithReadOnlyFormViewData(codeValues, dialogTitle, templateSelector, dialogWidth, dialogHeight);
+        refreshCodeValues(codeValues);
+        $("#addCodeValue").button().click(function(e){
+            clearErrorsClass();
+            //clear previous error messages
+            $('#formerrors').html("");
+            var codeId = $("#addCodeValue").attr("data-codeId");
+            var newFormData = JSON.stringify($('#entityform').serializeObject());
+
+            var addsuccessFunction =  function(data, textStatus, jqXHR) {
+                $(':input','#entityform').val('');
+                var codeValuesuccessFunction = function(data, textStatus, jqXHR){
+                    var codeValues = new Object();
+                    codeValues.crudRows = data;
+                    refreshCodeValues(codeValues);
+                }
+                executeAjaxRequest('codes/' + codeId + '/codevalues', "GET", "", codeValuesuccessFunction, formErrorFunction);
+
+            };
+
+            executeAjaxRequest('codes/' + codeId + '/codevalues', "POST", newFormData, addsuccessFunction, formErrorFunction);
+
+           e.preventDefault();
+        });
+
+    }
+
+    executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
+
+}
+
 
 function setReportingContent(divName) {
 
@@ -3433,6 +3580,13 @@ function refreshLoanDocuments(loanId) {
 					e.preventDefault();
 				});
 				
+				//#Add/Edit Code Values
+                $("a.editcodevalue").click( function(e) {
+                    var linkId = this.id;
+                    editCodeValueFunction(linkId, tableName);
+                    e.preventDefault();
+                });
+
 				$("a.edit" + tableName).click( function(e) {
 					var linkId = this.id;
 					var entityId = linkId.replace("edit" + tableName, "");
