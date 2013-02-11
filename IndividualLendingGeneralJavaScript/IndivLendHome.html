@@ -3481,7 +3481,9 @@ $(document).ready(function() {
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.loanOfficer")}}</span>
 			<span class="rowvalue">{{=loanOfficerName}}</span>
-			<button id="unassignloanofficerbtn{{=id}}" class="unassignloanofficer">{{=$ctx.doI18N("label.unassignloanOfficer")}}</button>
+			{{#if $ctx.showTask("UNASSIGNLOANOFFICER")}}
+				<button id="unassignloanofficerbtn{{=id}}" class="unassignloanofficer">{{=$ctx.doI18N("label.unassignloanOfficer")}}</button>
+			{{/if}}		
 		</div>
 		{{/if}}
 
@@ -5540,6 +5542,25 @@ $(document).ready(function() {
 					<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 					<label for="assignmentDate">{{=$ctx.doI18N("form.label.aassignment.date")}}</label>
 					<input id="assignmentDate" name="assignmentDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(assignmentDate)}}"/>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+</form>
+</script> 
+<script id="loanUnassignmentFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.loan.unassign.loanofficer")}}</legend>
+		<table cellspacing="4px" cellpadding="8px">
+			<tr>
+				<td>
+					<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+					<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+					<label for="unassignedDate">{{=$ctx.doI18N("form.label.unassignment.date")}}</label>
+					<input id="unassignedDate" name="unassignedDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(unassignedDate)}}"/>
 				</td>
 			</tr>
 		</table>

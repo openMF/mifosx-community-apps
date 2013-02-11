@@ -3407,7 +3407,7 @@ function loadILLoan(loanId) {
 
 						var linkId = this.id;
 						var loanId = linkId.replace("assignloanofficerbtn", "");
-						var postUrl = 'loans/' + loanId + '/assign';
+						var postUrl = 'loans/' + loanId + '?command=assignloanofficer';
 						var getUrl = 'loans/' + loanId + '/assign/template';
 
 						var templateSelector = "#loanReassignmentFormTemplate";
@@ -3424,13 +3424,17 @@ function loadILLoan(loanId) {
 
 						var linkId = this.id;
 						var loanId = linkId.replace("unassignloanofficerbtn", "");
-						var url = 'loans/' + loanId + '/unassign';
+						var postUrl = 'loans/' + loanId + '?command=unassignloanofficer';
+						var getUrl = ""
+						
+						var templateSelector = "#loanUnassignmentFormTemplate";
 						var width = 400; 
 						var height = 225;
 						var jsonbody = '{"dateFormat": "dd MMMM yyyy", "locale": "en_GB","unassignedDate":"'+$.datepicker.formatDate('dd MM yy', new Date())+'"}';
 						eval(genSaveSuccessFunctionReloadLoan(loanId));
-						popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan , jsonbody);
-						    
+						
+						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
+						popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunctionReloadLoan)		
 						e.preventDefault();
 				});
 
