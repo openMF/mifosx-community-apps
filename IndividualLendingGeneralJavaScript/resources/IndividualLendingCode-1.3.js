@@ -1102,6 +1102,34 @@ function editCodeValueFunction(linkId, tableName){
                 width: 100
         });
         
+        $('.deleteCodeValue').button().click(function(e){
+            $('#formerrors').html("");
+            clearErrorsClass();
+            var codeValueId = $(this).attr("id").replace('deleteCodeValue', "");
+            var codeValuesPostUrl = getUrl + '/' + codeValueId;
+            var codeValueSubmitType = "DELETE";
+
+            var errorFormFunction = function(jqXHR, textStatus, errorThrown){
+                //clear previous error messages
+                $('#formerrors').html("");
+                formErrorFunction(jqXHR, textStatus, errorThrown);
+            }
+
+            var updateSuccess = function(data, textStatus, jqXHR){
+                $('#formerrors').html("");
+                var getsuccessFunction = function(data, textStatus, jqXHR){
+                    var codeValues = new Object();
+                    codeValues.crudRows = data;
+                    refreshCodeValues(codeValues);
+                }
+                executeAjaxRequest(getUrl, "GET", "", getsuccessFunction, formErrorFunction);
+            }
+
+            executeAjaxRequest(codeValuesPostUrl, codeValueSubmitType, null, updateSuccess, errorFormFunction);
+            e.preventDefault();
+        });
+
+
     }
 
     var successFunction = function(data, textStatus, jqXHR) {

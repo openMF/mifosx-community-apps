@@ -3598,12 +3598,14 @@ $(document).ready(function() {
                     <tr>
                         <th><b><label for="name">{{=$ctx.doI18N("label.code.value.name")}}</label></b></th>
                         <th><b><label for="name">{{=$ctx.doI18N("label.code.value.position")}}</label></b></th>
+                        <th>&nbsp;</th>
                     </tr>
                 </thead>
             {{#each crudRows}}
                 <tr>
                     <td id="name{{=id}}" name="name{{=id}}" class="codeValueName" width="150" style="border-bottom: 1px solid">{{=name}}</td>
                     <td id="position{{=id}}" name="position{{=id}}" class="codeValuePosition" width="100" style="border-bottom: 1px solid">{{=position undef 0}}</td>
+                    <td><button id="deleteCodeValue{{=id}}" class="deleteCodeValue" data-codeId='{{=codeId}}'>{{=$ctx.doI18N("button.application.delete")}}</button></td>
                 </tr>
             {{/each}}
     
