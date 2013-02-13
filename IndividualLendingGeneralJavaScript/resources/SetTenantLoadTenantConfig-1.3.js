@@ -86,6 +86,12 @@ custom.helperFunctions = {
 			return false;
 		}
 	},
+	arrayIsNotEmpty : function(obj) {
+		if (obj instanceof Array) {
+			return obj.length > 0;
+		}
+		return false;
+	},
 	isAdjustableTransaction : function(transactionTypeId) {
 		try {
 			if (undefined == transactionTypeId || transactionTypeId === null) {

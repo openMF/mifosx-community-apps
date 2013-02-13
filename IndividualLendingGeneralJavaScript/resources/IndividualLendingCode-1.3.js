@@ -1569,7 +1569,7 @@ function showILClient(clientId) {
 						executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);	
 					}
 	        		currentClientId = clientId;
-				clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
+	        		clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
 	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
 	            	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
 	            
@@ -1612,21 +1612,18 @@ function showILClient(clientId) {
 					});
 					$('button.editclientbtn span').text(doI18N('dialog.button.edit.client'));
 					
-					$('.newloanbtn').button({icons: {
+					$('.newindividualloanbtn').button({icons: {
                			 primary: "ui-icon-document"}
                 	}).click(function(e) {
-						addILLoan(clientId);
+                		launchLoanApplicationDialog(clientId);
 					    e.preventDefault();
 					});
-					$('button.newloanbtn span').text(doI18N('dialog.button.new.loan.application'));
+					$('button.newindividualloanbtn span').text(doI18N('dialog.button.new.loan.application'));
 					
 					$('.newdepositbtn').button({icons: {
                			 primary: "ui-icon-document-b"}
                 	}).click(function(e) {
 						addILDeposit(clientId);
-						
-						//launchAddDepositAccountDialog(clientId);
-						
 						e.preventDefault();
 					});
 					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));
@@ -2029,13 +2026,13 @@ function showILGroup(groupId){
 			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
 		    e.preventDefault();
 		});
-		$('.newloanbtn').button().click(function(e) {
+		$('.newgrouploanbtn').button().click(function(e) {
 			var linkId = this.id;
-			var groupId = linkId.replace("newloanbtn", "");
+			var groupId = linkId.replace("newgrouploanbtn", "");
 			addILGroupLoan(groupId);
 		    e.preventDefault();
 		});
-		$('button.newloanbtn span').text(doI18N('dialog.button.new.loan.application'));
+		$('button.newgrouploanbtn span').text(doI18N('dialog.button.new.loan.application'));
 		$('.newbulkloanbtn').button().click(function(e) {
 			addILBulkMembersLoans(groupId, { "clientMembers" : data.clientMembers});
 		    e.preventDefault();
@@ -2294,6 +2291,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		executeAjaxRequest('depositaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);
 	}
 	
+	// TODO - All this might be able to go
 	function modifyILLoan(loanId) {
 		setAddLoanContent("content");
 		
@@ -2433,7 +2431,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			});
 		};
 		
-		executeAjaxRequest('loans/' + loanId + '?template=true&associations=charges', 'GET', "", successFunction, formErrorFunction);	 
+		executeAjaxRequest('loans/' + loanId + '?template=true&associations=charges,collateral', 'GET', "", successFunction, formErrorFunction);	 
 	}
 	
 	function modifyLoanApplication(clientId, loanId) {
@@ -2447,15 +2445,336 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		executeAjaxRequest('loans/' + loanId , "PUT", newFormData, successFunction, formErrorFunction);	  
 	}
 	
-	function addILLoan(clientId) {
-		setAddLoanContent("content");
-
-		eval(genAddLoanSuccessVar(clientId));
-
-  		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	  
+	function submitTabbedLoanApplication(divContainer, clientId, groupId) {
+		
+		var serializationOptions = {};
+		serializationOptions["checkboxesAsBools"] = true;
+		
+		var serializedArray = {};
+		serializedArray = $('#entityform').serializeObject(serializationOptions);	
+		var newFormData = JSON.stringify(serializedArray);
+		
+		var successFunction =  function(data, textStatus, jqXHR) {
+			divContainer.dialog("close");
+			if (clientId) {
+				showILClient(clientId);
+			} else {
+				showILGroup(groupId);
+			}
+		};
+		
+		executeAjaxRequest('loans', "POST", newFormData, successFunction, formErrorFunction);	  
 	}
+	
+	function submitTabbedModifyLoanApplication(divContainer, loanId, clientId, groupId) {
+		
+		var serializationOptions = {};
+		serializationOptions["checkboxesAsBools"] = true;
+		
+		var serializedArray = {};
+		serializedArray = $('#entityform').serializeObject(serializationOptions);	
+		var newFormData = JSON.stringify(serializedArray);
+		
+		var successFunction =  function(data, textStatus, jqXHR) {
+			divContainer.dialog("close");
+			if (clientId) {
+				showILClient(clientId);
+			} else {
+				showILGroup(groupId);
+			}
+		};
+		
+		executeAjaxRequest('loans/' + loanId , "PUT", newFormData, successFunction, formErrorFunction);	  
+	}
+	
+	var launchLoanApplicationDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var saveButton = doI18N('dialog.button.save');
+		var cancelButton = doI18N('dialog.button.cancel');
+		
+		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			submitTabbedLoanApplication(dialogDiv, data.clientId, data.groupId);
+		};
+		// end of buttonsOpts for save button
+		
+		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+		
+		dialogDiv.dialog({
+		  		title: doI18N('dialog.title.newLoanApplication'), 
+		  		width: 1200, 
+		  		height: 575, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+		  			$(this).remove();
+				},
+		  		open: function (event, ui) {
+		  			if (data.loanProductId) {
+		  				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, data.loanProductId);
+		  			} else {
+		  				var formHtml = $("#loanApplicationSelectProductDialogTemplate").render(data);
+		  				dialogDiv.html(formHtml);
+		  			}
+					
+					$("#productId").change(function() {
+						var loanProductId = $("#productId").val();
+						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId);
+					});
+		  		}
+		  	}).dialog('open');		
+	};
+	
+	function launchLoanApplicationDialog(clientId) {
+		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
+	}
+	
+	var launchModifyLoanApplicationDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var saveButton = doI18N('dialog.button.save');
+		var cancelButton = doI18N('dialog.button.cancel');
+		
+		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			submitTabbedModifyLoanApplication(dialogDiv, data.id, data.clientId, data.groupId);
+		};
+		// end of buttonsOpts for save button
+		
+		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+		
+		dialogDiv.dialog({
+		  		title: doI18N('dialog.title.newLoanApplication'), 
+		  		width: 1200, 
+		  		height: 575, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+		  			$(this).remove();
+				},
+		  		open: function (event, ui) {
+		  			if (data.loanProductId) {
+		  				renderLoanApplicationTabs(dialogDiv, data);
+		  			} else {
+		  				var formHtml = $("#loanApplicationSelectProductDialogTemplate").render(data);
+		  				dialogDiv.html(formHtml);
+		  			}
+					
+					$("#productId").change(function() {
+						var loanProductId = $("#productId").val();
+						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId);
+					});
+		  		}
+		  	}).dialog('open');		
+	};
+	
+	function launchModifyLoanApplicationDialog(loanId) {
+		// TODO - Maybe makes sense to bring back existing loan schedule also and allow users to 'preview new loan schedule' based on changes
+		executeAjaxRequest('loans/' + loanId + '?template=true&associations=charges,collateral', 'GET', "", launchModifyLoanApplicationDialogOnSuccessFunction, formErrorFunction);
+	}
+	
+	var renderLoanApplicationTabs = function(container, data) {
+		// show full application form with values defaulted
+		var formHtml = $("#loanApplicationDialogTemplate").render(data);
+		container.html(formHtml);
+		
+		var loanapplicationtabs = $(".loanapplicationtabs").tabs({
+			"show": function(event, ui) {
+				var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+      			var curTabID = curTab.prop("id");
+			},
+			"select": function( event, ui ) {
+				if($(ui.panel).attr('id') == ("schedule")) {
+					previewLoanApplicationSchedule();
+				}
+			}
+		});
+		
+		$("#productId").change(function() {
+			var loanProductId = $("#productId").val();
+			loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId);
+		});
+		
+		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+		
+		var chargeIndex = data["charges"].length;
+		$("#loanapp-addLoanCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+			var chargeId = $('#chargeOptions option:selected').val();
+			
+				var addLoanChargeSuccess = function (chargeData) {
+					chargeIndex++;
+				chargeData["index"] = chargeIndex;
+					var loanChargeHtml = $("#loanApplicationAddChargeRowTemplate").render(chargeData);
+					$("#loanchargestable tbody").append(loanChargeHtml);
+		  		
+					$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+					
+					$('#loanchargestable tbody tr:last .loanapp-removeLoanCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+						$(this).closest('tr').remove();
+	            		e.preventDefault();
+	            	});
+				}
+				
+				if (chargeId && undefined != chargeId && chargeId > 0) {
+					executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
+				}
+		    e.preventDefault();
+		});
+		
+		 if(data.charges) {
+			 $("#loanchargestable tbody tr .loanapp-removeLoanCharge").each(function(index) {
+				 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+					$(this).closest('tr').remove();
+	            	e.preventDefault();
+	            });
+			 });
+	    }
+		 
+		var collateralIndex = data["collateral"].length;
+		$("#loanapp-addCollateralType").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+			
+			var addLoanCollateralItemSuccess = function (collateralData) {
+				collateralIndex++;
+				collateralData["index"] = collateralIndex;
+				var collateralHtml = $("#loanApplicationAddCollateralRowTemplate").render(collateralData);
+				$("#loancollateraltable tbody").append(collateralHtml);
+		  		
+				$('#loancollateraltable tbody tr:last .loanapp-removeCollateralType').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+					$(this).closest('tr').remove();
+            		e.preventDefault();
+            	});
+				}
+			
+			// have to add 'id' as a field (along with 'loanCollateralOptions') otherwise platform thinks it has to filter it out of json results
+			executeAjaxRequest('loans/template?fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
+		    e.preventDefault();
+		});
+		
+		 if(data.collateral) {
+			 $("#loancollateraltable tbody tr .loanapp-removeCollateralType").each(function(index) {
+				 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+					$(this).closest('tr').remove();
+	            	e.preventDefault();
+	            });
+			 });
+	    }
+	};
+	
+	function loadTabbedLoanApplicationForm(container, clientId, productId) {
+		
+		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
+			// show full application form with values defaulted
+			var formHtml = $("#loanApplicationDialogTemplate").render(data);
+			container.html(formHtml);
+			
+			var loanapplicationtabs = $(".loanapplicationtabs").tabs({
+				"show": function(event, ui) {
+					var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+	      			var curTabID = curTab.prop("id");
+				},
+				"select": function( event, ui ) {
+					if($(ui.panel).attr('id') == ("schedule")) {
+						previewLoanApplicationSchedule();
+					}
+				}
+			});
+			
+			$("#productId").change(function() {
+				var loanProductId = $("#productId").val();
+				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId);
+			});
+			
+			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+			
+			var chargeIndex = data["charges"].length;
+			$("#loanapp-addLoanCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+				var chargeId = $('#chargeOptions option:selected').val();
+				
+					var addLoanChargeSuccess = function (chargeData) {
+						chargeIndex++;
+					chargeData["index"] = chargeIndex;
+						var loanChargeHtml = $("#loanApplicationAddChargeRowTemplate").render(chargeData);
+						$("#loanchargestable tbody").append(loanChargeHtml);
+			  		
+						$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+						$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+						
+						$('#loanchargestable tbody tr:last .loanapp-removeLoanCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					}
+					
+					if (chargeId && undefined != chargeId && chargeId > 0) {
+						executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
+					}
+			    e.preventDefault();
+			});
+			
+			 if(data.charges) {
+				 $("#loanchargestable tbody tr .loanapp-removeLoanCharge").each(function(index) {
+					 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+						$(this).closest('tr').remove();
+		            	e.preventDefault();
+		            });
+				 });
+		    }
+			 
+			var collateralIndex = 0;
+			$("#loanapp-addCollateralType").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+				
+				var addLoanCollateralItemSuccess = function (collateralData) {
+					collateralIndex++;
+					collateralData["index"] = collateralIndex;
+					var collateralHtml = $("#loanApplicationAddCollateralRowTemplate").render(collateralData);
+					$("#loancollateraltable tbody").append(collateralHtml);
+			  		
+					$('#loancollateraltable tbody tr:last .loanapp-removeCollateralType').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+						$(this).closest('tr').remove();
+	            		e.preventDefault();
+	            	});
+					}
+				
+				// have to add 'id' as a field (along with 'loanCollateralOptions') otherwise platform thinks it has to filter it out of json results
+				executeAjaxRequest('loans/template?fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
+			    e.preventDefault();
+			});
+		};
+		
+		// loan loan application template providing selected client and product infomation
+		executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+	}
+	
+	function previewLoanApplicationSchedule() {
+		
+		var newFormData = JSON.stringify($('#entityform').serializeObject());
+    	
+		var successFunction = function(data, textStatus, jqXHR) {
+	  		removeErrors("#formerrors");
+	  		var loanScheduleHtml = $("#newLoanScheduleTemplate").render(data);
+	  		$("#previewloanschedule").html(loanScheduleHtml);
+		};
+		
+		var errorFunction = function(jqXHR, textStatus, errorThrown) {
+			handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+		};
+		executeAjaxRequest('loans?command=calculateLoanSchedule', "POST", newFormData, successFunction, errorFunction);	  
+	}
+	
+//	function addILLoan(clientId) {
+//		setAddLoanContent("content");
+//
+//		eval(genAddLoanSuccessVar(clientId));
+//
+//  		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	  
+//	}
 
 	function addILGroupLoan(groupId) {
+		console.log("add group loan");
 		setAddLoanContent("content");
 
 		eval(genAddLoanSuccessVar(null, groupId));
@@ -2631,7 +2950,6 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	  			  			calculateLoanSchedule();
 	  				  	});
 
-	  					console.log("loancharge added: datepicker support on: datepickerfieldnoconstraint");
 	  					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 				  		
 				  		calculateLoanSchedule();
@@ -3117,10 +3435,11 @@ function loadILLoan(loanId) {
 				});
 				$('button.withdrawnbyapplicantloan span').text(doI18N('button.application.withdrawnByApplicant'));
 				
-				$('.modifyloan').button().click(function(e) {
+				$('.modifyloanapp').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 					var linkId = this.id;
-					var loanId = linkId.replace("modifybtn", "");
-					modifyILLoan(loanId);
+					var loanId = linkId.replace("modifyloanappbtn", "");
+					launchModifyLoanApplicationDialog(loanId);
+					
 				    e.preventDefault();
 				});
 				$('button.approveloan span').text(doI18N('button.application.modify'));
@@ -4787,7 +5106,7 @@ function setCulture(cultureVal) {
  
     	var tenantTranslation = "messages-tenant-" + tenantIdentifier;
     	jQuery.i18n.properties({
-			name:['messages', 'messages-platform-validation', 'messages-savings', tenantTranslation], 
+			name:['messages', 'messages-platform-validation', 'messages-savings', 'messages-groups', tenantTranslation], 
 			path: 'resources/global-translations/',
 			mode:'map',
 			cache: true,

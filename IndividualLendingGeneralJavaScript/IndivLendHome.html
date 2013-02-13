@@ -16,7 +16,6 @@
 <link rel="stylesheet" type="text/css"	href="resources/stretchyreporting/stretchyreporting.css">
 <link rel="stylesheet" type="text/css"	href="resources/IndividualLendingCode-1.3.css" />
 
-
 <!-- JQuery/JQuery UI is used. JQuery data tables are used to display rows of data - especially in reporting (stretchyreporting) -->
 <script type="text/javascript" src="resources/libs/jquery-1.7.min.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.8.16.custom/js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -30,15 +29,21 @@
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.8.16.custom/js/i18n/jquery.ui.datepicker-pt.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.8.16.custom/js/i18n/jquery.ui.datepicker-zh.js"></script>
 
-<!--JQuery custom combobox plugin used for sections of the accounting module-->
+<!-- 
+JQuery plugins:
+   combox(accounting),
+   datetime picker(general),
+   properties (I18N, general),
+   editable tables(code values, general) ,
+   ajax file download,
+   webcam intergration
+-->
 <script type="text/javascript"  src="resources/libs/jquery.combobox.js"></script>
-
-<!-- JQuery Date Time Picker -->
 <script type="text/javascript"	src="resources/libs/jquery-ui-timepicker-addon.js"></script>
-
-
-<!-- JQuery I18N plug-in -->
 <script type="text/javascript"	src="resources/libs/jquery.i18n.properties-min-1.0.9.js"></script>
+<script type="text/javascript" src="resources/libs/jquery.jeditable.js"></script>
+<script type="text/javascript"	src="resources/libs/jquery.fileDownload.js"></script>
+<script type="text/javascript"	src="resources/libs/jquery.webcam.js"></script>
 
 <!-- JQuery Template plug-in and code (for rendering UI functionality) -->
 <script type="text/javascript" src="resources/libs/jsrender.js"></script>
@@ -53,12 +58,6 @@
 <script type="text/javascript"	src="resources/libs/globalize/cultures/globalize.culture.pt.js"></script>
 <script type="text/javascript"	src="resources/libs/globalize/cultures/globalize.culture.zh.js"></script>
 
-<!-- JQuery Ajax file download plug-in-->
-<script type="text/javascript"	src="resources/libs/jquery.fileDownload.js"></script>
-
-<!-- JQuery webcam integration plug-in-->
-<script type="text/javascript"	src="resources/libs/jquery.webcam.js"></script>
-
 <!-- JQuery plug-in to show Mifos X Platform additional data tables -->
 <script type="text/javascript" src="resources/stretchydatatables-1.3.js"></script>
 
@@ -70,9 +69,6 @@
 
 <!-- JQuery plug-in to manage permissions and role permissions in the UI as the UI code is quite elaborate -->
 <script type="text/javascript" src="resources/MifosXPermissions-1.3.js"></script>
-
-<!-- JQuery plug-in to inline edit -->
-<script type="text/javascript" src="resources/libs/jquery.jeditable.js"></script>
 
 <!-- Google charts api (used in stretchyreporting) -->
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -137,844 +133,6 @@ $(document).ready(function() {
 {{/each}}
 </tbody>
 </table>
-</script>
-
-<!-- portfolio templates -->
-<script id="newLoanScheduleTemplate" type="text/x-jquery-tmpl">
-		<table id="repaymentschedule" class="pretty displayschedule">
-			<caption>{{=$ctx.doI18N("table.caption.repaymentSchedule")}}</caption>
-			<colgroup span="3"></colgroup>
-			<colgroup span="3">
-				<col class="lefthighlightcol">
-				<col>
-				<col class="righthighlightcol">
-			</colgroup>
-			<colgroup span="3">
-				<col class="lefthighlightcol">
-				<col>
-				<col class="righthighlightcol">
-			</colgroup>
-			<colgroup span="3"></colgroup>
-
-			<thead>
-				<tr>
-					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">Loan Amount and Balance</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">Total Cost of Loan</th>
-					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
-				</tr>
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">{{=$ctx.doI18N("table.heading.date")}}</th>
-					<th scope="col"># Days</th>
-					
-					<th scope="col" class="lefthighlightcolheader">Disbursement</th>
-					<th scope="col">Principal Repayment</th>
-					<th scope="col" class="righthighlightcolheader">Balance of Loan</th>
-
-					<th scope="col" class="lefthighlightcolheader">Interest Repayment</th>
-					<th scope="col">Fees</th>
-					<th scope="col" class="righthighlightcolheader">Penalties</th>
-
-					<th scope="col">Total Repayment Due</th>
-					<th scope="col">Total Paid</th>
-					<th scope="col">Total Outstanding</th>
-				</tr>
-			</thead>
-			<tbody>
-			{{#each periods}}
-			<tr>
-				<td scope="row">{{=$ctx.number(period)}}</td>
-				<td>{{=$ctx.globalDate(dueDate)}}</td>
-				<td>{{=$ctx.number(daysInPeriod)}}</td>
-
-				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalDisbursed)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDue)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
-
-				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, penaltyChargesDue)}}</td>
-
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOutstandingForPeriod)}}</td>
-			</tr>
-			{{/each}}
-			</tbody>
-			<tfoot class="ui-widget-header">
-				<tr>
-					<th colspan="2">{{=$ctx.doI18N("table.heading.total")}}</th>
-					<th>{{=$ctx.number(loanTermInDays)}}</th>
-
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePrincipalDisbursed)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</th>
-					<th class="righthighlightcolheader">&nbsp;</th>
-
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</th>
-					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</th>
-
-					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
-				</tr>
-			</tfoot>
-		</table>
-</script>
-
-<script id="newLoanFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.loan.information")}}</legend>
-		<div>
-			<table id="productdetails">
-				<tr>
-					<td valign="top">
-						{{#if clientName }}
-						<label for="clientname">{{=$ctx.doI18N("label.applicant")}}</label>
-						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
-						{{/if}}
-						{{#if groupName}}
-						<label for="groupname">{{=$ctx.doI18N("label.applicant")}}</label>
-						<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
-						{{/if}}
-
-						<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
-						<select name="productId" id="productId" style="width: 306px;">
-							<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
-						{{#each productOptions}}
-							{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-							{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-							{{/if}}
-        				{{/each}}
-  						</select>
-						<label for="description">{{=$ctx.doI18N("label.description")}}</label>
-						<textarea id="description" rows="2" cols="50" draggable="false" disabled="disabled">{{=loanProductDescription}}</textarea>
-					</td>
-					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
-					<td valign="top">
-						<label for"loanOfficerId">{{=$ctx.doI18N("label.loanOfficer")}}</label>
-						<select name="loanOfficerId" id="loanOfficerId">
-							<option value="">{{=$ctx.doI18N("option.loanOfficer.first.choice")}}</option>
-						{{#each loanOfficerOptions}}
-							{{#if $ctx.number($parent.parent.data.loanOfficerId)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
-							{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
-							{{/if}}
-        				{{/each}}
-  						</select>
-						
-						<label for="submittedOnDate">{{=$ctx.doI18N("label.submitted.on")}}</label>
-						<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
-
-						<label for="submittedOnNote">{{=$ctx.doI18N("label.loan.note")}}</label>
-						<textarea id="submittedOnNote" name="submittedOnNote" rows="2" cols="50" draggable="false">{{=submittedOnNote}}</textarea>
-					</td>
-				</tr>
-			</table>
-		</div>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("legend.loanTerms")}}</legend>
-		<table>
-			<tr>
-				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("label.principal")}}</td>
-							<td>
-								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 125px;" />
-								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.loanTerm")}}</td>
-							<td>
-								<input id="loanTermFrequency" name="loanTermFrequency" title="" type="text" value="{{=$ctx.number(termFrequency)}}" style="width: 50px;" />
-								
-								<select name="loanTermFrequencyType" id="loanTermFrequencyType"  title="" style="width: 121px;">
-								{{#each termFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.termPeriodFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.numberof.repayments")}}</td>
-							<td>
-								<input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.repaidevery")}}</td>
-							<td>
-								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 50px;" />
-								
-								<select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 121px;">
-								{{#each repaymentFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.repaymentFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.repaymentStrategy")}}</td>
-							<td>
-								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
-									<option value="">{{=$ctx.doI18N("option.repaymentStrategy.first.choice")}}</option>
-								{{#each repaymentStrategyOptions}}
-									{{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-									{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-									{{/if}}
-            					{{/each}}
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.expectedDisbursementOn")}}</td>
-							<td>
-							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.firstRepaymentOn")}}</td>
-							<td>
-							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
-							</td>
-						</tr>
-						{{#if $ctx.showTask("VIEWFUNDS")}}
-						<tr>
-							<td>{{=$ctx.doI18N("label.fund")}}</td>
-							<td>
-								<select id="fundId" name="fundId" title="">
-									<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
-								{{#each fundOptions}}
-									{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
-										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-									{{#else}}
-										<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-									{{/if}}
-            						{{/each}}
-								</select>
-							</td>
-						</tr>
-						{{/if}}
-					</table>
-				</td>
-				<!-- interest details cell -->
-				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
-							<td>
-								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 60px;" />
-								
-								<select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 115px;">
-								{{#each interestRateFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.amortization")}}</td>
-							<td>
-								<select name="amortizationType" id="amortizationType"  title="" style="width: 178px;">
-								{{#each amortizationTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.amortizationType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.interest.method")}}</td>
-							<td>
-								<select name="interestType" id="interestType"  title="" style="width: 180px;">
-								{{#each interestTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.interestRate.calculatedInPeriod")}}</td>
-							<td>
-							<select id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" style="width: 220px;">
-								{{#each interestCalculationPeriodTypeOptions}}
-                                 	{{#if $ctx.number($parent.parent.data.interestCalculationPeriodType.id)===$ctx.number(id)}}
-										<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-									{{#else}}
-										<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-									{{/if}}
-                                {{/each}}
-							</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.interestChargedFrom")}}</td>
-							<td>
-							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" style="width:172px;"/>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.arrears.tolerance")}}</td>
-							<td>
-								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" style="width: 125px;" />
-								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td>
-				<!-- Other options -->
-					<div>
-						<span id="toolbar" class="ui-widget-header ui-corner-all">
-							<button type="submit" class="submitloanapp" id="submitloanapp" name="_eventId_submit"  title="Submit loan application.">Submit loan application</button>
-							<button type="submit" class="cancelloanapp" id="cancelloanapp" name="_eventId_cancel" title="Cancel loan application.">Cancel</button>
-						</span>
-					</div>
-				<!-- other options -->
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("legend.charges")}}</legend>
-		<div>
-			<table id="chargesdetails">
-				<tr>
-					<td valign="top">
-						<label for="chargeOptions">{{=$ctx.doI18N("label.charges")}}</label>
-						<select id="chargeOptions">
-							<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
-						{{#each chargeOptions}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-        				{{/each}}
-  						</select>
-						<a href="#" id="addloancharges">{{=$ctx.doI18N("widget.charges.select.button.add")}}</a> 
-					</td>
-				</tr>
-				<tr>
-					<td id="selectedLoanCharges">
-						{{#each charges}}
-						<div class="row charge">
-							<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
-							{{#if id}}
-							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
-							{{/if}}
-							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=chargeId}}" />
-							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
-							</span>
-							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
-								{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
-									{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-										<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-									{{#else}}
-										<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-									{{/if}}
-								{{/each}}
-								</select>
-							</span>
-							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
-								{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
-									{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-										<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-									{{#else}}
-										<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-									{{/if}}
-								{{/each}}
-								</select>
-							</span>
-							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][specifiedDueDate]" name="charges[{{=$itemNumber}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
-							</span>
-							<span class="rowvalue">
-								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
-							</span>
-						</div>
-						{{/each}}
-					</td>	
-				</tr>
-			</table>
-		</div>
-	</fieldset>
-</form>
-</script>
-
-<!-- Template rendered when attaching new charge to loan application, in this case id property is charge id (*NOT* loan charge) and index is computed in js logic-->
-<script id="addNewLoanChargeFormTemplate" type="text/x-jquery-tmpl">
-<div class="row charge">
-	<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
-	<input id="charges[{{=index}}][chargeId]" name="charges[{{=index}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=id}}" />
-	<span class="rowvalue">
-		<input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
-	</span>
-	<span class="rowvalue">
-		<select id="charges[{{=index}}][chargeCalculationType]" name="charges[{{=index}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
-		{{#each chargeCalculationTypeOptions}}
-			{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-			{{/if}}
-		{{/each}}
-		</select>
-	</span>
-	<span class="rowvalue">
-		<select id="charges[{{=index}}][chargeTimeType]" name="charges[{{=index}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
-		{{#each chargeTimeTypeOptions}}
-			{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-			{{/if}}
-		{{/each}}
-		</select>
-	</span>
-	<span class="rowvalue">
-		<input id="charges[{{=index}}][specifiedDueDate]" name="charges[{{=index}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="" />
-	</span>
-	<span class="rowvalue">
-		<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
-	</span>
-</div>
-</script>
-
-<!-- Template rendered when attaching new charge to loan through popup (along with loanChargeDetailsPartialFormTemplate) -->
-<script id="loanChargeFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	</div>
-	<fieldset>
-		<div>
-			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
-			<label for="chargeOptions">{{=$ctx.doI18N("label.charges")}}</label>
-			<select id="chargeOptions" name="chargeId">
-				<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
-				{{#each chargeOptions}}
-					{{#if $ctx.number($parent.parent.data.id)===$ctx.number(id)}}
-						<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}, {{=currency.displaySymbol}}</option>
-					{{#else}}
-						<option value="{{=$ctx.number(id)}}">{{=name}}, {{=currency.displaySymbol}}</option>
-					{{/if}}
-				{{/each}}
-			</select>
-			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-		</div>
-		<div id="loanChargeDetails">
-			{{each $parent.data tmpl="#loanChargeDetailsPartialFormTemplate"}}
-		</div>
-	</fieldset>
-</form>
-</script>
-
-<script id="loanChargeDetailsPartialFormTemplate" type="text/x-jquery-tmpl">
-<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
-<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
-<label for="chargeCalculationType">{{=$ctx.doI18N("form.label.charge.calculation.type")}}</label>
-<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 180px" disabled="disabled">
-	{{#each chargeCalculationTypeOptions}}
-		{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-		{{#else}}
-			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-		{{/if}}
-	{{/each}}
-</select>
-<label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
-<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 180px" disabled="disabled">
-	{{#each chargeTimeTypeOptions}}
-		{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-		{{#else}}
-			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-		{{/if}}
-	{{/each}}
-</select>
-{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
-<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-<label for="specifiedDueDate">Due for collection on:</label>
-<input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
-{{/if}}
-</script>
-
-<script id="modifyLoanChargeFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	</div>
-	<fieldset>
-		<div>
-			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
-			<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-			<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
-			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
-
-		{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
-			<label for="specifiedDueDate">Due for collection on:</label>
-			<input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueAsOfDate)}}" />
-		{{/if}}
-		</div>
-	</fieldset>
-</form>
-</script>
-
-<script id="newLoanFormTemplateMin" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
-
-	{{#if clientId}}
-	<label for="clientname">{{=$ctx.doI18N("label.applicant")}}</label>
-	<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;"/>
-	{{/if}}
-	{{#if groupId}}
-	<label for="groupname">{{=$ctx.doI18N("label.applicant")}}</label>
-	<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;"/>
-	{{/if}}
-
-	<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
-	<select name="productId" id="productId" style="width: 306px;">
-		<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
-	{{#each productOptions}}
-		{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
-		<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-		{{#else}}
-		<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-		{{/if}}
-	{{/each}}
-	</select>
-</form>	
-</script>
-
-<script id="modifyLoanApplicationFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.loan.information")}}</legend>
-		<div>
-			<table id="productdetails">
-				<tr>
-					<td valign="top">
-						<label for="clientname">{{=$ctx.doI18N("label.applicant")}}</label>
-						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;"/>
-
-						<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
-						<select name="productId" id="productId" style="width: 306px;">
-							<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
-						{{#each productOptions}}
-							{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-							{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-							{{/if}}
-        				{{/each}}
-  						</select>
-					</td>
-					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
-					<td valign="top">
-						<label for="submittedOnDate">{{=$ctx.doI18N("label.submitted.on")}}</label>
-						<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
-
-						<label for="submittedOnNote">{{=$ctx.doI18N("label.loan.note")}}</label>
-						<textarea id="submittedOnNote" name="submittedOnNote" rows="2" cols="50" draggable="false">{{=submittedOnNote}}</textarea>
-					</td>
-				</tr>
-			</table>
-		</div>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("legend.loanTerms")}}</legend>
-		<table>
-			<tr>
-				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("label.principal")}}</td>
-							<td>
-								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 125px;" />
-								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.loanTerm")}}</td>
-							<td>
-								<input id="loanTermFrequency" name="loanTermFrequency" title="" type="text" value="{{=$ctx.number(termFrequency)}}" style="width: 50px;" />
-								
-								<select name="loanTermFrequencyType" id="loanTermFrequencyType"  title="" style="width: 121px;">
-								{{#each termFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.termPeriodFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.numberof.repayments")}}</td>
-							<td>
-								<input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.repaidevery")}}</td>
-							<td>
-								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 50px;" />
-								
-								<select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 121px;">
-								{{#each repaymentFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.repaymentFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.repaymentStrategy")}}</td>
-							<td>
-								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
-									<option value="">{{=$ctx.doI18N("option.repaymentStrategy.first.choice")}}</option>
-								{{#each repaymentStrategyOptions}}
-									{{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-									{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-									{{/if}}
-            					{{/each}}
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.expectedDisbursementOn")}}</td>
-							<td>
-							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.firstRepaymentOn")}}</td>
-							<td>
-							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
-							</td>
-						</tr>
-						{{#if $ctx.showTask("VIEWFUNDS")}}
-						<tr>
-							<td>{{=$ctx.doI18N("label.fund")}}</td>
-							<td>
-								<select id="fundId" name="fundId" title="">
-									<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
-								{{#each fundOptions}}
-									{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
-										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-									{{#else}}
-										<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-									{{/if}}
-            						{{/each}}
-								</select>
-							</td>
-						</tr>
-						{{/if}}
-					</table>
-				</td>
-				<!-- interest details cell -->
-				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
-							<td>
-								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 60px;" />
-								
-								<select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 115px;">
-								{{#each interestRateFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.amortization")}}</td>
-							<td>
-								<select name="amortizationType" id="amortizationType"  title="" style="width: 178px;">
-								{{#each amortizationTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.amortizationType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.interest.method")}}</td>
-							<td>
-								<select name="interestType" id="interestType"  title="" style="width: 180px;">
-								{{#each interestTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.interestRate.calculatedInPeriod")}}</td>
-							<td>
-							<select id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" style="width: 220px;">
-								{{#each interestCalculationPeriodTypeOptions}}
-                                 	{{#if $ctx.number($parent.parent.data.interestCalculationPeriodType.id)===$ctx.number(id)}}
-										<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-									{{#else}}
-										<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-									{{/if}}
-                                {{/each}}
-							</select>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.interestChargedFrom")}}</td>
-							<td>
-							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" style="width:172px;"/>
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.arrears.tolerance")}}</td>
-							<td>
-								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" style="width: 125px;" />
-								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
-							</td>
-						</tr>
-					</table>
-				</td>
-				<td>
-				<!-- Other options -->
-					<div>
-						<span id="toolbar" class="ui-widget-header ui-corner-all">
-							<button type="submit" class="modifyloanapp" id="modifyloanapp" name="_eventId_submit"  title="Modify loan application.">Modify loan application</button>
-							<button type="submit" class="cancelloanapp" id="cancelloanapp" name="_eventId_cancel" title="Cancel loan application.">Cancel</button>
-						</span>
-					</div>
-				<!-- other options -->
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("legend.charges")}}</legend>
-		<div>
-			<table id="chargesdetails">
-				<tr>
-					<td valign="top">
-						<label for="chargeOptions">{{=$ctx.doI18N("label.charges")}}</label>
-						<select id="chargeOptions">
-							<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
-						{{#each chargeOptions}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-        				{{/each}}
-  						</select>
-						<a href="#" id="addloancharges">{{=$ctx.doI18N("widget.charges.select.button.add")}}</a> 
-					</td>
-				</tr>
-				<tr>
-					<td id="selectedLoanCharges">
-					{{#each charges}}
-						<div class="row charge">
-							<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
-							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
-							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class ="chargeId" title="" type="hidden" value="{{=chargeId}}" />
-							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amountOrPercentage, 2)}}" style="width: 125px;"/>
-							</span>
-							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
-									{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
-										{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-										{{#else}}
-											<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-										{{/if}}
-									{{/each}}
-								</select>
-							</span>
-							<span class="rowvalue">
-								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
-									{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
-										{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-										{{#else}}
-											<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-										{{/if}}
-									{{/each}}
-								</select>
-							</span>
-							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][specifiedDueDate]" name="charges[{{=$itemNumber}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueAsOfDate)}}" />
-							</span>
-							<span class="rowvalue">
-								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
-							</span>
-						</div>
-					{{/each}}
-					</td>	
-				</tr>
-			</table>
-		</div>
-	</fieldset>
-</form>
 </script>
 
 <script id="bulkLoanApplicationFormTemplate" type="text/x-jquery-tmpl">
@@ -1687,8 +845,8 @@ $(document).ready(function() {
 		<thead>
 			<tr>
 				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
-				<th>{{=$ctx.doI18N("table.header.client.accountNo")}}</th>
-				<th>{{=$ctx.doI18N("table.header.displayname")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.client.accountNo")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.displayname")}}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -1745,8 +903,8 @@ $(document).ready(function() {
 	<table id='groupstable' width='100%'>
 		<thead>
 			<tr>
-				<th>{{=$ctx.doI18N("table.header.officename")}}</th>
-				<th>{{=$ctx.doI18N("table.header.name")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.name")}}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -1788,7 +946,7 @@ $(document).ready(function() {
 					{{/if}}
 
 					{{#if $ctx.showTask("AddLoan")}}
-						<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
+						<button id="newindividualloanbtn{{=id}}" class="newindividualloanbtn">New loan application</button>
 					{{/if}}
 
 					{{#if $ctx.showTask("AddDepositAccount")}}
@@ -2520,7 +1678,7 @@ $(document).ready(function() {
 <span id="toolbar" class="ui-widget-header ui-corner-all">
     <button id="deletegroupbtn{{=id}}" class="deletegroupbtn">Delete group</button>
 	<button id="editgroupbtn{{=id}}" class="editgroupbtn">Edit group</button>
-	<button id="newloanbtn{{=id}}" class="newloanbtn">New loan application</button>
+	<button id="newgrouploanbtn{{=id}}" class="newgrouploanbtn">New loan application</button>
 	<button id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">New members loan application</button>
 </span>
 <hr/>
@@ -3301,898 +2459,6 @@ $(document).ready(function() {
  </form>
 </script>
 
-<script id="editAccountNoFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<label for="accountNo">{{=$ctx.doI18N("label.accountNo")}}</label>
-	<input id="accountNo" name="accountNo" title="" type="text" value="{{=accountNo}}" />
-
-	<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
-	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
-	
- </form>
-</script>
-
-<script id="loanDataTabTemplate" type="text/x-jquery-tmpl">
-{{#each permissions}}
-{{#if anyActionOnLoanAllowed}}
-<div id="loanactions">
-	<table width="100%">
-		<td align="center">
-		<span id="toolbar" class="ui-widget-header ui-corner-all">
-	
-		{{#if $ctx.showTask("AddLoanCharge")}}
-			{{#if addLoanChargeAllowed}}
-			<button id="addloanchargebtn{{=$parent.parent.parent.parent.data.id}}" class="addloancharge">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
-			{{/if}}
-		{{/if}}
-
-		{{#if $ctx.showTask("RejectLoanApplication")}}
-			<button id="assignloanofficerbtn{{=$parent.parent.parent.data.id}}" class="assignloanofficer">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
-		{{/if}}
-
-		{{#if $ctx.showTask("RejectLoanApplication")}}
-			{{#if rejectAllowed}}
-			<button id="rejectbtn{{=$parent.parent.parent.parent.data.id}}" class="rejectloan">{{=$ctx.doI18N("button.application.reject")}}</button>
-			{{/if}}
-		{{/if}}
-	
-		{{#if $ctx.showTask("LoanApplicationWithdrawn")}}
-			{{#if withdrawnByApplicantAllowed}}
-			<button id="withdrawnbyapplicantloanbtn{{=$parent.parent.parent.parent.data.id}}" class="withdrawnbyapplicantloan">{{=$ctx.doI18N("button.application.withdrawnByApplicant")}}</button>
-			{{/if}}
-		{{/if}}
-
-		{{#if pendingApproval}}
-			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="modifybtn{{=$parent.parent.parent.parent.data.id}}" class="modifyloan">{{=$ctx.doI18N("button.application.modify")}}</button>
-			{{/if}}
-			{{#if $ctx.showTask("APPROVELOAN")}}
-			<button id="approvebtn{{=$parent.parent.parent.parent.data.id}}" class="approveloan">{{=$ctx.doI18N("button.application.approve")}}</button>
-			{{/if}}
-			{{#if $ctx.showTask("DELETELOAN")}}
-			<button id="deletebtn{{=$parent.parent.parent.parent.data.id}}" class="deleteloan">{{=$ctx.doI18N("button.application.delete")}}</button>
-			{{/if}}
-		{{/if}}
-	
-		{{#if undoApprovalAllowed}}
-			{{#if $ctx.showTask("UNDOLOANAPPROVAL")}}
-			<button id="undoapprovebtn{{=$parent.parent.parent.parent.data.id}}" class="undoapproveloan">{{=$ctx.doI18N("button.application.undoApproval")}}</button>
-			{{/if}}
-		{{/if}}
-			
-		{{#if disbursalAllowed}}
-			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="modifybtn{{=$parent.parent.parent.parent.data.id}}" class="modifyloan">{{=$ctx.doI18N("button.application.modify")}}</button>
-			{{/if}}
-			{{#if $ctx.showTask("DISBURSELOAN")}}
-			<button id="disbursebtn{{=$parent.parent.parent.parent.data.id}}" class="disburseloan">{{=$ctx.doI18N("button.loan.disburse")}}</button>
-			{{/if}}
-		{{/if}}
-			
-		{{#if undoDisbursalAllowed}}
-			{{#if $ctx.showTask("UNDOLOANDISBURSAL")}}
-			<button id="undodisbursalbtn{{=$parent.parent.parent.parent.data.id}}" class="undodisbursalloan">{{=$ctx.doI18N("button.loan.undoDisbursal")}}</button>
-			{{/if}}
-		{{/if}}
-			
-		{{#if makeRepaymentAllowed}}
-			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="modifybtn{{=$parent.parent.parent.parent.data.id}}" class="modifyloan">{{=$ctx.doI18N("button.application.modify")}}</button>
-			{{/if}}
-			{{#if $ctx.showTask("LOANREPAYMENT")}}
-			<button id="repaymentbtn{{=$parent.parent.parent.parent.data.id}}" class="repaymentloan">{{=$ctx.doI18N("button.loan.repayment")}}</button>
-			{{/if}}
-			{{#if $ctx.showTask("WAIVEINTERESTPORTIONOFLOAN")}}
-			<button id="waiveinterestbtn{{=$parent.parent.parent.parent.data.id}}" class="waiveinterestloan">{{=$ctx.doI18N("button.loan.waiveInterest")}}</button>
-			{{/if}}
-			{{#if $ctx.showTask("WRITEOFFLOAN")}}
-			<button id="writeoffbtn{{=$parent.parent.parent.parent.data.id}}" class="writeoffloan">{{=$ctx.doI18N("button.loan.writeOff")}}</button>
-			{{/if}}
-		{{/if}}
-			
-		{{#if setGuarantorAllowed}}
-			{{#if $ctx.showTask("ADDLOANGUARANTOR")}}
-			<button id="setGuarantorbtn{{=$parent.parent.parent.parent.data.id}}" class="setguarantor">{{=$ctx.doI18N("button.guarantor")}}</button>
-			{{/if}}
-		{{/if}}
-			
-		{{#if closeLoanAsRescheduledAllowed}}
-			{{#if $ctx.showTask("CLOSEASRESCHEDULEDLOAN")}}
-			<button id="closeasrescheduledbtn{{=$parent.parent.parent.parent.data.id}}" class="closeasrescheduledloan">{{=$ctx.doI18N("button.loan.closeAsRescheduled")}}</button>
-			{{/if}}
-		{{/if}}
-	
-		{{#if closeLoanAllowed}}
-			{{#if $ctx.showTask("CLOSELOAN")}}
-			<button id="closebtn{{=$parent.parent.parent.parent.data.id}}" class="closeloan">{{=$ctx.doI18N("button.loan.close")}}</button>
-			{{/if}}
-		{{/if}}
-		</span>
-		</td>
-	</table>
-</div>
-{{/if}}
-{{/each}}
-
-<div id="loantabs{{=id}}" class="loantabs">
-	<ul>
-		<li><a href="#details{{=id}}" title="details">{{=$ctx.doI18N("tab.details")}}</a></li>
-		{{#if charges}}
-		<li><a href="#charges{{=id}}" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
-		{{/if}}
-		{{#each repaymentSchedule}}
-		<li><a href="#schedule{{=id}}" title="schedule">{{=$ctx.doI18N("tab.repaymentSchedule")}}</a></li>
-        {{/each}}
-		{{#if transactions}}
-		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.transactions")}}</a></li>
-		{{/if}}
-		<li><a href="#loanDocuments{{=id}}" title="documents">{{=$ctx.doI18N("tab.loanDocuments")}}</a></li>
-	</ul>
-    <!-- first loan tab -->
-
-	<div id="details{{=id}}" style="margin-top: 5px;">
-		{{#if accountNo}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.accountNo")}}</span>
-			<span class="rowvalue">
-			{{=accountNo}}
-			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn"><span>Edit</span></button>
-			{{/if}}
-			</span>
-		</div>
-		{{/if}}
-		{{#if externalId}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
-			<span class="rowvalue">
-			{{=externalId}}
-			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn"><span>Edit</span></button>
-			{{/if}}
-			</span>
-		</div>
-		{{/if}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
-			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
-		</div>
-		
-		{{#if actualDisbursementDate}}
-			{{#if $ctx.numberGreaterThanZero(repaymentSchedule.totalInArrears)}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.status.arrears")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted($parent.parent.data.repaymentSchedule.currency, $parent.parent.data.repaymentSchedule.totalInArrears)}}</span>
-		</div>
-			{{/if}}
-		{{/if}}
-
-		{{#if submittedOnDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.submitted.on")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(submittedOnDate)}}</span>
-		</div>
-		{{/if}}
-		
-
-		{{#if loanOfficerName}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.loanOfficer")}}</span>
-			<span class="rowvalue">{{=loanOfficerName}}</span>
-			{{#if $ctx.showTask("UNASSIGNLOANOFFICER")}}
-				<button id="unassignloanofficerbtn{{=id}}" class="unassignloanofficer">{{=$ctx.doI18N("label.unassignloanOfficer")}}</button>
-			{{/if}}		
-		</div>
-		{{/if}}
-
-		{{#if approvedOnDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.approved.on")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(approvedOnDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if actualDisbursementDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.disbursedOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(actualDisbursementDate)}}</span>
-		</div>
-		{{#else}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.expectedDisbursementOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(expectedDisbursementDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if actualDisbursementDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.maturesOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(expectedMaturityDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if closedOnDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.closedOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(closedOnDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if closedOnDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.actualLoanTerm")}}</span>
-			<span class="rowvalue">{{=convenienceData.actualLoanTermInMonths}} {{=$ctx.doI18N("label.months")}} / ({{=convenienceData.actualLoanTermInDays}} {{=$ctx.doI18N("label.days")}})</span>
-		</div>
-		{{/if}}
-
-		<br/>
-		{{#if repaymentsStartingFromDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.firstRepaymentOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(repaymentsStartingFromDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if interestChargedFromDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.interestChargedFrom")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(interestChargedFromDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if loanOfficerName}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.loanOfficer")}}</span>
-			<span class="rowvalue">{{=loanOfficerName}}</span>
-		</div>
-		{{/if}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.product")}}</span>
-			<span class="rowvalue">{{=loanProductName}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.fund")}}</span>
-			<span class="rowvalue">{{=fundName}}</span>
-		</div>
-		<br/>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
-			<span class="rowvalue">{{=currency.name}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.principal")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, principal)}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.repayments")}}</span>
-			<span class="rowvalue">{{=numberOfRepayments}} every {{=repaymentEvery}}&nbsp;{{=repaymentFrequencyType.value}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.amortization")}}</span>
-			<span class="rowvalue">{{=amortizationType.value}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.interest")}}</span>
-			<span class="rowvalue">{{=$ctx.decimal(annualInterestRate, 4)}}% per annum ({{=$ctx.decimal(interestRatePerPeriod, 4)}}%&nbsp; {{=interestRateFrequencyType.value}}) - {{=interestType.value}}</span>
-		</div>
-		
-		<br/>
-		
-		{{#if guarantors}}
-			<b>{{=$ctx.doI18N("label.guarantorDetails")}}</b>
-			{{#each guarantors}}
-				<div class="row">
-					<span class="longrowlabel">&nbsp;</span>
-					<span class="rowvalue">
-						{{#if $ctx.showTask("REMOVELOANGUARANTOR")}}
-							<button id="removeguarantor{{=id}}" class="removeguarantor">Remove</button>
-						{{/if}}	
-					</span>
-				</div>
-				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("label.name")}}</span>
-						<span class="rowvalue">{{=lastname}}, {{=firstname}}</span>
-				</div>
-				
-				{{#if guarantorType.value == "CUSTOMER"}}
-				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
-						<span class="rowvalue">{{=officeName}}</span>
-				</div>
-				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("label.joinedon")}}</span>
-						<span class="rowvalue">{{=$ctx.globalDate(joinedDate)}}</span>
-				</div>
-				{{/if}}
-				{{#if guarantorType.value == "EXTERNAL"}}
-					{{#if dob == true}}
-						<div class="row">
-								<span class="longrowlabel">{{=$ctx.doI18N("label.dob")}}</span>
-								<span class="rowvalue">{{=$ctx.globalDate(dob)}}</span>
-						</div>
-					{{/if}}
-					{{#if addressLine1}}
-						<div class="row">
-								<span class="longrowlabel">{{=$ctx.doI18N("label.address")}}</span>
-								<span class="rowvalue">{{=addressLine1}}, {{=addressLine2}}</span>
-						</div>
-					{{/if}}
-					{{#if zip}}
-						<div class="row">
-								<span class="longrowlabel">{{=$ctx.doI18N("label.zip")}}</span>
-								<span class="rowvalue">{{=zip}}</span>
-						</div>
-					{{/if}}
-					{{#if city}}
-						<div class="row">
-								<span class="longrowlabel">{{=$ctx.doI18N("label.city")}}</span>
-								<span class="rowvalue">{{=city}}</span>
-						</div>
-					{{/if}}
-					{{#if mobileNumber}}
-						<div class="row">
-								<span class="longrowlabel">{{=$ctx.doI18N("label.mobile")}}</span>
-								<span class="rowvalue">{{=mobileNumber}}</span>
-						</div>
-					{{/if}}
-					{{#if housePhoneNumber}}
-						<div class="row">
-								<span class="longrowlabel">{{=$ctx.doI18N("label.telephone")}}</span>
-								<span class="rowvalue">{{=housePhoneNumber}}</span>
-						</div>
-					{{/if}}
-				{{/if}}
-				<br/>
-			{{/each}}
-		{{/if}}
-
-	</div>
-
-	{{#if charges}}
-	<div id="charges{{=id}}" style="margin-top: 5px;">
-		<table id="loancharges{{=id}}" class="pretty displaypayments">
-		<caption>{{=$ctx.doI18N("table.caption.loanCharges")}}</caption>
-			<thead>
-				<tr>
-				<th>{{=$ctx.doI18N("table.heading.name")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.feeOrPenalty")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.paymentDueAt")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.dueAsOf")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.calculationType")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.due")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.paid")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.waived")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.outstanding")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.action")}}</th>
-				</tr>
-			</thead>
-			<tbody>
-				{{#each charges}}
-				<tr>
-					<td>{{=name}}</td>
-
-				{{#if penalty}}
-					<td>Penalty</td>
-				{{#else}}
-					<td>Fee</td>
-				{{/if}}
-
-					<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
-				{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
-					<td>{{=$ctx.globalDate(dueAsOfDate)}}</td>
-				{{#else}}
-					<td>&nbsp;</td>
-				{{/if}}
-
-				{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
-					<td>{{=$ctx.doI18N(chargeCalculationType.code)}} - {{=$ctx.decimal(percentage, 4)}}% of {{=$ctx.moneyFormatted(currency, amountPercentageAppliedTo)}}</td>
-				{{#else}}
-					<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
-				{{/if}}
-					<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
-					<td>{{=$ctx.moneyFormatted(currency, amountPaid)}}</td>
-					<td>{{=$ctx.moneyFormatted(currency, amountWaived)}}</td>
-					<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
-					<td>
-						<a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">{{=$ctx.doI18N("link.action.delete")}}</a>&nbsp;
-						<a href="unknown.html" onclick="return modifyLoanCharge({{=$parent.parent.data.id}}, {{=id}});">{{=$ctx.doI18N("link.action.edit")}}</a>&nbsp;
-						<a href="unknown.html" onclick="return waiveLoanCharge({{=$parent.parent.data.id}}, {{=id}});">{{=$ctx.doI18N("link.action.waive")}}</a>
-					</td>
-				</tr>
-				{{/each}}
-			</tbody>
-		</table>
-	</div>
-	{{/if}}
-
-	{{#each repaymentSchedule}}
-	<div id="schedule{{=id}}" style="margin-top: 5px;">
-		<table id="summarytable{{=id}}" class="pretty displayschedule">
-			<caption>{{=$ctx.doI18N("table.summary.caption")}}</caption>
-			<thead>
-				<tr>
-					<th class="empty"></th>
-					<th>{{=$ctx.doI18N("table.heading.original")}}</th>
-					<th>{{=$ctx.doI18N("table.heading.paid")}}</th>
-					{{#if totalWaivedToDate}}
-					<th>{{=$ctx.doI18N("table.heading.waived")}}</th>
-					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<th>Written-off</th>
-					{{/if}}
-					<th>{{=$ctx.doI18N("table.heading.outstanding")}}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<th>{{=$ctx.doI18N("table.heading.principal")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalPaid)}}</td>
-					{{#if totalWaivedToDate}}
-					<td>&nbsp;</td>
-					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalWrittenOff)}}</td>
-					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalOutstanding)}}</td>
-				</tr>
-				<tr>
-					<th>{{=$ctx.doI18N("table.heading.interest")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestPaid)}}</td>
-					{{#if totalWaivedToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWaived)}}</td>
-					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWrittenOff)}}</td>
-					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestOutstanding)}}</td>
-				</tr>
-				{{#if cumulativeFeeChargesToDate}}
-				<tr>
-					<th>{{=$ctx.doI18N("table.heading.fees")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesPaid)}}</td>
-					{{#if totalWaivedToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesWaived)}}</td>
-					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesWrittenOff)}}</td>
-					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesOutstanding)}}</td>
-				</tr>
-				{{/if}}
-
-				{{#if cumulativePenaltyChargesToDate}}
-				<tr>
-					<th>{{=$ctx.doI18N("tab.repaymentSchedule.table.column.heading.penalties")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesPaid)}}</td>
-					{{#if totalWaivedToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesWaived)}}</td>
-					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesWrittenOff)}}</td>
-					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesOutstanding)}}</td>
-				</tr>
-				{{/if}}
-			</tbody>
-			<tfoot >
-				<tr>
-					<th>{{=$ctx.doI18N("table.heading.total")}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
-					{{#if totalWaivedToDate}}
-					<th>{{=$ctx.monetaryValue(currency, totalWaivedToDate)}}</th>
-					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<th>{{=$ctx.monetaryValue(currency, totalWrittenOffToDate)}}</th>
-					{{/if}}
-					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
-				</tr>
-			</tfoot>
-		</table>
-
-		<br/>
-
-		<table id="repaymentschedule_todate{{=id}}" class="pretty displayschedule">
-			<caption>{{=$ctx.doI18N("table.caption.repaymentSchedule")}}</caption>
-			<colgroup span="3"></colgroup>
-			<colgroup span="3">
-				<col class="lefthighlightcol">
-				<col>
-				<col class="righthighlightcol">
-			</colgroup>
-			<colgroup span="3">
-				<col class="lefthighlightcol">
-				<col>
-				<col class="righthighlightcol">
-			</colgroup>
-			{{#if totalWaivedToDate}}
-			<colgroup span="4"></colgroup>
-			{{#else}}
-			<colgroup span="3"></colgroup>
-			{{/if}}
-
-			<thead>
-				<tr>
-					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("table.heading.loanAmountAndBalance")}}</th>
-					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("table.heading.totalCostOfLoan")}}</th>
-					{{#if totalWaivedToDate}}
-					<th colspan="4" scope="colgroup" class="empty">&nbsp;</th>
-					{{#else}}
-					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
-					{{/if}}
-				</tr>
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">{{=$ctx.doI18N("table.heading.date")}}</th>
-					<th scope="col">{{=$ctx.doI18N("table.heading.days")}}</th>
-					
-					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("table.heading.disbursement")}}</th>
-					<th scope="col">Principal Repayment</th>
-					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("table.heading.balanceOfLoan")}}</th>
-
-					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("table.heading.interest")}}</th>
-					<th scope="col">{{=$ctx.doI18N("table.heading.fees")}}</th>
-					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("table.heading.penalties")}}</th>
-
-					<th scope="col">{{=$ctx.doI18N("table.heading.totalDue")}}</th>
-					<th scope="col">{{=$ctx.doI18N("table.heading.totalPaid")}}</th>
-					{{#if totalWaivedToDate}}
-					<th scope="col">{{=$ctx.doI18N("table.heading.totalWaived")}}</th>
-					{{/if}}
-					<th scope="col">{{=$ctx.doI18N("table.heading.totalOutstanding")}}</th>
-				</tr>
-			</thead>
-			<tbody>
-			{{#each periods}}
-			<tr>
-				<td scope="row">{{=$ctx.number(period)}}</td>
-				<td>{{=$ctx.globalDate(dueDate)}}</td>
-				<td>{{=$ctx.number(daysInPeriod)}}</td>
-
-				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalDisbursed)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDue)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
-
-				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
-				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, penaltyChargesDue)}}</td>
-
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
-				{{#if $parent.parent.data.totalWaivedToDate}}
-				<td>{{=$ctx.monetaryValue($parent.parent.parent.data.currency, totalWaivedForPeriod)}}</td>
-				{{/if}}
-				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOutstandingForPeriod)}}</td>
-			</tr>
-			{{/each}}
-			</tbody>
-			<tfoot class="ui-widget-header">
-				<tr>
-					<th colspan="2">{{=$ctx.doI18N("table.heading.total")}}</th>
-					<th>{{=$ctx.number(loanTermInDays)}}</th>
-
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePrincipalDisbursed)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</th>
-					<th class="righthighlightcolheader">&nbsp;</th>
-
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</th>
-					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</th>
-
-					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
-					{{#if totalWaivedToDate}}
-					<th>{{=$ctx.monetaryValue(currency, totalWaivedToDate)}}</th>
-					{{/if}}
-					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
-				</tr>
-			</tfoot>
-		</table>
-	</div>
-	{{/each}}
-
-    {{#if transactions}}
-	<!-- Third loan tab -->
-	<div id="transactions{{=id}}" style="margin-top: 5px;">
-		<table id="newrepaymentsactivity{{=id}}" class="pretty displaypayments">
-		<caption>{{=$ctx.doI18N("table.transactions.caption")}}</caption>
-			<thead>
-				<tr>
-				<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.amount")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.breakdown")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.action")}}</th>
-				</tr>
-			</thead>
-			<tbody>
-				{{#each transactions}}
-				<tr>
-				<td>{{=$ctx.globalDate(date)}}</td>
-				<td>{{=$ctx.doI18N(type.code)}}</td>
-				<td>{{=$ctx.monetaryValue(currency, amount)}}</td>
-				<td>
-					<table style="border: 0px; padding: 0px;" class="notablestyle">
-						{{#if principalPortion}}<tr><td style="border: 0px; text-align: left; ">Principal: {{=$ctx.monetaryValue(currency, principalPortion)}}</td></tr>{{/if}}
-						{{#if interestPortion}}<tr><td style="border: 0px; text-align: left; ">Interest: {{=$ctx.monetaryValue(currency, interestPortion)}}</td></tr>{{/if}}
-						{{#if feeChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Fees: {{=$ctx.monetaryValue(currency, feeChargesPortion)}}</td></tr>{{/if}}
-						{{#if penaltyChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Penalities: {{=$ctx.monetaryValue(currency, penaltyChargesPortion)}}</td></tr>{{/if}}
-					</table>
-				</td>
-				{{#if $ctx.isAdjustableTransaction(type.id)}}
-				<td><button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button></td>
-				{{#else}}
-				<td>&nbsp;</td>
-				{{/if}}
-				</tr>
-				{{/each}}
-			</tbody>
-		</table>
-	</div>
-	{{/if}}
-	<!-- Loan Documents Tab--->
-	<div id="loanDocuments{{=id}}" style="margin-top: 5px;">
-	</div>
-</div>
-</script>
-
-<script id="loanDocumentsTemplate" type="text/x-jquery-tmpl">
-	<table width="100%">
-		<td align="right">
-			<span id="toolbar" class="ui-widget-header ui-corner-all">
-		   			<button id="addloandocument{{=loanId}}">{{=$ctx.doI18N("button.document.add")}}</button>
-			</span>
-		</td>
-	</table>
-	<hr/>
-	<table style="vertical-align: top;width: 100%">
-		{{#each crudRows}}
-				<tr>
-					<td>{{=$ctx.doI18N("label.name")}}</td>
-					<td>{{=name}}</td>
-				</tr>
-				<tr>
-				   	<td><label for="description">{{=$ctx.doI18N("label.description")}}</label></td>
-					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
-					<td>
-						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
-							<button id="downloadloandocument{{=id}}">{{=$ctx.doI18N("link.action.download")}}</button>
-					   		<button id="editloandocument{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
-					   		<button id="deleteloandocument{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
-						</span>
-					</td>
-				</tr>
-				<tr>
-					<td>{{=$ctx.doI18N("label.filename")}}</td>
-					<td>{{=fileName}}</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<hr/>
-					</td>
-				</tr>
-		{{/each}}
-	</table>
-</script>
-
-<script id="loanDocumentsFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform" >
-    <div id="formerrors"></div>
-	<table>
-		<tr>
-			<td>
-				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
-				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
-				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
-			</td>
-		<tr>
-		<tr>
-			<td colspan="2" valign="top">
-				<label for="file">{{=$ctx.doI18N("label.select.new.file")}}</label>
-				<input type="file" name="file" id="file" size="65"></input>
-			</td>
-		</tr>
-	</table>
- </form>
-</script>
-
-<script id="editLoanDocumentsFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform" >
-    <div id="formerrors"></div>
-	<table>
-		<tr>
-			<td>
-				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
-				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
-				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
-			</td>
-		<tr>
-		<tr>
-			<td>
-				<label for="description">{{=$ctx.doI18N("label.current.filename")}}</label>
-				{{=fileName}}
-			</td>
-		<tr>
-		<tr>
-			<td colspan="2" valign="top">
-				<label for="file">{{=$ctx.doI18N("label.select.new.file")}}</label>
-				<input type="file" name="file" id="file" size="65"></input>
-			</td>
-		</tr>
-	</table>
- </form>
-</script>
-
-<!-- Set a guarantor-->
-<script id="guarantorFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-	<input type="hidden" id="guaranteedLoanId" name="guaranteedLoanId" />
-    <div id="formerrors"></div>
-    
-    <table>
-	    	<tr>
-	    		<td><input type="checkbox" id="internalGuarantorCheckbox" checked="true">{{=$ctx.doI18N("label.guarantor.existingClient")}}</input>
-	    		</td>
-	    	</tr>
-	</table>
-    
-    <br/>
-    
-    <div id="internalGuarantorDiv">
-	    <table>
-	    	<tr>
-	    		<td><b>{{=$ctx.doI18N("label.help.smartsearch")}}</b>
-	    			<input id="smartGuarantorSearch" name="smartGuarantorSearch" title="" type="text" value=""/>
-	    		</td>
-	    	</tr>
-	    	<tr>
-	    		<td><small>{{=$ctx.doI18N("label.help.autocomplete")}}</small></td>
-	    	</tr>
-	    </table>
-	    <fieldset>
-	    	<legend>{{=$ctx.doI18N("label.guarantorDetails")}}</legend>
-			<table>
-				<tr>
-					<td><label for="selectedGuarantorName">{{=$ctx.doI18N("label.name")}}</label></td>
-					<td><input readonly="true" id="selectedGuarantorName" name="selectedGuarantorName" title="" type="text" value=""/></td>
-					
-				</tr>
-				<tr>
-					<td><label for="selectedGuarantorIdentifier">{{=$ctx.doI18N("label.guarantorIdentifier")}}</label></td>
-					<td><input readonly="true" id="selectedGuarantorIdentifier" name="selectedGuarantorIdentifier" title="" type="text" value=""/></td>
-				</tr>
-				<tr>	
-					<td><label for="selectedGuarantorBranch">{{=$ctx.doI18N("label.office")}}</label></td>
-					<td><input readonly="true" id="selectedGuarantorBranch" name="selectedGuarantorBranch" title="" type="text" value=""/></td>
-				</tr>
-				<tr>	
-					<td><label for="selectedGuarantorJoinedDate">{{=$ctx.doI18N("label.joinedon")}}</label></td>
-					<td><input readonly="true" id="selectedGuarantorJoinedDate" name="selectedGuarantorJoinedDate" title="" type="text" value=""/></td>
-				</tr>
-			</table>
-		</fieldset>
-	</div>
-	
-	<div id="externalGuarantorDiv">
-		 <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-		 <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-		 <fieldset>
-	    	<legend>{{=$ctx.doI18N("label.guarantorDetails")}}</legend>
-			<table>
-				<tr>
-					<td><label>{{=$ctx.doI18N("label.name")}}</label></td>
-					<td>
-						<input id="guarantorFirstName" name="guarantorFirstName" title="" type="text" value=""/>
-						<input id="guarantorLastName" name="guarantorLastName" title="" type="text" value=""/>
-					</td>
-				</tr>
-				<tr>
-					<td><label for="guarantorDateOfBirth">{{=$ctx.doI18N("label.dob")}}</label></td>
-					<td><input id="guarantorDateOfBirth" name="guarantorDateOfBirth" title="" class="datepickerfield" /></td>
-				</tr>
-				<tr>
-					<td><label>{{=$ctx.doI18N("label.address")}}</label></td>
-					<td><input id="guarantorAddressLine1" name="guarantorAddressLine1" type="text" style="width: 200px"/></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input id="guarantorAddressLine2" name="guarantorAddressLine2" type="text" style="width: 200px"/></td>
-				</tr>
-				<tr>	
-					<td><label for="guarantorCity">{{=$ctx.doI18N("label.city")}}</label></td>
-					<td>
-						<input id="guarantorCity" name="guarantorCity" title="" type="text" value=""/>
-						{{=$ctx.doI18N("label.zip")}}
-						<input id="guarantorZip" name="guarantorZip" title="" type="text" value=""/>
-					</td>
-				</tr>
-				<tr>	
-					<td><label for="guarantorMobileNumber">{{=$ctx.doI18N("label.mobile")}}</label></td>
-					<td><input id="guarantorMobileNumber" name="guarantorMobileNumber" title="" type="text" value=""/></td>
-				</tr>
-				<tr>	
-					<td><label for="guarantorHouseNumber">{{=$ctx.doI18N("label.telephone")}}</label></td>
-					<td><input id="guarantorHouseNumber" name="guarantorHouseNumber" title="" type="text" value=""/></td>
-				</tr>
-			</table>
-		</fieldset>
-	</div>
- </form>
-</script>
-
-<script id="stateTransitionLoanFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-	<label for="eventDate">{{=$ctx.doI18N("label.on")}}</label>
-	<input id="eventDate" name="eventDate" title="" class="datepickerfield" />
-
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="3" cols="53" id="note" name="note"></textarea>
-</form>
-</script>
-
-<script id="undoStateTransitionLoanFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="5" cols="53" id="note" name="note"></textarea>
-</form>
-</script>
-
-<script id="transactionLoanFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
-	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
-
-	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
-	<input id="transactionAmount" name="transactionAmount" class="text ui-widget-content ui-corner-all" title="" value="{{=$ctx.monetaryValue(currency, amount)}}" />
-
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
-</form>
-</script>
-
-<script id="loanTransactionWriteOffFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.writeoff.on")}}</label>
-	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
-
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
-</form>
-</script>
-
 <script id="formErrorsTemplate" type="text/x-jquery-tmpl">
 <div class="ui-widget">
 	<div class="ui-state-error ui-corner-all">
@@ -4212,8 +2478,6 @@ $(document).ready(function() {
 <!-- end of portfolio template section -->
 
 <!-- admin templates below here -->
-
-
 <script id="loanproductFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -8207,5 +6471,2242 @@ function showLockinOptions(){
 		</tfoot>
 	</table>
 </script>
+
+<!-- old style loan application template -->
+<script id="newLoanFormTemplateMin" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
+
+	{{#if clientId}}
+	<label for="clientname">{{=$ctx.doI18N("label.applicant")}}</label>
+	<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;"/>
+	{{/if}}
+	{{#if groupId}}
+	<label for="groupname">{{=$ctx.doI18N("label.applicant")}}</label>
+	<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;"/>
+	{{/if}}
+
+	<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
+	<select name="productId" id="productId" style="width: 306px;">
+		<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
+	{{#each productOptions}}
+		{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+		<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+		{{#else}}
+		<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+		{{/if}}
+	{{/each}}
+	</select>
+</form>	
+</script>
+
+<script id="newLoanScheduleTemplate" type="text/x-jquery-tmpl">
+		<table id="repaymentschedule" class="pretty displayschedule">
+			<caption>{{=$ctx.doI18N("table.caption.repaymentSchedule")}}</caption>
+			<colgroup span="3"></colgroup>
+			<colgroup span="3">
+				<col class="lefthighlightcol">
+				<col>
+				<col class="righthighlightcol">
+			</colgroup>
+			<colgroup span="3">
+				<col class="lefthighlightcol">
+				<col>
+				<col class="righthighlightcol">
+			</colgroup>
+			<colgroup span="3"></colgroup>
+
+			<thead>
+				<tr>
+					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+					<th colspan="3" scope="colgroup" class="highlightcol">Loan Amount and Balance</th>
+					<th colspan="3" scope="colgroup" class="highlightcol">Total Cost of Loan</th>
+					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+				</tr>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.date")}}</th>
+					<th scope="col"># Days</th>
+					
+					<th scope="col" class="lefthighlightcolheader">Disbursement</th>
+					<th scope="col">Principal Repayment</th>
+					<th scope="col" class="righthighlightcolheader">Balance of Loan</th>
+
+					<th scope="col" class="lefthighlightcolheader">Interest Repayment</th>
+					<th scope="col">Fees</th>
+					<th scope="col" class="righthighlightcolheader">Penalties</th>
+
+					<th scope="col">Total Repayment Due</th>
+					<th scope="col">Total Paid</th>
+					<th scope="col">Total Outstanding</th>
+				</tr>
+			</thead>
+			<tbody>
+			{{#each periods}}
+			<tr>
+				<td scope="row">{{=$ctx.number(period)}}</td>
+				<td>{{=$ctx.globalDate(dueDate)}}</td>
+				<td>{{=$ctx.number(daysInPeriod)}}</td>
+
+				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalDisbursed)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
+
+				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, penaltyChargesDue)}}</td>
+
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOutstandingForPeriod)}}</td>
+			</tr>
+			{{/each}}
+			</tbody>
+			<tfoot class="ui-widget-header">
+				<tr>
+					<th colspan="2">{{=$ctx.doI18N("table.heading.total")}}</th>
+					<th>{{=$ctx.number(loanTermInDays)}}</th>
+
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePrincipalDisbursed)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</th>
+					<th class="righthighlightcolheader">&nbsp;</th>
+
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</th>
+					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</th>
+
+					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
+				</tr>
+			</tfoot>
+		</table>
+</script>
+
+<script id="newLoanFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.loan.information")}}</legend>
+		<div>
+			<table id="productdetails">
+				<tr>
+					<td valign="top">
+						{{#if clientName }}
+						<label for="clientname">{{=$ctx.doI18N("label.applicant")}}</label>
+						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+						{{/if}}
+						{{#if groupName}}
+						<label for="groupname">{{=$ctx.doI18N("label.applicant")}}</label>
+						<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
+						{{/if}}
+
+						<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
+						<select name="productId" id="productId" style="width: 306px;">
+							<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
+						{{#each productOptions}}
+							{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							{{/if}}
+        				{{/each}}
+  						</select>
+						<label for="description">{{=$ctx.doI18N("label.description")}}</label>
+						<textarea id="description" rows="2" cols="50" draggable="false" disabled="disabled">{{=loanProductDescription}}</textarea>
+					</td>
+					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
+					<td valign="top">
+						<label for"loanOfficerId">{{=$ctx.doI18N("label.loanOfficer")}}</label>
+						<select name="loanOfficerId" id="loanOfficerId">
+							<option value="">{{=$ctx.doI18N("option.loanOfficer.first.choice")}}</option>
+						{{#each loanOfficerOptions}}
+							{{#if $ctx.number($parent.parent.data.loanOfficerId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							{{/if}}
+        				{{/each}}
+  						</select>
+						
+						<label for="submittedOnDate">{{=$ctx.doI18N("label.submitted.on")}}</label>
+						<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
+
+						<label for="submittedOnNote">{{=$ctx.doI18N("label.loan.note")}}</label>
+						<textarea id="submittedOnNote" name="submittedOnNote" rows="2" cols="50" draggable="false">{{=submittedOnNote}}</textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("legend.loanTerms")}}</legend>
+		<table>
+			<tr>
+				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("label.principal")}}</td>
+							<td>
+								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 125px;" />
+								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.loanTerm")}}</td>
+							<td>
+								<input id="loanTermFrequency" name="loanTermFrequency" title="" type="text" value="{{=$ctx.number(termFrequency)}}" style="width: 50px;" />
+								
+								<select name="loanTermFrequencyType" id="loanTermFrequencyType"  title="" style="width: 121px;">
+								{{#each termFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.termPeriodFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.numberof.repayments")}}</td>
+							<td>
+								<input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.repaidevery")}}</td>
+							<td>
+								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 50px;" />
+								
+								<select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 121px;">
+								{{#each repaymentFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.repaymentFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.repaymentStrategy")}}</td>
+							<td>
+								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
+									<option value="">{{=$ctx.doI18N("option.repaymentStrategy.first.choice")}}</option>
+								{{#each repaymentStrategyOptions}}
+									{{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+									{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+									{{/if}}
+            					{{/each}}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.expectedDisbursementOn")}}</td>
+							<td>
+							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.firstRepaymentOn")}}</td>
+							<td>
+							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						{{#if $ctx.showTask("VIEWFUNDS")}}
+						<tr>
+							<td>{{=$ctx.doI18N("label.fund")}}</td>
+							<td>
+								<select id="fundId" name="fundId" title="">
+									<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
+								{{#each fundOptions}}
+									{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+									{{/if}}
+            						{{/each}}
+								</select>
+							</td>
+						</tr>
+						{{/if}}
+					</table>
+				</td>
+				<!-- interest details cell -->
+				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+							<td>
+								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 60px;" />
+								
+								<select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 115px;">
+								{{#each interestRateFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.amortization")}}</td>
+							<td>
+								<select name="amortizationType" id="amortizationType"  title="" style="width: 178px;">
+								{{#each amortizationTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.amortizationType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interest.method")}}</td>
+							<td>
+								<select name="interestType" id="interestType"  title="" style="width: 180px;">
+								{{#each interestTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interestRate.calculatedInPeriod")}}</td>
+							<td>
+							<select id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" style="width: 220px;">
+								{{#each interestCalculationPeriodTypeOptions}}
+                                 	{{#if $ctx.number($parent.parent.data.interestCalculationPeriodType.id)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+									{{/if}}
+                                {{/each}}
+							</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interestChargedFrom")}}</td>
+							<td>
+							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.arrears.tolerance")}}</td>
+							<td>
+								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" style="width: 125px;" />
+								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+				<!-- Other options -->
+					<div>
+						<span id="toolbar" class="ui-widget-header ui-corner-all">
+							<button type="submit" class="submitloanapp" id="submitloanapp" name="_eventId_submit"  title="Submit loan application.">Submit loan application</button>
+							<button type="submit" class="cancelloanapp" id="cancelloanapp" name="_eventId_cancel" title="Cancel loan application.">Cancel</button>
+						</span>
+					</div>
+				<!-- other options -->
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("legend.charges")}}</legend>
+		<div>
+			<table id="chargesdetails">
+				<tr>
+					<td valign="top">
+						<label for="chargeOptions">{{=$ctx.doI18N("label.charges")}}</label>
+						<select id="chargeOptions">
+							<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+						{{#each chargeOptions}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+        				{{/each}}
+  						</select>
+						<a href="#" id="addloancharges">{{=$ctx.doI18N("widget.charges.select.button.add")}}</a> 
+					</td>
+				</tr>
+				<tr>
+					<td id="selectedLoanCharges">
+						{{#each charges}}
+						<div class="row charge">
+							<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
+							{{#if id}}
+							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
+							{{/if}}
+							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=chargeId}}" />
+							<span class="rowvalue">
+								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+							</span>
+							<span class="rowvalue">
+								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+								{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
+									{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+									{{/if}}
+								{{/each}}
+								</select>
+							</span>
+							<span class="rowvalue">
+								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+								{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
+									{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+									{{/if}}
+								{{/each}}
+								</select>
+							</span>
+							<span class="rowvalue">
+								<input id="charges[{{=$itemNumber}}][specifiedDueDate]" name="charges[{{=$itemNumber}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
+							</span>
+							<span class="rowvalue">
+								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
+							</span>
+						</div>
+						{{/each}}
+					</td>	
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+</form>
+</script>
+
+<!-- Template rendered when attaching new charge to loan application, in this case id property is charge id (*NOT* loan charge) and index is computed in js logic-->
+<script id="addNewLoanChargeFormTemplate" type="text/x-jquery-tmpl">
+<div class="row charge">
+	<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
+	<input id="charges[{{=index}}][chargeId]" name="charges[{{=index}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=id}}" />
+	<span class="rowvalue">
+		<input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+	</span>
+	<span class="rowvalue">
+		<select id="charges[{{=index}}][chargeCalculationType]" name="charges[{{=index}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+		{{#each chargeCalculationTypeOptions}}
+			{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+			{{/if}}
+		{{/each}}
+		</select>
+	</span>
+	<span class="rowvalue">
+		<select id="charges[{{=index}}][chargeTimeType]" name="charges[{{=index}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+		{{#each chargeTimeTypeOptions}}
+			{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+			{{/if}}
+		{{/each}}
+		</select>
+	</span>
+	<span class="rowvalue">
+		<input id="charges[{{=index}}][specifiedDueDate]" name="charges[{{=index}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="" />
+	</span>
+	<span class="rowvalue">
+		<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
+	</span>
+</div>
+</script>
+
+<!-- Template rendered when attaching new charge to loan through popup (along with loanChargeDetailsPartialFormTemplate) -->
+<script id="loanChargeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<div>
+			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
+			<label for="chargeOptions">{{=$ctx.doI18N("label.charges")}}</label>
+			<select id="chargeOptions" name="chargeId">
+				<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+				{{#each chargeOptions}}
+					{{#if $ctx.number($parent.parent.data.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}, {{=currency.displaySymbol}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=name}}, {{=currency.displaySymbol}}</option>
+					{{/if}}
+				{{/each}}
+			</select>
+			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+		</div>
+		<div id="loanChargeDetails">
+			{{each $parent.data tmpl="#loanChargeDetailsPartialFormTemplate"}}
+		</div>
+	</fieldset>
+</form>
+</script>
+
+<script id="loanChargeDetailsPartialFormTemplate" type="text/x-jquery-tmpl">
+<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
+<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+<label for="chargeCalculationType">{{=$ctx.doI18N("form.label.charge.calculation.type")}}</label>
+<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 180px" disabled="disabled">
+	{{#each chargeCalculationTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+</select>
+<label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
+<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 180px" disabled="disabled">
+	{{#each chargeTimeTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+</select>
+{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+<label for="specifiedDueDate">Due for collection on:</label>
+<input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
+{{/if}}
+</script>
+
+<script id="modifyLoanChargeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<div>
+			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
+			<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+			<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
+			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
+
+		{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+			<label for="specifiedDueDate">Due for collection on:</label>
+			<input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueAsOfDate)}}" />
+		{{/if}}
+		</div>
+	</fieldset>
+</form>
+</script>
+
+<script id="modifyLoanApplicationFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.loan.information")}}</legend>
+		<div>
+			<table id="productdetails">
+				<tr>
+					<td valign="top">
+						<label for="clientname">{{=$ctx.doI18N("label.applicant")}}</label>
+						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;"/>
+
+						<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
+						<select name="productId" id="productId" style="width: 306px;">
+							<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
+						{{#each productOptions}}
+							{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							{{/if}}
+        				{{/each}}
+  						</select>
+					</td>
+					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
+					<td valign="top">
+						<label for="submittedOnDate">{{=$ctx.doI18N("label.submitted.on")}}</label>
+						<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
+
+						<label for="submittedOnNote">{{=$ctx.doI18N("label.loan.note")}}</label>
+						<textarea id="submittedOnNote" name="submittedOnNote" rows="2" cols="50" draggable="false">{{=submittedOnNote}}</textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("legend.loanTerms")}}</legend>
+		<table>
+			<tr>
+				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("label.principal")}}</td>
+							<td>
+								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 125px;" />
+								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.loanTerm")}}</td>
+							<td>
+								<input id="loanTermFrequency" name="loanTermFrequency" title="" type="text" value="{{=$ctx.number(termFrequency)}}" style="width: 50px;" />
+								
+								<select name="loanTermFrequencyType" id="loanTermFrequencyType"  title="" style="width: 121px;">
+								{{#each termFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.termPeriodFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.numberof.repayments")}}</td>
+							<td>
+								<input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.repaidevery")}}</td>
+							<td>
+								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 50px;" />
+								
+								<select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 121px;">
+								{{#each repaymentFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.repaymentFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.repaymentStrategy")}}</td>
+							<td>
+								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
+									<option value="">{{=$ctx.doI18N("option.repaymentStrategy.first.choice")}}</option>
+								{{#each repaymentStrategyOptions}}
+									{{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+									{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+									{{/if}}
+            					{{/each}}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.expectedDisbursementOn")}}</td>
+							<td>
+							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.firstRepaymentOn")}}</td>
+							<td>
+							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						{{#if $ctx.showTask("VIEWFUNDS")}}
+						<tr>
+							<td>{{=$ctx.doI18N("label.fund")}}</td>
+							<td>
+								<select id="fundId" name="fundId" title="">
+									<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
+								{{#each fundOptions}}
+									{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+									{{/if}}
+            						{{/each}}
+								</select>
+							</td>
+						</tr>
+						{{/if}}
+					</table>
+				</td>
+				<!-- interest details cell -->
+				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+							<td>
+								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 60px;" />
+								
+								<select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 115px;">
+								{{#each interestRateFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.amortization")}}</td>
+							<td>
+								<select name="amortizationType" id="amortizationType"  title="" style="width: 178px;">
+								{{#each amortizationTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.amortizationType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interest.method")}}</td>
+							<td>
+								<select name="interestType" id="interestType"  title="" style="width: 180px;">
+								{{#each interestTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interestRate.calculatedInPeriod")}}</td>
+							<td>
+							<select id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" style="width: 220px;">
+								{{#each interestCalculationPeriodTypeOptions}}
+                                 	{{#if $ctx.number($parent.parent.data.interestCalculationPeriodType.id)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+									{{/if}}
+                                {{/each}}
+							</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interestChargedFrom")}}</td>
+							<td>
+							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.arrears.tolerance")}}</td>
+							<td>
+								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" style="width: 125px;" />
+								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+				<!-- Other options -->
+					<div>
+						<span id="toolbar" class="ui-widget-header ui-corner-all">
+							<button type="submit" class="modifyloanapp" id="modifyloanapp" name="_eventId_submit"  title="Modify loan application.">Modify loan application</button>
+							<button type="submit" class="cancelloanapp" id="cancelloanapp" name="_eventId_cancel" title="Cancel loan application.">Cancel</button>
+						</span>
+					</div>
+				<!-- other options -->
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("legend.charges")}}</legend>
+		<div>
+			<table id="chargesdetails">
+				<tr>
+					<td valign="top">
+						<label for="chargeOptions">{{=$ctx.doI18N("label.charges")}}</label>
+						<select id="chargeOptions">
+							<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+						{{#each chargeOptions}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+        				{{/each}}
+  						</select>
+						<a href="#" id="addloancharges">{{=$ctx.doI18N("widget.charges.select.button.add")}}</a> 
+					</td>
+				</tr>
+				<tr>
+					<td id="selectedLoanCharges">
+					{{#each charges}}
+						<div class="row charge">
+							<span class="rowvalue chargeName">{{=name}}, {{=currency.displaySymbol}}</span>
+							<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
+							<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class ="chargeId" title="" type="hidden" value="{{=chargeId}}" />
+							<span class="rowvalue">
+								<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amountOrPercentage, 2)}}" style="width: 125px;"/>
+							</span>
+							<span class="rowvalue">
+								<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+									{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
+										{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+										{{#else}}
+											<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+										{{/if}}
+									{{/each}}
+								</select>
+							</span>
+							<span class="rowvalue">
+								<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+									{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
+										{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+											<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+										{{#else}}
+											<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+										{{/if}}
+									{{/each}}
+								</select>
+							</span>
+							<span class="rowvalue">
+								<input id="charges[{{=$itemNumber}}][specifiedDueDate]" name="charges[{{=$itemNumber}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueAsOfDate)}}" />
+							</span>
+							<span class="rowvalue">
+								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
+							</span>
+						</div>
+					{{/each}}
+					</td>	
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+</form>
+</script>
+<!-- END OF OLD style loan application template -->
+
+<!-- loan application/contract screens -->
+<script id="editAccountNoFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<label for="accountNo">{{=$ctx.doI18N("label.accountNo")}}</label>
+	<input id="accountNo" name="accountNo" title="" type="text" value="{{=accountNo}}" />
+
+	<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
+	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
+	
+ </form>
+</script>
+
+<script id="loanDataTabTemplate" type="text/x-jquery-tmpl">
+{{#each permissions}}
+{{#if anyActionOnLoanAllowed}}
+<div id="loanactions">
+	<table width="100%">
+		<td align="center">
+		<span id="toolbar" class="ui-widget-header ui-corner-all">
+	
+		{{#if $ctx.showTask("AddLoanCharge")}}
+			{{#if addLoanChargeAllowed}}
+			<button id="addloanchargebtn{{=$parent.parent.parent.parent.data.id}}" class="addloancharge">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
+			{{/if}}
+		{{/if}}
+
+		{{#if $ctx.showTask("RejectLoanApplication")}}
+			<button id="assignloanofficerbtn{{=$parent.parent.parent.data.id}}" class="assignloanofficer">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
+		{{/if}}
+
+		{{#if $ctx.showTask("RejectLoanApplication")}}
+			{{#if rejectAllowed}}
+			<button id="rejectbtn{{=$parent.parent.parent.parent.data.id}}" class="rejectloan">{{=$ctx.doI18N("button.application.reject")}}</button>
+			{{/if}}
+		{{/if}}
+	
+		{{#if $ctx.showTask("LoanApplicationWithdrawn")}}
+			{{#if withdrawnByApplicantAllowed}}
+			<button id="withdrawnbyapplicantloanbtn{{=$parent.parent.parent.parent.data.id}}" class="withdrawnbyapplicantloan">{{=$ctx.doI18N("button.application.withdrawnByApplicant")}}</button>
+			{{/if}}
+		{{/if}}
+
+		{{#if pendingApproval}}
+			{{#if $ctx.showTask("MODIFYLOAN")}}
+			<button id="modifyloanappbtn{{=$parent.parent.parent.parent.data.id}}" class="modifyloanapp">{{=$ctx.doI18N("button.application.modify")}}</button>
+			{{/if}}
+			{{#if $ctx.showTask("APPROVELOAN")}}
+			<button id="approvebtn{{=$parent.parent.parent.parent.data.id}}" class="approveloan">{{=$ctx.doI18N("button.application.approve")}}</button>
+			{{/if}}
+			{{#if $ctx.showTask("DELETELOAN")}}
+			<button id="deletebtn{{=$parent.parent.parent.parent.data.id}}" class="deleteloan">{{=$ctx.doI18N("button.application.delete")}}</button>
+			{{/if}}
+		{{/if}}
+	
+		{{#if undoApprovalAllowed}}
+			{{#if $ctx.showTask("UNDOLOANAPPROVAL")}}
+			<button id="undoapprovebtn{{=$parent.parent.parent.parent.data.id}}" class="undoapproveloan">{{=$ctx.doI18N("button.application.undoApproval")}}</button>
+			{{/if}}
+		{{/if}}
+			
+		{{#if disbursalAllowed}}
+			{{#if $ctx.showTask("DISBURSELOAN")}}
+			<button id="disbursebtn{{=$parent.parent.parent.parent.data.id}}" class="disburseloan">{{=$ctx.doI18N("button.loan.disburse")}}</button>
+			{{/if}}
+		{{/if}}
+			
+		{{#if undoDisbursalAllowed}}
+			{{#if $ctx.showTask("UNDOLOANDISBURSAL")}}
+			<button id="undodisbursalbtn{{=$parent.parent.parent.parent.data.id}}" class="undodisbursalloan">{{=$ctx.doI18N("button.loan.undoDisbursal")}}</button>
+			{{/if}}
+		{{/if}}
+			
+		{{#if makeRepaymentAllowed}}
+			{{#if $ctx.showTask("LOANREPAYMENT")}}
+			<button id="repaymentbtn{{=$parent.parent.parent.parent.data.id}}" class="repaymentloan">{{=$ctx.doI18N("button.loan.repayment")}}</button>
+			{{/if}}
+			{{#if $ctx.showTask("WAIVEINTERESTPORTIONOFLOAN")}}
+			<button id="waiveinterestbtn{{=$parent.parent.parent.parent.data.id}}" class="waiveinterestloan">{{=$ctx.doI18N("button.loan.waiveInterest")}}</button>
+			{{/if}}
+			{{#if $ctx.showTask("WRITEOFFLOAN")}}
+			<button id="writeoffbtn{{=$parent.parent.parent.parent.data.id}}" class="writeoffloan">{{=$ctx.doI18N("button.loan.writeOff")}}</button>
+			{{/if}}
+		{{/if}}
+			
+		{{#if setGuarantorAllowed}}
+			{{#if $ctx.showTask("ADDLOANGUARANTOR")}}
+			<button id="setGuarantorbtn{{=$parent.parent.parent.parent.data.id}}" class="setguarantor">{{=$ctx.doI18N("button.guarantor")}}</button>
+			{{/if}}
+		{{/if}}
+			
+		{{#if closeLoanAsRescheduledAllowed}}
+			{{#if $ctx.showTask("CLOSEASRESCHEDULEDLOAN")}}
+			<button id="closeasrescheduledbtn{{=$parent.parent.parent.parent.data.id}}" class="closeasrescheduledloan">{{=$ctx.doI18N("button.loan.closeAsRescheduled")}}</button>
+			{{/if}}
+		{{/if}}
+	
+		{{#if closeLoanAllowed}}
+			{{#if $ctx.showTask("CLOSELOAN")}}
+			<button id="closebtn{{=$parent.parent.parent.parent.data.id}}" class="closeloan">{{=$ctx.doI18N("button.loan.close")}}</button>
+			{{/if}}
+		{{/if}}
+		</span>
+		</td>
+	</table>
+</div>
+{{/if}}
+{{/each}}
+
+<div id="loantabs{{=id}}" class="loantabs">
+	<ul>
+		<li><a href="#details{{=id}}" title="details">{{=$ctx.doI18N("tab.details")}}</a></li>
+		{{#if charges}}
+		<li><a href="#charges{{=id}}" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
+		{{/if}}
+		{{#each repaymentSchedule}}
+		<li><a href="#schedule{{=id}}" title="schedule">{{=$ctx.doI18N("tab.repaymentSchedule")}}</a></li>
+        {{/each}}
+		{{#if transactions}}
+		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.transactions")}}</a></li>
+		{{/if}}
+		<li><a href="#loanDocuments{{=id}}" title="documents">{{=$ctx.doI18N("tab.loanDocuments")}}</a></li>
+	</ul>
+    <!-- first loan tab -->
+
+	<div id="details{{=id}}" style="margin-top: 5px;">
+		{{#if accountNo}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.accountNo")}}</span>
+			<span class="rowvalue">
+			{{=accountNo}}
+			{{#if $ctx.showTask("MODIFYLOAN")}}
+			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn"><span>Edit</span></button>
+			{{/if}}
+			</span>
+		</div>
+		{{/if}}
+		{{#if externalId}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
+			<span class="rowvalue">
+			{{=externalId}}
+			{{#if $ctx.showTask("MODIFYLOAN")}}
+			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn"><span>Edit</span></button>
+			{{/if}}
+			</span>
+		</div>
+		{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
+			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
+		</div>
+		
+		{{#if actualDisbursementDate}}
+			{{#if $ctx.numberGreaterThanZero(repaymentSchedule.totalInArrears)}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.status.arrears")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted($parent.parent.data.repaymentSchedule.currency, $parent.parent.data.repaymentSchedule.totalInArrears)}}</span>
+		</div>
+			{{/if}}
+		{{/if}}
+
+		{{#if submittedOnDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.submitted.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(submittedOnDate)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if loanOfficerName}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.loanOfficer")}}</span>
+			<span class="rowvalue">{{=loanOfficerName}}</span>
+			{{#if $ctx.showTask("UNASSIGNLOANOFFICER")}}
+				<button id="unassignloanofficerbtn{{=id}}" class="unassignloanofficer">{{=$ctx.doI18N("label.unassignloanOfficer")}}</button>
+			{{/if}}		
+		</div>
+		{{/if}}
+
+		{{#if approvedOnDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.approved.on")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(approvedOnDate)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if actualDisbursementDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.disbursedOn")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(actualDisbursementDate)}}</span>
+		</div>
+		{{#else}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.expectedDisbursementOn")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(expectedDisbursementDate)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if actualDisbursementDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.maturesOn")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(expectedMaturityDate)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if closedOnDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.closedOn")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(closedOnDate)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if closedOnDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.actualLoanTerm")}}</span>
+			<span class="rowvalue">{{=convenienceData.actualLoanTermInMonths}} {{=$ctx.doI18N("label.months")}} / ({{=convenienceData.actualLoanTermInDays}} {{=$ctx.doI18N("label.days")}})</span>
+		</div>
+		{{/if}}
+
+		<br/>
+		{{#if repaymentsStartingFromDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.firstRepaymentOn")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(repaymentsStartingFromDate)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if interestChargedFromDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interestChargedFrom")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(interestChargedFromDate)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if loanOfficerName}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.loanOfficer")}}</span>
+			<span class="rowvalue">{{=loanOfficerName}}</span>
+		</div>
+		{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.product")}}</span>
+			<span class="rowvalue">{{=loanProductName}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.fund")}}</span>
+			<span class="rowvalue">{{=fundName}}</span>
+		</div>
+		<br/>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
+			<span class="rowvalue">{{=currency.name}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.principal")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, principal)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.repayments")}}</span>
+			<span class="rowvalue">{{=numberOfRepayments}} every {{=repaymentEvery}}&nbsp;{{=repaymentFrequencyType.value}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.amortization")}}</span>
+			<span class="rowvalue">{{=amortizationType.value}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interest")}}</span>
+			<span class="rowvalue">{{=$ctx.decimal(annualInterestRate, 4)}}% per annum ({{=$ctx.decimal(interestRatePerPeriod, 4)}}%&nbsp; {{=interestRateFrequencyType.value}}) - {{=interestType.value}}</span>
+		</div>
+		
+		<br/>
+		
+		{{#if guarantors}}
+			<b>{{=$ctx.doI18N("label.guarantorDetails")}}</b>
+			{{#each guarantors}}
+				<div class="row">
+					<span class="longrowlabel">&nbsp;</span>
+					<span class="rowvalue">
+						{{#if $ctx.showTask("REMOVELOANGUARANTOR")}}
+							<button id="removeguarantor{{=id}}" class="removeguarantor">Remove</button>
+						{{/if}}	
+					</span>
+				</div>
+				<div class="row">
+						<span class="longrowlabel">{{=$ctx.doI18N("label.name")}}</span>
+						<span class="rowvalue">{{=lastname}}, {{=firstname}}</span>
+				</div>
+				
+				{{#if guarantorType.value == "CUSTOMER"}}
+				<div class="row">
+						<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
+						<span class="rowvalue">{{=officeName}}</span>
+				</div>
+				<div class="row">
+						<span class="longrowlabel">{{=$ctx.doI18N("label.joinedon")}}</span>
+						<span class="rowvalue">{{=$ctx.globalDate(joinedDate)}}</span>
+				</div>
+				{{/if}}
+				{{#if guarantorType.value == "EXTERNAL"}}
+					{{#if dob == true}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("label.dob")}}</span>
+								<span class="rowvalue">{{=$ctx.globalDate(dob)}}</span>
+						</div>
+					{{/if}}
+					{{#if addressLine1}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("label.address")}}</span>
+								<span class="rowvalue">{{=addressLine1}}, {{=addressLine2}}</span>
+						</div>
+					{{/if}}
+					{{#if zip}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("label.zip")}}</span>
+								<span class="rowvalue">{{=zip}}</span>
+						</div>
+					{{/if}}
+					{{#if city}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("label.city")}}</span>
+								<span class="rowvalue">{{=city}}</span>
+						</div>
+					{{/if}}
+					{{#if mobileNumber}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("label.mobile")}}</span>
+								<span class="rowvalue">{{=mobileNumber}}</span>
+						</div>
+					{{/if}}
+					{{#if housePhoneNumber}}
+						<div class="row">
+								<span class="longrowlabel">{{=$ctx.doI18N("label.telephone")}}</span>
+								<span class="rowvalue">{{=housePhoneNumber}}</span>
+						</div>
+					{{/if}}
+				{{/if}}
+				<br/>
+			{{/each}}
+		{{/if}}
+
+		{{#if collateral}}
+			<b>{{=$ctx.doI18N("label.collateral")}}</b>
+			<div id="collateraldetails" style="margin-top: 5px;">
+			 <!--
+			 <button id="loanapp-addCollateralType">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+			 -->
+			 <table id="loandetailscollateraltable" class="pretty displayschedule">
+				<thead>
+					<tr>
+					<th scope="col" style="width:300px;">Type</th>
+					<th scope="col">Description</th>
+ 					<!--
+					<th scope="col" style="width:100px;">Actions</th>
+					-->
+					</tr>
+				</thead>
+				<tbody>
+				{{#each collateral}}
+					<tr>
+						<td style="width:300px;">{{=$ctx.doI18N(type.name)}}</td>
+						<td>{{=description}}</textarea>
+						</td>
+						<!--
+						<td style="width:100px;">
+							<button id="loanapp-removeCollateralType{{=id}}" class="loanapp-removeCollateralType">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button>
+						</td>
+						-->
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
+			</div>
+		{{/if}}
+	</div>
+
+	{{#if charges}}
+	<div id="charges{{=id}}" style="margin-top: 5px;">
+		<table id="loancharges{{=id}}" class="pretty displaypayments">
+		<caption>{{=$ctx.doI18N("table.caption.loanCharges")}}</caption>
+			<thead>
+				<tr>
+				<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.feeOrPenalty")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.paymentDueAt")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.dueAsOf")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.calculationType")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.due")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.paid")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.waived")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.outstanding")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.action")}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each charges}}
+				<tr>
+					<td>{{=name}}</td>
+
+				{{#if penalty}}
+					<td>Penalty</td>
+				{{#else}}
+					<td>Fee</td>
+				{{/if}}
+
+					<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
+				{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+					<td>{{=$ctx.globalDate(dueAsOfDate)}}</td>
+				{{#else}}
+					<td>&nbsp;</td>
+				{{/if}}
+
+				{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
+					<td>{{=$ctx.doI18N(chargeCalculationType.code)}} - {{=$ctx.decimal(percentage, 4)}}% of {{=$ctx.moneyFormatted(currency, amountPercentageAppliedTo)}}</td>
+				{{#else}}
+					<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
+				{{/if}}
+					<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
+					<td>{{=$ctx.moneyFormatted(currency, amountPaid)}}</td>
+					<td>{{=$ctx.moneyFormatted(currency, amountWaived)}}</td>
+					<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
+					<td>
+						<a href="unknown.html" onclick="return removeLoanCharge({{=$parent.parent.data.id}}, {{=id}});">{{=$ctx.doI18N("link.action.delete")}}</a>&nbsp;
+						<a href="unknown.html" onclick="return modifyLoanCharge({{=$parent.parent.data.id}}, {{=id}});">{{=$ctx.doI18N("link.action.edit")}}</a>&nbsp;
+						<a href="unknown.html" onclick="return waiveLoanCharge({{=$parent.parent.data.id}}, {{=id}});">{{=$ctx.doI18N("link.action.waive")}}</a>
+					</td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/if}}
+
+	{{#each repaymentSchedule}}
+	<div id="schedule{{=id}}" style="margin-top: 5px;">
+		<table id="summarytable{{=id}}" class="pretty displayschedule">
+			<caption>{{=$ctx.doI18N("table.summary.caption")}}</caption>
+			<thead>
+				<tr>
+					<th class="empty"></th>
+					<th>{{=$ctx.doI18N("table.heading.original")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.paid")}}</th>
+					{{#if totalWaivedToDate}}
+					<th>{{=$ctx.doI18N("table.heading.waived")}}</th>
+					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<th>Written-off</th>
+					{{/if}}
+					<th>{{=$ctx.doI18N("table.heading.outstanding")}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>{{=$ctx.doI18N("table.heading.principal")}}</th>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalPaid)}}</td>
+					{{#if totalWaivedToDate}}
+					<td>&nbsp;</td>
+					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalWrittenOff)}}</td>
+					{{/if}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalOutstanding)}}</td>
+				</tr>
+				<tr>
+					<th>{{=$ctx.doI18N("table.heading.interest")}}</th>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestPaid)}}</td>
+					{{#if totalWaivedToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWaived)}}</td>
+					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWrittenOff)}}</td>
+					{{/if}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestOutstanding)}}</td>
+				</tr>
+				{{#if cumulativeFeeChargesToDate}}
+				<tr>
+					<th>{{=$ctx.doI18N("table.heading.fees")}}</th>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesPaid)}}</td>
+					{{#if totalWaivedToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesWaived)}}</td>
+					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesWrittenOff)}}</td>
+					{{/if}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesOutstanding)}}</td>
+				</tr>
+				{{/if}}
+
+				{{#if cumulativePenaltyChargesToDate}}
+				<tr>
+					<th>{{=$ctx.doI18N("tab.repaymentSchedule.table.column.heading.penalties")}}</th>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesPaid)}}</td>
+					{{#if totalWaivedToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesWaived)}}</td>
+					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesWrittenOff)}}</td>
+					{{/if}}
+					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesOutstanding)}}</td>
+				</tr>
+				{{/if}}
+			</tbody>
+			<tfoot >
+				<tr>
+					<th>{{=$ctx.doI18N("table.heading.total")}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
+					{{#if totalWaivedToDate}}
+					<th>{{=$ctx.monetaryValue(currency, totalWaivedToDate)}}</th>
+					{{/if}}
+					{{#if totalWrittenOffToDate}}
+					<th>{{=$ctx.monetaryValue(currency, totalWrittenOffToDate)}}</th>
+					{{/if}}
+					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
+				</tr>
+			</tfoot>
+		</table>
+
+		<br/>
+
+		<table id="repaymentschedule_todate{{=id}}" class="pretty displayschedule">
+			<caption>{{=$ctx.doI18N("table.caption.repaymentSchedule")}}</caption>
+			<colgroup span="3"></colgroup>
+			<colgroup span="3">
+				<col class="lefthighlightcol">
+				<col>
+				<col class="righthighlightcol">
+			</colgroup>
+			<colgroup span="3">
+				<col class="lefthighlightcol">
+				<col>
+				<col class="righthighlightcol">
+			</colgroup>
+			{{#if totalWaivedToDate}}
+			<colgroup span="4"></colgroup>
+			{{#else}}
+			<colgroup span="3"></colgroup>
+			{{/if}}
+
+			<thead>
+				<tr>
+					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("table.heading.loanAmountAndBalance")}}</th>
+					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("table.heading.totalCostOfLoan")}}</th>
+					{{#if totalWaivedToDate}}
+					<th colspan="4" scope="colgroup" class="empty">&nbsp;</th>
+					{{#else}}
+					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+					{{/if}}
+				</tr>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.date")}}</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.days")}}</th>
+					
+					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("table.heading.disbursement")}}</th>
+					<th scope="col">Principal Repayment</th>
+					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("table.heading.balanceOfLoan")}}</th>
+
+					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("table.heading.interest")}}</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.fees")}}</th>
+					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("table.heading.penalties")}}</th>
+
+					<th scope="col">{{=$ctx.doI18N("table.heading.totalDue")}}</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.totalPaid")}}</th>
+					{{#if totalWaivedToDate}}
+					<th scope="col">{{=$ctx.doI18N("table.heading.totalWaived")}}</th>
+					{{/if}}
+					<th scope="col">{{=$ctx.doI18N("table.heading.totalOutstanding")}}</th>
+				</tr>
+			</thead>
+			<tbody>
+			{{#each periods}}
+			<tr>
+				<td scope="row">{{=$ctx.number(period)}}</td>
+				<td>{{=$ctx.globalDate(dueDate)}}</td>
+				<td>{{=$ctx.number(daysInPeriod)}}</td>
+
+				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalDisbursed)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalLoanBalanceOutstanding)}}</td>
+
+				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, interestOriginalDue)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, feeChargesDue)}}</td>
+				<td class="righthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, penaltyChargesDue)}}</td>
+
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
+				{{#if $parent.parent.data.totalWaivedToDate}}
+				<td>{{=$ctx.monetaryValue($parent.parent.parent.data.currency, totalWaivedForPeriod)}}</td>
+				{{/if}}
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOutstandingForPeriod)}}</td>
+			</tr>
+			{{/each}}
+			</tbody>
+			<tfoot class="ui-widget-header">
+				<tr>
+					<th colspan="2">{{=$ctx.doI18N("table.heading.total")}}</th>
+					<th>{{=$ctx.number(loanTermInDays)}}</th>
+
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePrincipalDisbursed)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</th>
+					<th class="righthighlightcolheader">&nbsp;</th>
+
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</th>
+					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</th>
+
+					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
+					{{#if totalWaivedToDate}}
+					<th>{{=$ctx.monetaryValue(currency, totalWaivedToDate)}}</th>
+					{{/if}}
+					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	{{/each}}
+
+    {{#if transactions}}
+	<!-- Third loan tab -->
+	<div id="transactions{{=id}}" style="margin-top: 5px;">
+		<table id="newrepaymentsactivity{{=id}}" class="pretty displaypayments">
+		<caption>{{=$ctx.doI18N("table.transactions.caption")}}</caption>
+			<thead>
+				<tr>
+				<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.amount")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.breakdown")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.action")}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each transactions}}
+				<tr>
+				<td>{{=$ctx.globalDate(date)}}</td>
+				<td>{{=$ctx.doI18N(type.code)}}</td>
+				<td>{{=$ctx.monetaryValue(currency, amount)}}</td>
+				<td>
+					<table style="border: 0px; padding: 0px;" class="notablestyle">
+						{{#if principalPortion}}<tr><td style="border: 0px; text-align: left; ">Principal: {{=$ctx.monetaryValue(currency, principalPortion)}}</td></tr>{{/if}}
+						{{#if interestPortion}}<tr><td style="border: 0px; text-align: left; ">Interest: {{=$ctx.monetaryValue(currency, interestPortion)}}</td></tr>{{/if}}
+						{{#if feeChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Fees: {{=$ctx.monetaryValue(currency, feeChargesPortion)}}</td></tr>{{/if}}
+						{{#if penaltyChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Penalities: {{=$ctx.monetaryValue(currency, penaltyChargesPortion)}}</td></tr>{{/if}}
+					</table>
+				</td>
+				{{#if $ctx.isAdjustableTransaction(type.id)}}
+				<td><button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button></td>
+				{{#else}}
+				<td>&nbsp;</td>
+				{{/if}}
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
+	</div>
+	{{/if}}
+	<!-- Loan Documents Tab--->
+	<div id="loanDocuments{{=id}}" style="margin-top: 5px;">
+	</div>
+</div>
+</script>
+
+<script id="loanDocumentsTemplate" type="text/x-jquery-tmpl">
+	<table width="100%">
+		<td align="right">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+		   			<button id="addloandocument{{=loanId}}">{{=$ctx.doI18N("button.document.add")}}</button>
+			</span>
+		</td>
+	</table>
+	<hr/>
+	<table style="vertical-align: top;width: 100%">
+		{{#each crudRows}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.name")}}</td>
+					<td>{{=name}}</td>
+				</tr>
+				<tr>
+				   	<td><label for="description">{{=$ctx.doI18N("label.description")}}</label></td>
+					<td><textarea readonly="true" id="description" name="description" cols="75" rows="5">{{=description}}</textarea></td>
+					<td>
+						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
+							<button id="downloadloandocument{{=id}}">{{=$ctx.doI18N("link.action.download")}}</button>
+					   		<button id="editloandocument{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
+					   		<button id="deleteloandocument{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.filename")}}</td>
+					<td>{{=fileName}}</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<hr/>
+					</td>
+				</tr>
+		{{/each}}
+	</table>
+</script>
+
+<script id="loanDocumentsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
+				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("label.select.new.file")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<script id="editLoanDocumentsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("label.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("label.description")}}</label>
+				<textarea cols="75" rows="5" id="description" name="description">{{=description}}</textarea>
+			</td>
+		<tr>
+		<tr>
+			<td>
+				<label for="description">{{=$ctx.doI18N("label.current.filename")}}</label>
+				{{=fileName}}
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("label.select.new.file")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<script id="guarantorFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<input type="hidden" id="guaranteedLoanId" name="guaranteedLoanId" />
+    <div id="formerrors"></div>
+    
+    <table>
+	    	<tr>
+	    		<td><input type="checkbox" id="internalGuarantorCheckbox" checked="true">{{=$ctx.doI18N("label.guarantor.existingClient")}}</input>
+	    		</td>
+	    	</tr>
+	</table>
+    <br/>
+    <div id="internalGuarantorDiv">
+	    <table>
+	    	<tr>
+	    		<td><b>{{=$ctx.doI18N("label.help.smartsearch")}}</b>
+	    			<input id="smartGuarantorSearch" name="smartGuarantorSearch" title="" type="text" value=""/>
+	    		</td>
+	    	</tr>
+	    	<tr>
+	    		<td><small>{{=$ctx.doI18N("label.help.autocomplete")}}</small></td>
+	    	</tr>
+	    </table>
+	    <fieldset>
+	    	<legend>{{=$ctx.doI18N("label.guarantorDetails")}}</legend>
+			<table>
+				<tr>
+					<td><label for="selectedGuarantorName">{{=$ctx.doI18N("label.name")}}</label></td>
+					<td><input readonly="true" id="selectedGuarantorName" name="selectedGuarantorName" title="" type="text" value=""/></td>
+					
+				</tr>
+				<tr>
+					<td><label for="selectedGuarantorIdentifier">{{=$ctx.doI18N("label.guarantorIdentifier")}}</label></td>
+					<td><input readonly="true" id="selectedGuarantorIdentifier" name="selectedGuarantorIdentifier" title="" type="text" value=""/></td>
+				</tr>
+				<tr>	
+					<td><label for="selectedGuarantorBranch">{{=$ctx.doI18N("label.office")}}</label></td>
+					<td><input readonly="true" id="selectedGuarantorBranch" name="selectedGuarantorBranch" title="" type="text" value=""/></td>
+				</tr>
+				<tr>	
+					<td><label for="selectedGuarantorJoinedDate">{{=$ctx.doI18N("label.joinedon")}}</label></td>
+					<td><input readonly="true" id="selectedGuarantorJoinedDate" name="selectedGuarantorJoinedDate" title="" type="text" value=""/></td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+	
+	<div id="externalGuarantorDiv">
+		 <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+		 <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+		 <fieldset>
+	    	<legend>{{=$ctx.doI18N("label.guarantorDetails")}}</legend>
+			<table>
+				<tr>
+					<td><label>{{=$ctx.doI18N("label.name")}}</label></td>
+					<td>
+						<input id="guarantorFirstName" name="guarantorFirstName" title="" type="text" value=""/>
+						<input id="guarantorLastName" name="guarantorLastName" title="" type="text" value=""/>
+					</td>
+				</tr>
+				<tr>
+					<td><label for="guarantorDateOfBirth">{{=$ctx.doI18N("label.dob")}}</label></td>
+					<td><input id="guarantorDateOfBirth" name="guarantorDateOfBirth" title="" class="datepickerfield" /></td>
+				</tr>
+				<tr>
+					<td><label>{{=$ctx.doI18N("label.address")}}</label></td>
+					<td><input id="guarantorAddressLine1" name="guarantorAddressLine1" type="text" style="width: 200px"/></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input id="guarantorAddressLine2" name="guarantorAddressLine2" type="text" style="width: 200px"/></td>
+				</tr>
+				<tr>	
+					<td><label for="guarantorCity">{{=$ctx.doI18N("label.city")}}</label></td>
+					<td>
+						<input id="guarantorCity" name="guarantorCity" title="" type="text" value=""/>
+						{{=$ctx.doI18N("label.zip")}}
+						<input id="guarantorZip" name="guarantorZip" title="" type="text" value=""/>
+					</td>
+				</tr>
+				<tr>	
+					<td><label for="guarantorMobileNumber">{{=$ctx.doI18N("label.mobile")}}</label></td>
+					<td><input id="guarantorMobileNumber" name="guarantorMobileNumber" title="" type="text" value=""/></td>
+				</tr>
+				<tr>	
+					<td><label for="guarantorHouseNumber">{{=$ctx.doI18N("label.telephone")}}</label></td>
+					<td><input id="guarantorHouseNumber" name="guarantorHouseNumber" title="" type="text" value=""/></td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+ </form>
+</script>
+
+<script id="stateTransitionLoanFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<label for="eventDate">{{=$ctx.doI18N("label.on")}}</label>
+	<input id="eventDate" name="eventDate" title="" class="datepickerfield" />
+
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="3" cols="53" id="note" name="note"></textarea>
+</form>
+</script>
+
+<script id="undoStateTransitionLoanFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="5" cols="53" id="note" name="note"></textarea>
+</form>
+</script>
+
+<script id="transactionLoanFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
+
+	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
+	<input id="transactionAmount" name="transactionAmount" class="text ui-widget-content ui-corner-all" title="" value="{{=$ctx.monetaryValue(currency, amount)}}" />
+
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
+</form>
+</script>
+
+<script id="loanTransactionWriteOffFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.writeoff.on")}}</label>
+	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
+
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
+</form>
+</script>
+<!-- end of existing loan application/contract screens -->
+
+<!-- new loan application templates -->
+<script id="loanApplicationSelectProductDialogTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	{{#if clientId}}
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	{{/if}}
+	{{#if groupId}}
+	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
+	{{/if}}
+	<table>
+			<tr>
+				<td valign="top">
+				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}{{/if}}
+				{{#if groupName}}{{=$ctx.doI18N("label.applicant")}}{{/if}}
+				</td>
+				<td valign="top">
+				{{#if clientName}}
+				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+				{{/if}}
+				{{#if groupName}}
+				<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
+				{{/if}}
+				</td>
+
+				<td valign="top">&nbsp;</td>
+
+				<td valign="top">{{=$ctx.doI18N("label.product")}}</td>
+				<td valign="top">
+					<select name="productId" id="productId" style="width: 306px;">
+						<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
+				{{#each productOptions}}
+					{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+					{{/if}}
+	    		{{/each}}
+					</select>
+				</td>
+			</tr>
+	</table>
+</form>	
+</script>
+
+<script id="loanApplicationDialogTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+
+	<!-- template only setup for individual client lending -->
+	{{#if clientId}}
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	{{/if}}
+	{{#if groupId}}
+	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
+	{{/if}}
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<table>
+			<tr>
+				<td valign="top">
+				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}{{/if}}
+				{{#if groupName}}{{=$ctx.doI18N("label.applicant")}}{{/if}}
+				</td>
+				<td valign="top">
+				{{#if clientName}}
+				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+				{{/if}}
+				{{#if groupName}}
+				<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
+				{{/if}}
+				</td>
+
+				<td valign="top">&nbsp;</td>
+
+				<td valign="top">{{=$ctx.doI18N("label.product")}}</td>
+				<td valign="top">
+					<select name="productId" id="productId" style="width: 306px;">
+				{{#each productOptions}}
+					{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+					{{#else}}
+					<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+					{{/if}}
+	    		{{/each}}
+					</select>
+				</td>
+			</tr>
+
+			<tr>
+				<td valign="top">{{=$ctx.doI18N("label.loanOfficer")}}</td>
+				<td valign="top">
+					<select name="loanOfficerId" id="loanOfficerId">
+						<option value="">{{=$ctx.doI18N("option.loanOfficer.first.choice")}}</option>
+					{{#each loanOfficerOptions}}
+						{{#if $ctx.number($parent.parent.data.loanOfficerId)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+						{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+						{{/if}}
+     				{{/each}}
+					</select>
+				</td>
+
+				<td valign="top">&nbsp;</td>
+
+				<td valign="top">{{=$ctx.doI18N("label.submitted.on")}}</td>
+				<td valign="top">
+					<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
+				</td>
+			</tr>
+
+			{{#if $ctx.arrayIsNotEmpty(loanPurposeOptions)}}
+			<tr>
+				<td valign="top">{{=$ctx.doI18N("label.loanPurpose")}}</td>
+				<td valign="top" colspan="4">
+					<select name="loanPurposeId" id="loanPurposeId">
+						<option value="">{{=$ctx.doI18N("option.loanPurpose.first.choice")}}</option>
+					{{#each loanPurposeOptions}}
+						{{#if $ctx.number($parent.parent.data.loanPurposeId)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(name)}}</option>
+						{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(name)}}</option>
+						{{/if}}
+     				{{/each}}
+					</select>
+				</td>
+			</tr>
+			{{/if}}
+	</table>
+
+	<div id="loanapplicationtabs{{=id}}" class="loanapplicationtabs">
+	    <ul>
+		    <li><a href="#loanterms" title="loanterms">{{=$ctx.doI18N("tab.loanTerms")}}</a></li>
+			<li><a href="#charges" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
+			{{#if $ctx.arrayIsNotEmpty(loanCollateralOptions)}}
+			<li><a href="#collateral" title="collateral">{{=$ctx.doI18N("tab.collateral")}}</a></li>
+			{{/if}}
+			<li><a href="#schedule" title="schedule">{{=$ctx.doI18N("tab.previewRepaymentSchedule")}}</a></li>
+	    </ul>
+	    
+	    <div id="loanterms" style="margin-top: 5px;">
+			<table>
+			<tr>
+				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("label.principal")}}</td>
+							<td>
+								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 125px;" />
+								<input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.loanTerm")}}</td>
+							<td>
+								<input id="loanTermFrequency" name="loanTermFrequency" title="" type="text" value="{{=$ctx.number(termFrequency)}}" style="width: 50px;" />
+								
+								<select name="loanTermFrequencyType" id="loanTermFrequencyType"  title="" style="width: 121px;">
+								{{#each termFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.termPeriodFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.numberof.repayments")}}</td>
+							<td>
+								<input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.repaidevery")}}</td>
+							<td>
+								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 50px;" />
+								
+								<select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 121px;">
+								{{#each repaymentFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.repaymentFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.repaymentStrategy")}}</td>
+							<td>
+								<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="">
+									<option value="">{{=$ctx.doI18N("option.repaymentStrategy.first.choice")}}</option>
+								{{#each repaymentStrategyOptions}}
+									{{#if $ctx.number($parent.parent.data.transactionProcessingStrategyId)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+									{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+									{{/if}}
+            					{{/each}}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.expectedDisbursementOn")}}</td>
+							<td>
+							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.firstRepaymentOn")}}</td>
+							<td>
+							<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						{{#if $ctx.showTask("VIEWFUNDS")}}
+						<tr>
+							<td>{{=$ctx.doI18N("label.fund")}}</td>
+							<td>
+								<select id="fundId" name="fundId" title="">
+									<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
+								{{#each fundOptions}}
+									{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+									{{/if}}
+            						{{/each}}
+								</select>
+							</td>
+						</tr>
+						{{/if}}
+					</table>
+				</td>
+				<!-- interest details cell -->
+				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
+					<table>
+						<tr>
+							<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+							<td>
+								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 60px;" />
+								
+								<select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 115px;">
+								{{#each interestRateFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.amortization")}}</td>
+							<td>
+								<select name="amortizationType" id="amortizationType"  title="" style="width: 178px;">
+								{{#each amortizationTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.amortizationType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interest.method")}}</td>
+							<td>
+								<select name="interestType" id="interestType"  title="" style="width: 180px;">
+								{{#each interestTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+								{{/if}}
+        						{{/each}}
+  								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interestRate.calculatedInPeriod")}}</td>
+							<td>
+							<select id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" style="width: 220px;">
+								{{#each interestCalculationPeriodTypeOptions}}
+                                 	{{#if $ctx.number($parent.parent.data.interestCalculationPeriodType.id)===$ctx.number(id)}}
+										<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+									{{#else}}
+										<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+									{{/if}}
+                                {{/each}}
+							</select>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.interestChargedFrom")}}</td>
+							<td>
+							<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" style="width:172px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.arrears.tolerance")}}</td>
+							<td>
+								<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" style="width: 125px;" />
+								<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		</div>
+		{{#if $ctx.showTask("VIEWCHARGES")}}
+			{{#if $ctx.arrayIsNotEmpty(chargeOptions)}}
+		<div id="charges" style="margin-top: 5px;">
+			 <select id="chargeOptions">
+			    <option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+				{{#each chargeOptions}}
+				<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+        		{{/each}}
+			 </select>
+			 <button id="loanapp-addLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+			 <table id="loanchargestable" class="pretty displayschedule">
+				<thead>
+					<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Type</th>
+					<th scope="col">Amount</th>
+					<th scope="col">Collected on</th>
+					<th scope="col">Date</th>
+					<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each charges}}
+					<tr>
+						<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
+						<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=$ctx.number(chargeId)}}" />
+						<td>{{=name}}, {{=currency.displaySymbol}}</td>
+						<td>
+							<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+							{{#each $parent.parent.data.chargeTemplate.chargeCalculationTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+								{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+							{{/each}}
+							</select>
+						</td>
+						<td><input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/></td>
+						<td>
+							<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+							{{#each $parent.parent.data.chargeTemplate.chargeTimeTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+								{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+							{{/each}}
+							</select>
+						</td>
+						<td>
+							<input id="charges[{{=$itemNumber}}][specifiedDueDate]" 
+									name="charges[{{=$itemNumber}}][specifiedDueDate]" 
+									class="specifiedDueDate datepickerfieldnoconstraint" 
+									title="" 
+									value="{{=$ctx.globalDate(dueAsOfDate)}}" />
+						</td>
+						<td><button id="loanapp-removeLoanCharge{{=$itemNumber}}" class="loanapp-removeLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
+			{{/if}}
+		{{/if}}
+		{{#if $ctx.arrayIsNotEmpty(loanCollateralOptions)}}
+		<div id="collateral" style="margin-top: 5px;">
+			 <button id="loanapp-addCollateralType">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+			 <table id="loancollateraltable" class="pretty displayschedule">
+				<thead>
+					<tr>
+					<th scope="col" style="width:300px;">Type</th>
+					<th scope="col">Description</th>
+					<th scope="col" style="width:100px;">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+				{{#each collateral}}
+					<tr>
+						<td style="width:300px;">
+							<input id="collateral[{{=$itemNumber}}][id]" name="collateral[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
+							<select id="collateral[{{=$itemNumber}}][type]" name="collateral[{{=$itemNumber}}][type]" title="" style="border: 0 none;width: 295px;">
+							{{#each $parent.parent.data.loanCollateralOptions}}
+								{{#if $ctx.number($parent.parent.data.type.id)===$ctx.number(id)}}
+								<option value="{{=$ctx.number($parent.parent.parent.data.type.id)}}" selected="selected">{{=$ctx.doI18N($parent.parent.parent.data.type.name)}}</option>
+								{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+							{{/each}}
+							</select>
+						</td>
+						<td>
+							<textarea id="collateral[{{=$itemNumber}}][description]" name="collateral[{{=$itemNumber}}][description]" rows="2" cols="95">{{=description}}</textarea>
+						</td>
+						<td style="width:100px;">
+							<button id="loanapp-removeCollateralType{{=$itemNumber}}" class="loanapp-removeCollateralType">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button>
+						</td>
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
+		</div>
+		{{/if}}
+		<div id="schedule" style="margin-top: 5px;">
+			<div id="previewloanschedule"></div>
+		</div>
+	</div>
+</form>
+</script>
+
+<script id="loanApplicationAddCollateralRowTemplate" type="text/x-jquery-tmpl">
+<tr>
+	<td style="width:300px;">
+		<input id="collateral[{{=index}}][id]" name="collateral[{{=index}}][id]" class="id" title="" type="hidden" value="" />
+		<select id="collateral[{{=index}}][type]" name="collateral[{{=index}}][type]" title="" style="border: 0 none;width: 295px;">
+		{{#each loanCollateralOptions}}
+			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(name)}}</option>
+		{{/each}}
+		</select>
+	</td>
+	<td>
+		<textarea id="collateral[{{=index}}][description]" name="collateral[{{=index}}][description]" rows="2" cols="95">&nbsp;</textarea>
+	</td>
+	<td style="width:100px;"><button id="loanapp-removeCollateralType{{=index}}" class="loanapp-removeCollateralType">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+</tr>
+</script>
+
+<script id="loanApplicationAddChargeRowTemplate" type="text/x-jquery-tmpl">
+<tr>
+	<input id="charges[{{=index}}][chargeId]" name="charges[{{=index}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=id}}" />
+	<td>{{=name}}, {{=currency.displaySymbol}}</td>
+	<td>
+	<select id="charges[{{=index}}][chargeCalculationType]" name="charges[{{=index}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+	{{#each chargeCalculationTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+		<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+		<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+	</select>
+	</td>
+	<td><input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/></td>
+	<td>
+		<select id="charges[{{=index}}][chargeTimeType]" name="charges[{{=index}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+		{{#each chargeTimeTypeOptions}}
+			{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+			{{/if}}
+		{{/each}}
+		</select>
+	</td>
+	<td>
+		<input id="charges[{{=index}}][specifiedDueDate]" name="charges[{{=index}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="" />
+	</td>
+	<td><button id="loanapp-removeLoanCharge{{=index}}" class="loanapp-removeLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+</tr>
+</script>
+<!-- end of new loan application templates -->
+
 </body>
 </html>
