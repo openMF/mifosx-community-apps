@@ -7451,8 +7451,7 @@ function showLockinOptions(){
 			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
 			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
 		</div>
-		
-		{{#if actualDisbursementDate}}
+		{{#if timeline.actualDisbursementDate}}
 			{{#if $ctx.numberGreaterThanZero(repaymentSchedule.totalInArrears)}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.status.arrears")}}</span>
@@ -7460,76 +7459,12 @@ function showLockinOptions(){
 		</div>
 			{{/if}}
 		{{/if}}
-
-		{{#if submittedOnDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.submitted.on")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(submittedOnDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if approvedOnDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.approved.on")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(approvedOnDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if actualDisbursementDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.disbursedOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(actualDisbursementDate)}}</span>
-		</div>
-		{{#else}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.expectedDisbursementOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(expectedDisbursementDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if actualDisbursementDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.maturesOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(expectedMaturityDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if closedOnDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.closedOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(closedOnDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if closedOnDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.actualLoanTerm")}}</span>
-			<span class="rowvalue">{{=convenienceData.actualLoanTermInMonths}} {{=$ctx.doI18N("label.months")}} / ({{=convenienceData.actualLoanTermInDays}} {{=$ctx.doI18N("label.days")}})</span>
-		</div>
-		{{/if}}
-
-		<br/>
-		{{#if repaymentsStartingFromDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.firstRepaymentOn")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(repaymentsStartingFromDate)}}</span>
-		</div>
-		{{/if}}
-
-		{{#if interestChargedFromDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.interestChargedFrom")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(interestChargedFromDate)}}</span>
-		</div>
-		{{/if}}
-
 		{{#if loanPurposeName}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.loanPurpose")}}</span>
 			<span class="rowvalue">{{=$ctx.doI18N(loanPurposeName)}}</span>
 		</div>
 		{{/if}}
-
 		{{#if loanOfficerName}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.loanOfficer")}}</span>
@@ -7539,16 +7474,16 @@ function showLockinOptions(){
 			{{/if}}
 		</div>
 		{{/if}}
-
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.product")}}</span>
 			<span class="rowvalue">{{=loanProductName}}</span>
 		</div>
+		{{#if fundName}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.fund")}}</span>
 			<span class="rowvalue">{{=fundName}}</span>
 		</div>
-		<br/>
+		{{/if}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
 			<span class="rowvalue">{{=currency.name}}</span>
@@ -7571,7 +7506,101 @@ function showLockinOptions(){
 		</div>
 		
 		<br/>
-		
+		<table id="timelinetable" class="pretty displayschedule">
+			<thead>
+				<tr>
+					<th scope="col">Event</th>
+					<th scope="col">Date</th>
+					<th scope="col">By</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#if timeline.submittedOnDate}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.submitted.on")}}</td>
+					<td>{{=$ctx.globalDate(timeline.submittedOnDate)}}</td>
+					<td> {{=timeline.submittedByUsername}}</td>
+				</tr>
+				{{/if}}
+
+				{{#if timeline.approvedOnDate}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.approved.on")}}</td>
+					<td>{{=$ctx.globalDate(timeline.approvedOnDate)}}</td>
+					<td> {{=timeline.approvedByUsername}}</td>
+				</tr>
+				{{/if}}
+
+				{{#if timeline.actualDisbursementDate}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.disbursedOn")}}</td>
+					<td>{{=$ctx.globalDate(timeline.actualDisbursementDate)}}</td>
+					<td>{{=timeline.disbursedByUsername}}</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.maturesOn")}}</td>
+					<td>{{=$ctx.globalDate(timeline.expectedMaturityDate)}}</td>
+					<td>&nbsp;</td>
+				</tr>
+				{{#else}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.expectedDisbursementOn")}}</td>
+					<td>{{=$ctx.globalDate(timeline.expectedDisbursementDate)}}</td>
+					<td>&nbsp;</td>
+				</tr>
+				{{/if}}
+
+				{{#if repaymentsStartingFromDate}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.firstRepaymentOn")}}</td>
+					<td>{{=$ctx.globalDate(repaymentsStartingFromDate)}}</td>
+					<td>&nbsp;</td>
+				</tr>
+				{{/if}}
+
+				{{#if interestChargedFromDate}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.interestChargedFrom")}}</td>
+					<td>{{=$ctx.globalDate(interestChargedFromDate)}}</td>
+					<td>&nbsp;</td>
+				</tr>
+				{{/if}}
+
+				{{#if timeline.rejectedOnDate}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.rejectedOn")}}</td>
+					<td>{{=$ctx.globalDate(timeline.rejectedOnDate)}}</td>
+					<td>{{=timeline.rejectedByUsername}}</td>
+				</tr>
+				{{#else}}
+					{{#if timeline.closedOnDate}}	
+				<tr>
+					<td>{{=$ctx.doI18N("label.closedOn")}}</td>
+					<td>{{=$ctx.globalDate(timeline.closedOnDate)}}</td>
+					<td>{{=timeline.closedByUsername}}</td>
+				</tr>
+					{{/if}}
+				{{/if}}
+
+				{{#if timeline.withdrawnOnDate}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.withdrawnOn")}}</td>
+					<td>{{=$ctx.globalDate(timeline.withdrawnOnDate)}}</td>
+					<td>{{=timeline.withdrawnByUsername}}</td>
+				</tr>
+				{{#else}}
+					{{#if timeline.closedOnDate}}	
+				<tr>
+					<td>{{=$ctx.doI18N("label.closedOn")}}</td>
+					<td>{{=$ctx.globalDate(timeline.closedOnDate)}}</td>
+					<td>{{=timeline.closedByUsername}}</td>
+				</tr>
+					{{/if}}
+				{{/if}}
+			</tbody>
+		</table>
+
+		<br/>		
 		{{#if guarantors}}
 			<b>{{=$ctx.doI18N("label.guarantorDetails")}}</b>
 			{{#each guarantors}}
@@ -8326,7 +8355,7 @@ function showLockinOptions(){
 
 				<td valign="top">{{=$ctx.doI18N("label.submitted.on")}}</td>
 				<td valign="top">
-					<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(submittedOnDate)}}" />
+					<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(timeline.submittedOnDate)}}" />
 				</td>
 			</tr>
 
@@ -8427,7 +8456,7 @@ function showLockinOptions(){
 						<tr>
 							<td>{{=$ctx.doI18N("label.expectedDisbursementOn")}}</td>
 							<td>
-							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(expectedDisbursementDate)}}" style="width:172px;"/>
+							<input id="expectedDisbursementDate" name="expectedDisbursementDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(timeline.expectedDisbursementDate)}}" style="width:172px;"/>
 							</td>
 						</tr>
 						<tr>

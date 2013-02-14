@@ -2383,7 +2383,6 @@ function addILBulkMembersLoans(groupId, clientMembers){
   			  			calculateLoanSchedule();
   				  	});
   					
-  					console.log("loancharge added: datepicker support on: datepickerfieldnoconstraint");
   					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
   					
 			  		calculateLoanSchedule();
@@ -2627,13 +2626,16 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 		
-		var chargeIndex = data["charges"].length;
+		var chargeIndex = 0;
+		if(typeof data.charges === "array") {
+			chargeIndex = data["charges"].length;
+		}
 		$("#loanapp-addLoanCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
 			var chargeId = $('#chargeOptions option:selected').val();
 			
 				var addLoanChargeSuccess = function (chargeData) {
 					chargeIndex++;
-				chargeData["index"] = chargeIndex;
+					chargeData["index"] = chargeIndex;
 					var loanChargeHtml = $("#loanApplicationAddChargeRowTemplate").render(chargeData);
 					$("#loanchargestable tbody").append(loanChargeHtml);
 		  		
@@ -2652,7 +2654,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		    e.preventDefault();
 		});
 		
-		 if(data.charges) {
+		if(typeof data.charges === "array") {
 			 $("#loanchargestable tbody tr .loanapp-removeLoanCharge").each(function(index) {
 				 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 					$(this).closest('tr').remove();
@@ -2661,7 +2663,10 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			 });
 	    }
 		 
-		var collateralIndex = data["collateral"].length;
+		var collateralIndex = 0;
+		if(typeof data.collateral === "array") {
+			collateralIndex = data["collateral"].length;
+		}
 		$("#loanapp-addCollateralType").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
 			
 			var addLoanCollateralItemSuccess = function (collateralData) {
@@ -2681,7 +2686,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		    e.preventDefault();
 		});
 		
-		 if(data.collateral) {
+		if(typeof data.collateral === "array") {
 			 $("#loancollateraltable tbody tr .loanapp-removeCollateralType").each(function(index) {
 				 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 					$(this).closest('tr').remove();
@@ -2718,13 +2723,16 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 			
-			var chargeIndex = data["charges"].length;
+			var chargeIndex = 0;
+			if(typeof data.charges === "array") {
+				chargeIndex = data["charges"].length;
+			}
 			$("#loanapp-addLoanCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
 				var chargeId = $('#chargeOptions option:selected').val();
 				
 					var addLoanChargeSuccess = function (chargeData) {
 						chargeIndex++;
-					chargeData["index"] = chargeIndex;
+						chargeData["index"] = chargeIndex;
 						var loanChargeHtml = $("#loanApplicationAddChargeRowTemplate").render(chargeData);
 						$("#loanchargestable tbody").append(loanChargeHtml);
 			  		
@@ -2743,7 +2751,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			    e.preventDefault();
 			});
 			
-			 if(data.charges) {
+			 if(typeof data.charges === "array") {
 				 $("#loanchargestable tbody tr .loanapp-removeLoanCharge").each(function(index) {
 					 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 						$(this).closest('tr').remove();
@@ -2792,17 +2800,8 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		};
 		executeAjaxRequest('loans?command=calculateLoanSchedule', "POST", newFormData, successFunction, errorFunction);	  
 	}
-	
-//	function addILLoan(clientId) {
-//		setAddLoanContent("content");
-//
-//		eval(genAddLoanSuccessVar(clientId));
-//
-//  		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	  
-//	}
 
 	function addILGroupLoan(groupId) {
-		console.log("add group loan");
 		setAddLoanContent("content");
 
 		eval(genAddLoanSuccessVar(null, groupId));
@@ -3403,23 +3402,75 @@ function loadILLoan(loanId) {
 	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
 	            	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
 	            
-	            	var offsetToSubmittedDate = 0;
-	            	var offsetToApprovalDate = 0;
-	            	var offsetToDisbursalDate = 0;
-	            	var maxOffset = 0; // today
-
-
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);
 	        		
 	        		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		currentTab.html(tableHtml);
 
 	        		var curTabID = currentTab.prop("id")
+
+	        		var offsetToSubmittedDate = 0;
+	        		var offsetToApprovalDate = 0;
+	        		var offsetToExpectedDisbursementDate = 0;
+	            	var offsetToDisbursalDate = 0;
+	            	var maxOffset = 0; // today
+	        		var today = new Date();
 	        		
-	        		offsetToSubmittedDate = data.convenienceData.maxSubmittedOnOffsetFromToday;
-	        		offsetToApprovalDate = data.convenienceData.maxApprovedOnOffsetFromToday;
-	        		offsetToDisbursalDate = data.convenienceData.maxDisbursedOnOffsetFromToday;
-	        		 
+	        		var dateParts = data.timeline.submittedOnDate;
+	        		if (undefined != dateParts) {
+        				var year = dateParts[0];
+        				var month = parseInt(dateParts[1]) - 1; // month is zero indexed
+        				var day = dateParts[2];
+
+        				var today = new Date();
+        				var offsetDate = new Date();
+        				offsetDate.setFullYear(year, month, day);
+
+        				offsetToSubmittedDate = Date.daysBetween(today, offsetDate);
+        			}
+	        		
+	        		dateParts = data.timeline.approvedOnDate;
+	        		if (undefined != dateParts) {
+        				var year = dateParts[0];
+        				var month = parseInt(dateParts[1]) - 1; // month is zero indexed
+        				var day = dateParts[2];
+
+        				var today = new Date();
+        				var offsetDate = new Date();
+        				offsetDate.setFullYear(year, month, day);
+
+        				offsetToApprovalDate = Date.daysBetween(today, offsetDate);
+        			}
+	        		
+	        		dateParts = data.timeline.expectedDisbursementDate;
+	        		if (undefined != dateParts) {
+        				var year = dateParts[0];
+        				var month = parseInt(dateParts[1]) - 1; // month is zero indexed
+        				var day = dateParts[2];
+
+        				var today = new Date();
+        				var offsetDate = new Date();
+        				offsetDate.setFullYear(year, month, day);
+
+        				offsetToExpectedDisbursementDate = Date.daysBetween(today, offsetDate);
+        				if (offsetToApprovalDate > offsetToExpectedDisbursementDate) {
+        					offsetToExpectedDisbursementDate = offsetToApprovalDate;
+        				}
+        			}
+	        		
+	        		dateParts = data.timeline.actualDisbursementDate;
+	        		if (undefined != dateParts) {
+        				var year = dateParts[0];
+        				var month = parseInt(dateParts[1]) - 1; // month is zero indexed
+        				var day = dateParts[2];
+
+        				var today = new Date();
+        				var offsetDate = new Date();
+        				offsetDate.setFullYear(year, month, day);
+
+        				offsetToDisbursalDate = Date.daysBetween(today, offsetDate);
+        			}
+	        		
 	        		//adding styles for vertical sub-tabs
 	        		//$( ".loantabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
 	        		//$( ".loantabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
@@ -3519,7 +3570,7 @@ function loadILLoan(loanId) {
 					var templateSelector = "#stateTransitionLoanFormTemplate";
 					var width = 500; 
 					var height = 350;
-					var defaultOffset = offsetToApprovalDate;
+					var defaultOffset = offsetToExpectedDisbursementDate;
 					eval(genSaveSuccessFunctionReloadLoan(loanId));
 					popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.disburse.loan', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
 				    e.preventDefault();
