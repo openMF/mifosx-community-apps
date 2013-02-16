@@ -620,7 +620,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 			e.preventDefault();
 		});
 	}
-	executeAjaxRequest('glaccounts?manualAdjustmentsAllowed=true&usage=1&disabled=false', 'GET', "", getAccountsSuccessFunction, formErrorFunction);
+	executeAjaxRequest('glaccounts?manualEntriesAllowed=true&usage=1&disabled=false', 'GET', "", getAccountsSuccessFunction, formErrorFunction);
 
 	/** *function called on successfully fetching Journal Account details** */
 	var journalEntriesFetchSuccessFunction = function(data) {

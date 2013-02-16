@@ -5145,9 +5145,9 @@ function showLockinOptions(){
 			<td><input id="glCode" name="glCode" title="" type="text" value="{{=glCode}}"/></td>
 		</tr>
 		<tr>
-			<td><label for="classification">{{=$ctx.doI18N("label.classification")}}</label></td>
+			<td><label for="type">{{=$ctx.doI18N("label.classification")}}</label></td>
 			<td>
-				<select name="classification" id="classification">
+				<select name="type" id="type">
 				  {{#each accountTypeOptions}}
 						{{#if $parent.parent.data.type.value === value}}
 							<option value="{{=id}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -5419,7 +5419,7 @@ function showLockinOptions(){
 			<tr>
 				<td>{{=officeName}}</td>
 				<td>{{=$ctx.globalDate(entryDate)}}</td>
-				<td>{{=glAccountClassification.value}}</td>
+				<td>{{=glAccountType.value}}</td>
 				<td>{{=glAccountName}}</td>
 				<td>{{=glAccountCode}}</td>
 				<td>{{=createdByUserName}}</td>
@@ -5479,7 +5479,7 @@ function showLockinOptions(){
 	</tr>
 	<tr>
 		<td>{{=$ctx.doI18N("label.classification")}}</td>
-		<td>{{=glAccountClassification.value}}</td>
+		<td>{{=glAccountType.value}}</td>
 	</tr>
 	<tr>
 		<td>{{=$ctx.doI18N("label.transactionType")}}</td>
