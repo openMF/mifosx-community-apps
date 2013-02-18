@@ -4586,7 +4586,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			serializedArray["locale"] = $('#locale').val();
     	   	serializedArray["dateFormat"] = $('#dateFormat').val();
     	   	serializedArray["officeId"] = $('#officeId').val();
-    	   	serializedArray["entryDate"] = $('#entryDate').val();
+    	   	serializedArray["transactionDate"] = $('#transactionDate').val();
     	   	serializedArray["comments"] = $('#comments').val();	
     	   	//populate debits and credits array
     	   	var populateCreditOrDebitArray = function(type){

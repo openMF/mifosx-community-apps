@@ -5402,7 +5402,7 @@ function showLockinOptions(){
 		<thead>
 			<tr>
 				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.entryDate")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.transactionDate")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.classification")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.accountName")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.accountCode")}}</th>
@@ -5418,7 +5418,7 @@ function showLockinOptions(){
 			{{#each crudRows}}
 			<tr>
 				<td>{{=officeName}}</td>
-				<td>{{=$ctx.globalDate(entryDate)}}</td>
+				<td>{{=$ctx.globalDate(transactionDate)}}</td>
 				<td>{{=glAccountType.value}}</td>
 				<td>{{=glAccountName}}</td>
 				<td>{{=glAccountCode}}</td>
@@ -5462,8 +5462,8 @@ function showLockinOptions(){
 		<td>{{=officeName}}</td>
 	</tr>
 	<tr>
-		<td>{{=$ctx.doI18N("label.entryDate")}}</td>
-		<td>{{=$ctx.globalDate(entryDate)}}</td>
+		<td>{{=$ctx.doI18N("label.transactionDate")}}</td>
+		<td>{{=$ctx.globalDate(transactionDate)}}</td>
 	</tr>
 	<tr>
 		<td>{{=$ctx.doI18N("label.entryId")}}</td>
@@ -5553,11 +5553,11 @@ function showLockinOptions(){
 			</select></td>
 		</tr>
 		<tr>
-			<td><label for="entryDate">{{=$ctx.doI18N("label.entryDate")}}</label></td>
+			<td><label for="transactionDate">{{=$ctx.doI18N("label.transactionDate")}}</label></td>
 			<td>
 			<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-			<input id="entryDate" name="entryDate" title="" type="text" class="datepickerfield" />
+			<input id="transactionDate" name="transactionDate" title="" type="text" class="datepickerfield" />
 			</td>
 		</tr>
 		<tr>
