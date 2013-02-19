@@ -861,7 +861,7 @@ $(document).ready(function() {
 	</table>
 </script>
 
-<script id="groupSearchTabTemplate" type="text/x-jquery-tmpl">
+<script id="groupManageTabTemplate" type="text/x-jquery-tmpl">
 <div>
 	<form method="post" id="viewGroup" name="viewGroup" action="switchToGroup">
 		<div style="width:100%">
@@ -869,22 +869,37 @@ $(document).ready(function() {
 		</div>
 		<div id="officesInScopeDiv">
 		</div>
-		<div style="height: 80px">
+		<div style="min-height: 200px">
 			<div style="float: left">
 					<label for="group">{{=$ctx.doI18N("label.group.search.by.name")}}</label>
 					<input type="text" maxlength="30" id="groupSearchInput"/>
 					<button id="searchGroupBtn" style="clear: both;" style="height:10px">Search</button>
 			</div>
-			
 			<div style="float: right">
 				<div id="groupsInScopeDiv">
 				</div>
 			</div>
+			<div style="clear: both;"><br><br></div>
+			<div>	
+				<h1>{{=$ctx.doI18N("label.group.manage")}}</h1>
+				<hr>
+				<div style="float: left">
+					<div id="groupLevels">
+					</div>
+				</div>
+			</div>
 		</div>
-		<div id="groupTableDiv">
-		</div>
+		
 	</form>
 </div>	
+</script>
+<!--Applicable Group Hierarchy Levels-->
+<script id="groupHierarchyTemplate" type="text/x-jquery-tmpl">
+	<ul>
+		{{#each crudRows}}
+			<li><a href="#" class="addgroup" onClick="addGroup({{=id}});">{{=$ctx.doI18N("label.group.manage.create.new")}}{{=levelName}}</a></li>
+		{{/each}}
+	</ul>	
 </script>
 
 <!-- All Groups Dropdown-->
