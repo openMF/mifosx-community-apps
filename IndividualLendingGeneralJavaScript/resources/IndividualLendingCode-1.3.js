@@ -285,8 +285,7 @@ function setClientListingContent(divName) {
 }
 
 function setGroupListingContent(divName){
-	var htmlVar = '<button id="addgroup" style="clear: both;">' + doI18N("link.add.new.group") + '</button>';
-	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
+	var htmlVar = '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.group.manage") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
 }
@@ -1451,7 +1450,7 @@ function showILGroupListing(){
 	    show: function(event, ui) {
 			var initGroupSearch =  function() {
 				//render page markup
-				var tableHtml = $("#groupSearchTabTemplate").render();
+				var tableHtml = $("#groupManageTabTemplate").render();
 				$("#searchtab").html(tableHtml);
 				
 				//fetch all Offices 
@@ -1486,6 +1485,17 @@ function showILGroupListing(){
 				    var oTable=displayListTable("groupstable");
 			  	};
 				
+				// Render Group Hierarchy
+				
+				//render group drop down data
+				var groupLevelSuccessFunction =  function(data) {
+					var groupLevelObject = new Object();
+				    groupLevelObject.crudRows = data;
+					var tableHtml = $("#groupHierarchyTemplate").render(groupLevelObject);
+					$("#groupLevels").html(tableHtml);
+			  	};
+				executeAjaxRequest('grouplevels', 'GET', "", groupLevelSuccessFunction, formErrorFunction);
+				
 				//initialize search button				
 				$("#searchGroupBtn").button({
 					icons: {
@@ -1511,12 +1521,16 @@ function showILGroupListing(){
 	    	initGroupSearch();
 	    }
 	});
+}
 
-	var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
+//Add new group or center
+function addGroup(id) {
+	
+		var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
 		$('#dialog-form').dialog("close");
 		showILGroup(data.resourceId);
 	}
-	$("#addgroup").button().click(function(e) {
+
 		var getUrl = 'groups/template';
 		var postUrl = 'groups';
 		var templateSelector = "#groupFormTemplate";
@@ -1526,7 +1540,6 @@ function showILGroupListing(){
 		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.group', templateSelector, width, height, addGroupSuccessFunction);
 		
 	    e.preventDefault();
-	});
 }
 
 //set scope for group search
