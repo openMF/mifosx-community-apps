@@ -3567,7 +3567,7 @@ function loadILLoan(loanId) {
 					var linkId = this.id;
 					var loanId = linkId.replace("disbursebtn", "");
 					var postUrl = 'loans/' + loanId + '?command=disburse';
-					var templateSelector = "#stateTransitionLoanFormTemplate";
+					var templateSelector = "#loanDisbursementTemplate";
 					var width = 500; 
 					var height = 350;
 					var defaultOffset = offsetToExpectedDisbursementDate;

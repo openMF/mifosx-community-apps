@@ -8188,6 +8188,20 @@ function showLockinOptions(){
  </form>
 </script>
 
+<script id="loanDisbursementTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<label for="actualDisbursementDate">{{=$ctx.doI18N("label.on")}}</label>
+	<input id="actualDisbursementDate" name="actualDisbursementDate" title="" class="datepickerfield" value="" />
+
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="3" cols="53" id="note" name="note"></textarea>
+</form>
+</script>
+
 <script id="stateTransitionLoanFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
