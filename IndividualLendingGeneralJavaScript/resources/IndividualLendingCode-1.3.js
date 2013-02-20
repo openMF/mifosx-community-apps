@@ -673,7 +673,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 		var accountId = $("#accountId").val();
 		var fromdate = $("#fromDate").val();
 		var todate = $("#toDate").val();
-		var getPortfolioEntries = $('#includePortfolioPostings').is(':checked');
+		var onlyManualEntries = $('#onlyManualEntries').is(':checked');
 
 		//populate the request substring
 		var requestString = "";
@@ -683,8 +683,8 @@ function handleJournalEntriesTabSelection(officesObject) {
 		if (accountId != "") {
 			requestString += "glAccountId=" + accountId + "&";
 		}
-		if (!getPortfolioEntries) {
-			requestString += "portfolioGenerated=false&";
+		if (onlyManualEntries) {
+			requestString += "manualEntriesOnly=true&";
 		}
 		if (fromdate != undefined && fromdate != "") {
 			requestString += "fromDate=" + fromdate + "&";

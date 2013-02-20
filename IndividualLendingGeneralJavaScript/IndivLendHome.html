@@ -5387,8 +5387,8 @@ function showLockinOptions(){
 					</select>
 				</td>
 				<td>
-		   			<label for="includePortfolioPostings">{{=$ctx.doI18N("label.includePortfolioSavings")}}</label>
-					<input id="includePortfolioPostings" name="includePortfolioPostings" type="checkbox" checked="checked"/>
+		   			<label for="onlyManualEntries">{{=$ctx.doI18N("label.onlyManualEntries")}}</label>
+					<input id="onlyManualEntries" name="onlyManualEntries" type="checkbox" />
 				</td>
 				<td>
 					<label for="fromDate">{{=$ctx.doI18N("label.fromDate")}}</label>
@@ -5453,12 +5453,12 @@ function showLockinOptions(){
 				<td>
 					<span>
 						<button id="glentryinfo{{=id}}">View Entry Details</button>
-						{{#if portfolioGenerated}}
-				   			<!-- No buttons-->
+						{{#if manualEntry}}
+				   			{{#if reversed == false}}
+                                <button id="glentryreversal{{=id}}">Reverse this Journal Entry</button>
+                            {{/if}}
 				   		{{else}}
-							{{#if reversed == false}}
-					   			<button id="glentryreversal{{=id}}">Reverse this Journal Entry</button>
-					   		{{/if}}
+							<!-- No buttons-->
 				   		{{/if}}
 					</span>
 				</td>
