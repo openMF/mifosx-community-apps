@@ -6902,7 +6902,7 @@ function showLockinOptions(){
 								</select>
 							</span>
 							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][specifiedDueDate]" name="charges[{{=$itemNumber}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
+								<input id="charges[{{=$itemNumber}}][dueDate]" name="charges[{{=$itemNumber}}][dueDate]" class="dueDate datepickerfieldnoconstraint" title="" value="{{=dueDate}}" />
 							</span>
 							<span class="rowvalue">
 								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
@@ -6948,7 +6948,7 @@ function showLockinOptions(){
 		</select>
 	</span>
 	<span class="rowvalue">
-		<input id="charges[{{=index}}][specifiedDueDate]" name="charges[{{=index}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="" />
+		<input id="charges[{{=index}}][dueDate]" name="charges[{{=index}}][dueDate]" class="dueDate datepickerfieldnoconstraint" title="" value="" />
 	</span>
 	<span class="rowvalue">
 		<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
@@ -7009,8 +7009,8 @@ function showLockinOptions(){
 </select>
 {{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
 <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-<label for="specifiedDueDate">Due for collection on:</label>
-<input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=specifiedDueDate}}" />
+<label for="dueDate">Due for collection on:</label>
+<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=dueDate}}" />
 {{/if}}
 </script>
 
@@ -7028,8 +7028,8 @@ function showLockinOptions(){
 			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
 
 		{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
-			<label for="specifiedDueDate">Due for collection on:</label>
-			<input id="specifiedDueDate" name="specifiedDueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueAsOfDate)}}" />
+			<label for="dueDate">Due for collection on:</label>
+			<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueDate)}}" />
 		{{/if}}
 		</div>
 	</fieldset>
@@ -7312,7 +7312,7 @@ function showLockinOptions(){
 								</select>
 							</span>
 							<span class="rowvalue">
-								<input id="charges[{{=$itemNumber}}][specifiedDueDate]" name="charges[{{=$itemNumber}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueAsOfDate)}}" />
+								<input id="charges[{{=$itemNumber}}][dueDate]" name="charges[{{=$itemNumber}}][dueDate]" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueDate)}}" />
 							</span>
 							<span class="rowvalue">
 								<a href="#" class="removeloancharges">{{=$ctx.doI18N("widget.charges.select.button.remove")}}</a> 
@@ -7750,7 +7750,7 @@ function showLockinOptions(){
 
 					<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
 				{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
-					<td>{{=$ctx.globalDate(dueAsOfDate)}}</td>
+					<td>{{=$ctx.globalDate(dueDate)}}</td>
 				{{#else}}
 					<td>&nbsp;</td>
 				{{/if}}
@@ -8643,11 +8643,11 @@ function showLockinOptions(){
 							</select>
 						</td>
 						<td>
-							<input id="charges[{{=$itemNumber}}][specifiedDueDate]" 
-									name="charges[{{=$itemNumber}}][specifiedDueDate]" 
-									class="specifiedDueDate datepickerfieldnoconstraint" 
+							<input id="charges[{{=$itemNumber}}][dueDate]" 
+									name="charges[{{=$itemNumber}}][dueDate]" 
+									class="dueDate datepickerfieldnoconstraint" 
 									title="" 
-									value="{{=$ctx.globalDate(dueAsOfDate)}}" />
+									value="{{=$ctx.globalDate(dueDate)}}" />
 						</td>
 						<td><button id="loanapp-removeLoanCharge{{=$itemNumber}}" class="loanapp-removeLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 					</tr>
@@ -8747,7 +8747,7 @@ function showLockinOptions(){
 		</select>
 	</td>
 	<td>
-		<input id="charges[{{=index}}][specifiedDueDate]" name="charges[{{=index}}][specifiedDueDate]" class="specifiedDueDate datepickerfieldnoconstraint" title="" value="" />
+		<input id="charges[{{=index}}][dueDate]" name="charges[{{=index}}][dueDate]" class="dueDate datepickerfieldnoconstraint" title="" value="" />
 	</td>
 	<td><button id="loanapp-removeLoanCharge{{=index}}" class="loanapp-removeLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 </tr>
