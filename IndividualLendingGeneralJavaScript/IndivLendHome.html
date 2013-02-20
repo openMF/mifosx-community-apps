@@ -1156,31 +1156,48 @@ $(document).ready(function() {
 <script id="groupFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
-	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
-	<select id="officeId" name="officeId" title="">
-		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-		{{#each allowedOffices}}
-			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
-			{{/if}}
-        {{/each}}
-	</select>
-
+	<input type="hidden" id="levelId" name="levelId" value="{{=groupLevelData.levelId}}" />
 	<table>
 		<tr>
-			<td colspan="2">
+			<td>
+				<div>
+				<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+				<select id="officeId" name="officeId" title="">
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each allowedOffices}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+				</div>
+			</td>
+			<td>
+			{{#if !groupLevelData.superParent}}
+			<div>
+				<label for="parent">Parent Group</label>
+				<select id="parentId" name="parentId" title="">
+					{{#each allowedParentGroups}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+					{{/each}}
+				</select>
+				</div>
+			{{/if}}
+			</td>
+		</tr>
+		<tr>
+			<td>
 				<label for="name">{{=$ctx.doI18N("form.label.group.name")}}</label>
 				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
 			</td>
-		<tr>
-		<tr>
-			<td colspan="2">
+			<td>
 				<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
 				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 			</td>
 		</tr>
+		{{#if groupLevelData.canHaveClients}}
 		<tr>
 			<td>
 				<div class="multiselectwidget">
@@ -1209,6 +1226,7 @@ $(document).ready(function() {
 				</div>
 			</td>
 		</tr>
+		{{/if}}
 	</table>
 </form>
 </script>

@@ -1524,14 +1524,14 @@ function showILGroupListing(){
 }
 
 //Add new group or center
-function addGroup(id) {
+function addGroup(levelid) {
 	
 		var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
 		$('#dialog-form').dialog("close");
 		showILGroup(data.resourceId);
 	}
 
-		var getUrl = 'groups/template';
+		var getUrl = 'groups/template?levelId='+levelid;
 		var postUrl = 'groups';
 		var templateSelector = "#groupFormTemplate";
 		var width = 900; 
@@ -4709,7 +4709,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			if (data['id']){
 				executeAjaxRequest("groups/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			} else {
-				executeAjaxRequest("groups/template?officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
+				executeAjaxRequest("groups/template?officeId=" + selectedOfficeId +"&levelId="+data['groupLevelData'].levelId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			}
 		})
 	}
