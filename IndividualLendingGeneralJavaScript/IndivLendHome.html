@@ -1177,7 +1177,7 @@ $(document).ready(function() {
 			<td>
 			{{#if !groupLevelData.superParent}}
 			<div>
-				<label for="parent">Parent Group</label>
+				<label for="parent">{{=$ctx.doI18N("label.group.parent")}}</label>
 				<select id="parentId" name="parentId" title="">
 					{{#each allowedParentGroups}}
 							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
@@ -1185,6 +1185,16 @@ $(document).ready(function() {
 				</select>
 				</div>
 			{{/if}}
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label for="staffs">{{=$ctx.doI18N("label.group.staff")}}</label>
+				<select id="loanOfficerId" name="loanOfficerId" title="">
+					{{#each allowedStaffs}}
+							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+					{{/each}}
+				</select>
 			</td>
 		</tr>
 		<tr>
@@ -1730,13 +1740,25 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.branch")}}</span>
 			<span class="rowvalue">{{=officeName}}</span>
 		</div>
+
+		{{#if groupLevelData.recursable}}
+		<p><b>{{=$ctx.doI18N("heading.group.childs.overview")}}</b></p>
+		{{#each childGroups}}
+		<div class="row">
+			<a href="#" onCLick="showILGroup({{=id}});"><span class="rowvalue">{{=name}}</span></a>
+		</div>
+		{{/each}}
+		{{/if}}
+		<br>
+		{{#if groupLevelData.canHaveClients}}
 		<p><b>{{=$ctx.doI18N("heading.group.members.overview")}}</b></p>
 		{{#each clientMembers}}
 		<div class="row">
-			<span class="rowvalue">{{=displayName}}</span>
+			<a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}}</span></a>
 		</div>
 		{{/each}}
-
+		{{/if}}
+		<br>
 		<div id="groupaccountssummary"></div>
 
 		<div id="grouptabrightpane" style="float:right;max-width:400px;width:400px;"></div>
