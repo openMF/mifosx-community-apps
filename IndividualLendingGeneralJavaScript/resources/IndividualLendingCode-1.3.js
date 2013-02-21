@@ -2057,7 +2057,7 @@ function showILGroup(groupId){
 			var putUrl = 'groups/' + groupId;
 			var templateSelector = "#groupFormTemplate";
 			var width = 900; 
-			var height = 500;
+			var height = 400;
 			
 			var saveSuccessFunction = function(data, textStatus, jqXHR) {
 			  	$("#dialog-form").dialog("close");
