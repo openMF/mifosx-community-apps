@@ -2191,7 +2191,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 							var linkId = this.id;
 							var loanId = linkId.replace("approvebtn", "");
 							var postUrl = 'loans/' + loanId + '?command=approve';
-							var templateSelector = "#stateTransitionLoanFormTemplate";
+							var templateSelector = "#loanApplicationApprovalTemplate";
 							var width = 500; 
 							var height = 350;
 							var defaultOffset = offsetToSubmittedDate;
@@ -2229,7 +2229,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 							var linkId = this.id;
 							var loanId = linkId.replace("disbursebtn", "");
 							var postUrl = 'loans/' + loanId + '?command=disburse';
-							var templateSelector = "#stateTransitionLoanFormTemplate";
+							var templateSelector = "#loanDisbursementTemplate";
 							var width = 500; 
 							var height = 350;
 							var defaultOffset = offsetToApprovalDate;
@@ -3329,7 +3329,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 				var linkId = this.id;
 				var depositAccountId = linkId.replace("withdrawnbyapplicantbtn", "");
 				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
-				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrewbyclient';
+				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrawnByApplicant';
 				var templateSelector = "#stateTransitionDepositFormTemplate";
 				var width = 400; 
 				var height = 250;
@@ -3499,12 +3499,21 @@ function loadILLoan(loanId) {
         					}
    						}
 					});
+		        	
+	        	$('.modifyloanapp').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
+					var linkId = this.id;
+					var loanId = linkId.replace("modifyloanappbtn", "");
+					launchModifyLoanApplicationDialog(loanId);
+					
+				    e.preventDefault();
+				});
+				$('button.modifyloanapp span').text(doI18N('button.application.modify'));
 	        		
 	        	$('.rejectloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("rejectbtn", "");
 					var postUrl = 'loans/' + loanId + '?command=reject';
-					var templateSelector = "#stateTransitionLoanFormTemplate";
+					var templateSelector = "#loanApplicationRejectionTemplate";
 					var width = 500; 
 					var height = 350;
 					var defaultOffset = offsetToSubmittedDate;
@@ -3517,8 +3526,8 @@ function loadILLoan(loanId) {
 				$('.withdrawnbyapplicantloan').button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("withdrawnbyapplicantloanbtn", "");
-						var postUrl = 'loans/' + loanId + '?command=withdrewbyclient';
-						var templateSelector = "#stateTransitionLoanFormTemplate";
+						var postUrl = 'loans/' + loanId + '?command=withdrawnByApplicant';
+						var templateSelector = "#loanApplicationWithdrawnTemplate";
 						var width = 500; 
 						var height = 350;
 						var defaultOffset = offsetToSubmittedDate;
@@ -3527,20 +3536,11 @@ function loadILLoan(loanId) {
 				});
 				$('button.withdrawnbyapplicantloan span').text(doI18N('button.application.withdrawnByApplicant'));
 				
-				$('.modifyloanapp').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
-					var linkId = this.id;
-					var loanId = linkId.replace("modifyloanappbtn", "");
-					launchModifyLoanApplicationDialog(loanId);
-					
-				    e.preventDefault();
-				});
-				$('button.approveloan span').text(doI18N('button.application.modify'));
-					
 				$('.approveloan').button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("approvebtn", "");
 						var postUrl = 'loans/' + loanId + '?command=approve';
-						var templateSelector = "#stateTransitionLoanFormTemplate";
+						var templateSelector = "#loanApplicationApprovalTemplate";
 						var width = 500; 
 						var height = 350;
 						var defaultOffset = offsetToSubmittedDate;
@@ -5744,7 +5744,7 @@ function loadSavingAccount(accountId) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("withdrawbyapplicantbtn", "");
 			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
-			var postUrl = 'savingaccounts/' + savingAccountId + '?command=withdrewbyclient';
+			var postUrl = 'savingaccounts/' + savingAccountId + '?command=withdrawnByApplicant';
 			var templateSelector = "#stateTransitionDepositFormTemplate";
 			var width = 400; 
 			var height = 250;
