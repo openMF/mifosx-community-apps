@@ -2067,13 +2067,17 @@ function showILGroup(groupId){
 			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
 		    e.preventDefault();
 		});
-		$('.newgrouploanbtn').button().click(function(e) {
+		
+		//improper use of document.ready, correct way is send this function as call back
+		$(document).ready(function() {
+			$('.newgrouploanbtn').click(function(e) {
 			var linkId = this.id;
 			var groupId = linkId.replace("newgrouploanbtn", "");
 			addILGroupLoan(groupId);
 		    e.preventDefault();
 		});
-		$('button.newgrouploanbtn span').text(doI18N('dialog.button.new.loan.application'));
+		});
+		
 		$('.newbulkloanbtn').button().click(function(e) {
 			addILBulkMembersLoans(groupId, { "clientMembers" : data.clientMembers});
 		    e.preventDefault();
