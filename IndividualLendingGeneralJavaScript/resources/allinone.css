@@ -75,3 +75,16 @@ div.loantabs {margin-top: 5px;}
 
 /**css for comboboxes**/
 .ui-autocomplete-input { margin: 0; padding: 0.48em 0 0.47em 0.45em;width: 250px }
+
+/** Groups realted css **/
+.breadcrumb {background-color:#D7DEEE; line-height:18px; margin-bottom:18px; padding:4px;border-bottom: 1px solid #D7DEEE;}
+.groupcontainer {height: auto;overflow: hidden;}
+.right{width:300px;float:right;}
+.left{width:auto;overflow:hidden;padding-top:10px;padding-bottom:10px;padding-right:150px;padding-left:50px;}
+.headingorange{color:#cc6601;font-family:Arial,Verdana,Helvetica,sans-serif;font-size:11pt;font-weight:bold}
+.bluetableborder{border-bottom:1px solid #d7deee;border-left:1px solid #d7deee;border-right:1px solid #d7deee}
+.bluetablehead05{background-color:#d7deee;padding-bottom:4px;padding-left:10px;padding-top:3px}
+.fontnormalbold{color:#000;font-family:Arial,Verdana,Helvetica,sans-serif;font-size:9pt;font-weight:bold;text-decoration:none}
+.paddingL10{padding-left:10px}
+.fontnormal{color:#000;font-family:Arial,Verdana,Helvetica,sans-serif;font-size:9pt;font-weight:normal;text-decoration:none}
+.finaccounts {background-color:#D7DEEE; line-height:60px; margin-bottom:18px; padding:4px;}
