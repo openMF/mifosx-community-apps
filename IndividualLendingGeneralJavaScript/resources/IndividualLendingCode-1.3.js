@@ -2036,8 +2036,17 @@ function showILGroup(groupId){
 
 		refreshGroupLoanSummaryInfo(groupUrl);
 
-		// bind click listeners to buttons.
-		$('.deletegroupbtn').button().click(function(e) {
+		//improper use of document.ready, correct way is send these function as call back
+		$(document).ready(function() {
+
+			$('.newgrouploanbtn').click(function(e) {
+			var linkId = this.id;
+			var groupId = linkId.replace("newgrouploanbtn", "");
+			addILGroupLoan(groupId);
+		    e.preventDefault();
+			});
+
+			$('.deletegroupbtn').click(function(e) {
 			var linkId = this.id;
 			var groupId = linkId.replace("deletegroupbtn", "");
 
@@ -2048,37 +2057,34 @@ function showILGroup(groupId){
 			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
 			
 			e.preventDefault();
+			});
+
+			// bind click listeners to buttons.
+			$('.editgroupbtn').click(function(e) {
+				var linkId = this.id;
+				var groupId = linkId.replace("editgroupbtn", "");
+				
+				var getUrl = 'groups/' + groupId + '?template=true';
+				var putUrl = 'groups/' + groupId;
+				var templateSelector = "#groupFormTemplate";
+				var width = 900; 
+				var height = 400;
+				
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	showILGroup(groupId);
+				}
+				
+				popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+			    e.preventDefault();
+			});
+
+			$('.newbulkloanbtn').click(function(e) {
+				addILBulkMembersLoans(groupId, { "clientMembers" : data.clientMembers});
+		    	e.preventDefault();
+			});
 		});
-		$('.editgroupbtn').button().click(function(e) {
-			var linkId = this.id;
-			var groupId = linkId.replace("editgroupbtn", "");
-			
-			var getUrl = 'groups/' + groupId + '?template=true';
-			var putUrl = 'groups/' + groupId;
-			var templateSelector = "#groupFormTemplate";
-			var width = 900; 
-			var height = 400;
-			
-			var saveSuccessFunction = function(data, textStatus, jqXHR) {
-			  	$("#dialog-form").dialog("close");
-			  	showILGroup(groupId);
-			}
-			
-			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
-		    e.preventDefault();
-		});
-		$('.newgrouploanbtn').button().click(function(e) {
-			var linkId = this.id;
-			var groupId = linkId.replace("newgrouploanbtn", "");
-			addILGroupLoan(groupId);
-		    e.preventDefault();
-		});
-		$('button.newgrouploanbtn span').text(doI18N('dialog.button.new.loan.application'));
-		$('.newbulkloanbtn').button().click(function(e) {
-			addILBulkMembersLoans(groupId, { "clientMembers" : data.clientMembers});
-		    e.preventDefault();
-		});
-		$('button.newbulkloanbtn span').text(doI18N('dialog.button.new.members.loan.application'));
+		
 	}
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {

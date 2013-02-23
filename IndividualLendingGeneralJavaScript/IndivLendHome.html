@@ -1718,54 +1718,81 @@ $(document).ready(function() {
 </script>
 
 <script id="groupDataTabTemplate" type="text/x-jquery-tmpl">
-<span id="toolbar" class="ui-widget-header ui-corner-all">
-    <button id="deletegroupbtn{{=id}}" class="deletegroupbtn">Delete group</button>
-	<button id="editgroupbtn{{=id}}" class="editgroupbtn">Edit group</button>
-	<button id="newgrouploanbtn{{=id}}" class="newgrouploanbtn">New loan application</button>
-	<button id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">New members loan application</button>
-</span>
-<hr/>
-
-<div id="grouptabcontent">
-	<div id="grouptableftpane" style="float:left; max-width: 700px; width: 700px;">
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.group.name")}}</span>
-			<span class="rowvalue">{{=name}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.group.externalid")}}</span>
-			<span class="rowvalue">{{=externalId}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.client.account.branch")}}</span>
-			<span class="rowvalue">{{=officeName}}</span>
-		</div>
-
-		{{#if groupLevelData.recursable}}
-		<p><b>{{=$ctx.doI18N("heading.group.childs.overview")}}</b></p>
-		{{#each childGroups}}
-		<div class="row">
-			<a href="#" onCLick="showILGroup({{=id}});"><span class="rowvalue">{{=name}}</span></a>
-		</div>
-		{{/each}}
-		{{/if}}
-		<br>
-		{{#if groupLevelData.canHaveClients}}
-		<p><b>{{=$ctx.doI18N("heading.group.members.overview")}}</b></p>
-		{{#each clientMembers}}
-		<div class="row">
-			<a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}}</span></a>
-		</div>
-		{{/each}}
-		{{/if}}
-		<br>
-		<div id="groupaccountssummary"></div>
-
-		<div id="grouptabrightpane" style="float:right;max-width:400px;width:400px;"></div>
-	</div>
-	<!-- end of left pane content -->
+<div class="breadcrumb">
+	<span class="rowvalue">{{=officeName}}</span> > Group > Member
 </div>
-<div style="clear: both;"></div>
+<div class="groupcontainer">
+	<div class="right">
+<table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+						<tbody><tr>
+							<td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.performance.history")}}</span></td>
+						</tr>
+						<tr>
+							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.client")}}60</span></td>
+						</tr>
+						<tr>
+							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.groups")}} 1</span></td>
+						</tr>
+						<tr>
+							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.loan.portfolio")}} 0 </span></td>
+						</tr>
+						<tr>
+							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.savings")}}300</span></td>
+						</tr>
+					</tbody></table>    </div>
+    <div class="left">
+			<div id="grouptabcontent">
+			<div id="grouptableftpane" style="float:left;width:100%">
+				<div class="row">
+					<span class="rowvalue headingorange">{{=name}}</span><span style="float:right"><a href="#" id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</a></span>
+				</div>
+				{{#if groupLevelData.recursable}}
+				<p><b>{{=$ctx.doI18N("heading.group.childs.overview")}}</b></p>
+				<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
+				{{#each childGroups}}
+				<div class="row">
+						<span class="fontnormal"><a href="#" onCLick="showILGroup({{=id}});"><span class="rowvalue">{{=name}}</span></a><br></span>
+				</div>
+				{{/each}}
+				</div>
+				{{/if}}
+				<br>
+				{{#if groupLevelData.canHaveClients}}
+				<span><b>Clients assigned</b></span><span style="margin-left:10px;"><a href="#">Add Client</a></span>
+				<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
+				{{#each clientMembers}}
+				<div class="row">
+					<span class="fontnormal"><a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}}</span></a></span>
+				</div>
+				{{/each}}
+				</div>
+				{{/if}}
+				<br>
+				<div class="row">
+					<span class="rowvalue headingorange">{{=$ctx.doI18N("label.group.account.information")}}</span>
+                    <span style="float:right">
+                        {{=$ctx.doI18N("label.group.open.new.account")}} <a href="#" class="newgrouploanbtn" id="newgrouploanbtn{{=id}}" >{{=$ctx.doI18N("label.group.new.loan.account")}}</a>  |  <a href="#">{{=$ctx.doI18N("label.group.new.saving.account")}}</a> | <a href="#" id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">{{=$ctx.doI18N("label.group.new.bulk.loan.account")}}</a>
+                    </span>
+				</div>
+				<br/>
+				<br/>
+				<div id="groupaccountssummary"></div>
+                <br/>
+                <br/>
+                <div class="row">
+                    <span class="rowvalue headingorange">Group {{=$ctx.doI18N("label.group.information")}}</span>
+                    <span style="float:right"><a href="#" id="editgroupbtn{{=id}}" class="editgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</a></span>
+                </div>
+                <div class="row">
+                    <span class="rowvalue">{{=$ctx.doI18N("label.group.externalid")}}</span>
+                    <span class="rowvalue">{{=externalId}}</span>
+                </div>
+            </div>
+			<!-- end of left pane content -->
+		</div>
+    </div>
+	</div>		
+		
 </script>
 
 <script id="groupAccountSummariesTemplate" type="text/x-jquery-tmpl">
@@ -1774,18 +1801,19 @@ $(document).ready(function() {
 <p><b>{{=$ctx.doI18N("heading.group.account.individual.loanaccount.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(pendingApprovalIndividualLoanCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.group.account.pending.approval.loans")}} ({{=$ctx.number(pendingApprovalIndividualLoanCount)}}):</span>
-	<span class="rowvalue">
-		<ul>
 		{{#each pendingApprovalIndividualLoans}}
-			<li class="loanaccount">
+			<span class="loanaccount">
+                <div><b>Loan</b></div>
+                <div>
+                <span>
 				<a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
 				<a class="toggleMemberLoanDetails" href='#' onclick="return false;">{{=$ctx.doI18N("label.group.toggle.member.loan.details")}}</a>
-				<div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
-			</li>
+                </span>
+                <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
+                </div>
+                <div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
+			</span>
 		{{/each}}
-		</ul>
-	</span>
 </div>
 {{/if}}
 
@@ -1831,12 +1859,6 @@ $(document).ready(function() {
 		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=clientName}}, {{=productName}}: &#35;{{=id}}</a></span>
 	{{/each}}
 	</div>
-</div>
-{{/if}}
-
-{{#else}}
-<div>
-	{{=$ctx.doI18N("label.no.accounts.exist")}}
 </div>
 {{/if}}
 
@@ -1887,11 +1909,6 @@ $(document).ready(function() {
 </div>
 {{/if}}
 
-{{#else}}
-<div>
-	{{=$ctx.doI18N("label.no.accounts.exist")}}
-</div>
-{{/if}}
 </script>
 
 <script id="memberLoanDetailsPartialTemplate" type="text/x-jquery-tmpl">
@@ -8823,4 +8840,5 @@ function showLockinOptions(){
 <!-- end of new loan application templates -->
 
 </body>
+
 </html>
