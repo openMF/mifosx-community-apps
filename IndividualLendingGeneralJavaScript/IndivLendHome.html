@@ -80,6 +80,7 @@ JQuery plugins:
 <script type="text/javascript" src="resources/IndividualLendingCode-1.3.js"></script>
 
 <script type="text/javascript" src="resources/SetTenantLoadTenantConfig-1.3.js"></script>
+
 </head>
 
 <body>
@@ -1719,7 +1720,8 @@ $(document).ready(function() {
 
 <script id="groupDataTabTemplate" type="text/x-jquery-tmpl">
 <div class="breadcrumb">
-	<span class="rowvalue">{{=officeName}}</span> > Group > Member
+	<span class="rowvalue">{{=officeName}}</span> >> 
+    {{#if !groupLevelData.superParent}}<span><a href="#" onClick="showILGroup({{=parentId}});">{{=parentName}}</a></span>{{/if}}
 </div>
 <div class="groupcontainer">
 	<div class="right">
@@ -1746,6 +1748,14 @@ $(document).ready(function() {
 				<div class="row">
 					<span class="rowvalue headingorange">{{=name}}</span><span style="float:right"><a href="#" id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</a></span>
 				</div>
+                {{#if staffName}}
+                <div class="row">
+                    <span class="rowvalue">{{=$ctx.doI18N("label.group.staff")}}</span><span class="rowvalue">{{=staffName}}</span>
+                </div>
+                {{/if}}
+                <div class="row">
+                    <span class="rowvalue">{{=$ctx.doI18N("label.group.system.id")}}</span>
+                </div>
 				{{#if groupLevelData.recursable}}
 				<p><b>{{=$ctx.doI18N("heading.group.childs.overview")}}</b></p>
 				<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
@@ -1762,7 +1772,7 @@ $(document).ready(function() {
 				<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
 				{{#each clientMembers}}
 				<div class="row">
-					<span class="fontnormal"><a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}}</span></a></span>
+					<span class="fontnormal"><a href="#" onCLick="showClientInGroups({{=id}} , '{{=displayName}}');"><span class="rowvalue">{{=displayName}}</span></a></span>
 				</div>
 				{{/each}}
 				</div>
@@ -1808,10 +1818,11 @@ $(document).ready(function() {
                 <span>
 				<a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
 				<a class="toggleMemberLoanDetails" href='#' onclick="return false;">{{=$ctx.doI18N("label.group.toggle.member.loan.details")}}</a>
-                </span>
-                <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
-                </div>
                 <div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
+                </span>
+                <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}
+                </span>
+                </div>
 			</span>
 		{{/each}}
 </div>
@@ -1819,46 +1830,54 @@ $(document).ready(function() {
 
 {{#if $ctx.numberGreaterThanZero(awaitingDisbursalIndividualLoanCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.group.account.pending.disbursal.loans")}} ({{=$ctx.number(awaitingDisbursalIndividualLoanCount)}}):</span>
-	<span class="rowvalue">
-	<ul>
 		{{#each awaitingDisbursalIndividualLoans}}
-			<li class="loanaccount">
+            <span class="loanaccount">
+                <div><b>Loan</b></div>
+                <div>
+                <span>
 				<a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
 				<a class="toggleMemberLoanDetails" href='#' onclick="return false;">{{=$ctx.doI18N("label.group.toggle.member.loan.details")}}</a>
-				<div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
-			</li>
+                <div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
+                </span>
+                <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
+                </div>
+            </span>
 		{{/each}}
-		</ul>
-	</span>
 </div>
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(activeIndividualLoanCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.active")}} ({{=$ctx.number(activeIndividualLoanCount)}}):</span>
-	<span class="rowvalue">
-	<ul>
 		{{#each openIndividualLoans}}
-			<li class="loanaccount">
+            <span class="loanaccount">
+                <div><b>Loan</b></div>
+                <div>
+                <span>
 				<a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
 				<a class="toggleMemberLoanDetails" href='#' onclick="return false;">{{=$ctx.doI18N("label.group.toggle.member.loan.details")}}</a>
-				<div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
-			</li>
+                 <div id="memberLoanDetails{{=id}}" class="memberLoanDetails" style="display: none;"></div>
+                </span>
+                <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
+                </div>
+            </span>
 		{{/each}}
-	</ul>
-	</span>
 </div>
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(closedIndividualLoanCount)}}
 <div class="row">
-	<div class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedIndividualLoanCount)}}):</div>
-	<div class="rowvalue">
-	{{#each closedIndividualLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=clientName}}, {{=productName}}: &#35;{{=id}}</a></span>
+	{{#each closedIndividualLoans}}            
+        <span class="loanaccount">
+        <div><b>Loan</b></div>
+        <div>
+		<span>
+        <a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=clientName}}, {{=productName}}: &#35;{{=id}}</a>
+        </span>
+        <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}
+        </span>
+        </div>
+        </span>
 	{{/each}}
-	</div>
 </div>
 {{/if}}
 
@@ -1867,45 +1886,60 @@ $(document).ready(function() {
 <p><b>{{=$ctx.doI18N("heading.group.account.loanaccount.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(pendingApprovalLoanCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
-	<span class="rowvalue">
 	{{#each pendingApprovalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+    <span class="loanaccount">
+        <div><b>Loan</b></div>
+        <div>
+        <span>
+        <a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
+        </span>
+        <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}
+        </span>
+        </div>
+        </span>
 	{{/each}}
-	</span>
-</div>
+</div>    
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(awaitingDisbursalLoanCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.disbursal")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
-	<span class="rowvalue">
 	{{#each awaitingDisbursalLoans}}
+        <span class="loanaccount">
+        <div><b>Loan</b></div>
+        <div>
 		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+            <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
+        </div>
+        </span>
 	{{/each}}
-	</span>
 </div>
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(activeLoanCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.active")}} ({{=$ctx.number(activeLoanCount)}}):</span>
-	<span class="rowvalue">
 	{{#each openLoans}}
+        <span class="loanaccount">
+        <div><b>Loan</b></div>
+        <div>
 		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+        <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
+        </div>
+        </span>
 	{{/each}}
-	</span>
 </div>
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(closedLoanCount)}}
 <div class="row">
-	<div class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedLoanCount)}}):</div>
-	<div class="rowvalue">
 	{{#each closedLoans}}
+        <span class="loanaccount">
+        <div><b>Loan</b></div>
+        <div>
 		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+        <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
+        </div>
+        </span>
 	{{/each}}
-	</div>
 </div>
 {{/if}}
 

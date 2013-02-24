@@ -1804,6 +1804,276 @@ function showILClient(clientId) {
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
 }
 
+
+
+function showClientInGroups(clientId , name){
+
+			var title =name + "-" + clientId;		
+			$newtabs.tabs( "add", "unknown.html", title);
+
+			var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+			var htmlVar = '<div id="groupclient"><div  id="clientmaintab"></div>'
+			htmlVar += '<div id="groupnewtabs">	<ul><li><a href="unknown.html"'; 
+			htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
+			htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
+			htmlVar += '<li><a href="nothing" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
+			htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div></div></div></div>';
+		    currentTab.html(htmlVar);
+
+		    	var clientUrl = 'clients/' + clientId
+
+	//populate main content
+	var crudObject = new Object();
+	var tableHtml = $("#clientImageAndActionsTemplate").render(crudObject);
+	$("#clientmaintab").html(tableHtml);
+	
+	$groupnewtabs = $("#groupnewtabs").tabs({
+	    	select: function(event, tab) {
+				//alert("client tab selected: " + tab.index);
+				if (tab.index == 0)
+				{
+					if (clientDirty == true)
+					{
+						refreshLoanSummaryInfo(clientUrl);
+						refreshNoteWidget(clientUrl);
+
+						clientDirty = false;
+					}
+				}
+				
+				else if (tab.index == 1)
+				{
+					refreshClientIdentifiers(clientUrl);
+				}
+				else if (tab.index == 2){
+					refreshClientDocuments(clientUrl);
+				}
+
+	    		},
+		"add": function( event, ui ) {
+				$groupnewtabs.tabs('select', '#' + ui.panel.id);
+			}
+	});
+	
+	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
+		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+	};
+	        
+	//initialize client image related buttons
+	var imageFetchSuccessFunction = function(data, textStatus, jqXHR) {
+		//showILClient(clientId);
+		var base = 'data:image/gif;base64,';
+		var url = base + data;
+		$("#customerImage").attr("src",url);
+	};
+
+	var successFunction = function(data, status, xhr) {
+					//do we fetch image data?
+					if(data.imagePresent == true){
+						executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);	
+					}
+	        		currentClientId = clientId;
+	        		clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
+	        		var currentTabIndex = $groupnewtabs.tabs('option', 'selected');
+	            	var currentTabAnchor = $groupnewtabs.data('tabs').anchors[currentTabIndex];
+	            
+	        		var tableHtml = $("#clientDataTabTemplate").render(data);
+					$("#clienttab").html(tableHtml);
+					$("#customerName").html(data.displayName);
+					$("#customerOfficeName").html(data.officeName);
+					
+					
+					// retrieve accounts summary info
+					refreshLoanSummaryInfo(clientUrl);
+					
+					// bind click listeners to buttons.
+					$('.deleteclientbtn').button({icons: {
+               			 primary: "ui-icon-trash"}
+                	}).click(function(e) {
+						var url = 'clients/' + clientId;
+						var width = 400; 
+						var height = 225;
+												
+						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
+						e.preventDefault();
+					});
+					$('button.deleteclientbtn span').text(doI18N('dialog.button.delete.client'));
+					
+					$('.editclientbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
+						var getUrl = 'clients/' + clientId + '?template=true';
+						var putUrl = 'clients/' + clientId;
+						var templateSelector = "#editClientFormTemplate";
+						var width = 600; 
+						var height = 400;
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						  	$("#dialog-form").dialog("close");
+						  	showILClient(clientId);
+						}
+						
+						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client", templateSelector, width, height,  saveSuccessFunction);
+					    e.preventDefault();
+					});
+					$('button.editclientbtn span').text(doI18N('dialog.button.edit.client'));
+					
+					$('.newindividualloanbtn').button({icons: {
+               			 primary: "ui-icon-document"}
+                	}).click(function(e) {
+                		launchLoanApplicationDialog(clientId);
+					    e.preventDefault();
+					});
+					$('button.newindividualloanbtn span').text(doI18N('dialog.button.new.loan.application'));
+					
+					$('.newdepositbtn').button({icons: {
+               			 primary: "ui-icon-document-b"}
+                	}).click(function(e) {
+						addILDeposit(clientId);
+						e.preventDefault();
+					});
+					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));
+					
+					$('.newsavingbtn').button({icons: {
+              			 primary: "ui-icon-document"}
+					}).click(function(e) {
+						addILSaving(clientId);
+					    e.preventDefault();
+					});
+					$('button.newsavingbtn span').text(doI18N('dialog.button.new.saving.application'));
+					
+					$('.addnotebtn').button({icons: {
+               			 primary: "ui-icon-comment"}
+                	}).click(function(e) {
+						var postUrl = 'clients/' + clientId + '/notes';
+						var templateSelector = "#noteFormTemplate";
+						var width = 600; 
+						var height = 400;
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						  	$("#dialog-form").dialog("close");
+						  	refreshNoteWidget('clients/' + clientId);
+						}
+						
+						popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
+					    e.preventDefault();
+					});
+					$('button.addnotebtn span').text(doI18N('dialog.button.add.note'));
+
+					refreshNoteWidget(clientUrl);
+
+					custom.showRelatedDataTableInfo($groupnewtabs, "m_client", clientId); 
+					
+					$('#captureClientImage').button(
+						{icons: {
+	                	primary: "ui-icon-camera"},
+	                	text: false
+	            	}).click(function(e) {
+	            		var imageUploadSuccessFunction = function(data, textStatus, jqXHR) {
+	            			$("#dialog-form").dialog("close");
+							$("#customerImage").attr("src",imageCanvas.toDataURL("image/jpeg"));
+						};
+						var templateSelector = "#clientImageWebcamFormTemplate";
+						var width = 775; 
+						var height = 400;
+	            		popupDialogWithFormView("", 'clients/' + clientId + '/image', 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  imageUploadSuccessFunction);
+	            		var pos = 0; 
+	            		var ctx = null; 
+	            		var image = [];
+	            		$('#imageCanvas').html('');
+						var imageCanvas = $('#imageCanvas')[0];
+     	            	ctx = imageCanvas.getContext("2d");
+     	            	image = ctx.getImageData(0, 0, 320, 240);
+     	            	
+						saveCB = function(data) {
+							var col = data.split(";");
+							var img = image;
+							for(var i = 0; i < 320; i++) {
+								var tmp = parseInt(col[i]);
+								img.data[pos + 0] = (tmp >> 16) & 0xff;
+								img.data[pos + 1] = (tmp >> 8) & 0xff;
+								img.data[pos + 2] = tmp & 0xff;
+								img.data[pos + 3] = 0xff;
+								pos+= 4;
+							}
+				
+							if (pos >= 4 * 320 * 240) {
+								ctx.putImageData(img, 0, 0);
+								pos = 0;
+							}
+						};
+						
+						$("#webcam").webcam({
+							width: 320,
+							height: 240,
+							mode: "callback",
+							swffile: "jscam_canvas_only.swf",
+							onTick: function() {},
+							onSave: saveCB,
+							onCapture: function() {
+								webcam.save();
+							},
+							quality: 50,
+							debug: function() {},
+							onLoad: function() {}
+						});
+						
+						$('#captureImage').button({icons: {
+		                	primary: "ui-icon-zoomin"},
+		            	}).click(function(e) {
+		            		//reset position
+		            		webcam.capture();
+		            		e.preventDefault();
+		            	});
+						e.preventDefault();
+					});
+				
+					$('#editClientImage').button(
+						{icons: {
+	                	primary: "ui-icon-zoomin"},
+	                	text: false
+	            	}).click(function(e) {
+						var getUrl = '';
+						var putUrl = 'clients/' + clientId + '/image';
+						var templateSelector = "#clientImageUploadFormTemplate";
+						var width = 600; 
+						var height = 250;
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						  $("#dialog-form").dialog("close");
+						  executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);
+						};
+						
+						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunction);
+					    e.preventDefault();
+					});
+					//delete client image
+					$('#deleteClientImage').button({icons: {
+	                	primary: "ui-icon-trash"},
+	                	text: false
+	            	}).click(function(e) {
+					var url = 'clients/' + clientId + '/image';
+					var width = 400; 
+					var height = 225;
+					var saveSuccessFunction = function(data, textStatus, jqXHR) {
+							$("#dialog-form").dialog("close");
+						  	$("#customerImage").attr("src","resources/img/client-image-placeholder.png");
+					};
+											
+					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction);
+					
+					e.preventDefault();
+					});
+	        };
+	    
+		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
+
+
+	
+
+}
+
+
+
+
 function refreshClientIdentifiers(clientUrl) {
 		var successFunction =  function(data, textStatus, jqXHR) {
 			var crudObject = new Object();
@@ -2083,6 +2353,7 @@ function showILGroup(groupId){
 				addILBulkMembersLoans(groupId, { "clientMembers" : data.clientMembers});
 		    	e.preventDefault();
 			});
+
 		});
 		
 	}
@@ -2256,6 +2527,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 						    e.preventDefault();
 						});
 						$('button.undodisbursalloan span').text(doI18N('dialog.button.undo.loan.disbursal'));
+						
 					};
 
 					if (memberLoanDetailsElement.children().length > 0 ){
@@ -2263,6 +2535,8 @@ function addILBulkMembersLoans(groupId, clientMembers){
 					} else {
 						executeAjaxRequest('loans/' + loanId + '?associations=permissions', 'GET', "", showMemberLoanDetailsSuccess, formErrorFunction);
 					}
+
+					
 					e.preventDefault();
 			});
 		}
@@ -3360,8 +3634,6 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		
 		executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
 	}
-	
-
 
 function showILLoan(loanId, product, loanAccountNo) {
 	var newLoanTabId='loan'+loanId+'tab';
