@@ -511,8 +511,8 @@ function handleJournalEntriesTabSelection(officesObject) {
 		var baseObject = new Object();
 		baseObject.offices = officesObject;
 		baseObject.accounts = data;
-		var accountingClosuresTabHtml = $("#journalEntriesTemplate").render(baseObject);
-		$("#journalentry-tab").html(accountingClosuresTabHtml);
+		journalEntriesTabHtml = $("#journalEntriesTemplate").render(baseObject);
+		$("#journalentry-tab").html(journalEntriesTabHtml);
 
 		/** Account Id drop into a combo-box*/
 		$("#accountId").combobox();
@@ -609,7 +609,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 			e.preventDefault();
 		});
 
-		/** On-click function for searching for GL Accounts */
+		/** On-click function for searching for Journal Entries*/
 		$("#searchjournalentries").button({
 			icons : {
 				primary : "ui-icon-search"
