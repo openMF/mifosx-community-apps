@@ -1809,9 +1809,23 @@ function showILClient(clientId) {
 function showClientInGroups(clientId , name){
 
 			var title =name + "-" + clientId;		
-			$newtabs.tabs( "add", "unknown.html", title);
+
+			var clientindex = $('#newtabs a[href="#clientdetailstab"]').parent().index(); 
+
+
+    		if(clientindex == -1){
+				$newtabs.tabs( "add", "#clientdetailstab", title);
+			}
+			else{
+
+				$('#newtabs').tabs('select', clientindex);
+				$('#newtabs ul:first li:eq('+ clientindex +') a span').text(title);
+			}
+
+
 
 			var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+
 			var htmlVar = '<div id="groupclient"><div  id="clientmaintab"></div>'
 			htmlVar += '<div id="groupnewtabs">	<ul><li><a href="unknown.html"'; 
 			htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
@@ -2352,6 +2366,30 @@ function showILGroup(groupId){
 			$('.newbulkloanbtn').click(function(e) {
 				addILBulkMembersLoans(groupId, { "clientMembers" : data.clientMembers});
 		    	e.preventDefault();
+			});
+
+			$('.unassignstafftogroup').click(function(e){
+
+						var linkId = this.id;
+						var groupId = linkId.replace("unassignstafftogroup", "");
+						var staffId = $('#staffId').val();
+						var postUrl = 'groups/'+ groupId +'/command/unassign_loanofficer';
+						var getUrl = ""
+						
+						var templateSelector = "#loanUnassignmentFormTemplate";
+						var width = 400; 
+						var height = 225;
+						var jsonbody = '{"loanOfficerId":"'+staffId+'"}';
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  			$("#dialog-form").dialog("close");
+				  			showILGroup(groupId);
+						}						
+						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
+						//popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunction)		
+						popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction , jsonbody);
+
+						e.preventDefault();
 			});
 
 		});
