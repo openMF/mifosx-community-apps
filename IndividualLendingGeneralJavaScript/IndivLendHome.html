@@ -1745,16 +1745,23 @@ $(document).ready(function() {
     <div class="left">
 			<div id="grouptabcontent">
 			<div id="grouptableftpane" style="float:left;width:100%">
+            <input type="hidden" id="staffId" name="staffId" value="{{=staffId}}" />
+
 				<div class="row">
-					<span class="rowvalue headingorange">{{=name}}</span><span style="float:right"><a href="#" id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</a></span>
+					<span class="rowvalue headingorange">{{=name}}</span>
+                    <span style="float:right"><a href="#" id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</a></span>
 				</div>
+                <br/>
                 {{#if staffName}}
                 <div class="row">
-                    <span class="rowvalue">{{=$ctx.doI18N("label.group.staff")}}</span><span class="rowvalue">{{=staffName}}</span>
+                    <span class="rowvalue">{{=$ctx.doI18N("label.group.staff")}}</span>
+                        <span class="rowvalue">{{=staffName}}</span>
+                        <span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">{{=$ctx.doI18N("label.group.unassign.staff")}}</a>
+                        </span>
                 </div>
                 {{/if}}
                 <div class="row">
-                    <span class="rowvalue">{{=$ctx.doI18N("label.group.system.id")}}</span>
+                    <span class="rowvalue">{{=$ctx.doI18N("label.group.system.id")}}{{=id}}</span>
                 </div>
 				{{#if groupLevelData.recursable}}
 				<p><b>{{=$ctx.doI18N("heading.group.childs.overview")}}</b></p>
