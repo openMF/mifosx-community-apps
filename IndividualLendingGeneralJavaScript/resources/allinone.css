@@ -89,3 +89,17 @@ div.loantabs {margin-top: 5px;}
 .fontnormal{color:#000;font-family:Arial,Verdana,Helvetica,sans-serif;font-size:9pt;font-weight:normal;text-decoration:none}
 .finaccounts {background-color:#D7DEEE; line-height:60px; margin-bottom:18px; padding:4px;}
 .loanaccount {background-color:#D7DEEE;padding:6px;display:block;margin-bottom:10px;}
+
+/** Global Search css **/
+.sb_wrapper{position:absolute;top:80px;left:40px;width:300px !important;margin:0;padding:0}
+.sb_wrapper input[type=text],ul.sb_dropdown{border:1px 1px 0px 1px solid #DDDDFF;background:#FFFFFF;font-size:12px;font-family:"Myriad Pro", "Trebuchet MS", sans-serif;-moz-box-shadow:1px 1px 3px #555;-webkit-box-shadow:1px 1px 3px #555;-box-shadow:1px 1px 3px #555;outline:none;text-shadow:1px 1px 1px #fff;width:200px !important;;float:left;margin:0px;padding:5px 3px 5px 5px}
+ul.sb_dropdown{float:left;list-style:none;width:210px !important;-moz-border-radius:0 0 10px 10px;-webkit-border-bottom-right-radius:10px;-webkit-border-bottom-left-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;padding:6px 5px}
+ul.sb_dropdown li{font-size:16px;line-height:32px;height:32px;float:left;width:100%}
+ul.sb_dropdown li input[type=checkbox]{float:left;margin:10px 4px 0 5px}
+ul.sb_dropdown li.sb_filter{width:200px !important;border:1px solid #f9f9f9;clear:both;background:#ddd;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#444;height:16px;line-height:16px;-moz-box-shadow:0 0 2px #777;-webkit-box-shadow:0 0 3px #555 inset;-box-shadow:0 0 3px #555 inset;padding:5px}
+span.sb_up,span.sb_down{position:absolute;top:3px;left:0;width:14px;height:41px;background-color:#f2f2f2;background-position:center center;background-repeat:no-repeat;z-index:10;border:1px solid #fff;-moz-box-shadow:1px 0 1px #ddd;-webkit-box-shadow:1px 0 1px #ddd;-box-shadow:1px 0 1px #ddd}
+span.sb_up{background-image:url(../icons/up.png)}
+span.sb_down{background-image:url(../icons/down.png)}
+input.sb_search{background:#f2f2f2 url(../icons/search.png) no-repeat center center;height:43px;width:50px;float:left;border:1px solid #fff;-moz-box-shadow:1px 1px 3px #555;-webkit-box-shadow:1px 1px 3px #555;-box-shadow:1px 1px 3px #555;outline:none;cursor:pointer;margin:3px 0}
+input.sb_search:hover{background-color:#fff}
+.box{height:430px;width:100%;position:relative;-moz-box-shadow:0 0 5px #444;-webkit-box-shadow:0 0 5px #444;box-shadow:0 0 5px #444;background:#1783BF url(click.png) no-repeat 380px 80px;margin:129px auto 0}

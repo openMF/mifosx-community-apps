@@ -8880,6 +8880,48 @@ function showLockinOptions(){
 </script>
 <!-- end of new loan application templates -->
 
+<!--Global search -->
+
+<script id="globalSearchListTemplate" type="text/x-jquery-tmpl">
+
+<table id='globalSearchtable' width='100%'>
+    <thead>
+        <tr>
+            <th>{{=$ctx.doI18N("table.heading.search.entity.type")}}</th>
+            <th>{{=$ctx.doI18N("table.heading.search.entity.name")}}</th>
+            <th>{{=$ctx.doI18N("table.heading.search.entity.account.number")}}</th>
+            <th>{{=$ctx.doI18N("table.heading.search.entity.external.id")}}</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each crudRows}}
+        <tr>
+            <td>{{=entityType}}</td>
+
+            {{#if entityType == 'CLIENT'}}
+
+                <td><a id='navigateToClient{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=entityId}});">{{=entityName}}</a></td>
+
+            {{#else entityType == 'LOAN'}}
+
+                <td><a id='navigateToLoan{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=parentId}}, {{=entityId}});">{{=entityName}}</a></td>
+
+            {{#else entityType == 'GROUP'}}
+
+                <td><a id='navigateToGroup{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showILGroup({{=entityId}});">{{=entityName}}</a></td>
+
+            {{/if}}
+
+            <td>{{=entityAccountNo}}</td>
+            <td>{{=entityExternalId}}</td>
+            <td>&nbsp;</td>
+        </tr>
+       {{/each}}
+    </tbody>
+</table>
+</script>
+
 </body>
 
 </html>

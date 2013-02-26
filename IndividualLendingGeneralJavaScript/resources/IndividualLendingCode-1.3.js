@@ -233,6 +233,18 @@ function showMainContainer(containerDivName, username) {
 	}	
 	
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
+    htmlVar += '    <li id="search_element" class="sb_wrapper">';
+
+    htmlVar += '           <input id="sb_input" name="sb_input" class="sb_input" type="text" placeholder="Search" />';
+    htmlVar += '           <button type="submit" class="globalsearchbtn ui-icon-search" id="globalsearchbtn" name="globalsearchbtn" title="Global Search">Search</button>';
+    htmlVar += '           <ul class="sb_dropdown" >';
+    htmlVar += '                <li class="sb_filter">Filter your search</li>';
+    htmlVar += '                <li><input type="checkbox" name="gsresource" value="CLIENT"/><label for="client">Client</label></li>';
+    htmlVar += '                <li><input type="checkbox" name="gsresource" value="LOAN"/><label for="loan">Loan</label></li>';
+    htmlVar += '                <li><input type="checkbox" name="gsresource" value="GROUP"/><label for="group">Group</label></li>';
+    htmlVar += '           </ul>';
+
+    htmlVar += '    </li>';
 	htmlVar += '</ul>';
 	htmlVar += '<ul id="nav" class="floatright">';
 	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.culture") + '</a>';
@@ -259,8 +271,60 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '</div>';
 
 	$("#" + containerDivName).html(htmlVar);
+
+	$(function() {
+        var $ui         = $('#search_element');
+
+        $ui.find('.sb_input').bind('focus click',function(){
+            $ui.find('.sb_dropdown')
+               .show();
+        });
+
+        $ui.bind('mouseleave',function(){
+            $ui.find('.sb_dropdown')
+               .hide();
+        });
+
+    });
+
+    $('#globalsearchbtn').button({
+        icons : {
+            primary : "ui-icon-search"
+        },
+        text: false
+        }).click(function(e) {
+            globalsearch();
+            e.preventDefault();
+        });
+
+    $('#sb_input').enterKey(function(){
+        globalsearch();
+    });
 }
 
+var globalSearchSuccessFunction = function(data, textStatus, jqXHR) {
+    var gsObject = new Object();
+    gsObject.crudRows = data;
+    var tableHtml = $("#globalSearchListTemplate").render(gsObject);
+    $("#content").html(tableHtml);
+    var gsTable=displayListTable("globalSearchtable");
+    $('input:checkbox[name=gsresource]:checked').removeAttr('checked');
+}
+
+function globalsearch(){
+    //Get search query string
+
+    var query = $('#sb_input').val();
+    var resources = $('input:checkbox[name=gsresource]:checked').map(function () {
+                      return this.value;
+                    }).get().join(",");
+    if(query.length > 0){
+        var getUrl = "search?query=" + encodeURIComponent(query);
+        if(resources.length > 0) getUrl = getUrl + "&resource=" + encodeURIComponent(resources);                    
+
+        executeAjaxRequest(getUrl, 'GET', "", globalSearchSuccessFunction, formErrorFunction);
+    }
+}
 
 function showLogon(logonDivName) {
 	var htmlVar = '<div id=theLogonForm><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/><div id=appTitle>' + doI18N("app.name") + ' - ' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</div>';
@@ -1555,7 +1619,9 @@ function applyGroupSearchFilter(officeHierarchy) {
 	executeAjaxRequest("groups?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", groupSearchSuccessFunction, formErrorFunction);
 }
 
-function showILClient(clientId) {
+//loanId is passed to open loan account in client details
+//On click of loan from global search, first show client then load loan account
+function showILClient(clientId, loanId) {
 	var clientUrl = 'clients/' + clientId
 
 	setClientContent("content");
@@ -1799,6 +1865,13 @@ function showILClient(clientId) {
 					
 					e.preventDefault();
 					});
+
+
+					//Display Loan when clicked from global search result
+					if(!(typeof loanId === "undefined")){
+					   loadILLoan(loanId);
+					}
+
 	        };
 	    
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
@@ -6254,3 +6327,13 @@ function repopulateSavingAccountForm(clientId, productId){
 		popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
 	}
 
+    $.fn.enterKey = function (fnc) {
+        return this.each(function () {
+            $(this).keypress(function (ev) {
+                var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+                if (keycode == '13') {
+                    fnc.call(this, ev);
+                }
+            })
+        })
+    }
