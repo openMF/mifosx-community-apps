@@ -1730,13 +1730,19 @@ $(document).ready(function() {
 							<td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.performance.history")}}</span></td>
 						</tr>
 						<tr>
-							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.client")}}60</span></td>
+							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.client")}} {{=groupSummaryData.totalActiveClients}}</span></td>
 						</tr>
+                        {{#if groupLevelData.recursable}}
 						<tr>
-							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.groups")}} 1</span></td>
+							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.groups")}} {{=groupLevelData.childLevelName}} : {{=groupSummaryData.totalChildGroups}}</span></td>
 						</tr>
+                        {{/if}}
 						<tr>
-							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.loan.portfolio")}} 0 </span></td>
+							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.loan.portfolio")}}</span>
+                                {{#each groupSummaryData.totalLoanPortfolio}}
+                                    <br/><span class="fontnormal">{{=code}} : {{=amount}}</span>
+                                {{/each}}
+                            </td>
 						</tr>
 						<tr>
 							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.savings")}}300</span></td>
@@ -1749,7 +1755,7 @@ $(document).ready(function() {
 
 				<div class="row">
 					<span class="rowvalue headingorange">{{=name}}</span>
-                    <span style="float:right"><a href="#" id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</a></span>
+                    <span style="float:right"><a href="#" id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}&nbsp;{{=groupLevelData.levelName}}</a></span>
 				</div>
                 <br/>
                 {{#if staffName}}
@@ -1763,8 +1769,11 @@ $(document).ready(function() {
                 <div class="row">
                     <span class="rowvalue">{{=$ctx.doI18N("label.group.system.id")}}{{=id}}</span>
                 </div>
+                <br/>
 				{{#if groupLevelData.recursable}}
-				<p><b>{{=$ctx.doI18N("heading.group.childs.overview")}}</b></p>
+				<span><b>{{=groupLevelData.childLevelName}}&nbsp;{{=$ctx.doI18N("label.group.assigned")}}</b></span>
+                <span style="margin-left:10px;"><a href="#">Add&nbsp;{{=groupLevelData.childLevelName}}</a></span>
+                <p>Click on a {{=groupLevelData.childLevelName}} below to view the {{=groupLevelData.childLevelName}} details</p>
 				<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
 				{{#each childGroups}}
 				<div class="row">
@@ -1775,7 +1784,7 @@ $(document).ready(function() {
 				{{/if}}
 				<br>
 				{{#if groupLevelData.canHaveClients}}
-				<span><b>Clients assigned</b></span><span style="margin-left:10px;"><a href="#">Add Client</a></span>
+				<span><b>{{=$ctx.doI18N("label.group.clients.assigned")}}</b></span><span style="margin-left:10px;"><a href="#">{{=$ctx.doI18N("label.group.add.client")}}</a></span>
 				<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
 				{{#each clientMembers}}
 				<div class="row">
@@ -1797,7 +1806,7 @@ $(document).ready(function() {
                 <br/>
                 <br/>
                 <div class="row">
-                    <span class="rowvalue headingorange">Group {{=$ctx.doI18N("label.group.information")}}</span>
+                    <span class="rowvalue headingorange">{{=groupLevelData.levelName}}&nbsp;{{=$ctx.doI18N("label.group.information")}}</span>
                     <span style="float:right"><a href="#" id="editgroupbtn{{=id}}" class="editgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</a></span>
                 </div>
                 <div class="row">
