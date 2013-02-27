@@ -7536,9 +7536,9 @@ function showLockinOptions(){
 		{{#if charges}}
 		<li><a href="#charges{{=id}}" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
 		{{/if}}
-		{{#each repaymentSchedule}}
+		{{#if repaymentSchedule}}
 		<li><a href="#schedule{{=id}}" title="schedule">{{=$ctx.doI18N("tab.repaymentSchedule")}}</a></li>
-        {{/each}}
+        {{/if}}
 		{{#if transactions}}
 		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.transactions")}}</a></li>
 		{{/if}}
@@ -7574,10 +7574,10 @@ function showLockinOptions(){
 			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
 		</div>
 		{{#if timeline.actualDisbursementDate}}
-			{{#if $ctx.numberGreaterThanZero(repaymentSchedule.totalInArrears)}}
+			{{#if $ctx.numberGreaterThanZero(summary.totalOverdue)}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.status.arrears")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted($parent.parent.data.repaymentSchedule.currency, $parent.parent.data.repaymentSchedule.totalInArrears)}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted($parent.parent.data.currency, $parent.parent.data.summary.totalOverdue)}}</span>
 		</div>
 			{{/if}}
 		{{/if}}
@@ -7883,8 +7883,8 @@ function showLockinOptions(){
 	</div>
 	{{/if}}
 
-	{{#each repaymentSchedule}}
 	<div id="schedule{{=id}}" style="margin-top: 5px;">
+		{{#each summary}}
 		<table id="summarytable{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("table.summary.caption")}}</caption>
 			<thead>
@@ -7892,67 +7892,82 @@ function showLockinOptions(){
 					<th class="empty"></th>
 					<th>{{=$ctx.doI18N("table.heading.original")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.paid")}}</th>
-					{{#if totalWaivedToDate}}
+					{{#if totalWaived}}
 					<th>{{=$ctx.doI18N("table.heading.waived")}}</th>
 					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<th>Written-off</th>
+					{{#if totalWrittenOff}}
+					<th>{{=$ctx.doI18N("table.heading.writtenoff")}}</th>
 					{{/if}}
 					<th>{{=$ctx.doI18N("table.heading.outstanding")}}</th>
+					{{#if totalOverdue}}
+					<th>{{=$ctx.doI18N("table.heading.overdue")}}</th>
+					{{/if}}
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<th>{{=$ctx.doI18N("table.heading.principal")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalPaid)}}</td>
-					{{#if totalWaivedToDate}}
+					<td>{{=$ctx.monetaryValue(currency, principalDisbursed)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, principalPaid)}}</td>
+					{{#if totalWaived}}
 					<td>&nbsp;</td>
 					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalWrittenOff)}}</td>
+					{{#if totalWrittenOff}}
+					<td>{{=$ctx.monetaryValue(currency, principalWrittenOff)}}</td>
 					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePrincipalOutstanding)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, principalOutstanding)}}</td>
+					{{#if totalOverdue}}
+					<td>{{=$ctx.monetaryValue(currency, principalOverdue)}}</td>
+					{{/if}}
 				</tr>
 				<tr>
 					<th>{{=$ctx.doI18N("table.heading.interest")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestPaid)}}</td>
-					{{#if totalWaivedToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWaived)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, interestCharged)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, interestPaid)}}</td>
+					{{#if totalWaived}}
+					<td>{{=$ctx.monetaryValue(currency, interestWaived)}}</td>
 					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestWrittenOff)}}</td>
+					{{#if totalWrittenOff}}
+					<td>{{=$ctx.monetaryValue(currency, interestWrittenOff)}}</td>
 					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeInterestOutstanding)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, interestOutstanding)}}</td>
+					{{#if totalOverdue}}
+					<td>{{=$ctx.monetaryValue(currency, interestOverdue)}}</td>
+					{{/if}}
 				</tr>
-				{{#if cumulativeFeeChargesToDate}}
+				{{#if feeChargesCharged}}
 				<tr>
 					<th>{{=$ctx.doI18N("table.heading.fees")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesPaid)}}</td>
-					{{#if totalWaivedToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesWaived)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, feeChargesCharged)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, feeChargesPaid)}}</td>
+					{{#if totalWaived}}
+					<td>{{=$ctx.monetaryValue(currency, feeChargesWaived)}}</td>
 					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesWrittenOff)}}</td>
+					{{#if totalWrittenOff}}
+					<td>{{=$ctx.monetaryValue(currency, feeChargesWrittenOff)}}</td>
 					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesOutstanding)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, feeChargesOutstanding)}}</td>
+					{{#if totalOverdue}}
+					<td>{{=$ctx.monetaryValue(currency, feeChargesOverdue)}}</td>
+					{{/if}}
 				</tr>
 				{{/if}}
 
-				{{#if cumulativePenaltyChargesToDate}}
+				{{#if penaltyChargesCharged}}
 				<tr>
 					<th>{{=$ctx.doI18N("tab.repaymentSchedule.table.column.heading.penalties")}}</th>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</td>
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesPaid)}}</td>
-					{{#if totalWaivedToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesWaived)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, penaltyChargesCharged)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, penaltyChargesPaid)}}</td>
+					{{#if totalWaived}}
+					<td>{{=$ctx.monetaryValue(currency, penaltyChargesWaived)}}</td>
 					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesWrittenOff)}}</td>
+					{{#if totalWrittenOff}}
+					<td>{{=$ctx.monetaryValue(currency, penaltyChargesWrittenOff)}}</td>
 					{{/if}}
-					<td>{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesOutstanding)}}</td>
+					<td>{{=$ctx.monetaryValue(currency, penaltyChargesOutstanding)}}</td>
+					{{#if totalOverdue}}
+					<td>{{=$ctx.monetaryValue(currency, penaltyChargesOverdue)}}</td>
+					{{/if}}
 				</tr>
 				{{/if}}
 			</tbody>
@@ -7960,20 +7975,23 @@ function showLockinOptions(){
 				<tr>
 					<th>{{=$ctx.doI18N("table.heading.total")}}</th>
 					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
-					{{#if totalWaivedToDate}}
-					<th>{{=$ctx.monetaryValue(currency, totalWaivedToDate)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalRepayment)}}</th>
+					{{#if totalWaived}}
+					<th>{{=$ctx.monetaryValue(currency, totalWaived)}}</th>
 					{{/if}}
-					{{#if totalWrittenOffToDate}}
-					<th>{{=$ctx.monetaryValue(currency, totalWrittenOffToDate)}}</th>
+					{{#if totalWrittenOff}}
+					<th>{{=$ctx.monetaryValue(currency, totalWrittenOff)}}</th>
 					{{/if}}
 					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
+					{{#if totalOverdue}}
+					<th>{{=$ctx.monetaryValue(currency, totalOverdue)}}</th>
+					{{/if}}
 				</tr>
 			</tfoot>
 		</table>
-
+		{{/each}}
 		<br/>
-
+		{{#each repaymentSchedule}}
 		<table id="repaymentschedule_todate{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("table.caption.repaymentSchedule")}}</caption>
 			<colgroup span="3"></colgroup>
@@ -8054,25 +8072,25 @@ function showLockinOptions(){
 					<th colspan="2">{{=$ctx.doI18N("table.heading.total")}}</th>
 					<th>{{=$ctx.number(loanTermInDays)}}</th>
 
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePrincipalDisbursed)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, cumulativePrincipalDue)}}</th>
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, totalPrincipalDisbursed)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPrincipalExpected)}}</th>
 					<th class="righthighlightcolheader">&nbsp;</th>
 
-					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativeInterestExpected)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, cumulativeFeeChargesToDate)}}</th>
-					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, cumulativePenaltyChargesToDate)}}</th>
+					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, totalInterestCharged)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalFeeChargesCharged)}}</th>
+					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, totalPenaltyChargesCharged)}}</th>
 
-					<th>{{=$ctx.monetaryValue(currency, totalExpectedRepayment)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalPaidToDate)}}</th>
-					{{#if totalWaivedToDate}}
-					<th>{{=$ctx.monetaryValue(currency, totalWaivedToDate)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalRepaymentExpected)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalRepayment)}}</th>
+					{{#if totalWaived}}
+					<th>{{=$ctx.monetaryValue(currency, totalWaived)}}</th>
 					{{/if}}
 					<th>{{=$ctx.monetaryValue(currency, totalOutstanding)}}</th>
 				</tr>
 			</tfoot>
 		</table>
+		{{/each}}
 	</div>
-	{{/each}}
 
     {{#if transactions}}
 	<!-- Third loan tab -->
