@@ -8934,10 +8934,18 @@ function showLockinOptions(){
 
                 <td><a id='navigateToLoan{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=parentId}}, {{=entityId}});">{{=entityName}}</a></td>
 
+            {{#else entityType == 'CLIENTIDENTIFIER'}}
+
+                <td><a id='navigateToClientIdentifier{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=parentId}});">{{=entityName}}</a></td>
+
             {{#else entityType == 'GROUP'}}
 
                 <td><a id='navigateToGroup{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showILGroup({{=entityId}});">{{=entityName}}</a></td>
-
+            
+            {{#else}}
+            
+                <td>{{=entityName}}</td>
+                
             {{/if}}
 
             <td>{{=entityAccountNo}}</td>
