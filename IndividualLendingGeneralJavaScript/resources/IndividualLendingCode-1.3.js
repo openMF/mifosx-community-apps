@@ -239,9 +239,10 @@ function showMainContainer(containerDivName, username) {
     htmlVar += '           <button type="submit" class="globalsearchbtn ui-icon-search" id="globalsearchbtn" name="globalsearchbtn" title="Global Search">Search</button>';
     htmlVar += '           <ul class="sb_dropdown" >';
     htmlVar += '                <li class="sb_filter">Filter your search</li>';
-    htmlVar += '                <li><input type="checkbox" name="gsresource" value="CLIENT"/><label for="client">Client</label></li>';
-    htmlVar += '                <li><input type="checkbox" name="gsresource" value="LOAN"/><label for="loan">Loan</label></li>';
-    htmlVar += '                <li><input type="checkbox" name="gsresource" value="GROUP"/><label for="group">Group</label></li>';
+    htmlVar += '                <li><input type="checkbox" name="gsresource" value="CLIENTS"/><label for="clients">Clients</label></li>';
+    htmlVar += '                <li><input type="checkbox" name="gsresource" value="LOANS"/><label for="loans">Loans</label></li>';
+    htmlVar += '                <li><input type="checkbox" name="gsresource" value="CLIENTIDENTIFIERS"/><label for="clientIdentifiers">Client Identifiers</label></li>';
+    htmlVar += '                <li><input type="checkbox" name="gsresource" value="GROUPS"/><label for="groups">Groups</label></li>';
     htmlVar += '           </ul>';
 
     htmlVar += '    </li>';
