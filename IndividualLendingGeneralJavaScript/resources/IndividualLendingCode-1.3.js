@@ -196,14 +196,22 @@ function showMainContainer(containerDivName, username) {
 	if (jQuery.MifosXUI.showMenu("GroupsMenu") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 
-	if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true)
-		htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
-
-	if (jQuery.MifosXUI.showMenu("OrgAdminMenu") == true)
-		htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
-	
-	if (jQuery.MifosXUI.showMenu("SysAdminMenu") == true)
-		htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
+	if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true || jQuery.MifosXUI.showMenu("OrgAdminMenu") == true || jQuery.MifosXUI.showMenu("SysAdminMenu") == true) {
+		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.administration") + '</a>';
+		htmlVar += '		<ul>';
+		
+		if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true)
+			htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
+		
+		if (jQuery.MifosXUI.showMenu("OrgAdminMenu") == true)
+			htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
+		
+		if (jQuery.MifosXUI.showMenu("SysAdminMenu") == true)
+			htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
+		
+		htmlVar += '		</ul>';
+		htmlVar += '	</li>';
+	}
 	
 	if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
 		htmlVar += '  <li><a href="unknown.html" onclick="setAccountingContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.accounting") + '</a></li>';
