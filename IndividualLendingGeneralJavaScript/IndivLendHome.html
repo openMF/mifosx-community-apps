@@ -746,19 +746,8 @@ $(document).ready(function() {
 			<div>
 				<div class="notespacer">
 					<span class="ui-icon ui-icon-note" style="float: left; margin-right: 5px;"></span>
-					{{#if noteType.id === 100}}
-					<span>{{=$ctx.doI18N("widget.notes.label.client.note")}}</span>
-					{{/if}}
-					{{#if noteType.id === 200}}
-					<span>{{=$ctx.doI18N("widget.notes.label.loan.note")}}</span>
-					{{/if}}
-					{{#if noteType.id === 300}}
-					<span>{{=$ctx.doI18N("widget.notes.label.loan.transaction.note")}}</span>
-					{{/if}}
-					{{#if noteType.id === 400}}
-					<span>{{=$ctx.doI18N("widget.notes.label.deposit.transaction.note")}}</span>
-					{{/if}}
-					<span><a href="#" class="editclientnote" id="editclientnotelink{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</a></span>
+					<span>{{=noteType.value}}:</span>
+					<span><a href="#" class="editnote" id="editnotelink{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</a></span>
 				</div>
 				<div class="notecontent">{{=note}}</div>
 				<div class="notespacer">
@@ -1724,7 +1713,7 @@ $(document).ready(function() {
     {{#if !groupLevelData.superParent}}<span><a href="#" onClick="showILGroup({{=parentId}});">{{=parentName}}</a></span>{{/if}}
 </div>
 <div class="groupcontainer">
-	<div class="right">
+	<div class="right clearright marginB20">
 <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
 						<tbody><tr>
 							<td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.performance.history")}}</span></td>
@@ -1748,6 +1737,14 @@ $(document).ready(function() {
 							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.savings")}} </span></td>
 						</tr>
 					</tbody></table>    </div>
+    <div class="right clearright marginB20" id="groupnotescontainer">
+        {{#if $ctx.showTask("AddGroupNote")}}
+            <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
+        {{/if}}
+        <div id="groupnotes">
+
+        </div>
+    </div>
     <div class="left">
 			<div id="grouptabcontent">
 			<div id="grouptableftpane" style="float:left;width:100%">

@@ -80,6 +80,8 @@ div.loantabs {margin-top: 5px;}
 .breadcrumb {background-color:#D7DEEE; line-height:18px; margin-bottom:18px; padding:4px;border-bottom: 1px solid #D7DEEE;}
 .groupcontainer {height: auto;overflow: hidden;}
 .right{width:300px;float:right;}
+.clearright{clear:right;}
+.marginB20{margin-bottom: 20px}
 .left{width:auto;overflow:hidden;padding-top:10px;padding-bottom:10px;padding-right:150px;padding-left:50px;}
 .headingorange{color:#cc6601;font-family:Arial,Verdana,Helvetica,sans-serif;font-size:11pt;font-weight:bold}
 .bluetableborder{border-bottom:1px solid #d7deee;border-left:1px solid #d7deee;border-right:1px solid #d7deee}

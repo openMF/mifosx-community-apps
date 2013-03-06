@@ -1673,7 +1673,7 @@ function showILClient(clientId, loanId) {
 					if (clientDirty == true)
 					{
 						refreshLoanSummaryInfo(clientUrl);
-						refreshNoteWidget(clientUrl);
+						refreshNoteWidget(clientUrl, 'clienttabrightpane');
 
 						clientDirty = false;
 					}
@@ -1788,7 +1788,7 @@ function showILClient(clientId, loanId) {
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						  	$("#dialog-form").dialog("close");
-						  	refreshNoteWidget('clients/' + clientId);
+							refreshNoteWidget('clients/' + clientId, 'clienttabrightpane');
 						}
 						
 						popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
@@ -1796,7 +1796,7 @@ function showILClient(clientId, loanId) {
 					});
 					$('button.addnotebtn span').text(doI18N('dialog.button.add.note'));
 
-					refreshNoteWidget(clientUrl);
+					refreshNoteWidget(clientUrl, 'clienttabrightpane');
 
 					custom.showRelatedDataTableInfo($newtabs, "m_client", clientId); 
 					
@@ -1957,7 +1957,7 @@ function showClientInGroups(clientId , name){
 					if (clientDirty == true)
 					{
 						refreshLoanSummaryInfo(clientUrl);
-						refreshNoteWidget(clientUrl);
+						refreshNoteWidget(clientUrl, 'clienttabrightpane');
 
 						clientDirty = false;
 					}
@@ -2072,7 +2072,7 @@ function showClientInGroups(clientId , name){
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						  	$("#dialog-form").dialog("close");
-						  	refreshNoteWidget('clients/' + clientId);
+						  	refreshNoteWidget('clients/' + clientId, 'clienttabrightpane');
 						}
 						
 						popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
@@ -2080,7 +2080,7 @@ function showClientInGroups(clientId , name){
 					});
 					$('button.addnotebtn span').text(doI18N('dialog.button.add.note'));
 
-					refreshNoteWidget(clientUrl);
+					refreshNoteWidget(clientUrl, 'clienttabrightpane');
 
 					custom.showRelatedDataTableInfo($groupnewtabs, "m_client", clientId); 
 					
@@ -2428,6 +2428,7 @@ function showILGroup(groupId){
 
 		refreshGroupLoanSummaryInfo(groupUrl);
 
+        refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
@@ -2499,6 +2500,27 @@ function showILGroup(groupId){
 
 						e.preventDefault();
 			});
+
+			$('.addgroupnotebtn').button({icons: {
+                         primary: "ui-icon-comment"}
+            }).click(function(e) {
+                var linkId = this.id;
+                var groupId = linkId.replace("addgroupnotebtn", "");
+                var postUrl = 'groups/' + groupId + '/notes';
+                var templateSelector = "#noteFormTemplate";
+                var width = 600;
+                var height = 400;
+
+                var saveSuccessFunction = function(data, textStatus, jqXHR) {
+                    $("#dialog-form").dialog("close");
+                    refreshNoteWidget('groups/' + groupId, 'groupnotes');
+                }
+
+                popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
+                e.preventDefault();
+            });
+
+            $('button.addgroupnotebtn span').text(doI18N('dialog.button.add.note'));
 
 		});
 		
@@ -2696,32 +2718,32 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		};
 	}
 
-	function refreshNoteWidget(clientUrl) {
+	function refreshNoteWidget(resourceUrl, notesContent) {
 			  	
-		if (jQuery.MifosXUI.showTask("ViewNotes") == true)
-		{
-			eval(genRefreshNoteWidgetSuccessVar(clientUrl));
-  			executeAjaxRequest(clientUrl + '/notes', 'GET', "", successFunction, formErrorFunction);
-		}
+		//if (jQuery.MifosXUI.showTask("ViewNotes") == true)
+		//{
+			eval(genRefreshNoteWidgetSuccessVar(resourceUrl, notesContent));
+			executeAjaxRequest(resourceUrl + '/notes', 'GET', "", successFunction, formErrorFunction);
+		//}
 	}
-	function genRefreshNoteWidgetSuccessVar(clientUrl) {
+	function genRefreshNoteWidgetSuccessVar(resourceUrl, notesContent) {
 
 		return 'var successFunction = function(data, textStatus, jqXHR) {	' +
 				  ' var noteParent = new Object();' + 
 				  ' noteParent.title = doI18N("widget.notes.heading");' +
 				  ' noteParent.notes = data;' +
 				  ' var tableHtml = $("#noteListViewTemplate").render(noteParent);' +
-				  ' $("#clienttabrightpane").html(tableHtml);' + 
-				  ' $(".editclientnote").click(function(e) { ' +
+				  ' $("#' + notesContent + '").html(tableHtml);' +
+				  ' $(".editnote").click(function(e) { ' +
 						' var linkId = this.id;' +
-						' var noteId = linkId.replace("editclientnotelink", "");' +
-						' var getAndPutUrl = "' + clientUrl + '/notes/" + noteId;' +
+						' var noteId = linkId.replace("editnotelink", "");' +
+						' var getAndPutUrl = "' + resourceUrl + '/notes/" + noteId;' +
 						' var templateSelector = "#noteFormTemplate";' +
 						' var width = 600;' +
 						' var height = 400;' +
 						' var saveSuccessFunction = function(data, textStatus, jqXHR) {' +
 						  	' $("#dialog-form").dialog("close");' +
-						  	' refreshNoteWidget("' + clientUrl + '");' +
+							' refreshNoteWidget("' + resourceUrl + '", "' + notesContent + '");' +
 						' };' +
 						' popupDialogWithFormView(getAndPutUrl, getAndPutUrl, "PUT", "dialog.title.edit.note", templateSelector, width, height,  saveSuccessFunction);' +
 					    ' e.preventDefault();' +
