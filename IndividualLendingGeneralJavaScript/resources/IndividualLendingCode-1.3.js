@@ -1597,14 +1597,20 @@ function showILGroupListing(){
 }
 
 //Add new group or center
-function addGroup(levelid) {
+function addGroup(levelid , parentGroupId) {
 	
 		var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
 		$('#dialog-form').dialog("close");
 		showILGroup(data.resourceId);
 	}
 
-		var getUrl = 'groups/template?levelId='+levelid;
+		if(parentGroupId === undefined) {
+			var getUrl = 'groups/template?levelId='+levelid;
+		}
+		else{
+			var getUrl = 'groups/template?levelId='+levelid+'&parentGroupId='+parentGroupId;
+		}
+
 		var postUrl = 'groups';
 		var templateSelector = "#groupFormTemplate";
 		var width = 900; 
@@ -1614,6 +1620,26 @@ function addGroup(levelid) {
 		
 	    e.preventDefault();
 }
+
+// Add New Client 
+function addClient(officeId, parentGroupId){
+
+		extraParam = '{"officeId":"'+ officeId + '" , "groupId":"'+ parentGroupId +'"}';
+		var addClientSuccessFunction = function(data, textStatus, jqXHR) {
+		  $('#dialog-form').dialog("close");
+		  showILGroup(parentGroupId);
+		}
+
+		var getUrl = 'clients/template';
+		var postUrl = 'clients';
+		var templateSelector = "#clientFormTemplate";
+		var width = 600; 
+		var height = 350;
+		
+		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.client', templateSelector, width, height, addClientSuccessFunction , extraParam);
+
+}
+
 
 //set scope for group search
 function applyGroupSearchFilter(officeHierarchy) {
@@ -2455,13 +2481,13 @@ function showILGroup(groupId){
 						var linkId = this.id;
 						var groupId = linkId.replace("unassignstafftogroup", "");
 						var staffId = $('#staffId').val();
-						var postUrl = 'groups/'+ groupId +'/command/unassign_loanofficer';
+						var postUrl = 'groups/'+ groupId +'/command/unassign_staff';
 						var getUrl = ""
 						
 						var templateSelector = "#loanUnassignmentFormTemplate";
 						var width = 400; 
 						var height = 225;
-						var jsonbody = '{"loanOfficerId":"'+staffId+'"}';
+						var jsonbody = '{"staffId":"'+staffId+'"}';
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 				  			$("#dialog-form").dialog("close");
@@ -4826,7 +4852,7 @@ function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, 
 
 // end of readonly form view
 
-function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {
+function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction , extraParam) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
 
@@ -4894,6 +4920,26 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 				    }
 				}
 				//end loan product specific code
+
+				// When create Client is invoked from parent group profile 
+				// set  parentGroup and Office by defualt and make is un-editable
+
+				if (templateSelector == "#clientFormTemplate") 
+				{
+					if(!(extraParam === undefined))
+						{
+							var officeId = jQuery.parseJSON(extraParam).officeId;
+							var groupId = jQuery.parseJSON(extraParam).groupId;
+							$("#officeId option[value='"+ officeId +"']").attr("selected", "selected");
+							$('#officeId').prop('disabled', true);
+							$('<input>').attr({type: 'hidden',id: 'officeId',name: 'officeId',value:officeId}).appendTo('#entityform');
+							$('<input>').attr({type: 'hidden',id: 'groupId',name: 'groupId',value:groupId}).appendTo('#entityform');
+
+
+						}	
+				}
+				//End group create specific code
+
 		  	};
 		
 
