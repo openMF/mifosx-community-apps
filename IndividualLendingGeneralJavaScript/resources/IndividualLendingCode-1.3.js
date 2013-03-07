@@ -406,7 +406,6 @@ function setAddSavingContent(divName) {
 
 function setOrgAdminContent(divName) {
 
-	var addProductUrl = "maintainTable('loanproduct', 'loanproducts', 'POST');return false;";
 	var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
 	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
@@ -419,10 +418,11 @@ function setOrgAdminContent(divName) {
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("ViewLoanProducts") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'loanproduct'" + ');return false;" id="viewloanproducts">' + doI18N("administration.link.view.loan.products") + '</a>';
+		htmlOptions += ' | <a href="unknown.html" onclick="listLoanProducts();return false;" id="viewloanproducts">' + doI18N("administration.link.view.loan.products") + '</a>';
 
-	if (jQuery.MifosXUI.showTask("AddLoanProduct") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="' + addProductUrl + '" id="addloanproduct">' + doI18N("administration.link.add.loan.product") + '</a>';
+	if (jQuery.MifosXUI.showTask("AddLoanProduct") == true) {
+		htmlOptions += ' | <a href="#" id="addloanproduct">' + doI18N("administration.link.add.loan.product") + '</a>';
+	}
 
 	if (jQuery.MifosXUI.showTask("ViewSavingProducts") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
@@ -485,6 +485,11 @@ function setOrgAdminContent(divName) {
 	}
 
 	$("#" + divName).html(simpleOptionsHtml(htmlOptions + htmlOptions2));
+	
+	$('#addloanproduct').click(function(e) {
+		launchLoanProductDialog(null);
+    	e.preventDefault();
+	});
 }
 
 
@@ -3261,7 +3266,214 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		};
 		executeAjaxRequest('loans?command=calculateLoanSchedule', "POST", newFormData, successFunction, errorFunction);	  
 	}
+	
+	// loan product related
+	function submitTabbedLoanProduct(divContainer, loanProductId) {
+		
+		var serializationOptions = {};
+		serializationOptions["checkboxesAsBools"] = true;
+		
+		var serializedArray = {};
+		serializedArray = $('#entityform').serializeObject(serializationOptions);
+		
+		if (!serializedArray["charges"]) {
+			serializedArray["charges"] = new Array();
+		}
+		
+		var newFormData = JSON.stringify(serializedArray);
+		
+		var successFunction =  function(data, textStatus, jqXHR) {
+			divContainer.dialog("close");
+			listLoanProducts();
+		};
+		
+		if (loanProductId) {
+			executeAjaxRequest('loanproducts/' + loanProductId, "PUT", newFormData, successFunction, formErrorFunction);
+		} else {
+			executeAjaxRequest('loanproducts', "POST", newFormData, successFunction, formErrorFunction);
+		}
+	}
+	
+	function listLoanProducts() {
+		
+		var tableName='loanproduct';
+		
+		var successFunction = function(data, textStatus, jqXHR) {
 
+			var crudObject = new Object();
+			crudObject.crudRows = data;
+			
+			var html = $("#" + tableName + "ListTemplate").render(crudObject);
+			$("#listplaceholder").html(html);  
+
+			$("a.edit" + tableName).click( function(e) {
+				var linkId = this.id;
+				var entityId = linkId.replace("edit" + tableName, "");
+
+				var resourceUrl = tableName + "s/" + entityId;
+				
+				launchLoanProductDialog(entityId);
+				
+				e.preventDefault();
+			});
+
+			var oTable = displayListTable(tableName + "stable");
+		  };
+	
+
+		  executeAjaxRequest(tableName + 's', 'GET', "", successFunction, formErrorFunction);
+	}
+	
+	var launchLoanProductDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var saveButton = doI18N('dialog.button.save');
+		var cancelButton = doI18N('dialog.button.cancel');
+		
+		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			submitTabbedLoanProduct(dialogDiv, data.id);
+		};
+		// end of buttonsOpts for save button
+		
+		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+		
+		var titleCode = 'dialog.title.add.loanproduct';
+		if (data.id){
+			titleCode = 'dialog.title.loanproduct.details';
+		}
+		dialogDiv.dialog({
+		  		title: doI18N(titleCode), 
+		  		width: 1100, 
+		  		height: 500, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+		  			$(this).remove();
+				},
+		  		open: function (event, ui) {
+		  			
+		  			var formHtml = $("#loanProductDialogTemplate").render(data);
+		  			dialogDiv.html(formHtml);
+		  			
+		  			var loanproducttabs = $(".loanproducttabs").tabs({
+		  				"show": function(event, ui) {
+		  					var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+		  	      			var curTabID = curTab.prop("id");
+//		  	      			console.log("current tab: " + curTab.index);
+		  				},
+		  				"select": function( event, ui ) {
+		  					console.log("selected tab: " + ui.index);
+		  				}
+		  			});
+		  			
+	  				//(initialize comboboxes)
+	  				$("#fundSourceAccountId").combobox();
+	  				$("#loanPortfolioAccountId").combobox();
+	  				$("#interestOnLoanAccountId").combobox();
+	  				$("#incomeFromFeeAccountId").combobox();
+	  				$("#incomeFromPenaltyAccountId").combobox();
+	  				$("#writeOffAccountId").combobox();
+	  				$("#receivableInterestAccountId").combobox();
+	  				$("#receivableFeeAccountId").combobox();
+	  				$("#receivablePenaltyAccountId").combobox();
+	  				
+	  				var showCashFinancialPlaceholders = function() {
+	  					 $("#accountingPlaceholdersDiv").show();
+	  		        	 //hide receivables
+	  		        	 $("#interestReceivableRow").hide();
+	  		        	 $("#feeReceivableRow").hide();
+	  		        	 $("#penaltyReceivableRow").hide();
+	  				};
+	  				
+	  				var showAccrualFinancialPlaceholders = function() {
+	  					 $("#accountingPlaceholdersDiv").show();
+	  		        	 //show receivables
+	  		        	 $("#interestReceivableRow").show();
+	  		        	 $("#feeReceivableRow").show();
+	  		        	 $("#penaltyReceivableRow").show();
+	  				}
+	  				
+	  				//onchange events for radio buttonaccountingRule
+	  				 $("input[name=accountingRule]").change(function() {
+	  			        var selectedValue = $(this).val();
+	  			        if(selectedValue == "1"){
+	  			        	 $("#accountingPlaceholdersDiv").hide();
+	  			        }else if (selectedValue == "2"){
+	  			        	 showCashFinancialPlaceholders();
+	  			        }else if (selectedValue == "3"){
+	  			        	 showAccrualFinancialPlaceholders();
+	  			        }
+	  			    }); 
+	  			    
+	  			    //hide accounting placeholders div on page load
+	  			    if(data.accountingRule.value == "NONE"){
+	  			    	$("#accountingPlaceholdersDiv").hide();
+	  			    }else if (data.accountingRule.value == "CASH BASED"){
+	  			    	 showCashFinancialPlaceholders();
+	  			    }else if (data.accountingRule.value == "ACCRUAL BASED"){
+	  			    	 showAccrualFinancialPlaceholders();
+	  			    }
+		  			
+		  			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+					
+					var chargeIndex = 0;
+					if(undefined === data.charges || data.charges === null) {
+						chargeIndex = 0;
+					} else {
+						chargeIndex = data["charges"].length;
+					}
+					
+					$("#loanproduct-addLoanCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+						
+						var chargeId = $('#chargeOptions option:selected').val();
+						
+						var addProductChargeSuccess = function (chargeData) {
+								chargeIndex++;
+								chargeData["index"] = chargeIndex;
+								var loanChargeHtml = $("#loanProductAddChargeRowTemplate").render(chargeData);
+								$("#loanchargestable tbody").append(loanChargeHtml);
+					  		
+								$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+								$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+								
+								$('#loanchargestable tbody tr:last .loanproduct-removeLoanCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+									$(this).closest('tr').remove();
+				            		e.preventDefault();
+				            	});
+						}
+							
+						if (chargeId && undefined != chargeId && chargeId > 0) {
+							executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addProductChargeSuccess, formErrorFunction);
+						}
+					    e.preventDefault();
+					});
+					
+					if(undefined === data.charges || data.charges === null) {
+						// do nothing
+					} else {
+						 $("#loanchargestable tbody tr .loanproduct-removeLoanCharge").each(function(index) {
+							 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						 });
+					}
+		  		}
+		  	}).dialog('open');		
+	};
+
+	function launchLoanProductDialog(loanProductId) {
+		
+		if (loanProductId) {
+			executeAjaxRequest('loanproducts/' + loanProductId + '?template=true', 'GET', "", launchLoanProductDialogOnSuccessFunction, formErrorFunction);
+		} else {
+			executeAjaxRequest('loanproducts/template', 'GET', "", launchLoanProductDialogOnSuccessFunction, formErrorFunction);
+		}
+	}
+	// end of loan product 
+	
 	function addILGroupLoan(groupId) {
 		setAddLoanContent("content");
 
@@ -4890,59 +5102,6 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 		  		}
 		  		
-		  		//loanproduct specific code 
-				if (templateSelector == "#loanproductFormTemplate") 
-				{
-					//(initialize comboboxes)
-					$("#fundSourceAccountId").combobox();
-					$("#loanPortfolioAccountId").combobox();
-					$("#interestOnLoanAccountId").combobox();
-					$("#incomeFromFeeAccountId").combobox();
-					$("#incomeFromPenaltyAccountId").combobox();
-					$("#writeOffAccountId").combobox();
-					$("#receivableInterestAccountId").combobox();
-					$("#receivableFeeAccountId").combobox();
-					$("#receivablePenaltyAccountId").combobox();
-					
-					var showCashFinancialPlaceholders = function() {
-						 $("#accountingPlaceholdersDiv").show();
-			        	 //hide receivables
-			        	 $("#interestReceivableRow").hide();
-			        	 $("#feeReceivableRow").hide();
-			        	 $("#penaltyReceivableRow").hide();
-					};
-					
-					var showAccrualFinancialPlaceholders = function() {
-						 $("#accountingPlaceholdersDiv").show();
-			        	 //show receivables
-			        	 $("#interestReceivableRow").show();
-			        	 $("#feeReceivableRow").show();
-			        	 $("#penaltyReceivableRow").show();
-					}
-					
-					//onchange events for radio buttonaccountingRule
-					 $("input[name=accountingRule]").change(function() {
-				        var selectedValue = $(this).val();
-				        if(selectedValue == "1"){
-				        	 $("#accountingPlaceholdersDiv").hide();
-				        }else if (selectedValue == "2"){
-				        	 showCashFinancialPlaceholders();
-				        }else if (selectedValue == "3"){
-				        	 showAccrualFinancialPlaceholders();
-				        }
-				    }); 
-				    
-				    //hide accounting placeholders div on page load
-				    if(data.accountingRule.value == "NONE"){
-				    	$("#accountingPlaceholdersDiv").hide();
-				    }else if (data.accountingRule.value == "CASH BASED"){
-				    	 showCashFinancialPlaceholders();
-				    }else if (data.accountingRule.value == "ACCRUAL BASED"){
-				    	 showAccrualFinancialPlaceholders();
-				    }
-				}
-				//end loan product specific code
-
 				// When create Client is invoked from parent group profile 
 				// set  parentGroup and Office by defualt and make is un-editable
 
@@ -5030,10 +5189,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 		} 
 		serializedArray = $('#entityform').serializeObject(serializationOptions);	
 		
-		if (!serializedArray["charges"] && postUrl.substring(0, 13) == "loanproducts/") {
-			serializedArray["charges"] = new Array();
-		}
-			
 		//manipulate serialized array for guarantors
     	if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
     	   //TODO: Vishwas...var is repeated
