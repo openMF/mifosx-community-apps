@@ -8395,7 +8395,9 @@ function showLockinOptions(){
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			{{#if $ctx.showTask("VIEWFUNDS")}}
 			<th>{{=$ctx.doI18N("table.heading.fundname")}}</th>
+			{{/if}}
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -8403,7 +8405,9 @@ function showLockinOptions(){
 {{#each crudRows}}
 <tr>
 	<td title='{{=description}}'>{{=name}}</td>
+	{{#if $ctx.showTask("VIEWFUNDS")}}
 	<td>{{=fundName}}</td>
+	{{/if}}
 	<td>
 		<a id='editloanproduct{{=id}}' class='editloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
 	</td>
