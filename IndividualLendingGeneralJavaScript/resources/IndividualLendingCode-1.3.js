@@ -1607,9 +1607,9 @@ function showILGroupListing(){
 function addGroup(levelid , parentGroupId) {
 	
 		var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
-		$('#dialog-form').dialog("close");
-		showILGroup(data.resourceId);
-	}
+			$('#dialog-form').dialog("close");
+			showILGroup(data.resourceId);
+		}
 
 		if(parentGroupId === undefined) {
 			var getUrl = 'groups/template?levelId='+levelid;
@@ -1623,7 +1623,7 @@ function addGroup(levelid , parentGroupId) {
 		var width = 900; 
 		var height = 500;
 		
-		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.group', templateSelector, width, height, addGroupSuccessFunction);
+		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.group', templateSelector, width, height, addGroupSuccessFunction , parentGroupId);
 		
 	    e.preventDefault();
 }
@@ -1631,7 +1631,8 @@ function addGroup(levelid , parentGroupId) {
 // Add New Client 
 function addClient(officeId, parentGroupId){
 
-		extraParam = '{"officeId":"'+ officeId + '" , "groupId":"'+ parentGroupId +'"}';
+		var extraParam = '{"officeId":"'+ officeId + '" , "groupId":"'+ parentGroupId +'"}';
+
 		var addClientSuccessFunction = function(data, textStatus, jqXHR) {
 		  $('#dialog-form').dialog("close");
 		  showILGroup(parentGroupId);
@@ -5120,6 +5121,16 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 
 
 						}	
+				}
+
+				if (templateSelector == "#groupFormTemplate") 
+				{
+					
+					$('#officeId').prop('disabled', true);
+
+					$('#parentId').prop('disabled', true);
+					$('<input>').attr({type: 'hidden',id: 'parentId',name: 'parentId',value:extraParam}).appendTo('#entityform');
+
 				}
 				//End group create specific code
 
