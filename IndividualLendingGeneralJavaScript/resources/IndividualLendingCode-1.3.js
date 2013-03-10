@@ -2476,8 +2476,6 @@ function showILGroup(groupId){
 				  	showILGroup(groupId);
 				}
 				
- 				// xxxxx
-
 				popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
 			    e.preventDefault();
 			});
