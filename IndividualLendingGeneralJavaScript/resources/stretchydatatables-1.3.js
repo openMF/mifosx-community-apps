@@ -1141,7 +1141,6 @@
 
 	var handleXhrError = function(jqXHR, textStatus, errorThrown,
 			templateSelector, placeholderDiv) {
-
 		if (jqXHR.status === 0) {
 			alert('No connection. Verify application is running.');
 		} else if (jqXHR.status == 401) {
@@ -1175,7 +1174,7 @@
 					$(fieldId).focus();
 
 				var errorObj = new Object();
-				errorObj.message = doI18N(this.userMessageGlobalisationCode)
+				errorObj.message = doI18N(this.userMessageGlobalisationCode, this.value)
 						+ " - " + doI18N(this.parameterName);
 				errorArray[arrayIndex] = errorObj;
 				arrayIndex++
