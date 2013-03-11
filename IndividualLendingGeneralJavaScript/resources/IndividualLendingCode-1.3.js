@@ -1537,13 +1537,8 @@ function showILGroupListing(){
 				var officeSearchSuccessFunction =  function(data) {
 					var officeSearchObject = new Object();
 				    officeSearchObject.crudRows = data;
-					var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
+					var tableHtml = $("#allOfficesListTemplate").render(officeSearchObject);
 					$("#officesInScopeDiv").html(tableHtml);
-
-					// add group filter behaviour
-					$("#officeId").change(function(){
-						applyGroupSearchFilter($(this).val());
-					})
 			  	};
 			  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
 				
@@ -1551,7 +1546,7 @@ function showILGroupListing(){
 				var groupSearchSuccessFunction =  function(data) {
 					var groupSearchObject = new Object();
 				    groupSearchObject.crudRows = data;
-					var tableHtml = $("#allGroupsDropdownTemplate").render(groupSearchObject);
+					var tableHtml = $("#allGroupsListTemplate").render(groupSearchObject);
 					$("#groupsInScopeDiv").html(tableHtml);
 			  	};
 				executeAjaxRequest('groups', 'GET', "", groupSearchSuccessFunction, formErrorFunction);
@@ -1652,10 +1647,11 @@ function addClient(officeId, parentGroupId){
 //set scope for group search
 function applyGroupSearchFilter(officeHierarchy) {
 	//re-render group drop down data
+	$('#officeId').val(officeHierarchy);
 	var groupSearchSuccessFunction =  function(data) {
 		var groupSearchObject = new Object();
 	    groupSearchObject.crudRows = data;
-		var tableHtml = $("#allGroupsDropdownTemplate").render(groupSearchObject);
+		var tableHtml = $("#allGroupsListTemplate").render(groupSearchObject);
 		$("#groupsInScopeDiv").html(tableHtml);
 	};
 	var sqlSearchValue = "o.hierarchy like '"+ officeHierarchy +"%'";
@@ -5137,9 +5133,10 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 					
 					$('#officeId').prop('disabled', true);
 
-					$('#parentId').prop('disabled', true);
-					$('<input>').attr({type: 'hidden',id: 'parentId',name: 'parentId',value:extraParam}).appendTo('#entityform');
-
+					if(!(extraParam === undefined) ){
+						$('#parentId').prop('disabled', true);
+						$('<input>').attr({type: 'hidden',id: 'parentId',name: 'parentId',value:extraParam}).appendTo('#entityform');
+					}	
 				}
 				//End group create specific code
 

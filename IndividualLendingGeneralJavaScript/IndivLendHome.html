@@ -779,6 +779,7 @@ $(document).ready(function() {
 		</div>
 		<div id="officesInScopeDiv">
 		</div>
+        <hr/>
 		<div style="height: 80px">
 			<div style="float: left">
 					<label for="client">{{=$ctx.doI18N("label.client.search.by.name")}}</label>
@@ -826,7 +827,6 @@ $(document).ready(function() {
 			        {{/each}}
 				</select>
 		</div>
-		<hr/>
 	{{/if}}
 </script>
 
@@ -852,34 +852,83 @@ $(document).ready(function() {
 </script>
 
 <script id="groupManageTabTemplate" type="text/x-jquery-tmpl">
-<div>
+<div class="groupcontainer">
 	<form method="post" id="viewGroup" name="viewGroup" action="switchToGroup">
-		<div style="width:100%">
-			<h1 align="center">{{=$ctx.doI18N("tab.search.group.title")}}</h1>
-		</div>
-		<div id="officesInScopeDiv">
-		</div>
-		<div style="min-height: 200px">
-			<div style="float: left">
-					<label for="group">{{=$ctx.doI18N("label.group.search.by.name")}}</label>
-					<input type="text" maxlength="30" id="groupSearchInput"/>
-					<button id="searchGroupBtn" style="clear: both;" style="height:10px">Search</button>
-			</div>
-			<div style="float: right">
-				<div id="groupsInScopeDiv">
-				</div>
-			</div>
-			<div style="clear: both;"><br><br></div>
-			<div>	
-				<h1>{{=$ctx.doI18N("label.group.manage")}}</h1>
-				<hr>
-				<div style="float: left">
-					<div id="groupLevels">
-					</div>
-				</div>
-			</div>
-		</div>
-		
+        <input type="hidden" id="officeId" name="officeId" value="" />
+        <div class="right80 clearright marginB20">
+            <div>
+                <div>
+                            <label for="group">{{=$ctx.doI18N("label.group.search.by.name")}}</label>
+                            <input type="text" maxlength="30" id="groupSearchInput"/>
+                            <button id="searchGroupBtn" style="clear: both;" style="height:10px">{{=$ctx.doI18N("button.group.search")}}</button>
+                </div>
+            </div>
+             <br/>
+             <hr/>   
+            <div id="groupTableDiv">
+                <table width="100%" cellspacing="0" cellpadding="2" border="0" >
+                <tbody>
+                    <tr>
+                    <td valign="top">
+                        <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+                            <tbody>
+                            <tr>
+                                <td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.offices")}}</span></td>
+                            </tr>
+                            <tr>
+                                <td class="paddingL10">
+                                    <div style="max-height:300px;overflow:auto;" id="officesInScopeDiv"></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>                
+                    </td> 
+                    <td valign="top"></td>   
+                    <td valign="top">
+                        <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+                            <tbody>
+                            <tr>
+                                <td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.groups")}}</span></td>
+                            </tr>
+                            <tr>
+                                <td class="paddingL10">
+                                    <div style="max-height:300px;overflow:auto;" id="groupsInScopeDiv"></div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="left">
+            <table width="100%" cellspacing="0" cellpadding="4" border="0" >
+                <tbody>
+                    <tr class="fontnormal">
+                            <td class="witoutpadding">
+                                <span class="headingorange">{{=$ctx.doI18N("label.group.client.tasks")}}</span>
+                            </td>
+                    </tr>
+                    <tr class="fontnormal">
+                            <td>
+                                </br>
+                            </td>
+                    </tr>
+                    <tr class="fontnormal">
+                            <td class="witoutpadding">
+                                <b>{{=$ctx.doI18N("label.group.manage")}}</b>
+                            </td>
+                    </tr>
+                    <tr class="fontnormal">
+                            <td class="witoutpadding">
+                                <div id="groupLevels">
+                            </td>
+                    </tr>
+                 </tbody>
+            </table>
+        </div>
 	</form>
 </div>	
 </script>
@@ -892,15 +941,21 @@ $(document).ready(function() {
 	</ul>	
 </script>
 
-<!-- All Groups Dropdown-->
-<script id="allGroupsDropdownTemplate" type="text/x-jquery-tmpl">
-	<label for="group">{{=$ctx.doI18N("label.group.search")}}</label>
-	<select name="group" id="group" onChange="showILGroup(options[selectedIndex].value);">
-		<option value="0">{{=$ctx.doI18N("option.group.search.first.choice")}}</option>
-		{{#each crudRows}}
-			<option value="{{=id}}">{{=name}}&nbsp;-&nbsp;({{=officeName}})</option>
+<!-- All Groups List-->
+<script id="allGroupsListTemplate" type="text/x-jquery-tmpl">
+   <ul>
+        {{#each crudRows}}
+            <li><a href="#" class="group" onClick="showILGroup({{=id}});">{{=name}}&nbsp;-&nbsp;({{=officeName}})</a></li>
         {{/each}}
-  	</select>
+    </ul>   
+</script>
+<!-- All Office List-->
+<script id="allOfficesListTemplate" type="text/x-jquery-tmpl">
+   <ul>
+        {{#each crudRows}}
+            <li><a href="#" class="group" onClick="applyGroupSearchFilter('{{=hierarchy}}');">{{=name}}</a></li>
+        {{/each}}
+    </ul>   
 </script>
 
 <!--Group search results table-->
@@ -1713,7 +1768,7 @@ $(document).ready(function() {
 </div>
 <div class="groupcontainer">
 	<div class="right clearright marginB20">
-<table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+        <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
 						<tbody><tr>
 							<td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.performance.history")}}</span></td>
 						</tr>
@@ -1735,7 +1790,8 @@ $(document).ready(function() {
 						<tr>
 							<td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.savings")}} </span></td>
 						</tr>
-					</tbody></table>    </div>
+					</tbody></table>    
+    </div>
     <div class="right clearright marginB20" id="groupnotescontainer">
         {{#if $ctx.showTask("AddGroupNote")}}
             <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
