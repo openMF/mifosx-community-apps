@@ -1662,9 +1662,24 @@ function applyGroupSearchFilter(officeHierarchy) {
 	executeAjaxRequest("groups?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", groupSearchSuccessFunction, formErrorFunction);
 }
 
-//loanId is passed to open loan account in client details
+//loanId, product, loanAccountNo is passed to open loan account in client details
 //On click of loan from global search, first show client then load loan account
-function showILClient(clientId, loanId) {
+
+function showLoanFromSearch(clientId, loanId, product, loanAccountNo){
+    
+    showILClient(clientId);
+        
+    if(!(typeof loanId === "undefined" && typeof product === "undefined" && typeof loanAccountNo === "undefined" )){
+        showILLoan(loanId, product, loanAccountNo);
+        var newLoanTabId='loan'+loanId+'tab';
+        var index = $('#newtabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
+        $('#newtabs').tabs('select', index);
+    }
+    
+    
+}
+
+function showILClient(clientId) {
 	var clientUrl = 'clients/' + clientId
 
 	setClientContent("content");
@@ -1731,7 +1746,7 @@ function showILClient(clientId, loanId) {
 					
 					// retrieve accounts summary info
 					refreshLoanSummaryInfo(clientUrl);
-					
+										
 					// bind click listeners to buttons.
 					$('.deleteclientbtn').button({icons: {
                			 primary: "ui-icon-trash"}
@@ -1908,12 +1923,6 @@ function showILClient(clientId, loanId) {
 					
 					e.preventDefault();
 					});
-
-
-					//Display Loan when clicked from global search result
-					if(!(typeof loanId === "undefined")){
-					   loadILLoan(loanId);
-					}
 
 	        };
 	    

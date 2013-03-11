@@ -8874,7 +8874,7 @@ function showLockinOptions(){
 
             {{#else entityType == 'LOAN'}}
 
-                <td><a id='navigateToLoan{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=parentId}}, {{=entityId}});">{{=entityName}}</a></td>
+                <td><a id='navigateToLoan{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showLoanFromSearch({{=parentId}}, {{=entityId}}, '{{=entityName}}', '{{=entityAccountNo}}');">{{=entityAccountNo}}</a></td>
 
             {{#else entityType == 'CLIENTIDENTIFIER'}}
 
