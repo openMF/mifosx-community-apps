@@ -2974,6 +2974,15 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);	
+		
+		// deleting all charges while modifying a loan application
+		// sends a request to the platform without any json element called
+		// "charges". The platform does not understand that charges have been deleted
+		// Sending an empty array of charges in this associative array instead
+		// for handling this scenario
+		if(!("charges" in serializedArray)){
+		    serializedArray["charges"] = {};
+		}
 		var newFormData = JSON.stringify(serializedArray);
 		
 		var successFunction =  function(data, textStatus, jqXHR) {
@@ -3101,7 +3110,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 		
 		var chargeIndex = 0;
-		if(typeof data.charges === "array") {
+		if(typeof data.charges === "object") {
 			chargeIndex = data["charges"].length;
 		}
 		$("#loanapp-addLoanCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
@@ -3128,7 +3137,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		    e.preventDefault();
 		});
 		
-		if(typeof data.charges === "array") {
+		if(typeof data.charges === "object") {
 			 $("#loanchargestable tbody tr .loanapp-removeLoanCharge").each(function(index) {
 				 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 					$(this).closest('tr').remove();
@@ -3198,7 +3207,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 			
 			var chargeIndex = 0;
-			if(typeof data.charges === "array") {
+			if(typeof data.charges === "object") {
 				chargeIndex = data["charges"].length;
 			}
 			$("#loanapp-addLoanCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
@@ -3225,7 +3234,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			    e.preventDefault();
 			});
 			
-			 if(typeof data.charges === "array") {
+			 if(typeof data.charges === "object") {
 				 $("#loanchargestable tbody tr .loanapp-removeLoanCharge").each(function(index) {
 					 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 						$(this).closest('tr').remove();
