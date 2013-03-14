@@ -597,6 +597,10 @@ var parameterTableHtml = '<table><tr>';
 	{
 		if (listOfParameters[i].displayType == 'select')
 		{
+			var selectOne = false;
+			var selectAll = false;
+			if (listOfParameters[i].selectOne == 'Y') selectOne = true;
+			if (listOfParameters[i].selectAll == 'Y') selectAll = true;
 			var selectOnClickFunction = "$.stretchyReporting.cascadeChangeSelection('" + listOfParameters[i].name + "');";
 			
 			if (listOfParameters[i].parentParameterName > "")
@@ -608,15 +612,10 @@ var parameterTableHtml = '<table><tr>';
 								selectOnClick: selectOnClickFunction,
 								selectData: [],
 							};
-				makeSelectTag(makeSelectTagParams, false, true, false);
+				makeSelectTag(makeSelectTagParams, selectOne, selectAll, false);
 			}
 			else
 			{
-				var selectOne = false;
-				var selectAll = false;
-				if (listOfParameters[i].selectOne == 'Y') selectOne = true;
-				if (listOfParameters[i].selectAll == 'Y') selectAll = true;
-
 				var selectSuccess = generateSelectSuccessFunction(listOfParameters[i].name, listOfParameters[i].label, selectOne, selectAll, selectOnClickFunction);
 				getReportData(listOfParameters[i].name, {}, selectSuccess, true) 
 			}
@@ -626,7 +625,10 @@ var parameterTableHtml = '<table><tr>';
 }
 
 var cascadeChangeSelection = function(paramName) {
-	
+	/*Note: cascade only works for select parameters.
+	 * That should be implemented by a rule that only allows parent_parameter_id to be set only for select paramters
+	 * This rule is assumed in this UI plugin
+	 */
 	var pValue = $('#' + paramName + ' select option:selected').val();
 	var pVariable = getVariableName(paramName);
 	//alert('Option Selected: ' + pValue + "   Variable: " + pVariable)
@@ -646,9 +648,35 @@ var cascadeChangeSelection = function(paramName) {
 			var sqlParams = {};
 			sqlParams[pVariable] = pValue ;
 			getReportData(listOfParameters[i].name, sqlParams, selectSuccess, true) 
+			initialiseDependents(listOfParameters[i].name);
 		}
 	}
 };
+
+var initialiseDependents = function(paramName) {
+	//alert("initialiseDependents: " + paramName)
+	
+	for (var i in listOfParameters)
+	{
+		if (listOfParameters[i].parentParameterName == paramName)
+		{
+			var selectOne = false;
+			var selectAll = false;
+			if (listOfParameters[i].selectOne == 'Y') selectOne = true;
+			if (listOfParameters[i].selectAll == 'Y') selectAll = true;
+			var selectOnClickFunction = "$.stretchyReporting.cascadeChangeSelection('" + listOfParameters[i].name + "');";
+	
+			var makeSelectTagParams = {
+						divName: '#' + listOfParameters[i].name,
+						label: listOfParameters[i].label,
+						selectOnClick: selectOnClickFunction,
+						selectData: [],
+					};
+			makeSelectTag(makeSelectTagParams, selectOne, selectAll, false);
+			initialiseDependents(listOfParameters[i].name)
+		}
+	}
+}
 
 var getVariableName = function(paramName) {
 
