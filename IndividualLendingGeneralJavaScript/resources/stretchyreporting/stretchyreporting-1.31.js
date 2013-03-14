@@ -21,7 +21,12 @@ $.stretchyReporting.clearLoadingImg = function() {
 					clearLoadingImg();
 				};
 
+$.stretchyReporting.cascadeChangeSelection = function(paramName) {
+					cascadeChangeSelection(paramName);
+				};
+				
 $.stretchyReporting.nothingCallback = function() {
+	alert("nothing")
 					// nothing
 				};
 
@@ -37,13 +42,6 @@ $.stretchyReporting.changeSeparator= function(sepChar, decChar, indFormat) {
 					changeSeparator(sepChar, decChar, indFormat)
 				};
 
-function fnRecordsDisplay(){
-// oSettings isn't defined when table first created but coding around to not
-// call this method until after it is.
-	// if (typeof(oSettings) != "undefined") return oSettings.fnRecordsDisplay()
-	// else return 0;
-	return oSettings.fnRecordsDisplay();
-}
 
 
 function initialiseReporting(params) {
@@ -599,20 +597,88 @@ var parameterTableHtml = '<table><tr>';
 	{
 		if (listOfParameters[i].displayType == 'select')
 		{
-			var selectOne = 'false';
-			var selectAll = 'false';
-			if (listOfParameters[i].selectOne == 'Y') selectOne = 'true';
-			if (listOfParameters[i].selectAll == 'Y') selectAll = 'true';
+			var selectOnClickFunction = "$.stretchyReporting.cascadeChangeSelection('" + listOfParameters[i].name + "');";
+			
+			if (listOfParameters[i].parentParameterName > "")
+			{//depends on another select value
+				//alert("dependant select: " + listOfParameters[i].name + " - " + listOfParameters[i].parentParameterName);
+				var makeSelectTagParams = {
+								divName: '#' + listOfParameters[i].name,
+								label: listOfParameters[i].label,
+								selectOnClick: selectOnClickFunction,
+								selectData: [],
+							};
+				makeSelectTag(makeSelectTagParams, false, true, false);
+			}
+			else
+			{
+				var selectOne = false;
+				var selectAll = false;
+				if (listOfParameters[i].selectOne == 'Y') selectOne = true;
+				if (listOfParameters[i].selectAll == 'Y') selectAll = true;
 
-			eval(generateSelectSuccessVariable(listOfParameters[i].name, listOfParameters[i].label, selectOne, selectAll));
-
-			getReportData(listOfParameters[i].name, {}, selectSuccess, true) 
+				var selectSuccess = generateSelectSuccessFunction(listOfParameters[i].name, listOfParameters[i].label, selectOne, selectAll, selectOnClickFunction);
+				getReportData(listOfParameters[i].name, {}, selectSuccess, true) 
+			}
 		}
 	}
 
 }
 
+var cascadeChangeSelection = function(paramName) {
+	
+	var pValue = $('#' + paramName + ' select option:selected').val();
+	var pVariable = getVariableName(paramName);
+	//alert('Option Selected: ' + pValue + "   Variable: " + pVariable)
+	
+	for (var i in listOfParameters)
+	{
+		if (listOfParameters[i].parentParameterName == paramName)
+		{
+			//alert(listOfParameters[i].name + "  affected ");
+			var selectOnClickFunction = "$.stretchyReporting.cascadeChangeSelection('" + listOfParameters[i].name + "');";
+			var selectOne = false;
+			var selectAll = false;
+			if (listOfParameters[i].selectOne == 'Y') selectOne = true;
+			if (listOfParameters[i].selectAll == 'Y') selectAll = true;
 
+			var selectSuccess = generateSelectSuccessFunction(listOfParameters[i].name, listOfParameters[i].label, selectOne, selectAll, selectOnClickFunction);
+			var sqlParams = {};
+			sqlParams[pVariable] = pValue ;
+			getReportData(listOfParameters[i].name, sqlParams, selectSuccess, true) 
+		}
+	}
+};
+
+var getVariableName = function(paramName) {
+
+	for (var i in listOfParameters)
+	{
+		if (listOfParameters[i].name == paramName) return listOfParameters[i].variable;
+	}
+	
+	alert("System Error: Parameter Name: " + paramName + "not found");
+}
+
+function generateSelectSuccessFunction(paramName, paramLabel, selectOne, selectAll, selectOnClickFunction) {
+
+	var selectSuccess = function(data, textStatus,jqXHR){
+							var selectData = [];
+							for (var i in data.data )
+							{
+								selectData.push({id: data.data[i].row[0], name: data.data[i].row[1]});
+							}
+							
+							var selectTagParams = {
+													divName: '#' + paramName,
+													label: paramLabel,
+													selectOnClick: selectOnClickFunction,
+													selectData: selectData
+												};
+							makeSelectTag(selectTagParams, selectOne, selectAll, false);
+						};
+	return selectSuccess
+}
 
 function initialiseSuccessFunctionVariables(){
 var tmpRow;
@@ -629,7 +695,8 @@ setupParameterListSuccess = function(data, textStatus, jqXHR){
   								formatType: data.data[i].row[4],
   								defaultVal: data.data[i].row[5],
   								selectOne: data.data[i].row[6],
-  								selectAll: data.data[i].row[7]
+  								selectAll: data.data[i].row[7],
+  								parentParameterName: data.data[i].row[8]
 						}
 						listOfParameters.push(tmpRow); 
 					}
@@ -638,7 +705,6 @@ setupParameterListSuccess = function(data, textStatus, jqXHR){
 
 setupReportListSuccess = function(data, textStatus, jqXHR){
  					showMsgE("In setupReportListSuccess");
-					getReportData('FullParameterList', {}, setupParameterListSuccess, true);
 
 					var prevId = -1;
 					var currId;
@@ -690,6 +756,19 @@ setupReportListSuccess = function(data, textStatus, jqXHR){
 									}
 								
 					makeSelectTag(listOfReportsTag, true, false, true);
+					
+ 
+					var reportListingString = '';
+					if (reportListing.length > 0)
+					{
+						for (var i in reportListing)
+						{
+							reportListingString += ",'" + reportListing[i].name + "'";
+						}
+						reportListingString = reportListingString.substring(1);
+					}
+					var parameterParams = { "reportListing": reportListingString };
+					getReportData('FullParameterList', parameterParams, setupParameterListSuccess, true);
 			};
 }
 
@@ -778,26 +857,6 @@ dataTableDef = {
 	}
 
 }
-
-
-function generateSelectSuccessVariable(paramName, paramLabel, selectOne, selectAll) {
-
-return 'var selectSuccess = function(data, textStatus,jqXHR){' +
-					' var selectData = [];' +
-					' for (var i in data.data )' +
-					' {' +
-						'selectData.push({id: data.data[i].row[0], name: data.data[i].row[1]});' + 
-					' }' +
-			    		" selectTagParams = {divName: '#" + paramName + "'," +
-									"label: '" + paramLabel + "'," +
-									"selectOnClick: '$.stretchyReporting.nothingCallback()'," +
-									"selectData: selectData " +
-									'};' +
-					' makeSelectTag(selectTagParams, ' + selectOne + ', ' + selectAll + ', false);' +
-			'};';
-
-}
-
 
 function createChart(theData) {
 
@@ -1024,7 +1083,7 @@ function getReportData(rptName, inParams, successFunction, isParameterType) {
 	else getReportDataNoAuth(rptName, inParams, successFunction, isParameterType);
 }
 
-
+/*
 function getReportDataAuth(rptName, inParams, successFunction, isParameterType) {
 alert("needs fixing up, dont rely on data")
 return
@@ -1053,7 +1112,7 @@ return
 
 
 }
-	
+*/
 
 function buildReportParms(inParams) {
 
@@ -1407,6 +1466,14 @@ function showMsgE(msg) {
 	// console.log(msg);
 }
 
+
+function fnRecordsDisplay(){
+// oSettings isn't defined when table first created but coding around to not
+// call this method until after it is.
+	// if (typeof(oSettings) != "undefined") return oSettings.fnRecordsDisplay()
+	// else return 0;
+	return oSettings.fnRecordsDisplay();
+}
 
 })(jQuery);
 
