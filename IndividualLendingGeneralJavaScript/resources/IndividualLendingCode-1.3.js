@@ -2447,6 +2447,7 @@ function showILGroup(groupId){
 		refreshGroupLoanSummaryInfo(groupUrl);
 
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
+        refreshCalendarWidget(currentGroupId, 'groups', 'centerCalendarContent');
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
@@ -5344,6 +5345,12 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 		}else{
 			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 		}
+		
+		//Calendar RecurringRule construct
+		if (postUrl.toLowerCase().indexOf("calendars") > 0){
+		    $('#recurrence').val(convertToRfc5545());
+
+		}  
 	};
 	// end of buttonsOpts for save button
 	
@@ -6646,3 +6653,184 @@ function repopulateSavingAccountForm(clientId, productId){
             })
         })
     }
+
+
+function refreshCalendarWidget(resourceId, resource, calendarContent) {
+                    
+    eval(genRefreshCalendarWidgetSuccessVar(resourceId, resource, calendarContent));
+    executeAjaxRequest(resource + '/' + resourceId + '/calendars', 'GET', "", successFunction, formErrorFunction);
+}
+function genRefreshCalendarWidgetSuccessVar(resourceId, resource, calendarContent) {
+
+return 'var successFunction = function(data, textStatus, jqXHR) {   ' +
+          ' var calendar = new Object();' + 
+          ' calendar.crudRows = data;' +
+          ' var tableHtml = $("#calendarWidgetFormTemplate").render(calendar);' +
+          ' $("#' + calendarContent + '").html(tableHtml);' +
+          ' $(".editcalendar").click(function(e) { ' +
+                ' var linkId = this.id;' +
+                ' var contentDiv = ' + calendarContent + ';' +
+                ' var calendarId = linkId.replace("editcalendarlink", "");' +
+                ' var getAndPutUrl = "' + resource + "/" + resourceId + '/calendars/" + calendarId;' +
+                ' var templateSelector = "#calendarFormTemplate";' +
+                ' var width = 600;' +
+                ' var height = 550;' +
+                ' var saveSuccessFunction = function(data, textStatus, jqXHR) {' +
+                    ' $("#dialog-form").dialog("close");' +
+                    ' refreshCalendarWidget(' + resourceId + ',' + resource + ',contentDiv);' +
+                ' };' +
+                ' editCalendar(' + resourceId + ',"' + resource + '","' + calendarContent + '",calendarId);' +
+                //' popupDialogWithFormView(getAndPutUrl, getAndPutUrl, "PUT", "dialog.title.edit.note", templateSelector, width, height,  saveSuccessFunction);' +
+                ' e.preventDefault();' +
+          ' });' +
+      ' };'
+}    
+
+function addCalendar(resourceId, resource, contentDiv){
+    var postUrl = resource + "/" + resourceId + "/calendars";
+    getCalendar(resourceId, resource, contentDiv, 'template', 'POST', postUrl);
+}
+
+function editCalendar(resourceId, resource, contentDiv, calendarId){
+    var action = calendarId + '?template=true';
+    var putUrl = resource + "/" + resourceId + "/calendars/" + calendarId;
+    getCalendar(resourceId, resource, contentDiv, action, 'PUT', putUrl);
+}
+
+function getCalendar(resourceId, resource, contentDiv, action, submitType, postPutUrl){
+
+    var getUrl = resource + "/" + resourceId + "/calendars/" + action;
+        
+    var dialogTitle = 'dialog.title.add.calendar';
+    var templateSelector = "#calendarFormTemplate";
+    var width = 800;
+    var height = 560;
+        
+    var successFunction = function(data, textStatus, jqXHR) {
+        
+        var saveSuccessFunction = function(data, textStatus, jqXHR) {
+            $("#dialog-form").dialog("close");
+            refreshCalendarWidget(resourceId, resource, contentDiv);
+        }
+        
+        popupDialogWithFormViewData(data, postPutUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
+        
+        $('#typeId').val(data.type.id);
+        $('#remindById').val(data.remindBy.id);
+
+        var repeats =  $('select.repeats');
+        var repeatsEvery = $('select.repeatsEvery');
+        
+        $('input:checkbox[name=repeating]').change(function(){
+            var repeatdetails = $('#repeatingdetails');
+            var checked = this.checked ? repeatdetails.show(): repeatdetails.hide();
+        });
+        
+        var repeatsOptions = {
+            "Daily":"day(s)",
+            "Weekly":"week(s)",
+            "Monthly":"month(s)",
+            "Yearly":"year(s)"
+        }
+                            
+        //Load Repeats options
+        repeats.empty().append(function() {
+            var output = '';
+            $.each(repeatsOptions, function(key, value) {
+                output += '<option value="' + key + '">' + key + '</option>';
+            });
+            return output;
+        });
+                
+        repeatsEvery.empty().append(function() {
+            var output = '';
+            for(i=1; i<=30; i++){
+                output += '<option value="' + i + '">' + i + '</option>';
+            }
+            return output;
+        });
+        
+        repeats.change(function() {
+            var textOpt = repeatsOptions[repeats.val()];
+            $('.repeatsOnText').html(textOpt);
+            if(repeats.val() == "Weekly"){
+                $('#weeklyoptions').show();    
+            }else{
+                $('#weeklyoptions').hide();
+            }
+        });
+    
+        $( "input:radio" ).on( "click", function() {
+            var checkedValue = $("input:checked").val();
+            switch (checkedValue) {
+                case "endsnever":
+                    $('.endsafter').val('').attr('readonly', true);                  
+                break;
+                case "endsafter":
+                    $('.endsafter').attr('readonly', false);
+                break;
+                case "enddate":
+                    $('.endsafter').val('').attr('readonly', true);
+                break;
+            }
+            
+        });        
+        
+        $('#weeklyoptions').hide();
+                                       
+    }
+
+    executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
+
+}
+
+function convertToRfc5545(){
+    // RRULE TEMPLATES
+    var recuringFields = ['repeats','endson'];
+    var rruletemplate = {
+        "Daily":"FREQ=DAILY",
+        "Weekly":"FREQ=WEEKLY",
+        "Monthly":"FREQ=MONTHLY",
+        "Yearly": "FREQ=YEARLY"
+    }
+
+    var field, freq, interval, rrule, occurrences, date;
+
+    //Get Frequency
+    freq = $("#repeats").val();
+    rrule = rruletemplate[freq];
+    interval = $('#repeatsEvery').val();
+    if (interval !== '1') {
+        rrule += ';INTERVAL=' + interval;
+    }
+    
+    if(freq == "Weekly"){
+        //Get weekly details
+        var values = new Array();
+        $.each($("input[name='repeatson[]']:checked"), function() {
+          values.push($(this).val());
+        });
+        
+        if (values) {
+            rrule += ';BYDAY=' + values.toString();
+        }
+    }
+    
+    //Ends on
+    var endType = $('input[name=endson]:checked').val();
+    
+    switch (endType) {
+
+    case 'endsafter':
+        occurrences = $('input[name=endsafter]').val();
+        rrule += ';COUNT=' + occurrences;
+        break;
+    case 'enddate':
+        field = $('input[name=endDate]');
+        date = field.data('dateinput').getValue('yyyymmdd');
+        result += ';UNTIL=' + date + 'T000000';
+        break;
+    }
+        
+    return rrule;
+}
