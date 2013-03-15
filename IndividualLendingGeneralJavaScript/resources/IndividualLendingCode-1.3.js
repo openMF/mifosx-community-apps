@@ -1617,8 +1617,13 @@ function addGroup(levelid , parentGroupId) {
 		var templateSelector = "#groupFormTemplate";
 		var width = 900; 
 		var height = 500;
+		var title = 'dialog.title.add.grouping.at.level.' + levelid ;
 		
-		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.group', templateSelector, width, height, addGroupSuccessFunction , parentGroupId);
+		if(!(parentGroupId === undefined)){
+			var extraParam = '{"action":"disable"'  + ' , "parentGroupId":"'+ parentGroupId +'"}';
+		}
+
+		popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addGroupSuccessFunction , extraParam);
 		
 	    e.preventDefault();
 }
@@ -1626,7 +1631,6 @@ function addGroup(levelid , parentGroupId) {
 // Add New Client 
 function addClient(officeId, parentGroupId){
 
-		var extraParam = '{"officeId":"'+ officeId + '" , "groupId":"'+ parentGroupId +'"}';
 
 		var addClientSuccessFunction = function(data, textStatus, jqXHR) {
 		  $('#dialog-form').dialog("close");
@@ -1639,6 +1643,7 @@ function addClient(officeId, parentGroupId){
 		var width = 600; 
 		var height = 350;
 		
+		var extraParam = '{"officeId":"'+ officeId + '" , "groupId":"'+ parentGroupId +'"}';
 		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.client', templateSelector, width, height, addClientSuccessFunction , extraParam);
 
 }
@@ -2481,7 +2486,9 @@ function showILGroup(groupId){
 				  	showILGroup(groupId);
 				}
 				
-				popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.group", templateSelector, width, height,  saveSuccessFunction);
+				var title = 'dialog.title.edit.grouping.at.level.' + data.groupLevelData.levelId;
+
+				popupDialogWithFormView(getUrl, putUrl, 'PUT', title, templateSelector, width, height,  saveSuccessFunction , extraParam);
 			    e.preventDefault();
 			});
 
@@ -5153,7 +5160,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 		  		}
 		  		
 				// When create Client is invoked from parent group profile 
-				// set  parentGroup and Office by defualt and make is un-editable
+				// set  parentGroup and Office by default and make it un-editable
 
 				if (templateSelector == "#clientFormTemplate") 
 				{
@@ -5165,20 +5172,29 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 							$('#officeId').prop('disabled', true);
 							$('<input>').attr({type: 'hidden',id: 'officeId',name: 'officeId',value:officeId}).appendTo('#entityform');
 							$('<input>').attr({type: 'hidden',id: 'groupId',name: 'groupId',value:groupId}).appendTo('#entityform');
-
-
 						}	
 				}
 
 				if (templateSelector == "#groupFormTemplate") 
 				{
-					
-					$('#officeId').prop('disabled', true);
 
-					if(!(extraParam === undefined) ){
-						$('#parentId').prop('disabled', true);
-						$('<input>').attr({type: 'hidden',id: 'parentId',name: 'parentId',value:extraParam}).appendTo('#entityform');
-					}	
+					// Scenario 1: For creating new group from quick link extraParam will be undefined
+					// Scenario 2: For creating new group from parent group extraParam will be defined and disable selecting parent group
+					// Scenario 3: For editing group extraParam will be undefined
+
+					if(!(extraParam === undefined)){
+						var groupId = jQuery.parseJSON(extraParam).parentGroupId;
+						var action = jQuery.parseJSON(extraParam).action;
+						$('#officeId').prop('disabled', true);
+						if(!(groupId === undefined) ){
+							$("#parentId option[value='"+ groupId +"']").attr("selected", "selected");
+							if(action == 'disable'){
+								$('#parentId').prop('disabled', true);
+								$('<input>').attr({type: 'hidden',id: 'parentId',name: 'parentId',value:groupId}).appendTo('#entityform');
+
+							}
+						}	
+					}
 				}
 				//End group create specific code
 
