@@ -4545,6 +4545,39 @@ function loadILLoan(loanId) {
 
 				//also fetch loan documents for this loan
 				refreshLoanDocuments(loanId);
+				
+				//jqueryify charges buttons
+				if(data.charges !=null){
+				     $.each(data.charges, function(i, val) {
+				        //waive loan charge buttons
+                        $('#waiveloan'+ loanId +'charge'+val.id).button(
+                            {icons: {
+                            primary: "ui-icon-flag"},
+                            text: false
+                        }).click(function(e) {
+                            waiveLoanCharge(loanId,val.id);
+                            e.preventDefault();
+                        });
+                        //delete loan charge buttons
+                         $('#deleteloan'+ loanId +'charge'+val.id).button(
+                            {icons: {
+                            primary: "ui-icon-trash"},
+                            text: false
+                        }).click(function(e) {
+                            removeLoanCharge(loanId,val.id);
+                            e.preventDefault();
+                        });
+                        //modify loan charge buttons
+                         $('#modifyloan'+ loanId +'charge'+val.id).button(
+                            {icons: {
+                            primary: "ui-icon-pencil"},
+                            text: false
+                        }).click(function(e) {
+                            modifyLoanCharge(loanId,val.id);
+                            e.preventDefault();
+                        });
+                    });
+                }
 	        };
 	    
 		executeAjaxRequest(loanUrl, 'GET', "", successFunction, errorFunction);	  
