@@ -936,7 +936,7 @@ $(document).ready(function() {
 <script id="groupHierarchyTemplate" type="text/x-jquery-tmpl">
 	<ul>
 		{{#each crudRows}}
-			<li><a href="#" class="addgroup" onClick="addGroup({{=id}});">{{=$ctx.doI18N("label.group.manage.create.new")}}{{=levelName}}</a></li>
+			<li><a href="#" class="addgroup" onClick="addGroup({{=levelId}});">{{=$ctx.doI18N("label.group.manage.create")}}&nbsp;{{=levelName}}</a></li>
 		{{/each}}
 	</ul>	
 </script>
@@ -1223,8 +1223,13 @@ $(document).ready(function() {
 			<div>
 				<label for="parent">{{=$ctx.doI18N("label.group.parent")}}</label>
 				<select id="parentId" name="parentId" title="">
+                    <option value="">{{=$ctx.doI18N("option.group.select.parent.first.choice")}}</option>
 					{{#each allowedParentGroups}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                        {{#if $ctx.number($parent.parent.data.parentId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                        {{/if}}                            
 					{{/each}}
 				</select>
 				</div>
@@ -1235,8 +1240,13 @@ $(document).ready(function() {
 			<td colspan="2">
 				<label for="staffs">{{=$ctx.doI18N("label.group.staff")}}</label>
 				<select id="staffId" name="staffId" title="">
-					{{#each allowedStaffs}}
-							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+                    <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
+                    {{#each allowedStaffs}}
+                        {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+                        {{/if}}                              
 					{{/each}}
 				</select>
 			</td>
