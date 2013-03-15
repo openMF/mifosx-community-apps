@@ -2489,6 +2489,8 @@ function showILGroup(groupId){
 				
 				var title = 'dialog.title.edit.grouping.at.level.' + data.groupLevelData.levelId;
 
+				var extraParam = '{"action":"disable"}';
+
 				popupDialogWithFormView(getUrl, putUrl, 'PUT', title, templateSelector, width, height,  saveSuccessFunction , extraParam);
 			    e.preventDefault();
 			});
