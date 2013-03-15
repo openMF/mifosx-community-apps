@@ -1875,6 +1875,27 @@ $(document).ready(function() {
                     <span class="rowvalue">{{=$ctx.doI18N("label.group.externalid")}}</span>
                     <span class="rowvalue">{{=externalId}}</span>
                 </div>
+                <div class="row">
+                    <div width="30%">
+                        <table width="30%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+                            <tbody>
+                                <tr>
+                                    <td class="bluetablehead05">
+                                        <span class="fontnormalbold">{{=$ctx.doI18N("label.calendar.details")}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div id="centerCalendarContent">
+                                        </div>
+                                    </td>
+                                </tr>
+                                 
+                            </tbody>
+                        </table>
+                        <a href="#" onclick="addCalendar({{=id}}, 'groups', 'centerCalendarContent');" id="addCalendarLink" style="alignment-adjust:text-after-edge" >Add Calendar</a>
+                    </div>
+                </div>
             </div>
 			<!-- end of left pane content -->
 		</div>
@@ -8968,7 +8989,174 @@ function showLockinOptions(){
     </tbody>
 </table>
 </script>
+<script id="calendarFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+    <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+    <div id="formerrors"></div>
+    </div>
+    <fieldset>
+        <legend>{{=$ctx.doI18N("form.legend.calendar.details")}}</legend>
+        <div>
+        <table>
+            <tr>
+                <td colspan="3">
+                    <label for="title">{{=$ctx.doI18N("label.calendar.title")}}</label>
+                    <input id="title" name="title" title="" type="text" value="{{=title}}" size="75"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="description">{{=$ctx.doI18N("label.calendar.description")}}</label>
+                    <input id="description" name="description" title="" type="text" value="{{=description}}" size="30"/>
+                </td>
+                <td>
+                    <label for="location">{{=$ctx.doI18N("label.calendar.location")}}</label>
+                    <input id="location" name="location" title="" type="text" value="{{=location}}" size="30"/>
+                </td>
+                <td>
+                    <label for="type">{{=$ctx.doI18N("label.calendar.type")}}</label>
+                    <select id="typeId" name="typeId" title="" value="{{=type.id}}">
+                        <option value="">{{=$ctx.doI18N("calendar.type.first.choice")}}</option>
+                        {{#each calendarTypeOptions}}
+                        <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="startDate">{{=$ctx.doI18N("label.calendar.start.date")}}</label>
+                    <input name="startDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(startDate)}}" />
+                </td>
+                <td>
+                    <label for="duration">{{=$ctx.doI18N("label.calendar.duration")}}</label>
+                    <input id="duration" name="duration" title="" type="text" value="{{=duration}}" size="30"/>
+                </td>
+                
+            </tr>
+            <tr>
+                <td>
+                    <label for="remindBy">{{=$ctx.doI18N("label.calendar.remind.by")}}</label>
+                    <select id="remindById" name="remindById" title="" value="{{=remindBy.id}}">
+                        <option value="">{{=$ctx.doI18N("calendar.remind.by.first.choice")}}</option>
+                        {{#each remindByOptions}}
+                        <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                        {{/each}}
+                    </select>
+                </td>
+                <td>
+                    <label for="firstReminder">{{=$ctx.doI18N("label.calendar.first.reminder")}}</label>
+                    <input id="firstReminder" name="firstReminder" title="" type="text" value="{{=firstReminder}}" size="30"/>
+                </td>
+                <td>
+                    <label for="secondReminder">{{=$ctx.doI18N("label.calendar.second.reminder")}}</label>
+                    <input id="secondReminder" name="secondReminder" title="" type="text" value="{{=secondReminder}}" size="30"/>
+                </td>                
+            </tr>
+            <tr>
+                <td>
+                    <label for="repeat">{{=$ctx.doI18N("label.calendar.repeat")}}</label>
+                    <input type="checkbox" id="repeating" name="repeating" title="" checked="{{=repeating}}" style="width: 125px;" />
+                </td>                
+                <td>
+                
+                </td>
+                <td>
+                
+                </td>
+            </tr>
+        </table>
+        </div>
+        <input type="hidden" id="recurrence" name="recurrence" value="{{=recurrence}}" />
+    </fieldset>
+</form>
+    <fieldset id="repeatingdetails">
+        <legend>{{=$ctx.doI18N("form.legend.calendar.repeat.details")}}</legend>
+        <div id="calendarRepeat">            
+            <table>
+                <tr>
+                    <td>
+                        <label for="repeats">{{=$ctx.doI18N("label.calendar.repeats")}}</label>
+                        <select id="repeats" class="repeats" name="repeats" title="">
+                        </select>
+                    </td>
+                    <td>
+                        <label for="repeatsEvery">{{=$ctx.doI18N("label.calendar.repeats.every")}}</label>
+                        <select id="repeatsEvery" class="repeatsEvery" name="repeatsEvery" title="">
+                        </select> <span class=repeatsOnText>day(s)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br>
+                        <div id="weeklyoptions">
+                        <label for="repeats">{{=$ctx.doI18N("label.calendar.repeats.on")}}</label>
+                        <input type="checkbox" id="mon" value="MO" name="repeatson[]" checked="checked">MON
+                        <input type="checkbox" id="tue" value="TU" name="repeatson[]"/>TUE
+                        <input type="checkbox" id="wed" value="WE" name="repeatson[]"/>WED
+                        <input type="checkbox" id="thu" value="TH" name="repeatson[]"/>THU
+                        <input type="checkbox" id="fri" value="FR" name="repeatson[]"/>FR
+                        <input type="checkbox" id="sat" value="SA" name="repeatson[]"/>SAT
+                        <input type="checkbox" id="sun" value="SU" name="repeatson[]"/>SUN
+                        </div>
+                        <br>
+                        
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td>
+                        <br>
+                        <label for="ends">{{=$ctx.doI18N("label.calendar.ends")}}</label>
+                        
+                    </td>
+                    <td>
+                        <br>
+                        <input type="radio" id="endsnever" name="endson" value="endsnever" checked="true">{{=$ctx.doI18N("label.calendar.ends.never")}}</input>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td>
+                                                
+                    </td>
+                    <td>
+                        <input type="radio" id="endsafter" name="endson" value="endsafter">{{=$ctx.doI18N("label.calendar.ends.after")}}</input>
+                        <input id="endsafter" class="endsafter" name="endsafter" title="" type="text" value="" size="10"/>{{=$ctx.doI18N("label.calendar.ends.after.occurances")}}
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td>
+                                                
+                    </td>
+                    <td>
+                        <input type="radio" id="endson" name="endson" value="enddate">{{=$ctx.doI18N("label.calendar.ends.on")}}</input>
+                        <input name="endDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(endDate)}}" />
+                    </td>                    
+                </tr>
+            </table>
+        </div>
+    </fieldset>
 
+</script>
+<script id="calendarWidgetFormTemplate" type="text/x-jquery-tmpl">
+    {{#each crudRows}}
+        <div class="notespacer">
+            <span class="ui-icon ui-icon-calendar" style="float: left; margin-right: 5px;"></span>
+            <span>Name: {{=title}}</span>
+            &nbsp;&nbsp;&nbsp;:<span><a href="#" class="editcalendar" id="editcalendarlink{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</a></span>
+        </div>
+        <div class="notespacer">
+            <span>Calendar Type: {{=type.value}}</span>
+        </div>
+        <div class="notespacer">
+            <span>Start Date: {{=$ctx.globalDate(startDate)}}</span>
+        </div>
+        <hr>
+    {{/each}}
+</script>
 </body>
 
 </html>
