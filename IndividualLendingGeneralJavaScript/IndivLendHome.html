@@ -1309,7 +1309,7 @@ $(document).ready(function() {
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
 				<tr>
-					<td colspan="3" align="center"><b>{{=$ctx.doI18N("label.clientIdentityDocumentType")}} {{=documentTypeName}}</b></td>
+					<td colspan="3" align="center"><b>{{=$ctx.doI18N("label.clientIdentityDocumentType")}} {{=documentType.name}}</b></td>
 				</tr>
 				<tr>
 					<td colspan="1">
@@ -1350,11 +1350,19 @@ $(document).ready(function() {
 		<tr>
 			<td>
 				<label for="documentTypeId">{{=$ctx.doI18N("label.identityDocumentType")}}</label>
+				 <!--Show select one dropdown only while creating new client Identifiers-->
 				<select id="documentTypeId" name="documentTypeId" title="">
-					<option value="">{{=$ctx.doI18N("label.identityDocumentType.option.first.choice")}}</option>
+				    {{#if documentType}}
+					{{#else}}
+					   <option value="">{{=$ctx.doI18N("label.identityDocumentType.option.first.choice")}}</option>
+					{{/if}} 
 					{{#each allowedDocumentTypes}}
-				        {{#if $ctx.number($parent.parent.data.documentTypeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+					    {{#if $parent.parent.data.documentType}}
+				            {{#if $ctx.number($parent.parent.parent.data.documentType.id)===$ctx.number(id)}}
+					           <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+						    {{#else}}
+                                <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                            {{/if}}
 						{{#else}}
 							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
 						{{/if}}
