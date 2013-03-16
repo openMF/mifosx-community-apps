@@ -1732,7 +1732,7 @@ function showILClient(clientId) {
 	var successFunction = function(data, status, xhr) {
 					//do we fetch image data?
 					if(data.imagePresent == true){
-						executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);	
+						executeAjaxRequestForImageDownload('clients/' + clientId + '/images', 'GET', imageFetchSuccessFunction, errorFunction);	
 					}
 	        		currentClientId = clientId;
 	        		clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
@@ -1836,7 +1836,7 @@ function showILClient(clientId) {
 						var templateSelector = "#clientImageWebcamFormTemplate";
 						var width = 775; 
 						var height = 400;
-	            		popupDialogWithFormView("", 'clients/' + clientId + '/image', 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  imageUploadSuccessFunction);
+	            		popupDialogWithFormView("", 'clients/' + clientId + '/images', 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  imageUploadSuccessFunction);
 	            		var pos = 0; 
 	            		var ctx = null; 
 	            		var image = [];
@@ -1894,14 +1894,14 @@ function showILClient(clientId) {
 	                	text: false
 	            	}).click(function(e) {
 						var getUrl = '';
-						var putUrl = 'clients/' + clientId + '/image';
+						var putUrl = 'clients/' + clientId + '/images';
 						var templateSelector = "#clientImageUploadFormTemplate";
 						var width = 600; 
 						var height = 250;
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						  $("#dialog-form").dialog("close");
-						  executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);
+						  executeAjaxRequestForImageDownload('clients/' + clientId + '/images', 'GET', imageFetchSuccessFunction, errorFunction);
 						};
 						
 						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunction);
@@ -1912,7 +1912,7 @@ function showILClient(clientId) {
 	                	primary: "ui-icon-trash"},
 	                	text: false
 	            	}).click(function(e) {
-					var url = 'clients/' + clientId + '/image';
+					var url = 'clients/' + clientId + '/images';
 					var width = 400; 
 					var height = 225;
 					var saveSuccessFunction = function(data, textStatus, jqXHR) {
@@ -2010,7 +2010,7 @@ function showClientInGroups(clientId , name){
 	var successFunction = function(data, status, xhr) {
 					//do we fetch image data?
 					if(data.imagePresent == true){
-						executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);	
+						executeAjaxRequestForImageDownload('clients/' + clientId + '/images', 'GET', imageFetchSuccessFunction, errorFunction);	
 					}
 	        		currentClientId = clientId;
 	        		clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
@@ -2114,7 +2114,7 @@ function showClientInGroups(clientId , name){
 						var templateSelector = "#clientImageWebcamFormTemplate";
 						var width = 775; 
 						var height = 400;
-	            		popupDialogWithFormView("", 'clients/' + clientId + '/image', 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  imageUploadSuccessFunction);
+	            		popupDialogWithFormView("", 'clients/' + clientId + '/images', 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  imageUploadSuccessFunction);
 	            		var pos = 0; 
 	            		var ctx = null; 
 	            		var image = [];
@@ -2172,14 +2172,14 @@ function showClientInGroups(clientId , name){
 	                	text: false
 	            	}).click(function(e) {
 						var getUrl = '';
-						var putUrl = 'clients/' + clientId + '/image';
+						var putUrl = 'clients/' + clientId + '/images';
 						var templateSelector = "#clientImageUploadFormTemplate";
 						var width = 600; 
 						var height = 250;
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						  $("#dialog-form").dialog("close");
-						  executeAjaxRequestForImageDownload('clients/' + clientId + '/image', 'GET', imageFetchSuccessFunction, errorFunction);
+						  executeAjaxRequestForImageDownload('clients/' + clientId + '/images', 'GET', imageFetchSuccessFunction, errorFunction);
 						};
 						
 						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunction);
@@ -2190,7 +2190,7 @@ function showClientInGroups(clientId , name){
 	                	primary: "ui-icon-trash"},
 	                	text: false
 	            	}).click(function(e) {
-					var url = 'clients/' + clientId + '/image';
+					var url = 'clients/' + clientId + '/images';
 					var width = 400; 
 					var height = 225;
 					var saveSuccessFunction = function(data, textStatus, jqXHR) {
@@ -5337,7 +5337,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			var imageForUpload = imageCanvas.toDataURL("image/jpeg");
 			executeAjaxRequest(postUrl, submitType, imageForUpload, saveSuccessFunction, formErrorFunction);
 		}
-		else if (postUrl.toLowerCase().indexOf("documents") >= 0 || postUrl.toLowerCase().indexOf("image") >= 0){
+		else if (postUrl.toLowerCase().indexOf("documents") >= 0 || postUrl.toLowerCase().indexOf("images") >= 0){
 			var formData = new FormData();    
 			formData.append( 'file', $('#file')[0].files[0] );
 			$.each(serializedArray, function (name, val) {
