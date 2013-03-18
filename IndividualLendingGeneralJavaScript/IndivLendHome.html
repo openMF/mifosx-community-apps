@@ -9008,7 +9008,7 @@ function showLockinOptions(){
         <div>
         <table>
             <tr>
-                <td colspan="3">
+                <td colspan="2">
                     <label for="title">{{=$ctx.doI18N("label.calendar.title")}}</label>
                     <input id="title" name="title" title="" type="text" value="{{=title}}" size="75"/>
                 </td>
@@ -9022,6 +9022,8 @@ function showLockinOptions(){
                     <label for="location">{{=$ctx.doI18N("label.calendar.location")}}</label>
                     <input id="location" name="location" title="" type="text" value="{{=location}}" size="30"/>
                 </td>
+            </tr>
+            <tr>
                 <td>
                     <label for="type">{{=$ctx.doI18N("label.calendar.type")}}</label>
                     <select id="typeId" name="typeId" title="" value="{{=type.id}}">
@@ -9031,19 +9033,18 @@ function showLockinOptions(){
                         {{/each}}
                     </select>
                 </td>
-            </tr>
-            <tr>
+
                 <td>
                     <label for="startDate">{{=$ctx.doI18N("label.calendar.start.date")}}</label>
-                    <input name="startDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(startDate)}}" />
-                </td>
-                <td>
-                    <label for="duration">{{=$ctx.doI18N("label.calendar.duration")}}</label>
-                    <input id="duration" name="duration" title="" type="text" value="{{=duration}}" size="30"/>
+                    <input id="startDate" name="startDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(startDate)}}" />
                 </td>
                 
             </tr>
             <tr>
+                <td>
+                    <label for="duration">{{=$ctx.doI18N("label.calendar.duration")}}</label>
+                    <input id="duration" name="duration" title="" type="text" value="{{=duration}}" size="10"/>
+                </td>
                 <td>
                     <label for="remindBy">{{=$ctx.doI18N("label.calendar.remind.by")}}</label>
                     <select id="remindById" name="remindById" title="" value="{{=remindBy.id}}">
@@ -9052,24 +9053,24 @@ function showLockinOptions(){
                         <option value="{{=$ctx.number(id)}}">{{=value}}</option>
                         {{/each}}
                     </select>
+                    
                 </td>
-                <td>
-                    <label for="firstReminder">{{=$ctx.doI18N("label.calendar.first.reminder")}}</label>
-                    <input id="firstReminder" name="firstReminder" title="" type="text" value="{{=firstReminder}}" size="30"/>
-                </td>
-                <td>
-                    <label for="secondReminder">{{=$ctx.doI18N("label.calendar.second.reminder")}}</label>
-                    <input id="secondReminder" name="secondReminder" title="" type="text" value="{{=secondReminder}}" size="30"/>
-                </td>                
             </tr>
             <tr>
                 <td>
-                    <label for="repeat">{{=$ctx.doI18N("label.calendar.repeat")}}</label>
-                    <input type="checkbox" id="repeating" name="repeating" title="" checked="{{=repeating}}" style="width: 125px;" />
-                </td>                
-                <td>
-                
+                   <label for="firstReminder">{{=$ctx.doI18N("label.calendar.first.reminder")}}</label>
+                    <input id="firstReminder" name="firstReminder" title="" type="text" value="{{=firstReminder}}" size="10"/> 
                 </td>
+                <td>
+                    <label for="secondReminder">{{=$ctx.doI18N("label.calendar.second.reminder")}}</label>
+                    <input id="secondReminder" name="secondReminder" title="" type="text" value="{{=secondReminder}}" size="10"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="repeat" style="display: inline">{{=$ctx.doI18N("label.calendar.repeat")}}</label>
+                    <input type="checkbox" id="repeating" name="repeating" title="" />
+                </td>                
                 <td>
                 
                 </td>
@@ -9100,13 +9101,13 @@ function showLockinOptions(){
                         <br>
                         <div id="weeklyoptions">
                         <label for="repeats">{{=$ctx.doI18N("label.calendar.repeats.on")}}</label>
-                        <input type="checkbox" id="mon" value="MO" name="repeatson[]" checked="checked">MON
-                        <input type="checkbox" id="tue" value="TU" name="repeatson[]"/>TUE
-                        <input type="checkbox" id="wed" value="WE" name="repeatson[]"/>WED
-                        <input type="checkbox" id="thu" value="TH" name="repeatson[]"/>THU
-                        <input type="checkbox" id="fri" value="FR" name="repeatson[]"/>FR
-                        <input type="checkbox" id="sat" value="SA" name="repeatson[]"/>SAT
-                        <input type="checkbox" id="sun" value="SU" name="repeatson[]"/>SUN
+                        <input type="radio" id="mon" value="MO" name="repeatson[]" checked="checked">MON
+                        <input type="radio" id="tue" value="TU" name="repeatson[]"/>TUE
+                        <input type="radio" id="wed" value="WE" name="repeatson[]"/>WED
+                        <input type="radio" id="thu" value="TH" name="repeatson[]"/>THU
+                        <input type="radio" id="fri" value="FR" name="repeatson[]"/>FRI
+                        <input type="radio" id="sat" value="SA" name="repeatson[]"/>SAT
+                        <input type="radio" id="sun" value="SU" name="repeatson[]"/>SUN
                         </div>
                         <br>
                         
@@ -9121,7 +9122,7 @@ function showLockinOptions(){
                     </td>
                     <td>
                         <br>
-                        <input type="radio" id="endsnever" name="endson" value="endsnever" checked="true">{{=$ctx.doI18N("label.calendar.ends.never")}}</input>
+                        <input type="radio" id="endsnever" name="endsonrd" value="endsnever" checked="true">{{=$ctx.doI18N("label.calendar.ends.never")}}</input>
                     </td>
                     
                 </tr>
@@ -9130,7 +9131,7 @@ function showLockinOptions(){
                                                 
                     </td>
                     <td>
-                        <input type="radio" id="endsafter" name="endson" value="endsafter">{{=$ctx.doI18N("label.calendar.ends.after")}}</input>
+                        <input type="radio" id="endsafterrd" name="endsonrd" value="endsafter">{{=$ctx.doI18N("label.calendar.ends.after")}}</input>
                         <input id="endsafter" class="endsafter" name="endsafter" title="" type="text" value="" size="10"/>{{=$ctx.doI18N("label.calendar.ends.after.occurances")}}
                     </td>
                     
@@ -9140,8 +9141,8 @@ function showLockinOptions(){
                                                 
                     </td>
                     <td>
-                        <input type="radio" id="endson" name="endson" value="enddate">{{=$ctx.doI18N("label.calendar.ends.on")}}</input>
-                        <input name="endDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(endDate)}}" />
+                        <input type="radio" id="endson" name="endsonrd" value="endondate">{{=$ctx.doI18N("label.calendar.ends.on")}}</input>
+                        <input name="endondate" id="endondate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(endDate)}}" />
                     </td>                    
                 </tr>
             </table>
@@ -9162,6 +9163,26 @@ function showLockinOptions(){
         <div class="notespacer">
             <span>Start Date: {{=$ctx.globalDate(startDate)}}</span>
         </div>
+        {{#if repeating == true}}
+        <div class="notespacer">
+            <span>Repeats on : {{=humanReadable}}</span>
+        </div>
+        
+        <div class="notespacer" id="showrecurlink">
+            <span><a href="#" class="recurshow" id="recurshow{{=id}}"> Show Recurring Dates </a> </span>
+        </div>
+        {{/if}}
+        <div class="notespacer" class="recurringdata" name="recurringdata" id="recurringdata{{=id}}" style="display: none;">
+            {{#each recurringDates}}
+            <div class="notespacer">
+                <span>{{=$ctx.globalDate($data)}}</span>
+            </div> 
+            {{/each}}
+            <div class="notespacer">
+                <span><a href="#" class="recurhide" id="recurhide{{=id}}"> Close </a> </span>
+            </div>   
+        </div>
+        
         <hr>
     {{/each}}
 </script>
