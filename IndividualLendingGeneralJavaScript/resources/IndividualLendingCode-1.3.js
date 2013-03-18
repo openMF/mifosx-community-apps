@@ -5323,6 +5323,34 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
     	   	populateCreditOrDebitArray("debits");
 			populateCreditOrDebitArray("credits");
 		}
+	
+	   //Caledar form data
+        if (postUrl.toLowerCase().indexOf("calendars") > 0){
+            
+            var rrule = convertToRfc5545();
+            serializedArray = {};
+            serializedArray["locale"] = $('#locale').val();
+            serializedArray["dateFormat"] = $('#dateFormat').val();
+            serializedArray["title"] = $('#title').val();
+            serializedArray["description"] = $('#description').val();
+            serializedArray["location"] = $('#location').val();
+            serializedArray["typeId"] = $('#typeId').val();
+            serializedArray["startDate"] = $('#startDate').val();
+            serializedArray["duration"] = $('#duration').val();
+            serializedArray["remindById"] = $('#remindById').val();
+            serializedArray["firstReminder"] = $('#firstReminder').val();
+            serializedArray["secondReminder"] = $('#secondReminder').val();
+            serializedArray["repeating"] = $('#repeating').val()==="on"?true:false;
+            serializedArray["recurrence"] = rrule;
+            
+            if($('input:checkbox[name=repeating]').is(':checked')){
+                if($('#endson').is(':checked')){
+                    serializedArray["endDate"] = $('#endondate').val();
+                }
+            }
+            
+        }
+	
 		
 		var newFormData = JSON.stringify(serializedArray);
 		if (postUrl.toLowerCase().indexOf("permissions") > -1) {
@@ -5330,7 +5358,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			permissions.permissions = serializedArray;
 			newFormData = JSON.stringify(permissions);
 		}
-	
+	        
 		//spl ajax req for webcam and doc upload
 		if( templateSelector == '#clientImageWebcamFormTemplate'){
 			var imageCanvas = $('#imageCanvas')[0];
@@ -5347,12 +5375,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 		}else{
 			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 		}
-		
-		//Calendar RecurringRule construct
-		if (postUrl.toLowerCase().indexOf("calendars") > 0){
-		    $('#recurrence').val(convertToRfc5545());
-
-		}  
+		  
 	};
 	// end of buttonsOpts for save button
 	
@@ -6685,6 +6708,27 @@ return 'var successFunction = function(data, textStatus, jqXHR) {   ' +
                 //' popupDialogWithFormView(getAndPutUrl, getAndPutUrl, "PUT", "dialog.title.edit.note", templateSelector, width, height,  saveSuccessFunction);' +
                 ' e.preventDefault();' +
           ' });' +
+          //' var recurringdata = "recurringdata"; ' +
+            ' $(".recurringdata").hide();' +
+            ' $(".recurshow").click(function(e){' +
+            ' var linkId = this.id;' +
+            ' var calendarId = linkId.replace("recurshow", "");' +
+            ' var recdataDivId = "recurringdata" + calendarId;' +
+            ' var recdataDiv = $("#" + recdataDivId);' +
+            ' $("#showrecurlink").hide();' + 
+            ' recdataDiv.show();' +
+            ' e.preventDefault();' + 
+            ' }); ' +
+    
+            ' $(".recurhide").click(function(e){' +
+            ' var linkId = this.id;' +
+            ' var calendarId = linkId.replace("recurhide", "");' +
+            ' var recdataDivId = "recurringdata" + calendarId;' +
+            ' var recdataDiv = $("#" + recdataDivId);' +
+            ' recdataDiv.hide();' +
+            ' $("#showrecurlink").show();' + 
+            ' e.preventDefault();' + 
+            ' });' +
       ' };'
 }    
 
@@ -6705,8 +6749,8 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         
     var dialogTitle = 'dialog.title.add.calendar';
     var templateSelector = "#calendarFormTemplate";
-    var width = 800;
-    var height = 560;
+    var width = 700;
+    var height = 580;
         
     var successFunction = function(data, textStatus, jqXHR) {
         
@@ -6722,6 +6766,13 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
 
         var repeats =  $('select.repeats');
         var repeatsEvery = $('select.repeatsEvery');
+        
+        if(data.repeating === true){
+            $("#repeatingdetails").show();
+        }else{
+            $("#repeatingdetails").hide();
+        }
+        
         
         $('input:checkbox[name=repeating]').change(function(){
             var repeatdetails = $('#repeatingdetails');
@@ -6771,14 +6822,69 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
                 case "endsafter":
                     $('.endsafter').attr('readonly', false);
                 break;
-                case "enddate":
+                case "endondate":
                     $('.endsafter').val('').attr('readonly', true);
                 break;
             }
             
-        });        
+        });
         
         $('#weeklyoptions').hide();
+        
+        $('input:checkbox[name=repeating]').prop('checked', data.repeating);
+        
+        if(data.recurrence){
+            var freqoptions = {
+                'DAILY':'Daily',
+                'WEEKLY':'Weekly',
+                'MONTHLY':'Monthly',
+                'YEARLY':'Yearly'
+            }
+            
+            matches = /FREQ=([^;]+);?/.exec(data.recurrence);
+            if (matches) {
+                var freq = matches[1];
+                var repeatOption = freqoptions[freq];
+                $('#repeats').val(repeatOption);
+                
+                //If recurring weekly, set week day
+                if(freq === 'WEEKLY'){
+                    matches = /BYDAY=([^;]+);?/.exec(data.recurrence);
+                    if (matches) {
+                        var byday = matches[1]; 
+                        $('#weeklyoptions').show();
+                        
+                        $.each($("input[name='repeatson[]']"), function() {
+                          if($(this).val() === byday){
+                              $(this).prop('checked', true);
+                          }
+                        }); 
+                    }
+                }
+            }
+            
+            matches = /INTERVAL=([0-9]+);?/.exec(data.recurrence);
+            if (matches) {
+                interval = matches[1];
+            } else {
+                interval = '1';
+            }
+            $('#repeatsEvery').val(interval);
+            
+            matches = /COUNT=([0-9]+);?/.exec(data.recurrence);
+            if (matches) {
+                count = matches[1];
+                $('#endsafterrd').prop('checked',true);
+                $('endsafter').val(count);    
+            }else{
+                $('#endsnever').prop('checked',true);
+            }
+            
+            if(data.endDate){
+                $('#endson').prop('checked',true);
+            }
+                
+        }
                                        
     }
 
@@ -6788,7 +6894,7 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
 
 function convertToRfc5545(){
     // RRULE TEMPLATES
-    var recuringFields = ['repeats','endson'];
+    
     var rruletemplate = {
         "Daily":"FREQ=DAILY",
         "Weekly":"FREQ=WEEKLY",
@@ -6819,7 +6925,7 @@ function convertToRfc5545(){
     }
     
     //Ends on
-    var endType = $('input[name=endson]:checked').val();
+    var endType = $('input[name=endsonrd]:checked').val();
     
     switch (endType) {
 
@@ -6827,10 +6933,10 @@ function convertToRfc5545(){
         occurrences = $('input[name=endsafter]').val();
         rrule += ';COUNT=' + occurrences;
         break;
-    case 'enddate':
-        field = $('input[name=endDate]');
-        date = field.data('dateinput').getValue('yyyymmdd');
-        result += ';UNTIL=' + date + 'T000000';
+    case 'endondate':
+        field = $('input[name=endondate]');
+        date = $.datepicker.formatDate('yymmdd', $( "input[name=endondate]" ).datepicker( "getDate" ));
+        rrule += ';UNTIL=' + date + 'T000000';
         break;
     }
         
