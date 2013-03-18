@@ -2454,7 +2454,7 @@ function showILGroup(groupId){
 			$('.newgrouploanbtn').click(function(e) {
 			var linkId = this.id;
 			var groupId = linkId.replace("newgrouploanbtn", "");
-			addILGroupLoan(groupId);
+			launchGroupLoanApplicationDialog(groupId);
 		    e.preventDefault();
 			});
 
@@ -3032,7 +3032,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 				},
 		  		open: function (event, ui) {
 		  			if (data.loanProductId) {
-		  				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, data.loanProductId);
+		  				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, data.loanProductId , data.groupId);
 		  			} else {
 		  				var formHtml = $("#loanApplicationSelectProductDialogTemplate").render(data);
 		  				dialogDiv.html(formHtml);
@@ -3040,7 +3040,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 					
 					$("#productId").change(function() {
 						var loanProductId = $("#productId").val();
-						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId);
+						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId , data.groupId);
 					});
 		  		}
 		  	}).dialog('open');		
@@ -3050,6 +3050,10 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
 	}
 	
+	function launchGroupLoanApplicationDialog(groupId) {
+		executeAjaxRequest('loans/template?groupId=' + groupId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
+	}
+
 	var launchModifyLoanApplicationDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
 		var dialogDiv = $("<div id='dialog-form'></div>");
 		var saveButton = doI18N('dialog.button.save');
@@ -3189,7 +3193,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	    }
 	};
 	
-	function loadTabbedLoanApplicationForm(container, clientId, productId) {
+	function loadTabbedLoanApplicationForm(container, clientId, productId , groupId) {
 		
 		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
 			// show full application form with values defaulted
@@ -3210,7 +3214,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			
 			$("#productId").change(function() {
 				var loanProductId = $("#productId").val();
-				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId);
+				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId );
 			});
 			
 			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -3275,7 +3279,12 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		};
 		
 		// loan loan application template providing selected client and product infomation
-		executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+		if(!(clientId === undefined)){
+			executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+			}
+		else if(!(groupId === undefined)){
+			executeAjaxRequest('loans/template?groupId=' + groupId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+		}	
 	}
 	
 	function previewLoanApplicationSchedule() {
@@ -3501,6 +3510,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	}
 	// end of loan product 
 	
+	/*
 	function addILGroupLoan(groupId) {
 		setAddLoanContent("content");
 
@@ -3508,7 +3518,8 @@ function addILBulkMembersLoans(groupId, clientMembers){
 
 		executeAjaxRequest('loans/template?groupId=' + groupId, 'GET', "", successFunction, formErrorFunction);		
 	}
-	
+	*/
+
 	function removeLoanCharge(loanId, loanChargeId) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
