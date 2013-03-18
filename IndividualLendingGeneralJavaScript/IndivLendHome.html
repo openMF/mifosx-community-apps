@@ -7420,12 +7420,14 @@ function showLockinOptions(){
 					<td>{{=$ctx.moneyFormatted(currency, amountWaived)}}</td>
 					<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
 					<td>
-						<button id="modifyloan{{=$parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</a>
+					    {{#if $parent.parent.data.status.code == "loanStatusType.submitted.and.pending.approval"}}  
+						  <button id="modifyloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
+						{{/if}}   
 						{{#if $parent.parent.data.status.code == "loanStatusType.active"}}    
-						  <button id="waiveloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.waive")}}</a>
+						  <button id="waiveloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.waive")}}</button>
 					    {{/if}}	
 					    {{#if $parent.parent.data.status.code == "loanStatusType.submitted.and.pending.approval"}}    
-						  <button id="deleteloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</a>
+						  <button id="deleteloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
 						{{/if}}  
 					</td>
 				</tr>
