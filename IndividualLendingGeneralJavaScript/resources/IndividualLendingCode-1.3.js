@@ -3203,7 +3203,9 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	    }
 	    
 	    //Load available Calendars
-        loadAvailableCalendars('clients', data.clientId, 'calendarmappingcontent');
+	    //Modify loan
+        loadAvailableCalendars('clients', data.clientId, 'calendarmappingcontent', data.id);
+
 	};
 	
 	function loadTabbedLoanApplicationForm(container, clientId, productId , groupId) {
@@ -3291,6 +3293,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			});
 			
 			//Load available Calendars
+			//New loan form
 			loadAvailableCalendars('clients', data.clientId, 'calendarmappingcontent');
 		};
 		
@@ -7190,7 +7193,7 @@ function convertToRfc5545(){
     return rrule;
 }
 
-function loadAvailableCalendars(resource, resourceId, template){
+function loadAvailableCalendars(resource, resourceId, template, loanId){
     var template = template;
     var successFunction = function(data, textStatus, jqXHR) {
         var calendars = new Object();
@@ -7309,6 +7312,24 @@ function loadAvailableCalendars(resource, resourceId, template){
                         
         });
         $('#calmapprow').hide();                
+        
+        if(loanId){
+            loadAttachedCalendarToLoan(loanId);
+        }
     }    
     executeAjaxRequest(resource + '/' + resourceId + '/calendars?associations=parentCalendars', 'GET', "", successFunction, formErrorFunction);    
+}
+
+function loadAttachedCalendarToLoan(loanId){
+    var successFunction = function(data, textStatus, jqXHR) {
+        var calendars = new Object();
+        calendars.crudRows = data;
+        if(calendars.crudRows.length > 0){
+            var calendar = calendars.crudRows[0];
+            $('#loanType').val('2');
+            $("#availableCalendars").val(calendar.id);
+            $('#calmapprow').show();
+        }            
+    }        
+    executeAjaxRequest('loans/' + loanId + '/calendars?parameters=id,entityId,entityType', 'GET', "", successFunction, formErrorFunction);
 }
