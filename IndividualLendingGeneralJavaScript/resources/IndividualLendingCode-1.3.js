@@ -2020,6 +2020,11 @@ function showClientInGroups(clientId , name){
 	        		var tableHtml = $("#clientDataTabTemplate").render(data);
 					$("#clienttab").html(tableHtml);
 					$("#customerName").html(data.displayName);
+
+					$.each(data.parentGroups , function(i, obj) {
+  						$("#clientparentGroups").append('<li><a href="#" onclick="showILGroup('+ obj.id +');">'+ obj.name +'</a></li>');
+					});
+
 					$("#customerOfficeName").html(data.officeName);
 					
 					
