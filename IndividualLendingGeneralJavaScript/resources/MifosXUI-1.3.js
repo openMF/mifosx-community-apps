@@ -3,7 +3,8 @@
 //It won't be shown unless you pass the query parameter 'mode=dev'
 //You can then use showMenu or showTask as normal to check if it should be displayed
 //Once you are finished development, you can remove from this array and put in taskPermissionsMatrix or menuTasksMatrix 
-inDevelopmentTasks = ["GROUPSMENU", "CHECKERMENU", "VIEWDEPOSITPRODUCTS", "ADDDEPOSITPRODUCT", "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", 
+inDevelopmentTasks = ["GROUPSMENU", "CHECKERMENU", "VIEWDEPOSITPRODUCTS", "ADDDEPOSITPRODUCT", 
+//                      "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", 
                       "VIEWCONFIGURATION", "MANAGEPERMISSIONS", "CLOSEASRESCHEDULEDLOAN",
                       "ADDDEPOSITACCOUNT", "ADDSAVINGACCOUNT", "POSTINTERESTMENU"];
 

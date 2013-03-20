@@ -1009,16 +1009,12 @@ $(document).ready(function() {
 						<button id="newindividualloanbtn{{=id}}" class="newindividualloanbtn">New loan application</button>
 					{{/if}}
 
-					{{#if $ctx.showTask("AddDepositAccount")}}
-						<button id="newdepositbtn{{=id}}" class="newdepositbtn">New Deposit application</button>
-					{{/if}}
-					
 					{{#if $ctx.showTask("AddClientNote")}}
 						<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
 					{{/if}}
 
 					{{#if $ctx.showTask("AddSavingAccount")}}
-						<button id="newsavingbtn{{=id}}" class="newsavingbtn">New Saving Application</button>
+						<button id="newsavingbtn{{=id}}" class="newsavingbtn">New savings account</button>
 					{{/if}}
 
 					{{#if $ctx.showTask("DeleteClient")}}
@@ -1592,86 +1588,6 @@ $(document).ready(function() {
 	{{/each}}
 	</div>
 </div>
-{{/if}}
-
-{{#if $ctx.showTask("VIEWDEPOSITPRODUCTS")}}
-<p><b>{{=$ctx.doI18N("heading.depositaccount.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(pendingApprovalDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each pendingApprovalDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(approvedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each approvedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(maturedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.matured")}} ({{=$ctx.number(maturedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each maturedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(closedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each closedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(preclosedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.preClosed")}} ({{=$ctx.number(preclosedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each preclosedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(rejectedDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.rejected")}} ({{=$ctx.number(rejectedDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each rejectedDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(withdrawnByClientDepositAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawnbyclient")}} ({{=$ctx.number(withdrawnByClientDepositAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each withdrawnByClientDepositAccounts}}
-		<span class="depositaccount"><a href="unknown.html" onclick="showDepositAccount({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
 {{/if}}
 
 {{#if $ctx.showTask("VIEWSAVINGPRODUCTS")}}
@@ -2623,37 +2539,6 @@ $(document).ready(function() {
 <!-- end of portfolio template section -->
 
 <!-- admin templates below here -->
-<script id="savingproductListTemplate" type="text/x-jquery-tmpl">
-<table id='savingproductstable' width='100%'>
-	<thead>
-		<tr>
-			<th>{{=$ctx.doI18N("table.heading.product.name")}}</th>
-			<!-- <th>{{=$ctx.doI18N("table.heading.fundname")}}</th> -->
-			<th>{{=$ctx.doI18N("table.heading.product.created")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.product.modified")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.active")}}</th>
-			<th>&nbsp;</th>
-		</tr>
-	</thead>
-	<tbody>
-{{#each crudRows}}
-<tr>
-	<td title='{{=description}}'>{{=name}}</td>
-	<!-- <td>{{=fundName}}</td> -->
-	<td>{{=$ctx.globalDateTime(createdOn)}}</td>
-	<td>{{=$ctx.globalDateTime(lastModifedOn)}}</td>
-	<td>Yes</td>
-	<td>
-		<a id='deactivatesavingproduct{{=id}}' class='deactivatesavingproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deactivate")}}</a>
-		<a id='editsavingproduct{{=id}}' class='editsavingproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='deletesavingproduct{{=id}}' class='deletesavingproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
-	</td>
-</tr>
-{{/each}}
-	</tbody>
-</table>
-</script>
-
 <script id="savingproductFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -7981,7 +7866,321 @@ function showLockinOptions(){
 </script>
 <!-- end of existing loan application/contract screens -->
 
+
+<!-- new savings product templates -->
+<script id="savingsProductListTemplate" type="text/x-jquery-tmpl">
+<table id='savingsproductstable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+{{#each crudRows}}
+<tr>
+	<td title='{{=description}}'>{{=name}}</td>
+	<td>
+		<a id='editsavingproduct{{=id}}' class='editsavingproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+	</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
+<script id="savingsProductDialogTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<!-- start savings product tabs -->
+	<div id="savingsproducttabs{{=id}}" class="savingsproducttabs">
+	    <ul>
+			<li><a href="#savingsproductdetails" title="savingsproductdetails">{{=$ctx.doI18N("tab.details")}}</a></li>
+		    <li><a href="#savingsproductterms" title="savingsproductterms">{{=$ctx.doI18N("tab.terms")}}</a></li>
+			<li><a href="#savingsproductsettings" title="savingsproductsettings">{{=$ctx.doI18N("tab.settings")}}</a></li>
+	    </ul>
+	    
+		<div id="savingsproductdetails" style="margin-top: 5px;">
+			<table>
+			<tr>
+				<td>{{=$ctx.doI18N("label.name")}}</td>
+				<td><input id="name" name="name" type="text" title="" value="{{=name}}" style="width: 544px;"/></td>
+			</tr>
+			<tr>
+				<td>{{=$ctx.doI18N("label.description")}}</td>
+				<td><textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea></td>
+			</tr>
+			</table>
+		</div>
+
+	    <div id="savingsproductterms" style="margin-top: 5px;">
+			<table>
+				<tr>
+					<td>{{=$ctx.doI18N("label.currency")}}</td>
+					<td>
+							<select id="currencyCode" name="currencyCode" title="" style="width: 181px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
+		            			<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
+							{{#each currencyOptions}}
+		              			{{#if $parent.parent.data.currency.code===code}}
+								<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" selected="selected">{{=name}}</option>
+								{{#else}}
+								<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}">{{=name}}</option>
+								{{/if}}
+		          			{{/each}}
+							</select>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.decimalplaces")}}</td>
+					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 175px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+					<td>
+							<input id="interestRate" name="interestRate" title="" type="text" value="{{=$ctx.decimal(interestRate, 4)}}" style="width: 50px;" />
+							<select name="interestRatePeriodFrequencyType" id="interestRatePeriodFrequencyType"  title="" style="width: 121px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each interestRatePeriodFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestRatePeriodFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+       						{{/each}}
+							</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="savingsproductsettings" style="margin-top: 5px;">
+			<table>
+				<tr>
+					<td>{{=$ctx.doI18N("label.minRequiredOpeningBalance")}}</td>
+					<td><input id="minRequiredOpeningBalance" name="minRequiredOpeningBalance" title="" type="text" value="{{=$ctx.monetaryValue(currency, minRequiredOpeningBalance)}}" style="width: 215px;" /></td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.lockedinfor")}}</td>
+					<td>
+						<input id="lockinPeriodFrequency" name="lockinPeriodFrequency" title="" type="text" value="{{=$ctx.number(lockinPeriodFrequency)}}" style="width: 50px;" />
+						<select name="lockinPeriodFrequencyType" id="lockinPeriodFrequencyType"  title="" style="width: 121px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#if lockinPeriodFrequencyType}}
+							{{#each lockinPeriodFrequencyTypeOptions}}
+									{{#if $ctx.number($parent.parent.data.lockinPeriodFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+									{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+									{{/if}}
+       						{{/each}}
+							{{#else}}
+								{{#each lockinPeriodFrequencyTypeOptions}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+       							{{/each}}
+							{{/if}}
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<!-- end of savings product tabs -->
+</form>
+</script>
+<!-- end of savings products templates -->
+
+<!-- new savings accounts templates -->
+<script id="savingsAccountSelectProductDialogTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	{{#if clientId}}
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	{{/if}}
+	{{#if groupId}}
+	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
+	{{/if}}
+	<table>
+			<tr>
+				<td valign="top">
+				{{=$ctx.doI18N("label.applicant")}}
+				</td>
+				<td valign="top">
+				{{#if clientName}}
+				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+				{{/if}}
+				{{#if groupName}}
+				<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
+				{{/if}}
+				</td>
+
+				<td valign="top">&nbsp;</td>
+
+				<td valign="top">{{=$ctx.doI18N("label.product")}}</td>
+				<td valign="top">
+					<select name="productId" id="productId" style="width: 306px;">
+						<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
+				{{#each productOptions}}
+					{{#if $ctx.number($parent.parent.data.savingsProductId)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+					{{/if}}
+	    		{{/each}}
+					</select>
+				</td>
+			</tr>
+	</table>
+</form>
+</script>
+
+<script id="savingsAccountDialogTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+
+	<!-- template only setup for individual client lending -->
+	{{#if clientId}}
+	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
+	{{/if}}
+	{{#if groupId}}
+	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
+	{{/if}}
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<table>
+			<tr>
+				<td valign="top">
+				{{=$ctx.doI18N("label.applicant")}}
+				</td>
+				<td valign="top">
+				{{#if clientName}}
+				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+				{{/if}}
+				{{#if groupName}}
+				<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
+				{{/if}}
+				</td>
+
+				<td valign="top">&nbsp;</td>
+
+				<td valign="top">{{=$ctx.doI18N("label.product")}}</td>
+				<td valign="top">
+					<select name="productId" id="productId" style="width: 306px;">
+				{{#each productOptions}}
+					{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+					<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+					{{#else}}
+					<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+					{{/if}}
+	    		{{/each}}
+					</select>
+				</td>
+			</tr>
+	</table>
+
+	<!-- start savings accounts tabs -->
+	<div id="savingsaccounttabs{{=id}}" class="savingsaccounttabs">
+	    <ul>
+		    <li><a href="#savingsaccountterms" title="savingsaccountterms">{{=$ctx.doI18N("tab.terms")}}</a></li>
+			<li><a href="#savingsaccountsettings" title="savingsaccountsettings">{{=$ctx.doI18N("tab.settings")}}</a></li>
+	    </ul>
+	    
+	    <div id="savingsaccountterms" style="margin-top: 5px;">
+			<table>
+				<tr>
+					<td>{{=$ctx.doI18N("label.currency")}}</td>
+					<td>{{=$ctx.doI18N(currency.nameCode)}}</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.decimalplaces")}}</td>
+					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 175px;" value="{{=$ctx.number(currency.decimalPlaces)}}" disabled="disabled"/></td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+					<td>
+							<input id="interestRate" name="interestRate" title="" type="text" value="{{=$ctx.decimal(interestRate, 4)}}" style="width: 50px;" />
+							<select name="interestRatePeriodFrequencyType" id="interestRatePeriodFrequencyType"  title="" style="width: 121px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each interestRatePeriodFrequencyTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestRatePeriodFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+       						{{/each}}
+							</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="savingsaccountsettings" style="margin-top: 5px;">
+			<table>
+				<tr>
+					<td>{{=$ctx.doI18N("label.minRequiredOpeningBalance")}}</td>
+					<td><input id="minRequiredOpeningBalance" name="minRequiredOpeningBalance" title="" type="text" value="{{=$ctx.monetaryValue(currency, minRequiredOpeningBalance)}}" style="width: 215px;" /></td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.lockedinfor")}}</td>
+					<td>
+						<input id="lockinPeriodFrequency" name="lockinPeriodFrequency" title="" type="text" value="{{=$ctx.number(lockinPeriodFrequency)}}" style="width: 50px;" />
+						<select name="lockinPeriodFrequencyType" id="lockinPeriodFrequencyType"  title="" style="width: 121px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#if lockinPeriodFrequencyType}}
+							{{#each lockinPeriodFrequencyTypeOptions}}
+									{{#if $ctx.number($parent.parent.data.lockinPeriodFrequencyType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+									{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+									{{/if}}
+       						{{/each}}
+							{{#else}}
+								{{#each lockinPeriodFrequencyTypeOptions}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+       							{{/each}}
+							{{/if}}
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<!-- end of savings account tabs -->
+</form>
+</script>
+<!-- end of new savings accounts templates -->
+
 <!-- new loan product templates -->
+<script id="loanproductListTemplate" type="text/x-jquery-tmpl">
+<table id='loanproductstable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			{{#if $ctx.showTask("VIEWFUNDS")}}
+			<th>{{=$ctx.doI18N("table.heading.fundname")}}</th>
+			{{/if}}
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+{{#each crudRows}}
+<tr>
+	<td title='{{=description}}'>{{=name}}</td>
+	{{#if $ctx.showTask("VIEWFUNDS")}}
+	<td>{{=fundName}}</td>
+	{{/if}}
+	<td>
+		<a id='editloanproduct{{=id}}' class='editloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+	</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
 <script id="loanProductDialogTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>
@@ -8464,33 +8663,6 @@ function showLockinOptions(){
 	</td>
 	<td><button id="loanproduct-removeLoanCharge{{=index}}" class="loanproduct-removeLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 </tr>
-</script>
-
-<script id="loanproductListTemplate" type="text/x-jquery-tmpl">
-<table id='loanproductstable' width='100%'>
-	<thead>
-		<tr>
-			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
-			{{#if $ctx.showTask("VIEWFUNDS")}}
-			<th>{{=$ctx.doI18N("table.heading.fundname")}}</th>
-			{{/if}}
-			<th>&nbsp;</th>
-		</tr>
-	</thead>
-	<tbody>
-{{#each crudRows}}
-<tr>
-	<td title='{{=description}}'>{{=name}}</td>
-	{{#if $ctx.showTask("VIEWFUNDS")}}
-	<td>{{=fundName}}</td>
-	{{/if}}
-	<td>
-		<a id='editloanproduct{{=id}}' class='editloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-	</td>
-</tr>
-{{/each}}
-	</tbody>
-</table>
 </script>
 <!-- end of new loan product templates -->
 

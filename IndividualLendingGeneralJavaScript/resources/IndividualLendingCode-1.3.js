@@ -231,14 +231,6 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
-	if (jQuery.MifosXUI.showMenu("POSTINTERESTMENU") == true) {
-		htmlVar += '	<li  class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("label.interest.posting") + '</a>';
-		htmlVar += '		<ul>';
-		htmlVar += '			<li><a href="unknown.html" onclick="postInterest();return false;">' + doI18N("link.interest.posting.fixed.deposits") + '</a></li>';
-		htmlVar += '			<li><a href="unknown.html" onclick="postInterestForSavingAccounts();return false;">' + doI18N("link.interest.posting.saving.accounts") + '</a></li>';
-		htmlVar += '		</ul>';
-		htmlVar += '	</li>';
-	}	
 	
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
     htmlVar += '    <li id="search_element" class="sb_wrapper">';
@@ -403,13 +395,13 @@ function setAddSavingContent(divName) {
 
 	var htmlVar = '<div id="inputarea"></div><div id="schedulearea"></div>'
 	$("#" + divName).html(htmlVar);
-	}
+}
 
 
 function setOrgAdminContent(divName) {
 
-	var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
-	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
+//	var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
+//	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
@@ -419,24 +411,30 @@ function setOrgAdminContent(divName) {
 	var bulkLoanReassignmentUrl = "maintainTable('bulkLoanReassignment', 'loans/loanreassignment', 'POST');return false;";
 
 	var htmlOptions = "";
-	if (jQuery.MifosXUI.showTask("ViewLoanProducts") == true)
+	if (jQuery.MifosXUI.showTask("ViewLoanProducts"))
 		htmlOptions += ' | <a href="unknown.html" onclick="listLoanProducts();return false;" id="viewloanproducts">' + doI18N("administration.link.view.loan.products") + '</a>';
 
-	if (jQuery.MifosXUI.showTask("AddLoanProduct") == true) {
+	if (jQuery.MifosXUI.showTask("AddLoanProduct")) {
 		htmlOptions += ' | <a href="#" id="addloanproduct">' + doI18N("administration.link.add.loan.product") + '</a>';
 	}
 
-	if (jQuery.MifosXUI.showTask("ViewSavingProducts") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
-	
-	if (jQuery.MifosXUI.showTask("AddSavingProduct") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
-
-	if (jQuery.MifosXUI.showTask("ViewDepositProducts") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
-
-	if (jQuery.MifosXUI.showTask("AddDepositProduct") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';
+	if (jQuery.MifosXUI.showTask("ViewSavingProducts")) {
+		htmlOptions += ' | <a href="#" onclick="listSavingsProducts();return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
+//		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingsproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
+	}
+		
+	if (jQuery.MifosXUI.showTask("AddSavingProduct")) {
+		htmlOptions += ' | <a href="#" id="addsavingsproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
+//		htmlOptions += ' | <a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
+	}
+		
+	if (jQuery.MifosXUI.showTask("ViewDepositProducts")) {
+//		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
+	}
+		
+	if (jQuery.MifosXUI.showTask("AddDepositProduct")) {
+//		htmlOptions += ' | <a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';		
+	}
 
 	if (jQuery.MifosXUI.showTask("ViewFunds") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
@@ -490,6 +488,11 @@ function setOrgAdminContent(divName) {
 	
 	$('#addloanproduct').click(function(e) {
 		launchLoanProductDialog(null);
+    	e.preventDefault();
+	});
+	
+	$('#addsavingsproduct').click(function(e) {
+		launchSavingsProductDialog(null);
     	e.preventDefault();
 	});
 }
@@ -1792,17 +1795,14 @@ function showILClient(clientId) {
 					});
 					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));
 					
-					$('.newsavingbtn').button({icons: {
-              			 primary: "ui-icon-document"}
-					}).click(function(e) {
-						addILSaving(clientId);
+					$('.newsavingbtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
+						launchSavingsAccountDialog(clientId);
+//						addILSaving(clientId);
 					    e.preventDefault();
 					});
-					$('button.newsavingbtn span').text(doI18N('dialog.button.new.saving.application'));
+					$('button.newsavingbtn span').text(doI18N('dialog.button.new.savings.account'));
 					
-					$('.addnotebtn').button({icons: {
-               			 primary: "ui-icon-comment"}
-                	}).click(function(e) {
+					$('.addnotebtn').button({icons: {primary: "ui-icon-comment"}}).click(function(e) {
 						var postUrl = 'clients/' + clientId + '/notes';
 						var templateSelector = "#noteFormTemplate";
 						var width = 600; 
@@ -3096,7 +3096,6 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	};
 	
 	function launchModifyLoanApplicationDialog(loanId) {
-		// TODO - Maybe makes sense to bring back existing loan schedule also and allow users to 'preview new loan schedule' based on changes
 		executeAjaxRequest('loans/' + loanId + '?template=true&associations=charges,collateral', 'GET', "", launchModifyLoanApplicationDialogOnSuccessFunction, formErrorFunction);
 	}
 	
@@ -3407,7 +3406,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 //		  	      			console.log("current tab: " + curTab.index);
 		  				},
 		  				"select": function( event, ui ) {
-		  					console.log("selected tab: " + ui.index);
+//		  					console.log("selected tab: " + ui.index);
 		  				}
 		  			});
 		  			
@@ -3516,18 +3515,220 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			executeAjaxRequest('loanproducts/template', 'GET', "", launchLoanProductDialogOnSuccessFunction, formErrorFunction);
 		}
 	}
-	// end of loan product 
+	// end of loan product
 	
-	/*
-	function addILGroupLoan(groupId) {
-		setAddLoanContent("content");
-
-		eval(genAddLoanSuccessVar(null, groupId));
-
-		executeAjaxRequest('loans/template?groupId=' + groupId, 'GET', "", successFunction, formErrorFunction);		
+	// start of savings product
+	function submitTabbedSavingsProduct(divContainer, savingsProductId) {
+		
+		var serializationOptions = {};
+		serializationOptions["checkboxesAsBools"] = true;
+		
+		var serializedArray = {};
+		serializedArray = $('#entityform').serializeObject(serializationOptions);
+		
+		var newFormData = JSON.stringify(serializedArray);
+		
+		var successFunction =  function(data, textStatus, jqXHR) {
+			divContainer.dialog("close");
+			listSavingsProducts();
+		};
+		
+		if (savingsProductId) {
+			executeAjaxRequest('savingsproducts/' + savingsProductId, "PUT", newFormData, successFunction, formErrorFunction);
+		} else {
+			executeAjaxRequest('savingsproducts', "POST", newFormData, successFunction, formErrorFunction);
+		}
 	}
-	*/
+	
+	function listSavingsProducts() {
+		
+		var successFunction = function(data, textStatus, jqXHR) {
 
+			var crudObject = new Object();
+			crudObject.crudRows = data;
+			
+			var html = $("#savingsProductListTemplate").render(crudObject);
+			$("#listplaceholder").html(html);  
+
+			$("a.editsavingproduct").click( function(e) {
+				var linkId = this.id;
+				var entityId = linkId.replace("editsavingproduct", "");
+
+				var resourceUrl = "savingsproducts/" + entityId;
+				
+				launchSavingsProductDialog(entityId);
+				
+				e.preventDefault();
+			});
+
+			var oTable = displayListTable("savingsproductstable");
+		  };
+	
+
+		  executeAjaxRequest('savingsproducts', 'GET', "", successFunction, formErrorFunction);
+	}
+	
+	var launchSavingsProductDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var saveButton = doI18N('dialog.button.save');
+		var cancelButton = doI18N('dialog.button.cancel');
+		
+		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			submitTabbedSavingsProduct(dialogDiv, data.id);
+		};
+		// end of buttonsOpts for save button
+		
+		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+		
+		var titleCode = 'dialog.title.add.savingsproduct';
+		if (data.id){
+			titleCode = 'dialog.title.savingsproduct.details';
+		}
+		dialogDiv.dialog({
+		  		title: doI18N(titleCode), 
+		  		width: 1100, 
+		  		height: 500, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+		  			$(this).remove();
+				},
+		  		open: function (event, ui) {
+		  			
+		  			var formHtml = $("#savingsProductDialogTemplate").render(data);
+		  			dialogDiv.html(formHtml);
+		  			
+		  			var savingsproducttabs = $(".savingsproducttabs").tabs({
+		  				"show": function(event, ui) {
+		  					var curTab = $('.savingsproducttabs .ui-tabs-panel:not(.ui-tabs-hide)');
+		  	      			var curTabID = curTab.prop("id");
+		  				},
+		  				"select": function( event, ui ) {
+		  				}
+		  			});
+		  			
+		  			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+		  		}
+		  	}).dialog('open');		
+	};
+	
+	function launchSavingsProductDialog(savingsProductId) {
+		
+		if (savingsProductId) {
+			executeAjaxRequest('savingsproducts/' + savingsProductId + '?template=true', 'GET', "", launchSavingsProductDialogOnSuccessFunction, formErrorFunction);
+		} else {
+			executeAjaxRequest('savingsproducts/template', 'GET', "", launchSavingsProductDialogOnSuccessFunction, formErrorFunction);
+		}
+	}
+	// end of savings product
+	
+	// start of savings account --xxx
+	
+	function loadTabbedSavingsAccountForm(container, clientId, productId, groupId) {
+		
+		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
+			var formHtml = $("#savingsAccountDialogTemplate").render(data);
+			container.html(formHtml);
+			
+			var loanapplicationtabs = $(".savingsaccounttabs").tabs({
+				"show": function(event, ui) {
+					var curTab = $('.savingsaccounttabs .ui-tabs-panel:not(.ui-tabs-hide)');
+	      			var curTabID = curTab.prop("id");
+				},
+				"select": function( event, ui ) {
+				}
+			});
+			
+			$("#productId").change(function() {
+				var savingsProductId = $("#productId").val();
+				loadTabbedSavingsAccountForm(dialogDiv, data.clientId, savingsProductId);
+			});
+			
+			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+		};
+		
+		// load savings account template providing selected client and product infomation
+		if(!(clientId === undefined)){
+			executeAjaxRequest('savingsaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+		}
+		else if(!(groupId === undefined)){
+			executeAjaxRequest('savingsaccounts/template?groupId=' + groupId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+		}	
+	}
+	
+	function submitTabbedSavingsAccount(divContainer, clientId, groupId) {
+		
+		var serializationOptions = {};
+		serializationOptions["checkboxesAsBools"] = true;
+		
+		var serializedArray = {};
+		serializedArray = $('#entityform').serializeObject(serializationOptions);	
+		var newFormData = JSON.stringify(serializedArray);
+		
+		var successFunction =  function(data, textStatus, jqXHR) {
+			divContainer.dialog("close");
+			if (clientId) {
+				showILClient(clientId);
+			} else {
+				showILGroup(groupId);
+			}
+		};
+		
+		executeAjaxRequest('savingsaccounts', "POST", newFormData, successFunction, formErrorFunction);	  
+	}
+
+	var launchSavingsAccountDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var saveButton = doI18N('dialog.button.save');
+		var cancelButton = doI18N('dialog.button.cancel');
+		
+		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			submitTabbedSavingsAccount(dialogDiv, data.clientId, data.groupId);
+		};
+		// end of buttonsOpts for save button
+		
+		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+		
+		dialogDiv.dialog({
+		  		title: doI18N('dialog.title.newSavingsAccount'), 
+		  		width: 1100, 
+		  		height: 450, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+		  			$(this).remove();
+				},
+		  		open: function (event, ui) {
+		  			if (data.savingsProductId) {
+		  				loadTabbedSavingsAccountForm(dialogDiv, data.clientId, data.savingsProductId , data.groupId);
+		  			} else {
+		  				var formHtml = $("#savingsAccountSelectProductDialogTemplate").render(data);
+		  				dialogDiv.html(formHtml);
+		  			}
+					
+					$("#productId").change(function() {
+						var savingsProductId = $("#productId").val();
+						loadTabbedSavingsAccountForm(dialogDiv, data.clientId, savingsProductId, data.groupId);
+					});
+		  		}
+		  	}).dialog('open');		
+	};
+	
+	function launchSavingsAccountDialog(clientId) {
+		executeAjaxRequest('savingsaccounts/template?clientId=' + clientId, 'GET', "", launchSavingsAccountDialogOnSuccessFunction, formErrorFunction);	
+	}
+	
+	function launchGroupSavingsAccountDialog(groupId) {
+		executeAjaxRequest('savingsaccounts/template?groupId=' + groupId, 'GET', "", launchSavingsAccountDialogOnSuccessFunction, formErrorFunction);
+	}
+	// end of savings account
+	
 	function removeLoanCharge(loanId, loanChargeId) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
