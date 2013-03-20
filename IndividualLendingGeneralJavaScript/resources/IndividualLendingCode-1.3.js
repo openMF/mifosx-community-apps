@@ -1309,10 +1309,14 @@ function setAccountSettingsContent(divName) {
 /*
  * operationType: 	{CREATE, UPDATE, DELETE}
  * resource:    	{CLIENTS, OFFICES, etc}
- * resourceId:      	Individual id of client of office resource.
- * commandId:	Id of the maker checker entry on table
+ * resourceId:      Individual id of client of office resource.
+ * commandId:		Id of the maker checker entry on table
+ * entityHref:		url submitted
  */
 function viewMakerCheckerEntry(operationType, resource, resourceId, commandId, entityHref) {
+	 viewAuditEntry(commandId);
+}
+function viewMakerCheckerEntryOld(operationType, resource, resourceId, commandId, entityHref) {
 
 	var getUrl = resource + '/';
 	
@@ -6229,12 +6233,21 @@ function showJson(commandAsJson) {
 
 	var html = "";
 
-	var colNo = 0;
+	//var colNo = 0;
 	for (var i in jsonObj)
 	{
 
 		if ((i != "dateFormat") && (i != "locale"))
 		{
+			
+			html += '<tr><td width="100px"></td>';
+			html += "<td>";
+			html += "<b>" + doI18N(i) + ": </b>";
+			html += "</td>";
+			html += "<td>";
+			html += jsonObj[i];
+			html += "</td></tr>";
+			/*
 			colNo += 1;
 			if (colNo == 1) html += "<tr>";
 			else html += '<td width="100px"></td>';
@@ -6251,11 +6264,13 @@ function showJson(commandAsJson) {
 				colNo = 0;
 				html += "</tr>";
 			}
+			
+			*/
 		}
 	}
-	if (colNo == 1) html += '<td></td><td></td><td></td></tr>';
+	//if (colNo == 1) html += '<td></td><td></td><td></td></tr>';
 
-	if (html > "") html = '<table width="100%">' + html + "</table>";
+	if (html > "") html = '<table width="100%">' + html + "</table><br><br>";
 	
 	return html;
 }
