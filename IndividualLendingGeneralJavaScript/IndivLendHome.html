@@ -7561,7 +7561,10 @@ function showLockinOptions(){
 					</table>
 				</td>
 				{{#if $ctx.isAdjustableTransaction(type.id)}}
-				<td><button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button></td>
+				<td>
+				    <button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button>
+				    <button id="undorepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="undoloanrepayment">{{=$ctx.doI18N("button.loanTransaction.undo")}}</button>
+				</td>
 				{{#else}}
 				<td>&nbsp;</td>
 				{{/if}}
@@ -7859,7 +7862,7 @@ function showLockinOptions(){
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.writeoff.on")}}</label>
-	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
+	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title="" value="{{=$ctx.globalDate(date)}}"/>
 
 	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
 	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
