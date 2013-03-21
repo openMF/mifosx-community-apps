@@ -4082,6 +4082,7 @@ function showLockinOptions(){
 			<th><b>{{=$ctx.doI18N("table.heading.audit.actionName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.entityName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.subresourceId")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checker")}}</b></th>
 			<th>&nbsp;</th>
@@ -4097,6 +4098,7 @@ function showLockinOptions(){
 	<td>{{=$ctx.doI18N(actionName)}}</td>
 	<td>{{=$ctx.doI18N(entityName)}}</td>
 	<td>{{=resourceId}}</td>
+	<td>{{=subresourceId}}</td>
 	<td>{{=$ctx.globalDateTime(checkedOnDate)}}</td>
 	<td>{{=checker}}</td>
 	<td>
@@ -4121,6 +4123,7 @@ function showLockinOptions(){
 			<th><b>{{=$ctx.doI18N("table.heading.audit.actionName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.entityName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("table.heading.audit.subresourceId")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checker")}}</b></th>
 		</tr>
@@ -4134,6 +4137,7 @@ function showLockinOptions(){
 	<td>{{=$ctx.doI18N(crudRows.actionName)}}</td>
 	<td>{{=$ctx.doI18N(crudRows.entityName)}}</td>
 	<td>{{=crudRows.resourceId}}</td>
+	<td>{{=crudRows.subresourceId}}</td>
 	<td>{{=$ctx.globalDateTime(crudRows.checkedOnDate)}}</td>
 	<td>{{=crudRows.checker}}</td>
 </tr>
