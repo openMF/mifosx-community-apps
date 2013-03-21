@@ -8824,15 +8824,20 @@ function showLockinOptions(){
                         </select>
                     </td>
                 </tr>
-                <tr id="calmapprow">
-                    <td>{{=$ctx.doI18N("label.select.calendar")}}</td>
+                <tr class="groupcalselect">
+                    <td>{{=$ctx.doI18N("label.select.group")}}</td>
                     <td>
-                        <div id="calendarmappingcontent">
-                            
-                        </div>
+                        <select id="groupSelId" title="">
+                        </select>
                     </td>
                 </tr>
-                
+                <tr class="groupcalselect">
+                    <td>{{=$ctx.doI18N("label.select.calendar")}}</td>
+                    <td>
+                        <select id="calendarId" title="">
+                        </select>
+                    </td>
+                </tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.principal")}}</td>
 					<td>
@@ -9379,35 +9384,6 @@ function showLockinOptions(){
         
         <hr>
     {{/each}}
-</script>
-<script id="availableCalendarsWidgetFormTemplate" type="text/x-jquery-tmpl">
-    {{#if crudRows.length > 1 }}
-        <select id="availableCalendars" title="">
-            <option value='0'>-- Select a meeting --</option>
-            {{#each crudRows}}
-                <option value='{{=id}}'>{{=title}} - 
-                    {{#if entityType.value === 'CLIENTS' }} 
-                        {{=$ctx.doI18N("label.select.calendar.client")}}
-                    {{else entityType.value === 'GROUPS' }} 
-                        {{=$ctx.doI18N("label.select.calendar.group")}}
-                    {{else entityType.value === 'GROUPS' }}
-                        {{=$ctx.doI18N("label.select.calendar.loan")}}
-                    {{/if}}
-                    
-                    </option>  
-            {{/each}}
-        </select> 
-        {{#each crudRows}}
-        <div id="acwrecurrdates{{=id}}" class="acwrecurrdates">
-            {{#each recurringDates}}
-            <div class="notespacer">
-                <span>{{=$ctx.globalDate($data)}}</span>
-            </div> 
-            {{/each}}
-        </div>
-
-        {{/each}}
-    {{/if}}        
 </script>
 
 </body>
