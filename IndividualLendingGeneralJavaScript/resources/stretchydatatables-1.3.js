@@ -918,7 +918,6 @@
 	}
 
 	var setManyCRUDButtonBehaviour = function(params) {
-
 		var datatableNameUnderscore = spaceToUnderscore(params.datatableName);
 
 		$("#delete" + datatableNameUnderscore).button({
@@ -947,30 +946,35 @@
 					e.preventDefault();
 				});
 
+		var paramPos = params.datatableUrl.indexOf(sdt.genericResultSetParameter);
 		for ( var i in params.manyButtons) {
 
-			var fullDatatableNameUnderscore = datatableNameUnderscore + "_"
-					+ params.manyButtons[i];
-			var paramPos = params.datatableUrl
-					.indexOf(sdt.genericResultSetParameter);
-			var fullUrl = params.datatableUrl.substring(0, paramPos) + "/"
-					+ params.manyButtons[i] + sdt.genericResultSetParameter;
+			var deletePrefix = "delete" + datatableNameUnderscore + "_";
+			var editPrefix = "edit" + datatableNameUnderscore + "_";
 
-			$("#delete" + fullDatatableNameUnderscore).button({
+			$("#" + deletePrefix + params.manyButtons[i]).button({
 				icons : {
 					primary : "ui-icon-trash"
 				}
 			}).click(function(e) {
+				var datatableId = this.id.replace(deletePrefix, "");
+				var fullUrl = params.datatableUrl.substring(0, paramPos) + "/"
+					+ datatableId + sdt.genericResultSetParameter;
 				deletePopupDialog(fullUrl, params.saveSuccessFunction);
 				e.preventDefault();
 			});
 
-			$("#edit" + fullDatatableNameUnderscore).button({
+			$("#" + editPrefix + params.manyButtons[i]).button({
 				icons : {
 					primary : "ui-icon-pencil"
 				}
 			}).click(
 					function(e) {
+
+						var datatableId = this.id.replace(editPrefix, "");
+						var fullUrl = params.datatableUrl.substring(0, paramPos) + "/"
+							+ datatableId + sdt.genericResultSetParameter;
+
 						editPopupDialog(fullUrl, fullUrl, 'PUT', doI18N("Edit")
 								+ " " + doI18N(params.datatableName),
 								params.templateName, params.onLoadForm,
