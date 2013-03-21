@@ -4615,7 +4615,12 @@ function loadILLoan(loanId) {
 				});
 				$('button.closeloan span').text(doI18N('button.loan.close'));
 					
-				$('.adjustloanrepayment').button().click(function(e) {
+				$('.adjustloanrepayment').button({
+                    icons : {
+                        primary : "ui-icon-pencil"
+                    },
+                    text : false
+                }).click(function(e) {
 					var linkId = this.id;
 					var loanAndRepaymentId = linkId.replace("adjustrepaymentbtn", "");
 					var ids = loanAndRepaymentId.split("_");
@@ -4632,8 +4637,38 @@ function loadILLoan(loanId) {
 					popupDialogWithFormView(getAndPostUrl, getAndPostUrl, 'POST', "dialog.title.adjust.loan.repayment", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
-				$('button.adjustloanrepayment span').text(doI18N('button.loanTransaction.adjust'));
 				
+				//$('button.adjustloanrepayment span').text(doI18N('button.loanTransaction.adjust'));
+				
+				$('.undoloanrepayment').button({
+                    icons : {
+                        primary : "ui-icon-trash"
+                    },
+                    text : false
+                }).click(function(e) {
+                    var linkId = this.id;
+                    var loanAndRepaymentId = linkId.replace("undorepaymentbtn", "");
+                    var ids = loanAndRepaymentId.split("_");
+                    var loanId = ids[0];
+                    var transactionId = ids[1];
+                    var postURL = 'loans/' + loanId + '/transactions/' + transactionId;
+                
+                    var templateSelector = "#transactionLoanFormTemplate";
+                    var width = 500;
+                    var height = 350;
+                    var searializedArray = {};
+                
+                    searializedArray["dateFormat"] = custom.helperFunctions.currentDateFormat();
+                    searializedArray["locale"] = custom.helperFunctions.currentLocale();
+                    searializedArray["transactionDate"] = $.datepicker.formatDate(custom.datePickerDateFormat, new Date());
+                    searializedArray["transactionAmount"] = 0;
+                    var jsonString = JSON.stringify(searializedArray);
+                
+                    eval(genSaveSuccessFunctionReloadLoan(loanId));
+                    popupConfirmationDialogAndPost(postURL, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan,jsonString);
+                    e.preventDefault();
+                }); 
+                
 				$('.addloancharge').button().click(function(e){
 						var linkId = this.id;
 						var loanId = linkId.replace("addloanchargebtn", "");
@@ -4759,11 +4794,9 @@ function loadILLoan(loanId) {
 						var templateSelector = "#loanUnassignmentFormTemplate";
 						var width = 400; 
 						var height = 225;
-						var jsonbody = '{"dateFormat": "dd MMMM yyyy", "locale": "en_GB","unassignedDate":"'+$.datepicker.formatDate('dd MM yy', new Date())+'"}';
 						eval(genSaveSuccessFunctionReloadLoan(loanId));
 						
-						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
-						popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunctionReloadLoan)		
+						popupDialogWithFormViewData("", postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunctionReloadLoan)		
 						e.preventDefault();
 				});
 
