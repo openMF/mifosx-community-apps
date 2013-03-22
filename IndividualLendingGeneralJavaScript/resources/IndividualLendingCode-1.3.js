@@ -1783,8 +1783,7 @@ function showILClient(clientId) {
 					});
 					$('button.editclientbtn span').text(doI18N('dialog.button.edit.client'));
 					
-					$('.newindividualloanbtn').button({icons: {
-               			 primary: "ui-icon-document"}
+					$('.newindividualloanbtn').button({icons: {primary: "ui-icon-document"}
                 	}).click(function(e) {
                 		launchLoanApplicationDialog(clientId);
 					    e.preventDefault();
@@ -2779,177 +2778,6 @@ function addILBulkMembersLoans(groupId, clientMembers){
 			  ' };'
 	}
 	
-	function repopulateSavingAccountForm(clientId, productId){
-		successFunction = function(data, textStatus, jqXHR) {
-			var formHtml = $("#newDepositFormTemplate").render(data);
-			
-			$("#inputarea").html(formHtml);
-			
-			$('#productId').change(function() {
-				var productId = $('#productId').val();
-				repopulateSavingAccountForm(clientId, productId);
-			});
-			
-			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
-			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-			
-		$('#submitdepositapp').button().click(function(e) {
-			submitDepositApplication(clientId);
-		    e.preventDefault();
-		});
-		$('button#submitdepositapp span').text(doI18N('dialog.button.submit'));
-		
-		$('#canceldepositapp').button().click(function(e) {
-  			showILClient(clientId);
-		    e.preventDefault();
-		});
-		$('button#canceldepositapp span').text(doI18N('dialog.button.cancel'));
-		}
-		executeAjaxRequest('depositaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);
-	}
-	
-	// TODO - All this might be able to go
-	function modifyILLoan(loanId) {
-		setAddLoanContent("content");
-		
-		var successFunction =  function(data, textStatus, jqXHR) {
-			
-			var clientId = data.clientId;
-			
-			var formHtml = $("#modifyLoanApplicationFormTemplate").render(data);
-			
-			$("#inputarea").html(formHtml);
-
-			$('#productId').change(function() {
-				var productId = $('#productId').val();
-				// dont do anything for now when users switches product during modify
-			});
-			
-			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
-			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-			
-			$('#cancelloanapp').button().click(function(e) {
-	  			showILClient(clientId);
-			    e.preventDefault();
-			});
-			$('button#cancelloanapp span').text(doI18N('dialog.button.cancel'));
-			
-			calculateLoanSchedule();
-			
-			$('#modifyloanapp').button().click(function(e) {
-				modifyLoanApplication(clientId, loanId);
-			    e.preventDefault();
-			});
-			$('button#modifyloanapp span').text(doI18N('dialog.button.submit'));
-			
-			// attaching charges logic
-			var index = 0;
-			if (data["charges"]) {
-				index = data["charges"].length;
-			}
-	  		$('#addloancharges').click(function() {  
-  				var chargeId = $('#chargeOptions option:selected').val();
-  				chargeId = chargeId.replace("-1", "");
-  				
-  				var addLoanChargeSuccess = function (chargeData) {
-  					index++;
-					chargeData["index"] = index;	  					
-  					var loanChargeHtml = $("#addNewLoanChargeFormTemplate").render(chargeData);
-  					
-  					$("#selectedLoanCharges").append(loanChargeHtml);
-			  		
-  					$('.removeloancharges').click(function(e) {  
-	  					$(this).closest('.row.charge').remove();
-	  					calculateLoanSchedule();
-	  					e.preventDefault();
-	  				});
-  					
-  					$('.chargeAmount').change(function() {  
-  			  			calculateLoanSchedule();
-  			  		});
-  					
-  					$("[class*=specifiedDueDate]").change(function() {
-  			  			calculateLoanSchedule();
-  				  	});
-  					
-  					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-  					
-			  		calculateLoanSchedule();
-  				}
-  				
-  				if (chargeId) {
-  					executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
-  				}
-  				
-  				e.preventDefault();
-	  		});
-	  		
-	  		$('.removeloancharges').click(function(e) {  
-	  			$(this).closest('.row.charge').remove();
-	  			calculateLoanSchedule();
-	  			e.preventDefault();
-	  		});
-	  		
-	  		$('.chargeAmount').change(function() {
-	  			calculateLoanSchedule();
-	  		});
-	  		
-	  		$("[class*=specifiedDueDate]").change(function() {
-	  			calculateLoanSchedule();
-		  	});
-	  		
-			// change detection
-			$('#principal').change(function() {
-				calculateLoanSchedule();
-			});
-			
-			$('#loanTermFrequency').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#loanTermFrequencyType').change(function() {
-				calculateLoanSchedule();
-			});
-			
-			$('#numberOfRepayments').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#repaymentEvery').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#repaymentFrequencyType').change(function() {
-				calculateLoanSchedule();
-			});
-			
-			$('#expectedDisbursementDate').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#repaymentsStartingFromDate').change(function() {
-				calculateLoanSchedule();
-			});
-			
-			$('#interestRatePerPeriod').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#interestRateFrequencyType').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#amortizationType').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#interestType').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#interestCalculationPeriodType').change(function() {
-				calculateLoanSchedule();
-			});
-			$('#interestChargedFromDate').change(function() {
-				calculateLoanSchedule();
-			});
-		};
-		
-		executeAjaxRequest('loans/' + loanId + '?template=true&associations=charges,collateral', 'GET', "", successFunction, formErrorFunction);	 
-	}
-	
 	function modifyLoanApplication(clientId, loanId) {
 		
 		var newFormData = JSON.stringify($('#entityform').serializeObject());
@@ -3782,18 +3610,6 @@ function addILBulkMembersLoans(groupId, clientMembers){
 
 		return false;
 	}
-	
-	function genAddLoanSuccessVar(clientId, groupId) {
-
-		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
-				' var formHtml = $("#newLoanFormTemplateMin").render(data);' +
-				' $("#inputarea").html(formHtml);' +
-				' $("#productId").change(function() {' +
-					' var productId = $("#productId").val();' +
-					' repopulateFullForm(' + clientId + ', ' + groupId + ', productId);' +
-				' });' +
-			' };'
-	}
 
 	function genSaveSuccessFunctionReloadLoan(loanId) {
 
@@ -3804,250 +3620,6 @@ function addILBulkMembersLoans(groupId, clientMembers){
 							' groupDirty = true;' +
 						'};';
 	}
-	
-	function genSaveSuccessFunctionReloadDeposit(depositAccountId) {
-
-		return 'var saveSuccessFunctionReloadDeposit = function(data, textStatus, jqXHR) { ' + 
-						  	' $("#dialog-form").dialog("close");' +
-							' loadDepositAccount(' + depositAccountId + ');' +
-							' clientDirty = true;' +
-						'};';
-	}
-
-	function addILDeposit(clientId) {
-		setAddDepositContent("content");
-
-		eval(genAddDepositSuccessVar(clientId));
-
-		   executeAjaxRequest('depositaccounts/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	
-		}	
-		function genAddDepositSuccessVar(clientId) {
-
-		return 'var successFunction = function(data, textStatus, jqXHR) { ' +
-		' var formHtml = $("#newDepositFormTemplateMin").render(data);' +
-		' $("#inputarea").html(formHtml);' +
-		' $("#productId").change(function() {' +
-		' var productId = $("#productId").val();' +
-		' repopulateDepositAccountForm(' + clientId + ', productId);' +
-		' });' +
-		' };'
-		}
-		
-	
-	function repopulateDepositAccountForm(clientId, productId){
-		successFunction = function(data, textStatus, jqXHR) {
-			var formHtml = $("#newDepositFormTemplate").render(data);
-			
-			$("#inputarea").html(formHtml);
-			
-			$('#productId').change(function() {
-				var productId = $('#productId').val();
-				repopulateDepositAccountForm(clientId, productId);
-			});
-			
-			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
-			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-			
-			$('#submitdepositapp').button().click(function(e) {
-				submitDepositApplication(clientId);
-			    e.preventDefault();
-			});
-			$('button#submitdepositapp span').text(doI18N('dialog.button.submit'));
-			
-			$('#canceldepositapp').button().click(function(e) {
-	  			showILClient(clientId);
-			    e.preventDefault();
-			});
-			$('button#canceldepositapp span').text(doI18N('dialog.button.cancel'));
-		}
-		executeAjaxRequest('depositaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);
-	}	
-
-
-	function repopulateFullForm(clientId, groupId, productId) {
-				
-		successFunction =  function(data, textStatus, jqXHR) {
-			
-				var formHtml = $("#newLoanFormTemplate").render(data);
-			
-				$("#inputarea").html(formHtml);
-
-				$('#productId').change(function() {
-					var selectedProductId = $('#productId').val();
-					repopulateFullForm(clientId, groupId, selectedProductId);
-				});
-				
-				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
-				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-				
-				calculateLoanSchedule();
-				
-				// attaching charges logic
-		  		var index = data["charges"].length;
-		  		$('#addloancharges').click(function(e) { 
-		  			
-	  				var chargeId = $('#chargeOptions option:selected').val();
-	  				chargeId = chargeId.replace("-1", "");
-	  				
-	  				var addLoanChargeSuccess = function (chargeData) {
-	  					index++;
-						chargeData["index"] = index;	  					
-	  					var loanChargeHtml = $("#addNewLoanChargeFormTemplate").render(chargeData);
-	  					
-	  					$("#selectedLoanCharges").append(loanChargeHtml);
-				  		
-	  					$('.removeloancharges').click(function(e) {  
-		  					$(this).closest('.row.charge').remove();
-		  					calculateLoanSchedule();
-		  					e.preventDefault();
-		  				});
-	  					
-	  					$('.chargeAmount').change(function() {
-	  			  			calculateLoanSchedule();
-	  			  		});
-	  					
-	  					$("[class*=specifiedDueDate]").change(function() {
-	  			  			calculateLoanSchedule();
-	  				  	});
-
-	  					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-				  		
-				  		calculateLoanSchedule();
-	  				}
-	  				
-	  				if (chargeId) {
-	  					executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addLoanChargeSuccess, formErrorFunction);
-	  				}
-	  				
-	  				e.preventDefault();
-		  		});
-		  		
-		  		$('.removeloancharges').click(function(e) {  
-		  			$(this).closest('.row.charge').remove();
-		  			calculateLoanSchedule();
-		  			e.preventDefault();
-		  		});
-		  		
-		  		$('.chargeAmount').change(function() {  
-		  			calculateLoanSchedule();
-		  		});
-		  		
-		  		$("[class*=specifiedDueDate]").change(function() {
-		  			calculateLoanSchedule();
-			  	});
-		  		
-				// change detection
-				$('#principal').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#loanTermFrequency').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#loanTermFrequencyType').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#numberOfRepayments').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#repaymentEvery').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#repaymentFrequencyType').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#expectedDisbursementDate').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#repaymentsStartingFromDate').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#interestRatePerPeriod').change(function() {
-					calculateLoanSchedule();
-				});
-				
-				$('#interestRateFrequencyType').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#amortizationType').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#interestType').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#interestCalculationPeriodType').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#interestChargedFromDate').change(function() {
-					calculateLoanSchedule();
-				});
-				$('#submitloanapp').button().click(function(e) {
-					submitLoanApplication(clientId, groupId);
-				    e.preventDefault();
-				});
-				$('button#submitloanapp span').text(doI18N('dialog.button.submit'));
-				
-				$('#cancelloanapp').button().click(function(e) {
-		  			if (clientId){
-		  				showILClient(clientId);
-		  			} else {
-		  				showILGroup(groupId);
-		  			}
-				    e.preventDefault();
-				});
-				$('button#cancelloanapp span').text(doI18N('dialog.button.cancel'));
-			};
-		
-		if (clientId){
-			executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
-		} else {
-			executeAjaxRequest('loans/template?groupId=' + groupId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);	  
-		}	  		
-		
-
-	}
-	
-
-	function calculateAnnualPercentageRate() {
-		var periodInterestRate = parseFloat($('#nominalInterestRate').val());
-		if (isNaN(periodInterestRate)) {
-			periodInterestRate = 0;
-		}
-		
-		var periodsInYear = 12;
-		var periodType = $('#selectedInterestFrequencyOption').val();
-		if (periodType == 3) {
-			periodsInYear = 1;
-		} else if (periodType == 2) {
-			periodsInYear = 12;
-		} else if (periodType == 1) {
-			periodsInYear = 52;
-		}
-		
-		var apr = parseFloat(periodsInYear * periodInterestRate);
-        $('#interestRatePerYear').val(Globalize.format(apr, "n4"));
-	}
-
-	function calculateLoanSchedule() {
-		
-		var newFormData = JSON.stringify($('#entityform').serializeObject());
-    	
-		var successFunction = function(data, textStatus, jqXHR) {
-				  		removeErrors("#formerrors");
-				  		var loanScheduleHtml = $("#newLoanScheduleTemplate").render(data);
-				  		$("#schedulearea").html(loanScheduleHtml);
-		};
-		
-		var errorFunction = function(jqXHR, textStatus, errorThrown) {
-						 $("#schedulearea").html("");
-						 handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-		};
-		executeAjaxRequest('loans?command=calculateLoanSchedule', "POST", newFormData, successFunction, errorFunction);	  
-	}
-
 
 	function submitLoanApplication(clientId, groupId) {
 		
@@ -6622,8 +6194,10 @@ function postInterest(){
 	popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
 }
 
-function showSavingAccount(accountId, productName) {
+function showSavingAccount(accountId, accountNo, productName) {
+	
 	var newSavingTabId='saving'+accountId+'tab';
+	
 	//show existing tab if this Id is already present
 	if(tabExists(newSavingTabId)){
 		var index = $('#newtabs a[href="#'+ newSavingTabId +'"]').parent().index(); 
@@ -6631,7 +6205,7 @@ function showSavingAccount(accountId, productName) {
 	}
 	//else create new tab and set identifier properties
 	else{
-		var title = productName + ": #" + accountId ;			    
+		var title = productName + ": #" + accountNo;			    
 		$newtabs.tabs( "add", "unknown.html", title);
 		loadSavingAccount(accountId);
 		//add ids and titles to newly added div's and a'hrefs
@@ -6648,7 +6222,7 @@ function showSavingAccount(accountId, productName) {
 
 function loadSavingAccount(accountId) {
 	
-	var accountUrl = 'savingaccounts/' + accountId+ "?associations=all";
+	var accountUrl = 'savingsaccounts/' + accountId+ "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
     	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
@@ -6676,124 +6250,66 @@ function loadSavingAccount(accountId) {
 			}
 		});
 		
-		$('.rejectsavingapplication').button().click(function(e) {
+		$('.savingsaccountdeposit').button({icons: {primary: "ui-icon-arrowthick-1-e"}}).click(function(e) {
 			var linkId = this.id;
-			var savingAccountId = linkId.replace("rejectsavingbtn", "");
-			var postUrl = 'savingaccounts/' + savingAccountId + '?command=reject';
-			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
-			var templateSelector = "#stateTransitionDepositFormTemplate";
-			var width = 400; 
-			var height = 250;
-
-			popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.button.reject.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadClient);
-		    e.preventDefault();
-		});
-		$('button.rejectsavingapplication span').text(doI18N('dialog.button.reject.depositAccount'));
-		
-		$('.approvesavingapplication').button().click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingapprovebtn", "");
-			var postUrl = 'savingaccounts/' + savingAccountId + '?command=approve';
-			var templateSelector = "#stateTransitionSavingFormTemplateForApprove";
-			var width = 500; 
-			var height = 425;
-			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
-			
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
-			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.approve.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadSaving);
-		    
-			e.preventDefault();
-		});
-		$('button.approvesavingapplication span').text(doI18N('dialog.title.approve.depositAccount'));
-		
-		$('.withdrawsavingamount').button().click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingwithdrawbtn", "");
-			var postUrl = 'savingaccounts/' + savingAccountId + '?command=withdraw';
-			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
-			var templateSelector = "#withdrawSavingAmountFormTemplate";
+			var savingAccountId = linkId.replace("savingsaccountdepositbtn", "");
+			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=deposit';
+			var getUrl = 'savingsaccounts/' + savingAccountId + '/transactions/template?command=deposit';
+			var templateSelector = "#savingsAccountTransactionFormTemplate";
 			var width = 400; 
 			var height = 280;
 
 			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
-			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdraw.deposit.amount', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.deposit', templateSelector, width, height, saveSuccessFunctionReloadSaving);
 		    
 			e.preventDefault();
 		});
-		$('button.withdrawsavingamount span').text(doI18N('label.withdraw.deposit.amount'));
+		$('button.savingsaccountdeposit span').text(doI18N('button.deposit'));
 		
-		$('.modifysavingapplication').button().click(function(e) {
+		$('.savingsaccountwithdrawal').button({icons: {primary: "ui-icon-arrowthick-1-w"}}).click(function(e) {
 			var linkId = this.id;
-			var savingAccountId = linkId.replace("modifysavingbtn", "");
-			var postUrl = 'savingaccounts/' + savingAccountId;
-			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true&?associations=all';
-			var templateSelector = "#modifySavingAccountFormTemplate";
-			var width = 850; 
-			var height = 430;
-
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
-			popupDialogWithFormView(getUrl, postUrl, 'PUT', 'dialog.title.edit.deposit.account', templateSelector, width, height, saveSuccessFunctionReloadSaving);
-		    
-			e.preventDefault();
-		});
-		$('button.modifysavingapplication span').text(doI18N('label.modify.deposit.account'));
-
-		
-		$('.undoapprovesavingapplication').button().click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("undosavingapprovebtn", "");
-			var postUrl = 'savingaccounts/' + savingAccountId + '?command=undoapproval';
-			var templateSelector = "#undoStateTransitionLoanFormTemplate";
-			var width = 450; 
-			var height = 260;
-
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
-			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.deposit.approval', templateSelector, width, height, saveSuccessFunctionReloadSaving);
-		    
-			e.preventDefault();
-		});
-		$('button.undoapprovesavingapplication span').text(doI18N('label.undo.approval'));
-		
-		$('.savingwithdrawnbyapplicant').button().click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("withdrawbyapplicantbtn", "");
-			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
-			var postUrl = 'savingaccounts/' + savingAccountId + '?command=withdrawnByApplicant';
-			var templateSelector = "#stateTransitionDepositFormTemplate";
+			var savingAccountId = linkId.replace("savingsaccountwithdrawalbtn", "");
+			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=withdrawal';
+			var getUrl = 'savingsaccounts/' + savingAccountId + '/transactions/template?command=withdrawal';
+			var templateSelector = "#savingsAccountTransactionFormTemplate";
 			var width = 400; 
-			var height = 250;
+			var height = 280;
 
-			popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.title.loan.withdrawn.by.client', templateSelector, width, height, saveSuccessFunctionReloadClient);
-		    e.preventDefault();
-		});
-		$('button.savingwithdrawnbyapplicant span').text(doI18N('dialog.title.loan.withdrawn.by.client'));
-		
-		$('.paysavinginstallment').button().click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingpaymentbtn", "");
-			var getUrl = 'savingaccounts/' + savingAccountId + '?template=true';
-			var postUrl = 'savingaccounts/' + savingAccountId + '?command=depositmoney';
-			var templateSelector = "#paySavingInstallmentsFormTemplate";
-			var width = 400; 
-			var height = 250;
 			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
-			popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.title.saving.pay.installment.due', templateSelector, width, height, saveSuccessFunctionReloadSaving);
-		    e.preventDefault();
+			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdrawal', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    
+			e.preventDefault();
 		});
-		$('button.paysavinginstallment span').text(doI18N('dialog.title.saving.pay.installment.due'));
+		$('button.savingsaccountwithdrawal span').text(doI18N('button.withdrawal'));
 		
-		$('.deletesavingapplication').button().click(function(e) {
+		$('.savingsaccountdelete').button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
 			var linkId = this.id;
-			var savingAccountId = linkId.replace("deletesavingbtn", "");
-			var url = 'savingaccounts/' + savingAccountId;
+			var savingAccountId = linkId.replace("savingsaccountdeletebtn", "");
+			var url = 'savingsaccounts/' + savingAccountId;
 			var width = 400; 
 			var height = 225;
 									
 			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
 		    e.preventDefault();
-	});
-	$('button.deletesavingapplication span').text(doI18N('dialog.button.delete.loan'));
+		});
+		$('button.savingsaccountdelete span').text(doI18N('button.delete'));
 		
+		$('.editsavingsaccountnobtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
+
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("editsavingsaccountnobtn", "");
+			var putUrl = 'savingsaccounts/' + savingAccountId;
+			var getUrl = 'savingsaccounts/' + savingAccountId;
+
+			var templateSelector = "#editAccountNoFormTemplate";
+			var width = 425; 
+			var height = 225;
+
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.accountno", templateSelector, width,  height, saveSuccessFunctionReloadSaving);
+		    e.preventDefault();
+		});
+		$('button.editaccountnobtn span').text(doI18N('link.action.edit'));
 	}
 		
 	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
