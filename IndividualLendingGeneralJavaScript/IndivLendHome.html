@@ -5292,6 +5292,9 @@ function showLockinOptions(){
 		{{#if transactions}}
 		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.transactions")}}</a></li>
 		{{/if}}
+		{{#if collateral}}
+        <li><a href="#collaterals{{=id}}" title="collaterals">{{=$ctx.doI18N("tab.collaterals")}}</a></li>
+        {{/if}}
 		<li><a href="#loanDocuments{{=id}}" title="documents">{{=$ctx.doI18N("tab.loanDocuments")}}</a></li>
 	</ul>
     <!-- first loan tab -->
@@ -5540,42 +5543,7 @@ function showLockinOptions(){
 				<br/>
 			{{/each}}
 		{{/if}}
-
-		{{#if collateral}}
-			<b>{{=$ctx.doI18N("label.collateral")}}</b>
-			<div id="collateraldetails" style="margin-top: 5px;">
-			 <!--
-			 <button id="loanapp-addCollateralType">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
-			 -->
-			 <table id="loandetailscollateraltable" class="pretty displayschedule">
-				<thead>
-					<tr>
-					<th scope="col" style="width:300px;">Type</th>
-					<th scope="col">Description</th>
- 					<!--
-					<th scope="col" style="width:100px;">Actions</th>
-					-->
-					</tr>
-				</thead>
-				<tbody>
-				{{#each collateral}}
-					<tr>
-						<td style="width:300px;">{{=$ctx.doI18N(type.name)}}</td>
-						<td>{{=description}}</textarea>
-						</td>
-						<!--
-						<td style="width:100px;">
-							<button id="loanapp-removeCollateralType{{=id}}" class="loanapp-removeCollateralType">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button>
-						</td>
-						-->
-					</tr>
-				{{/each}}
-				</tbody>
-			</table>
-			</div>
-		{{/if}}
-	</div>
-
+    </div>
 	{{#if charges}}
 	<div id="charges{{=id}}" style="margin-top: 5px;">
 		<table id="loancharges{{=id}}" class="pretty displaypayments">
@@ -5890,9 +5858,45 @@ function showLockinOptions(){
 		</table>
 	</div>
 	{{/if}}
+	<!-- Loan Collaterals Tabs-->
+	{{#if collateral}}
+    <div id="collaterals{{=id}}" style="margin-top: 5px;">
+        <table class="pretty displaypayments">
+        <caption>{{=$ctx.doI18N("table.caption.loanCollaterals")}}</caption>
+            <thead>
+                <tr>
+                <th>{{=$ctx.doI18N("table.heading.loan.collateral.type")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.loan.collateral.description")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.loan.collateral.value")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.action")}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each collateral}}
+                <tr>
+                    <td style="width:300px;">{{=$ctx.doI18N(type.name)}}</td>
+                    <td>{{=description}}</textarea></td>
+                    <td></td>
+                    <td>
+                        {{#if $parent.parent.data.status.code == "loanStatusType.submitted.and.pending.approval"}}  
+                          <button id="modifyloan{{=$parent.parent.parent.data.id}}collateral{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
+                        {{/if}}   
+                        {{#if $parent.parent.data.status.code == "loanStatusType.submitted.and.pending.approval"}}    
+                          <button id="deleteloan{{=$parent.parent.parent.data.id}}collateral{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
+                        {{/if}}  
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{/if}}
+	   
 	<!-- Loan Documents Tab--->
 	<div id="loanDocuments{{=id}}" style="margin-top: 5px;">
 	</div>
+
+	
 </div>
 </script>
 
@@ -7125,7 +7129,7 @@ function showLockinOptions(){
 			<li><a href="#loansettings" title="loansettings">{{=$ctx.doI18N("tab.settings")}}</a></li>
 			<li><a href="#loancharges" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
 			{{#if $ctx.arrayIsNotEmpty(loanCollateralOptions)}}
-			<li><a href="#collateral" title="collateral">{{=$ctx.doI18N("tab.collateral")}}</a></li>
+			<li><a href="#collateral" title="collateral">{{=$ctx.doI18N("tab.collaterals")}}</a></li>
 			{{/if}}
 			<li><a href="#schedule" title="schedule">{{=$ctx.doI18N("tab.previewRepaymentSchedule")}}</a></li>
 	    </ul>
@@ -7386,11 +7390,11 @@ function showLockinOptions(){
 						<td style="width:300px;">
 							<input id="collateral[{{=$itemNumber}}][id]" name="collateral[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
 							<select id="collateral[{{=$itemNumber}}][type]" name="collateral[{{=$itemNumber}}][type]" title="" style="border: 0 none;width: 295px;">
-							{{#each $parent.parent.data.loanCollateralOptions}}
+							{{#each $parent.parent.parent.data.loanCollateralOptions}}
 								{{#if $ctx.number($parent.parent.data.type.id)===$ctx.number(id)}}
-								<option value="{{=$ctx.number($parent.parent.parent.data.type.id)}}" selected="selected">{{=$ctx.doI18N($parent.parent.parent.data.type.name)}}</option>
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(name)}}</option>
 								{{#else}}
-								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(name)}}</option>
 								{{/if}}
 							{{/each}}
 							</select>

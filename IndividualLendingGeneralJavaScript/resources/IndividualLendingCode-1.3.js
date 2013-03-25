@@ -3000,7 +3000,7 @@ function addILBulkMembersLoans(groupId, clientMembers){
 	    }
 		 
 		var collateralIndex = 0;
-		if(typeof data.collateral === "array") {
+		if(typeof data.collateral === "object") {
 			collateralIndex = data["collateral"].length;
 		}
 		$("#loanapp-addCollateralType").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
@@ -3018,11 +3018,12 @@ function addILBulkMembersLoans(groupId, clientMembers){
 				}
 			
 			// have to add 'id' as a field (along with 'loanCollateralOptions') otherwise platform thinks it has to filter it out of json results
-			executeAjaxRequest('loans/template?fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
+			var productId = $("#productId").val();
+			executeAjaxRequest('loans/template?productId='+ productId +'&fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
 		    e.preventDefault();
 		});
 		
-		if(typeof data.collateral === "array") {
+		if(typeof data.collateral === "object") {
 			 $("#loancollateraltable tbody tr .loanapp-removeCollateralType").each(function(index) {
 				 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 					$(this).closest('tr').remove();
@@ -3117,7 +3118,8 @@ function addILBulkMembersLoans(groupId, clientMembers){
 					}
 				
 				// have to add 'id' as a field (along with 'loanCollateralOptions') otherwise platform thinks it has to filter it out of json results
-				executeAjaxRequest('loans/template?fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
+				var productId = $("#productId").val();
+				executeAjaxRequest('loans/template?productId='+ productId +'&fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
 			    e.preventDefault();
 			});
 			
