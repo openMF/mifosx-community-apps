@@ -3490,6 +3490,16 @@ function addILBulkMembersLoans(groupId, clientMembers){
 				loadTabbedSavingsAccountForm(dialogDiv, data.clientId, savingsProductId);
 			});
 			
+			$("#activeCheckbox").change(function() {
+				var selected = this.checked;
+				if (selected) {
+					 $("#activationDate").removeAttr("disabled");
+				} else {
+					$("#activationDate").attr("disabled", "disabled");
+				}
+				loadTabbedSavingsAccountForm(dialogDiv, data.clientId, savingsProductId);
+			});
+			
 			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 		};
@@ -3638,217 +3648,8 @@ function addILBulkMembersLoans(groupId, clientMembers){
 		executeAjaxRequest('loans', "POST", newFormData, successFunction, formErrorFunction);	  
 
 	}
-
 	
-	function submitDepositApplication(clientId) {
-		
-		var newFormData = JSON.stringify($('#entityform').serializeObject());
-    	
-		var successFunction =  function(data, textStatus, jqXHR) {
-		  				showILClient(clientId);
-			  };
-		
-		executeAjaxRequest('depositaccounts', "POST", newFormData, successFunction, formErrorFunction);	  
-
-	}
-
 	
-
-	function showDepositAccount(accountId, productName) {
-		var title = productName + ": #" + accountId ;			    
-		$newtabs.tabs( "add", "unknown.html", title);
-		loadDepositAccount(accountId);
-	}
-	
-	function loadDepositAccount(accountId) {
-		
-		var accountUrl = 'depositaccounts/' + accountId + "?associations=all";
-
-		var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
-	    	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
-	        //$(anchor.hash).html("error occured while ajax loading.");
-		};
-		
-		var successFunction = function(data, status, xhr) {
-        	
-    		var currentTabIndex = $newtabs.tabs('option', 'selected');
-        	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
-        	
-        	var tableHtml = $("#depositAccountDataTabTemplate").render(data);
-        	
-        	var data = new Object();
-    		
-    		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
-    		currentTab.html(tableHtml);
-
-    		var curTabID = currentTab.prop("id");
-    		
-    		$('.rejectdepositapplication').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("rejectbtn", "");
-				var postUrl = 'depositaccounts/' + depositAccountId + '?command=reject';
-				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
-				var templateSelector = "#stateTransitionDepositFormTemplate";
-				var width = 400; 
-				var height = 250;
-
-				popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.button.reject.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadClient);
-			    e.preventDefault();
-			});
-    		$('button.rejectdepositapplication span').text(doI18N('dialog.button.reject.depositAccount'));
-    		
-    		$('.approvedepositapplication').button().click(function(e) {
-    			var linkId = this.id;
-    			var depositAccountId = linkId.replace("approvebtn", "");
-    			var postUrl = 'depositaccounts/' + depositAccountId + '?command=approve';
-    			var templateSelector = "#stateTransitionDepositFormTemplateForApprove";
-    			var width = 500; 
-    			var height = 350;
-    			var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
-    			
-    			eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-    			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.approve.depositAccount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
-    		    
-    			e.preventDefault();
-    		});
-    		$('button.approvedepositapplication span').text(doI18N('dialog.title.approve.depositAccount'));
-    		
-    		$('.withdrawinterestamount').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("withdrawinterestbtn", "");
-				var postUrl = 'depositaccounts/' + depositAccountId + '?command=interestwithdraw';
-				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
-				var templateSelector = "#withdrawInterestFormTemplate";
-				var width = 400; 
-				var height = 250;
-
-				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdraw.interest.amount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
-				e.preventDefault();
-			});
-    		$('button.withdrawinterestamount span').text(doI18N('label.withdraw.interest.amount'));
-
-			$('.printpdf').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("printbtn", "");
-				var getUrl = 'depositaccounts/' + depositAccountId + '/print';
-				
-				executeAjaxOctetStreamDownloadRequest(getUrl);
-				alert("Please close the pdf file after download or print finished");
-				e.preventDefault();
-			});
-    		$('button.printpdf span').text(doI18N('label.print.fd.account.details'));
-			
-    		
-    		$('.renewdepositaccount').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("renewbtn", "");
-				var postUrl = 'depositaccounts/' + depositAccountId + '?command=renew';
-				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
-				var templateSelector = "#renewDepositFormTemplate";
-				var width = 850; 
-				var height = 450;
-
-				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.renew.deposit.account', templateSelector, width, height, saveSuccessFunctionReloadClient);
-				e.preventDefault();
-			});
-    		$('button.renewdepositaccount span').text(doI18N('label.renew.deposit.account'));
-    		
-    		$('.withdrawdepositamount').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("withdrawbtn", "");
-				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrawal';
-				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
-				var templateSelector = "#withdrawAmountFormTemplate";
-				var width = 400; 
-				var height = 280;
-
-				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdraw.deposit.amount', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
-			    
-				e.preventDefault();
-			});
-    		$('button.withdrawdepositamount span').text(doI18N('label.withdraw.deposit.amount'));
- 
-			$('.modifydepositapplication').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("modifydepositbtn", "");
-				var postUrl = 'depositaccounts/' + depositAccountId;
-				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
-				var templateSelector = "#modifyDepositApplicationFormTemplate";
-				var width = 850; 
-				var height = 450;
-
-				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithFormView(getUrl, postUrl, 'PUT', 'dialog.title.edit.deposit.account', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
-			    
-				e.preventDefault();
-			});
-    		$('button.modifydepositapplication span').text(doI18N('label.modify.deposit.account'));
-    		
-    		$('.modifyapproveddepositapplication').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("modifyapproveddepositbtn", "");
-				var postUrl = 'depositaccounts/' + depositAccountId;
-				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true&?associations=all';
-				var templateSelector = "#modifyApprovedDepositApplicationFormTemplate";
-				var width = 400; 
-				var height = 250;
-
-				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithFormView(getUrl, postUrl, 'PUT', 'dialog.title.edit.deposit.account', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
-			    
-				e.preventDefault();
-			});
-    		$('button.modifyapproveddepositapplication span').text(doI18N('label.modify.deposit.account'));
-
-    		
-    		$('.undoapprovedepositapplication').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("undoapprovebtn", "");
-				var postUrl = 'depositaccounts/' + depositAccountId + '?command=undoapproval';
-				var templateSelector = "#undoStateTransitionLoanFormTemplate";
-				var width = 450; 
-				var height = 260;
-
-				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
-				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.deposit.approval', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
-			    
-				e.preventDefault();
-			});
-    		$('button.undoapprovedepositapplication span').text(doI18N('label.undo.approval'));
-    		
-    		$('.withdrawnbyapplicant').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("withdrawnbyapplicantbtn", "");
-				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
-				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrawnByApplicant';
-				var templateSelector = "#stateTransitionDepositFormTemplate";
-				var width = 400; 
-				var height = 250;
-
-				popupDialogWithFormView(getUrl,postUrl, 'POST', 'dialog.title.loan.withdrawn.by.client', templateSelector, width, height, saveSuccessFunctionReloadClient);
-			    e.preventDefault();
-			});
-    		$('button.withdrawnbyapplicant span').text(doI18N('dialog.title.loan.withdrawn.by.client'));
-    		
-    		$('.deletedepositapplication').button().click(function(e) {
-				var linkId = this.id;
-				var depositAccountId = linkId.replace("deletebtn", "");
-				var url = 'depositaccounts/' + depositAccountId;
-				var width = 400; 
-				var height = 225;
-										
-				popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
-			    e.preventDefault();
-		});
-		$('button.deletedepositapplication span').text(doI18N('dialog.button.delete.loan'));
-		};
-		
-		executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
-	}
-
 function showILLoan(loanId, product, loanAccountNo) {
 	var newLoanTabId='loan'+loanId+'tab';
 	//show existing tab if this Id is already present
@@ -6282,6 +6083,21 @@ function loadSavingAccount(accountId) {
 			e.preventDefault();
 		});
 		$('button.savingsaccountwithdrawal span').text(doI18N('button.withdrawal'));
+		
+		$('.savingsaccountactivate').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("savingsaccountactivatebtn", "");
+			var getUrl = 'savingsaccounts/' + savingAccountId + '?command=activate&template=true';
+			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=activate';
+			var templateSelector = "#savingsAccountActivationTemplate";
+			var width = 400; 
+			var height = 225;
+			
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.activation', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    e.preventDefault();
+		});
+		$('button.savingsaccountactivate span').text(doI18N('button.activate'));
 		
 		$('.savingsaccountdelete').button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
 			var linkId = this.id;

@@ -3151,7 +3151,8 @@ $(document).ready(function() {
 		</table>
 	</fieldset>
 </form>
-</script> 
+</script>
+
 <script id="loanUnassignmentFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -4927,108 +4928,6 @@ function showLockinOptions(){
 </p>
 </script>
 
-<script id="savingAccountDataTabTemplate" type="text/x-jquery-tmpl">
-<div id="savingaccountactions">
-	<table width="100%">
-		<tr><td align="center">
-			<span id="toolbar" class="ui-widget-header ui-corner-all">
-			<button id="savingsaccountdepositbtn{{=id}}" class="savingsaccountdeposit">{{=$ctx.doI18N("button.deposit")}}</button>
-			<button id="savingsaccountwithdrawalbtn{{=id}}" class="savingsaccountwithdrawal">{{=$ctx.doI18N("button.withdrawal")}}</button>
-			<button id="savingsaccountdeletebtn{{=id}}" class="savingsaccountdelete">{{=$ctx.doI18N("button.delete")}}</button>
-			</span>
-		</td></tr>
-	</table>
-</div>
-
-<div id="savingtabs{{=id}}" class="savingtabs">
-	<ul>
-		<li><a href="#details{{=id}}" title="details">{{=$ctx.doI18N("tab.details")}}</a></li>
-		{{#if transactions}}
-		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.transactions")}}</a></li>
-		{{/if}}
-	</ul>
-	<div id="details{{=id}}" style="margin-top: 5px;">
-		{{#if accountNo}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.accountNo")}}</span>
-			<span class="rowvalue">
-			{{=accountNo}}
-			<button id="editsavingsaccountnobtn{{=id}}" class="editsavingsaccountnobtn"><span>Edit</span></button>
-			</span>
-		</div>
-		{{/if}}
-		{{#if externalId}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
-			<span class="rowvalue">
-			{{=externalId}}
-			<button id="editsavingsaccountnobtn{{=id}}" class="editsavingsaccountnobtn"><span>Edit</span></button>
-			</span>
-		</div>
-		{{/if}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.product")}}</span>
-			<span class="rowvalue">{{=savingsProductName}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
-			<span class="rowvalue">{{=$ctx.doI18N(currency.nameCode)}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.interestRate")}}</span>
-			<span class="rowvalue">{{=interestRate}}% {{=$ctx.doI18N(interestRatePeriodFrequencyType.code)}}</span>
-		</div>
-
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.accountBalance")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.accountBalance)}}</span>
-		</div>
-	</div>
-		
-	{{#if transactions}}
-	<div id="transactions{{=id}}" style="margin-top: 5px;">
-	<table id="savingsaccounttransactions{{=id}}" class="pretty">
-	<caption>{{=$ctx.doI18N("savingsaccount.transactions.caption")}}</caption>
-	<thead>
-		<tr>
-			<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.amount")}}</th>
-		</tr>
-	</thead>
-	<tbody>
-	{{#each transactions}}
-		<tr>
-			<td>{{=$ctx.globalDate(date)}}</td>
-			<td>{{=$ctx.doI18N(transactionType.code)}}</td>
-			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, amount)}}</td>
-		</tr>
-	{{/each}}
-	</tbody>
-	</table>
-	</div>
-	{{/if}}
-</div>
-</script>
-
-<script id="savingsAccountTransactionFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<table>
-		<tr>
-			<td>{{=$ctx.doI18N("label.transactionDate")}}</td>
-			<td><input id="transactionDate" name="transactionDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(date)}}"/></td>
-		</tr>
-		<tr>
-			<td>{{=$ctx.doI18N("label.amount")}}</td>
-			<td><input id="transactionAmount" name="transactionAmount" title="" type="text" value="{{=$ctx.moneyFormatted(currency, amount)}}" /></td>
-		</tr>
-	</table>
-</form>
-</script>
-
 <!-- old style loan application template -->
 <script id="newLoanScheduleTemplate" type="text/x-jquery-tmpl">
 <table id="repaymentschedule" class="pretty displayschedule">
@@ -6373,6 +6272,7 @@ function showLockinOptions(){
 	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
 	{{/if}}
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 
 	<table>
 			<tr>
@@ -6401,6 +6301,22 @@ function showLockinOptions(){
 					{{/if}}
 	    		{{/each}}
 					</select>
+				</td>
+			</tr>
+
+			<tr>
+				<td valign="top">
+				{{=$ctx.doI18N("label.active")}}
+				</td>
+				<td valign="top">
+				<input id="activeCheckbox" type="checkbox" name="active" value="true" checked />
+				</td>
+
+				<td valign="top">&nbsp;</td>
+
+				<td valign="top">{{=$ctx.doI18N("label.activationDate")}}</td>
+				<td valign="top">
+					<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
 				</td>
 			</tr>
 	</table>
@@ -6473,6 +6389,140 @@ function showLockinOptions(){
 		</div>
 	</div>
 	<!-- end of savings account tabs -->
+</form>
+</script>
+
+<script id="savingAccountDataTabTemplate" type="text/x-jquery-tmpl">
+<div id="savingaccountactions">
+	<table width="100%">
+		<tr><td align="center">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+			{{#if status.active}}
+			<button id="savingsaccountdepositbtn{{=id}}" class="savingsaccountdeposit">{{=$ctx.doI18N("button.deposit")}}</button>
+			<button id="savingsaccountwithdrawalbtn{{=id}}" class="savingsaccountwithdrawal">{{=$ctx.doI18N("button.withdrawal")}}</button>
+			{{/if}}
+			{{#if status.unactivated}}
+			<button id="savingsaccountactivatebtn{{=id}}" class="savingsaccountactivate">{{=$ctx.doI18N("button.activate")}}</button>
+			<button id="savingsaccountdeletebtn{{=id}}" class="savingsaccountdelete">{{=$ctx.doI18N("button.delete")}}</button>
+			{{/if}}
+			</span>
+		</td></tr>
+	</table>
+</div>
+
+<div id="savingtabs{{=id}}" class="savingtabs">
+	<ul>
+		<li><a href="#details{{=id}}" title="details">{{=$ctx.doI18N("tab.details")}}</a></li>
+		{{#if transactions}}
+		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.transactions")}}</a></li>
+		{{/if}}
+	</ul>
+	<div id="details{{=id}}" style="margin-top: 5px;">
+		{{#if accountNo}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.accountNo")}}</span>
+			<span class="rowvalue">
+			{{=accountNo}}
+			<button id="editsavingsaccountnobtn{{=id}}" class="editsavingsaccountnobtn"><span>Edit</span></button>
+			</span>
+		</div>
+		{{/if}}
+		{{#if externalId}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
+			<span class="rowvalue">
+			{{=externalId}}
+			<button id="editsavingsaccountnobtn{{=id}}" class="editsavingsaccountnobtn"><span>Edit</span></button>
+			</span>
+		</div>
+		{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.product")}}</span>
+			<span class="rowvalue">{{=savingsProductName}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.currency")}}</span>
+			<span class="rowvalue">{{=$ctx.doI18N(currency.nameCode)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interestRate")}}</span>
+			<span class="rowvalue">{{=interestRate}}% {{=$ctx.doI18N(interestRatePeriodFrequencyType.code)}}</span>
+		</div>
+		<br/>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
+			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
+		</div>
+		{{#if activationDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.activationDate")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(activationDate)}}</span>
+		</div>
+		{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.accountBalance")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.accountBalance)}}</span>
+		</div>
+	</div>
+		
+	{{#if transactions}}
+	<div id="transactions{{=id}}" style="margin-top: 5px;">
+	<table id="savingsaccounttransactions{{=id}}" class="pretty">
+	<caption>{{=$ctx.doI18N("savingsaccount.transactions.caption")}}</caption>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.amount")}}</th>
+		</tr>
+	</thead>
+	<tbody>
+	{{#each transactions}}
+		<tr>
+			<td>{{=$ctx.globalDate(date)}}</td>
+			<td>{{=$ctx.doI18N(transactionType.code)}}</td>
+			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, amount)}}</td>
+		</tr>
+	{{/each}}
+	</tbody>
+	</table>
+	</div>
+	{{/if}}
+</div>
+</script>
+
+<script id="savingsAccountActivationTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<table cellspacing="4px" cellpadding="8px">
+		<tr>
+			<td>
+				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}"/>
+			</td>
+		</tr>
+	</table>
+</form>
+</script> 
+
+<script id="savingsAccountTransactionFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<table>
+		<tr>
+			<td>{{=$ctx.doI18N("label.transactionDate")}}</td>
+			<td><input id="transactionDate" name="transactionDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(date)}}"/></td>
+		</tr>
+		<tr>
+			<td>{{=$ctx.doI18N("label.amount")}}</td>
+			<td><input id="transactionAmount" name="transactionAmount" title="" type="text" value="{{=$ctx.moneyFormatted(currency, amount)}}" /></td>
+		</tr>
+	</table>
 </form>
 </script>
 <!-- end of new savings accounts templates -->
