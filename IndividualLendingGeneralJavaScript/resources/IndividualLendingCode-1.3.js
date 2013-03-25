@@ -6230,7 +6230,6 @@ function loadSavingAccount(accountId) {
 	};
 	
 	var successFunction = function(data, status, xhr) {
-    	
 		var currentTabIndex = $newtabs.tabs('option', 'selected');
     	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
     	
@@ -6310,6 +6309,11 @@ function loadSavingAccount(accountId) {
 		    e.preventDefault();
 		});
 		$('button.editaccountnobtn span').text(doI18N('link.action.edit'));
+
+		/*
+		 * This works but not showing savings datatables by default yet.  When ready just uncomment
+		 * custom.showRelatedDataTableInfo($savingtabs, "m_savings_account", accountId); 
+		 */
 	}
 		
 	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	

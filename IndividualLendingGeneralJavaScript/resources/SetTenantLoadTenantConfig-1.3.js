@@ -259,13 +259,25 @@ custom.helperFunctions = {
  * behaviour (like in GKRiskAnalysis.js)
  */
 custom.datatablePresentation = {
+	"M_LOAN" : {
+		renderInfo : [],
+		exclude : [ ]
+	},
+	"M_SAVINGS_ACCOUNT" : {
+		renderInfo : [],
+		exclude : [ ]
+	},
 	"M_CLIENT" : {
 		renderInfo : [],
 		exclude : []
 	},
-	"M_LOAN" : {
+	"M_GROUP" : {
 		renderInfo : [],
-		exclude : [ "m_guarantor_external" ]
+		exclude : [ ]
+	},
+	"M_OFFICE" : {
+		renderInfo : [],
+		exclude : [ ]
 	}
 };
 
