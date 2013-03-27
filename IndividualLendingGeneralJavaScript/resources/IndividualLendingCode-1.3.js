@@ -189,6 +189,7 @@ function showMainContainer(containerDivName, username) {
 
 	if (jQuery.MifosXUI.showMenu("ClientsMenu") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+		htmlVar += '  <li><a href="unknown.html" onclick="showCollectionSheet();return false;">' + doI18N("link.topnav.collection.sheet") + '</a></li>';
 	
 	if (jQuery.MifosXUI.showMenu("CheckerMenu") == true)
 		htmlVar += '	<li><a href="unknown.html" onclick="showMakerCheckerListing();return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
@@ -6740,4 +6741,199 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
 
     //get client parent groups
     executeAjaxRequest('clients/' + resourceId + '?fields=id,parentGroups', 'GET', "", groupsSuccessFunction, formErrorFunction);    
+}
+function loadAttachedCalendarToLoan(loanId){
+    var successFunction = function(data, textStatus, jqXHR) {
+        var calendars = new Object();
+        calendars.crudRows = data;
+        if(calendars.crudRows.length > 0){
+            var calendar = calendars.crudRows[0];
+            $('#loanType').val('2');
+            $("#availableCalendars").val(calendar.id);
+            $('#calmapprow').show();
+        }            
+    }        
+    executeAjaxRequest('loans/' + loanId + '/calendars?parameters=id,entityId,entityType', 'GET', "", successFunction, formErrorFunction);
+}
+
+function showCollectionSheet() {
+
+    setCollectionSheetContent("content");
+    
+    $("#tabs").tabs({
+        select: function(event, ui) {
+        },
+        load: function(event, ui) {
+        },
+        show: function(event, ui) {
+
+            var initCollectionSheet =  function() {
+            //render page markup
+                var tableHtml = $("#collectionSheetTabTemplate").render();
+                $("#collectionsheettab").html(tableHtml);
+                //fetch all Offices 
+                var officeSuccessFunction =  function(data) {
+                    var officeObject = new Object();
+                    officeObject.crudRows = data;
+
+                    $('#officeId').empty().append(function(){
+                        var output = '<option value=0> -- Select a Branch Office -- </option>';
+                        $.each(officeObject.crudRows, function(key, value){
+                           output += '<option value=' + value.id + '>' + value.nameDecorated + '</option>';
+                        });
+                        return output;
+                    });
+
+                    $("#officeId").change(function(){
+                        loadAssociatedGroups($(this).val());
+                    })
+                };
+                executeAjaxRequest('offices', 'GET', "", officeSuccessFunction, formErrorFunction);
+
+                $('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+
+                $('#continuebtn').button({
+                    icons: {
+                        primary: "ui-icon-circle-arrow-e"
+                    }
+                 }).click(function(e){
+                     loadCollectionSheet($('#groupId').val());
+                 });
+            }
+            initCollectionSheet();
+        }
+    });  
+
+} // end showCollectionSheet
+
+function setCollectionSheetContent(divName) {
+    var htmlVar = "";
+    
+    htmlVar += '<div id="tabs"><ul><li><a href="#collectionsheettab" title="CollectionSheet">' + doI18N("tab.collection.sheet") + '</a></li></ul><div id="collectionsheettab"></div></div>';
+
+    $("#" + divName).html(htmlVar);
+}
+
+function loadAssociatedGroups(officeId){
+
+    var csGroupSearchSuccessFunction =  function(data) {
+        var groupObject = new Object();
+        groupObject.crudRows = data;
+
+        $('#groupId').empty().append(function(){
+            var output = '<option value=0> -- Select a Branch Office -- </option>';
+            $.each(groupObject.crudRows, function(key, value){
+               output += '<option value=' + value.id + '>' + value.name + '</option>';
+            });
+            return output;
+        });        
+    };
+    executeAjaxRequest('groups?officeId=' + officeId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
+}
+
+function loadCollectionSheet(groupId){
+    var date = $.datepicker.formatDate('yymmdd', $('#transactionDate').datepicker( "getDate" ));
+    var getUrl = 'groups/' + groupId + '/collectionsheet?dueDate=' + date;
+    var postUrl = 'groups/' + groupId + '/collectionsheet';
+    $("#collectionSheetContent").html("");
+    var successFunction = function(data){
+        var collections = new Object();
+        collections.crudRows = data;
+        var tableHtml = $("#collectionSheetTemplate").render(collections);
+        $("#collectionSheetContent").html(tableHtml);
+                
+        var sumTotalDue = function(data){
+            var groups = data.groups;
+            var loanProducts = data.loanProducts;
+            $.each(loanProducts, function(key, value){
+                var loanProd = value;
+                var sumTotalDue = 0.0, sumTotalDisbarsal = 0.0;
+                $.each(groups, function(key, value){
+                    var group = value;
+                    var grouptotalDue = 0.0, groupTotalDisbarsal = 0.0;
+                    $('.grouptotaldue_' + group.groupId + '_' + loanProd.id).each(function(){
+                        var tmpAmount = parseFloat(($(this).val()).replace(",", ""));
+                       grouptotalDue += tmpAmount;
+                       sumTotalDue += tmpAmount;
+                    });
+
+                    $('#grouptotaldue_' + group.groupId + '_' + loanProd.id).val(grouptotalDue);
+                    
+                    $('.grouptotaldisbursal_' + group.groupId + '_' + loanProd.id).each(function(){
+                        var tmpAmount = parseFloat(($(this).val()).replace(",", ""));
+                       groupTotalDisbarsal += tmpAmount;
+                       sumTotalDisbarsal += tmpAmount;
+                    });
+                    
+                    $('#grouptotaldisbursal_' + group.groupId + '_' + loanProd.id).val(groupTotalDisbarsal);
+               }); 
+                $('#sumtotaldue_' + loanProd.id).val(sumTotalDue);
+                $('#sumdisbursal_' + loanProd.id).val(sumTotalDisbarsal);
+            });
+            
+        }
+
+        sumTotalDue(data);
+
+        $('.grouptotaldue').change(function(){
+            var data = collections.crudRows;
+            sumTotalDue(data); 
+        });
+
+        var saveCollectionSheetTransactions = function(postUrl){
+            serializedArray = {};
+            serializedArray["locale"] = $('#locale').val();
+            serializedArray["dateFormat"] = $('#dateFormat').val();
+            serializedArray["transactionDate"] = $('#transactionDate').val();
+            serializedArray["actualDisbursementDate"] = $('#transactionDate').val();
+            serializedArray["bulkRepaymentTransactions"] = new Array();
+            $.each($('.grouptotaldue'), function(i){
+                var transactionAmount = $(this).val();
+                var loanId = this.id.replace("totaldue_", "");
+                var tempObject = new Object();
+                tempObject.loanId = loanId;
+                tempObject.transactionAmount = transactionAmount;
+                serializedArray["bulkRepaymentTransactions"][i] = tempObject;
+            });
+            
+            serializedArray["bulkDisbursementTransactions"] = new Array();
+            $.each($('.grouptotaldisbursement'), function(i){
+                var transactionAmount = $(this).val();
+                var loanId = this.id.replace("disbursement_", "");
+                var tempObject = new Object();
+                tempObject.loanId = loanId;
+                tempObject.transactionAmount = transactionAmount;
+                serializedArray["bulkDisbursementTransactions"][i] = tempObject;
+            });
+            
+            var saveSuccessFunction = function(data){
+                $('#collectionSheetContent').html("<label><b>Collection Sheet saved successfully</b></label>");
+            }
+            
+            var newFormData = JSON.stringify(serializedArray);
+            executeAjaxRequest(postUrl, "post", newFormData, saveSuccessFunction, formErrorFunction);
+        }
+
+        $('#savebtn').button({
+            icons : {
+                primary : "ui-icon-disk"
+            }
+         }).click(function(e){
+             saveCollectionSheetTransactions(postUrl);
+             e.preventDefault();
+         });
+         
+         $('#cancelbtn').button({
+            icons : {
+                primary : "ui-icon-close"
+            }
+         }).click(function(e){
+             $('#collectionSheetContent').html("");
+             e.preventDefault();
+         });
+        
+        $(".collections td:last-child").addClass('righthighlightcolheader');
+        $(".collections th:last-child").addClass('righthighlightcolheader');
+    }
+    executeAjaxRequest(getUrl, 'GET', "", successFunction, formErrorFunction);
 }
