@@ -6085,6 +6085,25 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountwithdrawal span').text(doI18N('button.withdrawal'));
 		
+		$('.savingsaccountinterestcalc').button({icons: {primary: "ui-icon-calculator"}}).click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("savingsaccountinterestcalcbtn", "");
+			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=calculateInterest';
+			var templateSelector = "#savingsAccountTransactionFormTemplate";
+			var width = 400; 
+			var height = 280;
+			//var minOffset = 0;
+			//var defaultOffset = 0;
+			//var maxOffset = 0;
+			
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.calculateInterest', width, height, 0, saveSuccessFunctionReloadSaving);
+			
+//			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.calculateInterest', templateSelector, width, height, saveSuccessFunctionReloadSaving, minOffset, defaultOffset, maxOffset);
+			e.preventDefault();
+		});
+		$('button.savingsaccountinterestcalc span').text(doI18N('button.calculateInterest'));
+		
 		$('.savingsaccountactivate').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountactivatebtn", "");
