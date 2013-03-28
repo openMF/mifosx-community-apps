@@ -7097,8 +7097,7 @@ function showLockinOptions(){
 	<table>
 			<tr>
 				<td valign="top">
-				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}{{/if}}
-				{{#if groupName}}{{=$ctx.doI18N("label.applicant")}}{{/if}}
+				{{=$ctx.doI18N("label.applicant")}}
 				</td>
 				<td valign="top">
 				{{#if clientName}}
@@ -7171,7 +7170,11 @@ function showLockinOptions(){
 	    <ul>
 		    <li><a href="#loanterms" title="loanterms">{{=$ctx.doI18N("tab.terms")}}</a></li>
 			<li><a href="#loansettings" title="loansettings">{{=$ctx.doI18N("tab.settings")}}</a></li>
-			<li><a href="#loancharges" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
+			{{#if $ctx.showTask("VIEWCHARGES")}}
+				{{#if $ctx.arrayIsNotEmpty(chargeOptions)}}
+				<li><a href="#loancharges" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
+				{{/if}}
+			{{/if}}
 			{{#if $ctx.arrayIsNotEmpty(loanCollateralOptions)}}
 			<li><a href="#collateral" title="collateral">{{=$ctx.doI18N("tab.collaterals")}}</a></li>
 			{{/if}}
@@ -7181,6 +7184,8 @@ function showLockinOptions(){
 
 		<div id="loanterms" style="margin-top: 5px;">
 			<table>
+				<!-- FIXME - MIFOSX-278 - we need to use a different template for group loans -->
+				<!--
 			    <tr>
                     <td>{{=$ctx.doI18N("label.loan.type")}}</td>
                     <td>
@@ -7205,6 +7210,7 @@ function showLockinOptions(){
                         </select>
                     </td>
                 </tr>
+				-->
 				<tr>
 					<td>{{=$ctx.doI18N("label.principal")}}</td>
 					<td>
