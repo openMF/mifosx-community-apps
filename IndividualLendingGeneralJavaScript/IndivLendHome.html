@@ -3729,12 +3729,52 @@ function showLockinOptions(){
 <table width='100%'>
 	<thead>
 		<tr>
+		{{#if crudRows.officeName}}
+			<th><b>{{=$ctx.doI18N("officeName")}}</b></th>
+		{{/if}}
+		{{#if crudRows.groupName}}
+			<th><b>{{=$ctx.doI18N(crudRows.groupLevelName)}}</b></th>
+		{{/if}}
+		{{#if crudRows.clientName}}
+			<th><b>{{=$ctx.doI18N("clientName")}}</b></th>
+		{{/if}}
+		{{#if crudRows.loanAccountNo}}
+			<th><b>{{=$ctx.doI18N("loanAccountNo")}}</b></th>
+		{{/if}}
+		{{#if crudRows.savingsAccountNo}}
+			<th><b>{{=$ctx.doI18N("savingsAccountNo")}}</b></th>
+		{{/if}}
+		</tr>
+	</thead>
+	<tbody>
+	<tr>
+	{{#if crudRows.officeName}}
+		<td>{{=crudRows.officeName}}</td>
+	{{/if}}
+	{{#if crudRows.groupName}}
+		<td>{{=crudRows.groupName}}</td>
+	{{/if}}
+	{{#if crudRows.clientName}}
+		<td>{{=crudRows.clientName}}</td>
+	{{/if}}
+	{{#if crudRows.loanAccountNo}}
+		<td>{{=crudRows.loanAccountNo}}</td>
+	{{/if}}
+	{{#if crudRows.savingsAccountNo}}
+		<td>{{=crudRows.savingsAccountNo}}</td>
+	{{/if}}
+</tr>
+	</tbody>
+</table>
+<hr>
+
+<table width='100%'>
+	<thead>
+		<tr>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.processingResult")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.actionName")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.entityName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.subresourceId")}}</b></th>
 			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
@@ -3747,8 +3787,6 @@ function showLockinOptions(){
 	<td>{{=$ctx.doI18N(crudRows.processingResult)}}</td>
 	<td>{{=$ctx.globalDateTime(crudRows.madeOnDate)}}</td>
 	<td>{{=crudRows.maker}}</td>
-	<td>{{=$ctx.doI18N(crudRows.actionName)}}</td>
-	<td>{{=$ctx.doI18N(crudRows.entityName)}}</td>
 	<td>{{=crudRows.resourceId}}</td>
 	<td>{{=crudRows.subresourceId}}</td>
 	<td>{{=$ctx.globalDateTime(crudRows.checkedOnDate)}}</td>
@@ -3757,7 +3795,7 @@ function showLockinOptions(){
 	</tbody>
 </table>
 <hr>
-
+<br>
 {{=$ctx.showJson(crudRows.commandAsJson))!}}
 
 </script>

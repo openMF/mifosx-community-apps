@@ -249,7 +249,6 @@ custom.helperFunctions = {
 		return jQuery.stretchyDataTables
 				.getDataTableEndFormIfNecessary(displayMode);
 	}
-
 };
 
 /*

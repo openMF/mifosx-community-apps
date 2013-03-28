@@ -5509,7 +5509,7 @@ function viewAuditEntry(auditId) {
 		buttonsOpts[closeButton] = function() {$(this).dialog( "close" );};
 		
 		dialogDiv.dialog({
-		  		title: doI18N("view.audit.entry"), 
+		  		title: doI18N("view.audit.entry") + " - " + doI18N(data.actionName) + " " + doI18N(data.entityName), 
 				width : custom.fitPopupWidth(),
 				height : custom.fitPopupHeight(),
 		  		modal: true,
@@ -5625,7 +5625,7 @@ function setCulture(cultureVal) {
  
     	var tenantTranslation = "messages-tenant-" + tenantIdentifier;
     	jQuery.i18n.properties({
-			name:['messages', 'messages-platform-validation', 'messages-savings', 'messages-groups', tenantTranslation], 
+			name:['messages', 'messages-platform-validation', 'messages-savings', 'messages-groups', 'messages-fields', tenantTranslation], 
 			path: 'resources/global-translations/',
 			mode:'map',
 			cache: true,
