@@ -3614,7 +3614,7 @@ function showLockinOptions(){
 			<button type="submit" class="searchaudit" id="searchaudit" name="_eventId_submit">{{=$ctx.doI18N("search_audit")}}</button>
 		</td>
 		<td>
-			<label for="auditprocessingresult">{{=$ctx.doI18N("table.heading.audit.processingResult")}}</label>
+			<label for="auditprocessingresult">{{=$ctx.doI18N("processingResult")}}</label>
 			<select name="auditprocessingresult" id="auditprocessingresult" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
 			{{#each processingResults}}
@@ -3623,15 +3623,15 @@ function showLockinOptions(){
 			</select>
 		</td>
 		<td>
-			<label for="auditdatetimefrom">{{=$ctx.doI18N("table.heading.audit.madeOnDateFrom")}}</label>
+			<label for="auditdatetimefrom">{{=$ctx.doI18N("madeOnDateFrom")}}</label>
 			<input id="auditdatetimefrom" name="auditdatetimefrom" type="text" class="datepickerfield" />
 		</td>
 		<td>
-			<label for="auditdatetimeto">{{=$ctx.doI18N("table.heading.audit.madeOnDateTo")}}</label>
+			<label for="auditdatetimeto">{{=$ctx.doI18N("madeOnDateTo")}}</label>
 			<input id="auditdatetimeto" name="auditdatetimeto" type="text" class="datepickerfield" />
 		</td>
 		<td>
-			<label for="auditmaker">{{=$ctx.doI18N("table.heading.audit.maker")}}</label>
+			<label for="auditmaker">{{=$ctx.doI18N("maker")}}</label>
 			<select name="auditmaker" id="auditmaker" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
 			{{#each appUsers}}
@@ -3640,7 +3640,7 @@ function showLockinOptions(){
 			</select>
 		</td>
 		<td>
-			<label for="auditaction">{{=$ctx.doI18N("table.heading.audit.actionName")}}</label>
+			<label for="auditaction">{{=$ctx.doI18N("actionName")}}</label>
 			<select name="auditaction" id="auditaction" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
 			{{#each actionNames}}
@@ -3649,7 +3649,7 @@ function showLockinOptions(){
 			</select>
 		</td>
 		<td>
-			<label for="auditentity">{{=$ctx.doI18N("table.heading.audit.entityName")}}</label>
+			<label for="auditentity">{{=$ctx.doI18N("entityName")}}</label>
 			<select name="auditentity" id="auditentity" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
 			{{#each entityNames}}
@@ -3658,11 +3658,11 @@ function showLockinOptions(){
 			</select>
 		</td>
 		<td>
-			<label for="auditresourceId">{{=$ctx.doI18N("table.heading.audit.resourceId")}}</label>
+			<label for="auditresourceId">{{=$ctx.doI18N("resourceId")}}</label>
 			<input id="auditresourceId" name="auditresourceId" type="text" size="10" value="" />
 		</td>
 		<td>
-			<label for="auditchecker">{{=$ctx.doI18N("table.heading.audit.checker")}}</label>
+			<label for="auditchecker">{{=$ctx.doI18N("checker")}}</label>
 			<select name="auditchecker" id="auditchecker" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
 			{{#each appUsers}}
@@ -3671,11 +3671,11 @@ function showLockinOptions(){
 			</select>
 		</td>
 		<td>
-			<label for="auditcheckeddatetimefrom">{{=$ctx.doI18N("table.heading.audit.checkedOnDateFrom")}}</label>
+			<label for="auditcheckeddatetimefrom">{{=$ctx.doI18N("checkedOnDateFrom")}}</label>
 			<input id="auditcheckeddatetimefrom" name="auditcheckeddatetimefrom" type="text" class="datepickerfield" />
 		</td>
 		<td>
-			<label for="auditcheckeddatetimeto">{{=$ctx.doI18N("table.heading.audit.checkedOnDateTo")}}</label>
+			<label for="auditcheckeddatetimeto">{{=$ctx.doI18N("checkedOnDateTo")}}</label>
 			<input id="auditcheckeddatetimeto" name="auditcheckeddatetimeto" type="text" class="datepickerfield" />
 		</td>
 	</tr></table>
@@ -3688,16 +3688,16 @@ function showLockinOptions(){
 	<thead>
 		<tr>
 
-			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.processingResult")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.actionName")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.entityName")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.subresourceId")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.checker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("id")}}</b></th>
+			<th><b>{{=$ctx.doI18N("processingResult")}}</b></th>
+			<th><b>{{=$ctx.doI18N("madeOnDate")}}</b></th>
+			<th><b>{{=$ctx.doI18N("maker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("actionName")}}</b></th>
+			<th><b>{{=$ctx.doI18N("entityName")}}</b></th>
+			<th><b>{{=$ctx.doI18N("resourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("subresourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("checkedOnDate")}}</b></th>
+			<th><b>{{=$ctx.doI18N("checker")}}</b></th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -3771,14 +3771,14 @@ function showLockinOptions(){
 <table width='100%'>
 	<thead>
 		<tr>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.id")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.processingResult")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.madeOnDate")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.maker")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.resourceId")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.subresourceId")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.checkedOnDate")}}</b></th>
-			<th><b>{{=$ctx.doI18N("table.heading.audit.checker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("id")}}</b></th>
+			<th><b>{{=$ctx.doI18N("processingResult")}}</b></th>
+			<th><b>{{=$ctx.doI18N("madeOnDate")}}</b></th>
+			<th><b>{{=$ctx.doI18N("maker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("resourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("subresourceId")}}</b></th>
+			<th><b>{{=$ctx.doI18N("checkedOnDate")}}</b></th>
+			<th><b>{{=$ctx.doI18N("checker")}}</b></th>
 		</tr>
 	</thead>
 	<tbody>
