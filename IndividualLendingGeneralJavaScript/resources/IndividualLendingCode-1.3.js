@@ -1801,7 +1801,6 @@ function showILClient(clientId) {
 					
 					$('.newsavingbtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 						launchSavingsAccountDialog(clientId);
-//						addILSaving(clientId);
 					    e.preventDefault();
 					});
 					$('button.newsavingbtn span').text(doI18N('dialog.button.new.savings.account'));
@@ -2027,7 +2026,6 @@ function showClientInGroups(clientId , name){
 
 					$("#customerOfficeName").html(data.officeName);
 					
-					
 					// retrieve accounts summary info
 					refreshLoanSummaryInfo(clientUrl);
 					
@@ -2068,22 +2066,6 @@ function showClientInGroups(clientId , name){
 					    e.preventDefault();
 					});
 					$('button.newindividualloanbtn span').text(doI18N('dialog.button.new.loan.application'));
-					
-					$('.newdepositbtn').button({icons: {
-               			 primary: "ui-icon-document-b"}
-                	}).click(function(e) {
-						addILDeposit(clientId);
-						e.preventDefault();
-					});
-					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));
-					
-					$('.newsavingbtn').button({icons: {
-              			 primary: "ui-icon-document"}
-					}).click(function(e) {
-						addILSaving(clientId);
-					    e.preventDefault();
-					});
-					$('button.newsavingbtn span').text(doI18N('dialog.button.new.saving.application'));
 					
 					$('.addnotebtn').button({icons: {
                			 primary: "ui-icon-comment"}
@@ -2210,14 +2192,7 @@ function showClientInGroups(clientId , name){
 	        };
 	    
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
-
-
-	
-
 }
-
-
-
 
 function refreshClientIdentifiers(clientUrl) {
 		var successFunction =  function(data, textStatus, jqXHR) {

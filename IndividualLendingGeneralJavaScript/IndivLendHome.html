@@ -6245,7 +6245,7 @@ function showLockinOptions(){
 				<td valign="top">
 					<select name="productId" id="productId" style="width: 306px;">
 				{{#each productOptions}}
-					{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+					{{#if $ctx.number($parent.parent.data.savingsProductId)===$ctx.number(id)}}
 					<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 					{{#else}}
 					<option value="{{=$ctx.number(id)}}">{{=name}}</option>
