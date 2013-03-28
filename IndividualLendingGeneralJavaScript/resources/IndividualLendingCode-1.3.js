@@ -3623,6 +3623,36 @@ function addILBulkMembersLoans(groupId, clientMembers){
 
 		return false;
 	}
+	
+	function removeLoanCollateral(loanId, loanCollateralId) {
+
+        var successFunction = function(data, textStatus, jqXHR) {
+            $("#dialog-form").dialog("close");
+            loadILLoan(loanId);
+        };
+
+        popupConfirmationDialogAndPost('loans/' + loanId +'/collaterals/' + loanCollateralId, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
+
+        return false;
+    }
+    
+    function modifyLoanCollateral(loanId, loanCollateralId) {
+
+        var successFunction = function(data, textStatus, jqXHR) {
+            $("#dialog-form").dialog("close");
+            loadILLoan(loanId);
+        };
+        
+        var getUrl = 'loans/' + loanId +'/collaterals/' + loanCollateralId+"?template=true";
+        var putUrl = 'loans/' + loanId +'/collaterals/' + loanCollateralId;
+        var templateSelector = "#loanCollateralFormTemplate";
+        var width = 550;
+        var height = 425;
+        
+        popupDialogWithFormView(getUrl, putUrl, 'PUT', 'dialog.title.update.details', templateSelector, width, height, successFunction);
+
+        return false;
+    }
 
 	function genSaveSuccessFunctionReloadLoan(loanId) {
 
@@ -4059,6 +4089,21 @@ function loadILLoan(loanId) {
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addLoanCharge", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
+				
+				$('.addloancollateral').button().click(function(e){
+                        var linkId = this.id;
+                        var loanId = linkId.replace("addloancollateralbtn", "");
+                        var postUrl = 'loans/' + loanId + '/collaterals';
+                        var getUrl = 'loans/' + loanId + '/collaterals/template';
+
+                        var templateSelector = "#loanCollateralFormTemplate";
+                        var width = 550; 
+                        var height = 425;
+
+                        eval(genSaveSuccessFunctionReloadLoan(loanId));
+                        popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addCollateral", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
+                        e.preventDefault();
+                });
 				$('button.addloancharge span').text(doI18N('button.addLoanCharge'));
 				
 				//Guarantor for loan functionality
@@ -4232,6 +4277,34 @@ function loadILLoan(loanId) {
                                 text: false
                             }).click(function(e) {
                                 modifyLoanCharge(loanId,val.id);
+                                e.preventDefault();
+                            });
+                        }
+                    });
+                }
+                
+                //jqueryify collaterals buttons
+                if(data.collateral !=null){
+                     $.each(data.collateral, function(i, val) {
+                        //delete loan collateral buttons
+                        if(document.getElementById('deleteloan'+ loanId +'collateral'+val.id)){
+                            $('#deleteloan'+ loanId +'collateral'+val.id).button(
+                                {icons: {
+                                primary: "ui-icon-trash"},
+                                text: false
+                            }).click(function(e) {
+                                removeLoanCollateral(loanId,val.id);
+                                e.preventDefault();
+                            });
+                        }
+                        //modify loan collateral buttons
+                        if(document.getElementById('modifyloan'+ loanId +'collateral'+val.id)){
+                            $('#modifyloan'+ loanId +'collateral'+val.id).button(
+                                {icons: {
+                                primary: "ui-icon-pencil"},
+                                text: false
+                            }).click(function(e) {
+                                modifyLoanCollateral(loanId,val.id);
                                 e.preventDefault();
                             });
                         }
