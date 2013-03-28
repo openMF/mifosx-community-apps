@@ -5010,6 +5010,9 @@ function showLockinOptions(){
 				{{#if $ctx.showTask("AddLoanCharge")}}
 				<button id="addloanchargebtn{{=id}}" class="addloancharge">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
 				{{/if}}
+				{{#if $ctx.showTask("AddLoanCollateral")}}
+                <button id="addloancollateralbtn{{=id}}" class="addloancollateral">{{=$ctx.doI18N("button.addLoanCollateral")}}</button>
+                {{/if}}
 				{{#if $ctx.showTask("ASSIGNLOANOFFICER")}}
 				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
 				{{/if}}
@@ -5055,9 +5058,6 @@ function showLockinOptions(){
 				{{#if $ctx.showTask("AddLoanCharge")}}
 				<button id="addloanchargebtn{{=id}}" class="addloancharge">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
 				{{/if}}
-				{{#if $ctx.showTask("AddLoanCollateral")}}
-                <button id="addloancollateralbtn{{=id}}" class="addloancollateral">{{=$ctx.doI18N("button.addLoanCollateral")}}</button>
-                {{/if}}
 				{{#if $ctx.showTask("ASSIGNLOANOFFICER")}}
 				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
 				{{/if}}
@@ -7472,8 +7472,9 @@ function showLockinOptions(){
 			 <table id="loancollateraltable" class="pretty displayschedule">
 				<thead>
 					<tr>
-					<th scope="col" style="width:300px;">Type</th>
-					<th scope="col">Description</th>
+					<th scope="col">Type</th>
+					<th scope="col" colspan="3">Description</th>
+					<th scope="col">Value</th>
 					<th scope="col" style="width:100px;">Actions</th>
 					</tr>
 				</thead>
@@ -7492,9 +7493,12 @@ function showLockinOptions(){
 							{{/each}}
 							</select>
 						</td>
-						<td>
-							<textarea id="collateral[{{=$itemNumber}}][description]" name="collateral[{{=$itemNumber}}][description]" rows="2" cols="95">{{=description}}</textarea>
+						<td colspan="3">
+							<textarea id="collateral[{{=$itemNumber}}][description]" name="collateral[{{=$itemNumber}}][description]" rows="2" cols="45">{{=description}}</textarea>
 						</td>
+						<td>
+                            <input type="text" id="collateral[{{=$itemNumber}}][value]" name="collateral[{{=$itemNumber}}][value]"  value="{{=value}}"/>
+                        </td>
 						<td style="width:100px;">
 							<button id="loanapp-removeCollateralType{{=$itemNumber}}" class="loanapp-removeCollateralType">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button>
 						</td>
@@ -7521,9 +7525,12 @@ function showLockinOptions(){
 		{{/each}}
 		</select>
 	</td>
-	<td>
-		<textarea id="collateral[{{=index}}][description]" name="collateral[{{=index}}][description]" rows="2" cols="95">&nbsp;</textarea>
+	<td colspan="3">
+		<textarea id="collateral[{{=index}}][description]" name="collateral[{{=index}}][description]" rows="2" cols="45">&nbsp;</textarea>
 	</td>
+	<td>
+        <input type="text" id="collateral[{{=index}}][value]" name="collateral[{{=index}}][value]"  value="{{=value}}"/>
+    </td>
 	<td style="width:100px;"><button id="loanapp-removeCollateralType{{=index}}" class="loanapp-removeCollateralType">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 </tr>
 </script>
