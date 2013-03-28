@@ -4947,6 +4947,46 @@ function showLockinOptions(){
 </script>
 <!-- END OF OLD style loan application template -->
 
+<!-- Collateral Screens-->
+<script id="loanCollateralFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+    </div>
+         <legend>{{=$ctx.doI18N("form.legend.collateral.details")}}</legend>
+    <fieldset>
+        <div>
+            <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+            <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+            
+            <label for="value">{{=$ctx.doI18N("form.label.collateral.type")}}</label>
+            <select id="collateralTypeId" name="collateralTypeId" title="">
+                {{#if type}}
+                {{#else}}
+                   <option value="">{{=$ctx.doI18N("option.collateral.first.choice")}}</option>
+                {{/if}} 
+                {{#each allowedCollateralTypes}}
+                    {{#if $parent.parent.data.type}}
+                        {{#if $ctx.number($parent.parent.parent.data.type.id)===$ctx.number(id)}}
+                           <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                        {{/if}}
+                    {{#else}}
+                        <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                    {{/if}}
+                {{/each}}
+            </select>
+
+            <label for="value">{{=$ctx.doI18N("form.label.collateral.value")}}</label>
+            <input id="value" name="value" title="" type="text" value="{{=$ctx.monetaryValue(currency,value)}}" style="width: 125px;"/>
+
+            <label for="description">{{=$ctx.doI18N("form.label.collateral.description")}}</label>
+            <textarea id="description" name="description" value="{{=description}}" rows="10" cols="58"/>
+        </div>
+    </fieldset>
+</form>
+</script>
+
 <!-- loan application/contract screens -->
 <script id="editAccountNoFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
@@ -5015,6 +5055,9 @@ function showLockinOptions(){
 				{{#if $ctx.showTask("AddLoanCharge")}}
 				<button id="addloanchargebtn{{=id}}" class="addloancharge">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
 				{{/if}}
+				{{#if $ctx.showTask("AddLoanCollateral")}}
+                <button id="addloancollateralbtn{{=id}}" class="addloancollateral">{{=$ctx.doI18N("button.addLoanCollateral")}}</button>
+                {{/if}}
 				{{#if $ctx.showTask("ASSIGNLOANOFFICER")}}
 				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
 				{{/if}}
@@ -5637,8 +5680,8 @@ function showLockinOptions(){
                 {{#each collateral}}
                 <tr>
                     <td style="width:300px;">{{=$ctx.doI18N(type.name)}}</td>
-                    <td>{{=description}}</textarea></td>
-                    <td></td>
+                    <td>{{=description}}</td>
+                    <td>{{=$ctx.monetaryValue($parent.parent.parent.data.currency, value)}}</td>
                     <td>
                         {{#if $parent.parent.data.status.code == "loanStatusType.submitted.and.pending.approval"}}  
                           <button id="modifyloan{{=$parent.parent.parent.data.id}}collateral{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
