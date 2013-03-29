@@ -4112,6 +4112,7 @@ function loadILLoan(loanId) {
 	            	}).click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("setGuarantorbtn", "");
+						var getUrl = 'loans/'+loanId+'/guarantors/template';
 						var postUrl = 'loans/'+loanId+'/guarantors';
 						
 						var templateSelector = "#guarantorFormTemplate";
@@ -4120,52 +4121,9 @@ function loadILLoan(loanId) {
 						
 						
 						eval(genSaveSuccessFunctionReloadLoan(loanId));
-						
-	            		popupDialogWithFormView("", postUrl, 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
-	            		
-	            		//update hidden loan Id
-	            		$("#guaranteedLoanId").val(loanId);
-	            		//initially hide external guarantor div
-	            		$('#externalGuarantorDiv').hide();
-	            		$("#internalGuarantorCheckbox").change(function() {
-	            		  var isChecked = $('#internalGuarantorCheckbox').is(':checked')
-						  if(isChecked){
-						 	$('#internalGuarantorDiv').show();
-						  	$('#externalGuarantorDiv').hide();
-						  }else{
-						  	$('#internalGuarantorDiv').hide();
-						  	$('#externalGuarantorDiv').show();
-						  }
-						});
-	            		
-				        $( "#smartGuarantorSearch" ).autocomplete({
-				            source: function(request, response){
-				            	//get selected office
-								var sqlSearchValue = "display_name like '%" + request.term + "%'"; 
-								smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
-									response( $.map( data, function( item ) {
-			                            return {
-			                                label: item.displayName + "(" + item.officeName + ")",
-			                                value: item.displayName,
-			                                joinedDate: item.joinedDate,
-			                                id: item.id,
-			                                branchName:item.officeName
-			                            }
-			                        }));
-						  		};
-								executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", smartSearchSuccessFunction, formErrorFunction);
-							   	e.preventDefault(); 
-				            },
-				            minLength: 3,
-				            select: function( event, ui ) {
-				                $( "#selectedGuarantorName" ).val(ui.item.value);
-				                $( "#selectedGuarantorBranch" ).val(ui.item.branchName);
-				                $( "#selectedGuarantorJoinedDate" ).val(custom.helperFunctions.globalDate(ui.item.joinedDate));
-				                $( "#selectedGuarantorIdentifier" ).val(ui.item.id);
-				                return false;
-				            }
-				        });
-        
+						//update hidden loan Id
+    		$("#").val(loanId);
+	            		popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
 	            		e.preventDefault();
 	            });
 	            
@@ -4313,6 +4271,48 @@ function loadILLoan(loanId) {
 	    
 		executeAjaxRequest(loanUrl, 'GET', "", successFunction, errorFunction);	  
 		
+}
+
+function loadGuarantorForm(){
+	//initially hide external guarantor div
+	$('#externalGuarantorDiv').hide();
+	$("#internalGuarantorCheckbox").change(function() {
+	  var isChecked = $('#internalGuarantorCheckbox').is(':checked')
+	  if(isChecked){
+	 	$('#internalGuarantorDiv').show();
+	  	$('#externalGuarantorDiv').hide();
+	  }else{
+	  	$('#internalGuarantorDiv').hide();
+	  	$('#externalGuarantorDiv').show();
+	  }
+	});
+		
+    $( "#smartGuarantorSearch" ).autocomplete({
+        source: function(request, response){
+        	//get selected office
+			var sqlSearchValue = "display_name like '%" + request.term + "%'"; 
+			smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
+				response( $.map( data, function( item ) {
+                    return {
+                        label: item.displayName + "(" + item.officeName + ")",
+                        value: item.displayName,
+                        joinedDate: item.joinedDate,
+                        id: item.id,
+                        branchName:item.officeName
+                    }
+                }));
+	  		};
+			executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", smartSearchSuccessFunction, formErrorFunction);
+        },
+        minLength: 3,
+        select: function( event, ui ) {
+            $( "#selectedGuarantorName" ).val(ui.item.value);
+            $( "#selectedGuarantorBranch" ).val(ui.item.branchName);
+            $( "#selectedGuarantorJoinedDate" ).val(custom.helperFunctions.globalDate(ui.item.joinedDate));
+            $( "#selectedGuarantorIdentifier" ).val(ui.item.id);
+            return false;
+        }
+    });
 }
 
 
@@ -4995,11 +4995,12 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
     	   //TODO: Vishwas...var is repeated
     	   var serializedArray = {};
     	   var isChecked = $('#internalGuarantorCheckbox').is(':checked')
-    	   serializedArray["loanId"] = $('#guaranteedLoanId').val();
 		   if(isChecked){
     	   	serializedArray["entityId"] = $('#selectedGuarantorIdentifier').val();
     	   	serializedArray["guarantorTypeId"] = 1;
+    	   	serializedArray["clientRelationshipTypeId"] =$('#relationshipTypeIdForInternalGuarantor').val();
     	   }else{
+    	   	serializedArray["clientRelationshipTypeId"] =$('#relationshipTypeIdForExternalGuarantor').val();
     	   	serializedArray["guarantorTypeId"] = 3;
     	   	serializedArray["firstname"] = $('#guarantorFirstName').val();
     	   	serializedArray["lastname"] = $('#guarantorLastName').val();
@@ -5163,6 +5164,10 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				executeAjaxRequest("groups/template?officeId=" + selectedOfficeId +"&levelId="+data['groupLevelData'].levelId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			}
 		})
+	}
+
+	if (templateSelector === "#guarantorFormTemplate"){
+    	loadGuarantorForm();	
 	}
 
 	if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
