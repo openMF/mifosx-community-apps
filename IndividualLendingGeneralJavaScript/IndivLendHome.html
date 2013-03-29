@@ -1165,12 +1165,12 @@ $(document).ready(function() {
 	<table style="vertical-align: top;width: 100%">
 		{{#each crudRows}}
 				<tr>
-					<td>{{=$ctx.doI18N("clientIdentifier.document.label")}} {{=name}} ({{=fileName}})</td>
+					<td>{{=name}} ({{=fileName}})</td>
 					<td>
 						<span id="modifycellToolbar" class="ui-widget-header ui-corner-all">
-							<button id="downloadclientIdentifierdocument{{=id}}"></button>
-					   		<button id="editclientIdentifierdocument{{=id}}"></button>
-					   		<button id="deleteclientIdentifierdocument{{=id}}"></button>
+							<button id="downloadclientIdentifierdocument{{=id}}">{{=$ctx.doI18N("link.action.download")}}</button>
+					   		<button id="editclientIdentifierdocument{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
+					   		<button id="deleteclientIdentifierdocument{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
 						</span>
 					</td>
 				</tr>
@@ -5259,17 +5259,25 @@ function showLockinOptions(){
 						<span class="longrowlabel">{{=$ctx.doI18N("label.name")}}</span>
 						<span class="rowvalue">{{=lastname}}, {{=firstname}}</span>
 				</div>
+
+                {{#if clientRelationshipType}}
+                    <div class="row">
+                            <span class="longrowlabel">{{=$ctx.doI18N("label.guarantor.relationship")}}</span>
+                            <span class="rowvalue">{{=clientRelationshipType.name}}</span>
+                    </div>
+                {{/if}}
 				
 				{{#if guarantorType.value == "CUSTOMER"}}
-				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
-						<span class="rowvalue">{{=officeName}}</span>
-				</div>
-				<div class="row">
-						<span class="longrowlabel">{{=$ctx.doI18N("label.joinedon")}}</span>
-						<span class="rowvalue">{{=$ctx.globalDate(joinedDate)}}</span>
-				</div>
+    				<div class="row">
+    						<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
+    						<span class="rowvalue">{{=officeName}}</span>
+    				</div>
+    				<div class="row">
+    						<span class="longrowlabel">{{=$ctx.doI18N("label.joinedon")}}</span>
+    						<span class="rowvalue">{{=$ctx.globalDate(joinedDate)}}</span>
+    				</div>
 				{{/if}}
+
 				{{#if guarantorType.value == "EXTERNAL"}}
 					{{#if dob == true}}
 						<div class="row">
@@ -5767,7 +5775,6 @@ function showLockinOptions(){
 
 <script id="guarantorFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
-	<input type="hidden" id="guaranteedLoanId" name="guaranteedLoanId" />
     <div id="formerrors"></div>
     
     <table>
@@ -5791,6 +5798,17 @@ function showLockinOptions(){
 	    <fieldset>
 	    	<legend>{{=$ctx.doI18N("label.guarantorDetails")}}</legend>
 			<table>
+                <tr>
+                    <td><label>{{=$ctx.doI18N("label.guarantor.relationship")}}</label></td>
+                    <td>
+                        <select id="relationshipTypeIdForInternalGuarantor" name="relationshipTypeIdForInternalGuarantor" title="">
+                           <option value="" selected="selected">{{=$ctx.doI18N("option.relationship.first.choice")}}</option>
+                           {{#each allowedClientRelationshipTypes}}
+                           <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                           {{/each}}
+                        </select>
+                    </td>
+                </tr>
 				<tr>
 					<td><label for="selectedGuarantorName">{{=$ctx.doI18N("label.name")}}</label></td>
 					<td><input readonly="true" id="selectedGuarantorName" name="selectedGuarantorName" title="" type="text" value=""/></td>
@@ -5818,6 +5836,17 @@ function showLockinOptions(){
 		 <fieldset>
 	    	<legend>{{=$ctx.doI18N("label.guarantorDetails")}}</legend>
 			<table>
+			    <tr>
+                    <td><label>{{=$ctx.doI18N("label.guarantor.relationship")}}</label></td>
+                    <td>
+                        <select id="relationshipTypeIdForExternalGuarantor" name="relationshipTypeIdForExternalGuarantor" title="">
+                           <option value="" selected="selected">{{=$ctx.doI18N("option.relationship.first.choice")}}</option>
+                           {{#each allowedClientRelationshipTypes}}
+                           <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                           {{/each}}
+                        </select>
+                    </td>
+                </tr>
 				<tr>
 					<td><label>{{=$ctx.doI18N("label.name")}}</label></td>
 					<td>
