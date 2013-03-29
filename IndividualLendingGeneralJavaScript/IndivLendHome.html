@@ -3524,10 +3524,15 @@ function showLockinOptions(){
 
 <!-- Audit Search -->
 <script id="auditSearchTemplate" type="text/x-jquery-tmpl">
-	<table width="100%"><tr>
-		<td>
-			<button type="submit" class="searchaudit" id="searchaudit" name="_eventId_submit">{{=$ctx.doI18N("search_audit")}}</button>
-		</td>
+
+<table width=100%>
+<tr>
+<td valign="top">
+	<button type="submit" class="searchaudit" id="searchaudit" name="_eventId_submit">{{=$ctx.doI18N("search_audit")}}</button>
+</td>
+<td>
+	<table width="100%">
+	<tr>
 		<td>
 			<label for="auditprocessingresult">{{=$ctx.doI18N("processingResult")}}</label>
 			<select name="auditprocessingresult" id="auditprocessingresult" >
@@ -3572,6 +3577,8 @@ function showLockinOptions(){
 	    		{{/each}}
 			</select>
 		</td>
+	</tr>
+	<tr>
 		<td>
 			<label for="auditresourceId">{{=$ctx.doI18N("resourceId")}}</label>
 			<input id="auditresourceId" name="auditresourceId" type="text" size="10" value="" />
@@ -3593,7 +3600,10 @@ function showLockinOptions(){
 			<label for="auditcheckeddatetimeto">{{=$ctx.doI18N("checkedOnDateTo")}}</label>
 			<input id="auditcheckeddatetimeto" name="auditcheckeddatetimeto" type="text" class="datepickerfield" />
 		</td>
-	</tr></table>
+	</tr>
+	</table>
+</td>
+</table>
 	<div id="auditSearchResults"></div>
 	
 </script>
