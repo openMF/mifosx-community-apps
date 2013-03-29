@@ -1348,9 +1348,9 @@ function viewMakerCheckerEntryOld(operationType, resource, resourceId, commandId
  * entityId:      	Individual id of client of office resource.
  * commandSourceId:	Id of the maker checker entry on table
  */
-function approveMakerCheckerEntry(operationType, entityType, entityId, commandSourceId) {
+function approveMakerCheckerEntry(id) {
 
-	var url = 'commands/' + commandSourceId + '?command=approve';
+	var url = 'commands/' + id + '?command=approve';
 	var width = 400; 
 	var height = 225;
 	
@@ -1373,26 +1373,34 @@ function showMakerCheckerListing() {
 	var onListRetrievialSuccessFunction = function(data) {
 		var makerCheckerListObject = new Object();
 		makerCheckerListObject.crudRows = data;
-	    
-		var tableHtml = "<p>Hello</p>";
-		tableHtml = $("#makerCheckerListTemplate").render(makerCheckerListObject);
+		makerCheckerListObject.useType = "makerchecker";
+		
+		var tableHtml = $("#auditListTemplate").render(makerCheckerListObject);
+		//var tableHtml = $("#makerCheckerListTemplate").render(makerCheckerListObject);
 		
 		$("#content").html(tableHtml);
-		
-		// register event listeners
-		$("a.deletemakerchecker").click( function(e) {
+
+		$("a.viewaudit").click( function(e) {
+			
 			var linkId = this.id;
-			
-			var entityId = null;
-			var makerCheckerId = linkId.replace("deletemakerchecker", "");
-			
-			// assumption its clients for now.
-			var url = 'commands/' + makerCheckerId;
+			var entityId = linkId.replace("viewaudit", "");
+			viewAuditEntry(entityId)
+			e.preventDefault();
+		});
+
+		$("a.deletemc").click( function(e) {
+			var linkId = this.id;
+			var entityId = linkId.replace("deletemc", "");
+			var url = 'commands/' + entityId;
 			var width = 400; 
 			var height = 225;
-									
 			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, onMakerCheckerActionSuccessFunction);
-			
+			e.preventDefault();
+		});
+		$("a.approvemc").click( function(e) {
+			var linkId = this.id;
+			var entityId = linkId.replace("approvemc", "");
+			approveMakerCheckerEntry(entityId);
 			e.preventDefault();
 		});
   	};
@@ -5502,6 +5510,7 @@ function viewAudits(auditSearchOptions) {
 
 				var crudObject = new Object();
 				crudObject.crudRows = data;
+				crudObject.useType = "audit";
 				var html = $("#auditListTemplate").render(crudObject);
 				$("#auditSearchResults").html(html);  
 
