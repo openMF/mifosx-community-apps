@@ -102,43 +102,6 @@ $(document).ready(function() {
 <!-- If anyone knows how to include this text without the need for a web server that would help a lot. -->
 <!-- I guess I could just read the file and write it into the DOM but probably not worth it -->
 
-<script id="makerCheckerListTemplatexxx" type="text/x-jquery-tmpl">
-<table id='makercheckertable' width='100%'>
-<thead>
-	<tr>
-		<th>Id</th>
-		<th>Task</th>
-		<th>Created on</th>
-		<th>&nbsp;</th>
-	</tr>
-</thead>
-<tbody>
-{{#each crudRows}}
-<tr>
-	<td>{{=id}}</td>
-	<td>{{=actionName}} {{=entityName}}</td>
-	<td>{{=$ctx.globalDate(madeOnDate)}}</td>
-	<td>
-		{{#if resourceId}}
-		<a id='editmakerchecker{{=id}}' href='#' style='margin-right: 5px;' onclick="viewMakerCheckerEntry('{{=actionName}}', '{{=entityName}}', {{=entityId}} ,{{=id}}, '{{=entityHref}}'); return false;">{{=$ctx.doI18N("link.action.view")}}</a>
-		<a id='deletemakerchecker{{=id}}' class='deletemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
-		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;' onclick="approveMakerCheckerEntry('{{=actionName}}', '{{=entityName}}', {{=resourceId}} ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.approve")}}</a>
-		{{else}}
-		<a id='editmakerchecker{{=id}}' href='#' style='margin-right: 5px;' onclick="viewMakerCheckerEntry('{{=actionName}}', '{{=entityName}}', null ,{{=id}}, '{{=entityHref}}'); return false;">{{=$ctx.doI18N("link.action.view")}}</a>
-		<a id='deletemakerchecker{{=id}}' class='deletemakerchecker' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
-		<a id='approvemakerchecker{{=id}}' class='approvemakerchecker' href='#' style='margin-right: 5px;' onclick="approveMakerCheckerEntry('{{=actionName}}', '{{=entityName}}', null ,{{=id}}); return false;">{{=$ctx.doI18N("link.action.approve")}}</a>
-		{{/if}}
-		
-	</td>
-</tr>
-{{/each}}
-</tbody>
-</table>
-</script>
-
-
-
-
 <script id="bulkLoanApplicationMemberPartial" type="text/x-jquery-tmpl">
 <table>
 <tr>
@@ -3537,7 +3500,7 @@ function showLockinOptions(){
 			<label for="auditprocessingresult">{{=$ctx.doI18N("processingResult")}}</label>
 			<select name="auditprocessingresult" id="auditprocessingresult" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-			{{#each processingResults}}
+			{{#each crudRows.processingResults}}
 				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(processingResult)}}</option>
 	    		{{/each}}
 			</select>
@@ -3554,7 +3517,7 @@ function showLockinOptions(){
 			<label for="auditmaker">{{=$ctx.doI18N("maker")}}</label>
 			<select name="auditmaker" id="auditmaker" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-			{{#each appUsers}}
+			{{#each crudRows.appUsers}}
 				<option value="{{=id}}">{{=username}}</option>
 	    		{{/each}}
 			</select>
@@ -3563,7 +3526,7 @@ function showLockinOptions(){
 			<label for="auditaction">{{=$ctx.doI18N("actionName")}}</label>
 			<select name="auditaction" id="auditaction" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-			{{#each actionNames}}
+			{{#each crudRows.actionNames}}
 				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
 	    		{{/each}}
 			</select>
@@ -3572,7 +3535,7 @@ function showLockinOptions(){
 			<label for="auditentity">{{=$ctx.doI18N("entityName")}}</label>
 			<select name="auditentity" id="auditentity" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-			{{#each entityNames}}
+			{{#each crudRows.entityNames}}
 				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
 	    		{{/each}}
 			</select>
@@ -3583,11 +3546,13 @@ function showLockinOptions(){
 			<label for="auditresourceId">{{=$ctx.doI18N("resourceId")}}</label>
 			<input id="auditresourceId" name="auditresourceId" type="text" size="10" value="" />
 		</td>
+
+		{{#if useType==="audit"}}
 		<td>
 			<label for="auditchecker">{{=$ctx.doI18N("checker")}}</label>
 			<select name="auditchecker" id="auditchecker" >
 				<option value="ALL" selected="selected">{{=$ctx.doI18N("option.all")}}</option>
-			{{#each appUsers}}
+			{{#each crudRows.appUsers}}
 				<option value="{{=id}}">{{=username}}</option>
 	    		{{/each}}
 			</select>
@@ -3600,6 +3565,8 @@ function showLockinOptions(){
 			<label for="auditcheckeddatetimeto">{{=$ctx.doI18N("checkedOnDateTo")}}</label>
 			<input id="auditcheckeddatetimeto" name="auditcheckeddatetimeto" type="text" class="datepickerfield" />
 		</td>
+		{{/if}}
+
 	</tr>
 	</table>
 </td>
