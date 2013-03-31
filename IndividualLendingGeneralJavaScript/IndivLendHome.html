@@ -2909,7 +2909,7 @@ $(document).ready(function() {
 					<input type="hidden" id="fromLoanOfficerId" name="fromLoanOfficerId" value="{{=fromLoanOfficerId}}" />
 					<label for="toLoanOfficer">{{=$ctx.doI18N("form.label.loan.officer.to")}}</label>
 					<select id="toLoanOfficerId" name="toLoanOfficerId" title="">
-						<option value="-1">{{=$ctx.doI18N("option.loanOfficer.first.choice")}}</option>
+						<option value="">{{=$ctx.doI18N("option.loanOfficer.first.choice")}}</option>
 						{{#each loanOfficerOptions}}
 							{{#if $ctx.number($parent.parent.data.fromLoanOfficerId)===$ctx.number(id)}}
 								<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
