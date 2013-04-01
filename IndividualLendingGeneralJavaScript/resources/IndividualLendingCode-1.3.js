@@ -2702,20 +2702,24 @@ function showILGroup(groupId){
 		
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
-		
+
 		//If JLG loan, send group id and calendar id
-		if($('#loanType').val() === '2'){
-		    serializedArray["groupId"] = $("#groupId").val();
-		    serializedArray["calendarId"] = $("#calendarId").val();
-		}
-			
+		if(!(group === undefined)){
+		    if(clientId === undefined){
+                serializedArray["groupId"] = group.id;//This is group loan
+		    }else{
+		        serializedArray["groupId"] = $("#groupSelId").val();//This is JLG loan given to Client
+            }
+            serializedArray["calendarId"] = $("#calendarId").val();
+        }
+
 		var newFormData = JSON.stringify(serializedArray);
-		
+
 		var successFunction =  function(data, textStatus, jqXHR) {
 			divContainer.dialog("close");
 			if (clientId) {
 				showILClient(clientId);
-			} else {
+			} else if(!(group === undefined)){
 				showILGroup(group.id);
 			}
 		};
@@ -2723,7 +2727,7 @@ function showILGroup(groupId){
 		executeAjaxRequest('loans', "POST", newFormData, successFunction, formErrorFunction);	  
 	}
 	
-	function submitTabbedModifyLoanApplication(divContainer, loanId, clientId, groupId) {
+	function submitTabbedModifyLoanApplication(divContainer, loanId, clientId, group) {
 		
 		var serializationOptions = {};
 		serializationOptions["checkboxesAsBools"] = true;
@@ -2739,14 +2743,25 @@ function showILGroup(groupId){
 		if(!("charges" in serializedArray)){
 		    serializedArray["charges"] = {};
 		}
+
+        //If JLG loan, send group id and calendar id
+        if(!(group === undefined)){
+            if(clientId === undefined){
+                serializedArray["groupId"] = group.id;//This is group loan
+            }else{
+                serializedArray["groupId"] = $("#groupSelId").val();//This is JLG loan given to Client
+            }
+            serializedArray["calendarId"] = $("#calendarId").val();
+        }
+
 		var newFormData = JSON.stringify(serializedArray);
 		
 		var successFunction =  function(data, textStatus, jqXHR) {
 			divContainer.dialog("close");
 			if (clientId) {
 				showILClient(clientId);
-			} else {
-				showILGroup(groupId);
+			} else if(!(group === undefined)){
+				showILGroup(group.id);
 			}
 		};
 		
@@ -2807,7 +2822,7 @@ function showILGroup(groupId){
 		
 		var buttonsOpts = {};
 		buttonsOpts[saveButton] = function() {
-			submitTabbedModifyLoanApplication(dialogDiv, data.id, data.clientId, data.groupId);
+			submitTabbedModifyLoanApplication(dialogDiv, data.id, data.clientId, data.group);
 		};
 		// end of buttonsOpts for save button
 		
@@ -2938,9 +2953,20 @@ function showILGroup(groupId){
 			 });
 	    }
 	    
-	    //Load available Calendars
-	    //Modify loan
-        loadAvailableCalendars('clients', data.clientId, data.id, data.groupId);
+	    //Scenario - Modify Loan application 
+        var group = data.group;
+        if(!(group === undefined)){
+            //This is a group loan
+            var groupId = group.id;
+            if(data.clientId === undefined){
+                resource = 'groups'; //If client Id is null then New loan is created for group
+            }else{
+                resource = 'clients'
+            }
+            //Attach meeting calendar/Loan meeting calendars for Group loans
+            loadAvailableCalendars(resource, data.clientId, data.id, groupId);   
+        }
+        
 
 	};
 	
@@ -3029,9 +3055,21 @@ function showILGroup(groupId){
 			    e.preventDefault();
 			});
 			
-			//Load available Calendars
-			//New loan form
-			loadAvailableCalendars('clients', data.clientId);
+			//Scenario - New Loan application 
+            var group = data.group;
+            if(!(group === undefined)){
+                //This is a group loan
+                var groupId = group.id;
+                var resource;
+                if(data.clientId === undefined){
+                    resource = 'groups'; //If client Id is null then New loan is created for group
+                }else{
+                    resource = 'clients'
+                }
+                //Attach meeting calendar
+                loadAvailableCalendars(resource, data.clientId, data.id, groupId);   
+            }
+
 		};
 		
 		// loan loan application template providing selected client and product infomation
@@ -6653,6 +6691,10 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
     var loanId = loanId;
     var groupId = groupId;
     var resourceId = resourceId;
+
+    var tableHtml = $('#meetingCalendarTemplate').render();
+    $('#meetingCalendarPlaceholder').html(tableHtml);
+    
     var getcalendarSuccessFunction = function(data, textStatus, jqXHR) {
         var calendars = new Object();
         calendars.crudRows = data;
@@ -6757,49 +6799,18 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
         $( '#repaymentsStartingFromDate' ).datepicker( "destroy" );
         $('#repaymentsStartingFromDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
         
-        if(loanId){
-            var successFunction = function(data, textStatus, jqXHR) {
-                var calendars = new Object();
-                calendars.crudRows = data;
-                if(calendars.crudRows.length > 0){
-                    var calendar = calendars.crudRows[0];
-                    $("#calendarId").val(calendar.id);
-                }            
-            }        
-
-            executeAjaxRequest('loans/' + loanId + '/calendars?parameters=id,entityId,entityType', 'GET', "", successFunction, formErrorFunction);
+        if(loanId) {
+            loadAttachedCalendarToLoan(loanId);
         }
     }
             
-    var loadAttachedCalendarToLoan = function(loanId, groupId){
-        $('#loanType').val('2');
-        $('.groupcalselect').show();
-        
+    var loadGroupCalendars = function(groupId){
         executeAjaxRequest('groups/' + groupId + '/calendars?associations=parentCalendars', 'GET', "", getcalendarSuccessFunction, formErrorFunction);
     }
     
     $('#groupSelId').change(function(){
         
         executeAjaxRequest('groups/' + $(this).val() + '/calendars?associations=parentCalendars', 'GET', "", getcalendarSuccessFunction, formErrorFunction);    
-    });
-
-    $('#loanType').change(function(){
-        var loanTypeId = $(this).val();
-        if('2' === loanTypeId){
-            $('.groupcalselect').show();
-            $('#groupSelId').val(0);
-            $('#calendarId').empty().append(function(){
-                return '<option value=0> -- Select a meeting -- </option>';
-            });
-        }else{
-            $('.groupcalselect').hide();
-            
-            $( '#expectedDisbursementDate' ).datepicker( "destroy" );
-            $('#expectedDisbursementDate').datepicker({ dateFormat: custom.datePickerDateFormat});
-            
-            $( '#repaymentsStartingFromDate' ).datepicker( "destroy" );
-            $('#repaymentsStartingFromDate').datepicker({ dateFormat: custom.datePickerDateFormat});
-        }
     });
 
     var groupsSuccessFunction = function(data, textStatus, jqXHR) {
@@ -6811,19 +6822,24 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
             });
             return output;
         });
-        $('.groupcalselect').hide();
         
-        if(loanId && groupId){
-            $('.groupcalselect').show();
+        if(groupId){
             $('#groupSelId').val(groupId);
-            
-            loadAttachedCalendarToLoan(loanId, groupId);
+            loadGroupCalendars(groupId);
+        }
+        
+        if(loanId){
+            loadAttachedCalendarToLoan(loanId);
         }
     }
 
-
-    //get client parent groups
-    executeAjaxRequest('clients/' + resourceId + '?fields=id,parentGroups', 'GET', "", groupsSuccessFunction, formErrorFunction);    
+    if(resource === 'clients'){
+        //get client parent groups
+        executeAjaxRequest('clients/' + resourceId + '?fields=id,parentGroups', 'GET', "", groupsSuccessFunction, formErrorFunction);
+    }else if(resource === 'groups'){
+        $('.grouprow').hide();
+        loadGroupCalendars(groupId);
+    }
 }
 function loadAttachedCalendarToLoan(loanId){
     var successFunction = function(data, textStatus, jqXHR) {
@@ -6831,9 +6847,7 @@ function loadAttachedCalendarToLoan(loanId){
         calendars.crudRows = data;
         if(calendars.crudRows.length > 0){
             var calendar = calendars.crudRows[0];
-            $('#loanType').val('2');
-            $("#availableCalendars").val(calendar.id);
-            $('#calmapprow').show();
+            $("#calendarId").val(calendar.id);
         }            
     }        
     executeAjaxRequest('loans/' + loanId + '/calendars?parameters=id,entityId,entityType', 'GET', "", successFunction, formErrorFunction);
