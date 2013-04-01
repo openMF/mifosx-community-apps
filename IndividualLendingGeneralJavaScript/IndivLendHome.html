@@ -7220,34 +7220,10 @@ function showLockinOptions(){
 
 
 		<div id="loanterms" style="margin-top: 5px;">
+		    <div id="meetingCalendarPlaceholder">
+		        <!-- JLG loans in client context uses same template to load the loan -->
+		    </div>
 			<table>
-				<!-- FIXME - MIFOSX-278 - we need to use a different template for group loans -->
-				<!--
-			    <tr>
-                    <td>{{=$ctx.doI18N("label.loan.type")}}</td>
-                    <td>
-                        <select id="loanType" title="">
-                            <option value='0'>{{=$ctx.doI18N("lable.loan.type.first.choice")}}</option>
-                            <option value='1'>{{=$ctx.doI18N("lable.loan.type.individual.loan.choice")}}</option>
-                            <option value='2'>{{=$ctx.doI18N("lable.loan.type.jlg.loan.choice")}}</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr class="groupcalselect">
-                    <td>{{=$ctx.doI18N("label.select.group")}}</td>
-                    <td>
-                        <select id="groupSelId" title="">
-                        </select>
-                    </td>
-                </tr>
-                <tr class="groupcalselect">
-                    <td>{{=$ctx.doI18N("label.select.calendar")}}</td>
-                    <td>
-                        <select id="calendarId" title="">
-                        </select>
-                    </td>
-                </tr>
-				-->
 				<tr>
 					<td>{{=$ctx.doI18N("label.principal")}}</td>
 					<td>
@@ -8011,6 +7987,30 @@ function showLockinOptions(){
     </form>
 </script>
 
+<script id="meetingCalendarTemplate" type="text/x-jquery-tmpl">
+        <div id="meetingCalendarContent">
+        <!-- MIFOSX-278 -->
+
+            <table>
+                <!-- Client can associate with multiple groups, allow to change group -->
+                <tr class="grouprow">
+                    <td>{{=$ctx.doI18N("label.group")}}</td>
+                    <td>
+                        <select id="groupSelId" class="groupSelId" title="">
+                        </select>
+                    </td>
+                </tr>
+                <tr class="calendarrow">
+                    <td>{{=$ctx.doI18N("label.meeting.calendar")}}</td>
+                    <td>
+                        <select id="calendarId" class="calendarSelId" title="">
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <hr>
+        </div>
+</script>
 </body>
 
 </html>
