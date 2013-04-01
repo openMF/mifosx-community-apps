@@ -184,9 +184,32 @@ $(document).ready(function() {
                     </td>
                     <!-- charge details cell -->
                     <td colspan=2 valign="top" style="padding-left: 25px; padding-right: 5px">
+                    <form id="charges" class="chargesEntityform">
                     <table>
-                                
+                        {{#each charges}}
+                            <tr>
+                                <input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
+                                <input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=$ctx.number(chargeId)}}" />
+                                <td>{{=name}}, {{=currency.displaySymbol}}</td>
+                                <td>
+                                    <select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+                                    <option value="{{=$ctx.number(chargeCalculationType.id)}}">{{=$ctx.doI18N(chargeCalculationType.code)}}</option>
+                                    </select>
+                                </td>
+                                <td><input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;" /></td>
+                                <td>
+                                    <select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+                                    <option value="{{=$ctx.number(chargeTimeType.id)}}">{{=$ctx.doI18N(chargeTimeType.code)}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input id="charges[{{=$itemNumber}}][dueDate]" name="charges[{{=$itemNumber}}][dueDate]" class="dueDate datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueDate)}}" />
+                                </td>
+                                <td><button id="loanproduct-removeLoanCharge{{=$itemNumber}}" class="loanproduct-removeLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+                            </tr>
+                            {{/each}}
                     </table>
+                    </form>
                     </td>
                     <td>
                     </td>

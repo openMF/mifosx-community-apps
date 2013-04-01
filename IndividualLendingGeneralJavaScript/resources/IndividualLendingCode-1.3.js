@@ -2480,10 +2480,7 @@ function showILGroup(groupId){
 			});
 
 
-			$( "#submittedOnDate" ).datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-			$( "#expectedDisbursementDate" ).datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-			$( "#interestChargedFromDate" ).datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-			$( "#repaymentsStartingFromDate" ).datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 
 			$('#submitjlgloanapps').button().click(function(e) {
 				$('.entityform').each(function(){
@@ -2505,9 +2502,10 @@ function showILGroup(groupId){
 		    				memberLoanData.repaymentsStartingFromDate = $('#repaymentsStartingFromDate').val();
 		    				memberLoanData.productId = $('#productId').val();
 
+							var serializedCharges = $("#charges").serializeObject();	
+							memberLoanData.charges = serializedCharges.charges;	    				
 
 		    				var memberLoanDataString = JSON.stringify(memberLoanData);
-		    				alert(memberLoanDataString);
 					
 							var successFunction =  function(data, textStatus, jqXHR) {
 								entityForm.closest("#client" + memberLoanData.clientId).remove();
