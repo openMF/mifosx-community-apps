@@ -3519,6 +3519,7 @@ function showLockinOptions(){
 <td>
 	<table width="100%">
 	<tr>
+		{{#if useType==="audit"}}
 		<td>
 			<label for="auditprocessingresult">{{=$ctx.doI18N("processingResult")}}</label>
 			<select name="auditprocessingresult" id="auditprocessingresult" >
@@ -3528,6 +3529,7 @@ function showLockinOptions(){
 	    		{{/each}}
 			</select>
 		</td>
+		{{/if}}
 		<td>
 			<label for="auditdatetimefrom">{{=$ctx.doI18N("madeOnDateFrom")}}</label>
 			<input id="auditdatetimefrom" name="auditdatetimefrom" type="text" class="datepickerfield" />

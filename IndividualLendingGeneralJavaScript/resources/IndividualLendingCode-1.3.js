@@ -5379,7 +5379,6 @@ function auditSearch(useType) {
 			$('#auditcheckeddatetimeto').datetimepicker(datetimeOptions);
 
 			$('#searchaudit').button().click(function(e) {
-				alert("useType: " + useType)
 				var validated = true;
 				var auditSearchOptions = {};
 				var auditAction = $('#auditaction').find(":selected").val();
@@ -5424,12 +5423,9 @@ function auditSearch(useType) {
 					if (!(auditProcessingResult == "ALL")) auditSearchOptions.processingResult = auditProcessingResult;
 				}
 				
-				if (validated == true) 
-					
-					if (useType == 'audit') viewAudits(auditSearchOptions);
-					else showMakerCheckerListing(auditSearchOptions);
+				if (validated == true) viewAudits(useType, auditSearchOptions);
 
-			    	e.preventDefault();
+			    e.preventDefault();
 			});
 
 	};
@@ -5438,9 +5434,11 @@ function auditSearch(useType) {
 
 }
 
-function viewAudits(auditSearchOptions) {
+function viewAudits(useType, auditSearchOptions) {
 
 	var url = 'audit';
+	if (useType == "makerchecker") url = "commands";	
+	
 	var paramCount = 1;
 	for (var i in auditSearchOptions)
 	{
@@ -5454,10 +5452,9 @@ function viewAudits(auditSearchOptions) {
 
 				var crudObject = new Object();
 				crudObject.crudRows = data;
-				crudObject.useType = "audit";
+				crudObject.useType = useType;
 				var html = $("#auditListTemplate").render(crudObject);
 				$("#auditSearchResults").html(html);  
-
 
 				$("a.viewaudit").click( function(e) {
 					
@@ -5467,6 +5464,34 @@ function viewAudits(auditSearchOptions) {
 					e.preventDefault();
 				});
 				
+				if (useType == "makerchecker") {
+					var width = 400; 
+					var height = 225;
+					
+					$("a.deletemc").click( function(e) {
+						var linkId = this.id;
+						var entityId = linkId.replace("deletemc", "");
+						var url = 'commands/' + entityId;
+						var onMakerCheckerActionSuccessFunction = function(data) {
+							  $('#dialog-form').dialog("close");
+							  viewAudits(useType, auditSearchOptions);
+							 }
+						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, onMakerCheckerActionSuccessFunction);
+						e.preventDefault();
+					});
+					$("a.approvemc").click( function(e) {
+						var linkId = this.id;
+						var entityId = linkId.replace("approvemc", "");
+						var url = 'commands/' + entityId + '?command=approve';						
+						var onSuccessFunction = function(data) {
+							$('#dialog-form').dialog("close");
+							viewAudits(useType, auditSearchOptions);
+						}
+													
+						popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, onSuccessFunction);
+						e.preventDefault();
+					});
+				}
 
 				var oTable = displayEnhancedListTable("auditstable");
 	};
@@ -5505,79 +5530,7 @@ function viewAuditEntry(auditId) {
 		
 	executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
 }
-
-
-/*
- * operationType: 	{CREATE, UPDATE, DELETE}
- * resource:    	{CLIENTS, OFFICES, etc}
- * resourceId:      Individual id of client of office resource.
- * commandId:		Id of the maker checker entry on table
- * entityHref:		url submitted
- */
-function viewMakerCheckerEntry(operationType, resource, resourceId, commandId, entityHref) {
-	 viewAuditEntry(commandId);
-}
-
-function approveMakerCheckerEntry(id) {
-
-	var url = 'commands/' + id + '?command=approve';
-	var width = 400; 
-	var height = 225;
-	
-	var onSuccessFunction = function(data) {
-		$('#dialog-form').dialog("close");
-		showMakerCheckerListing({});
-	}
-								
-	popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, onSuccessFunction);
-}
-
-function showMakerCheckerListing({}) {
-	
-	var onMakerCheckerActionSuccessFunction = function(data) {
-		$('#dialog-form').dialog("close");
-		showMakerCheckerListing({});
-	}
-	
-	var onListRetrievialSuccessFunction = function(data) {
-		var makerCheckerListObject = new Object();
-		makerCheckerListObject.crudRows = data;
-		makerCheckerListObject.useType = "makerchecker";
-		
-		var tableHtml = $("#auditListTemplate").render(makerCheckerListObject);
-		
-		$("#auditSearchResults").html(tableHtml);
-
-		$("a.viewaudit").click( function(e) {
-			
-			var linkId = this.id;
-			var entityId = linkId.replace("viewaudit", "");
-			viewAuditEntry(entityId)
-			e.preventDefault();
-		});
-
-		$("a.deletemc").click( function(e) {
-			var linkId = this.id;
-			var entityId = linkId.replace("deletemc", "");
-			var url = 'commands/' + entityId;
-			var width = 400; 
-			var height = 225;
-			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, onMakerCheckerActionSuccessFunction);
-			e.preventDefault();
-		});
-		$("a.approvemc").click( function(e) {
-			var linkId = this.id;
-			var entityId = linkId.replace("approvemc", "");
-			approveMakerCheckerEntry(entityId);
-			e.preventDefault();
-		});
-  	};
-
-  	// fetch all maker checker entries
-  	executeAjaxRequest('commands', 'GET', "", onListRetrievialSuccessFunction, formErrorFunction);
-}
-
-
+//end of audit & makercheck functions
 
 
 //utility functions
