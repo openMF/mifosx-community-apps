@@ -6063,28 +6063,19 @@ function showLockinOptions(){
 					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 175px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+					<td>{{=$ctx.doI18N("label.nominalAnnualInterestRate")}}</td>
 					<td>
-							<input id="interestRate" name="interestRate" title="" type="text" value="{{=$ctx.decimal(interestRate, 4)}}" style="width: 50px;" />
-							<select name="interestRatePeriodFrequencyType" id="interestRatePeriodFrequencyType"  title="" style="width: 121px;">
-							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#each interestRatePeriodFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestRatePeriodFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-								{{/if}}
-       						{{/each}}
-							</select>
+						<input id="nominalAnnualInterestRate" name="nominalAnnualInterestRate" title="" type="text" 
+								value="{{=$ctx.decimal(nominalAnnualInterestRate, 4)}}" style="width: 50px;" />
 					</td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("label.interestPeriodType")}}</td>
+					<td>{{=$ctx.doI18N("label.interestCompoundingPeriodType")}}</td>
 					<td>
-						<select name="interestPeriodType" id="interestPeriodType"  title="" style="width: 181px;">
+						<select name="interestCompoundingPeriodType" id="interestCompoundingPeriodType"  title="" style="width: 181px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#each interestPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestPeriodType.id)===$ctx.number(id)}}
+							{{#each interestCompoundingPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestCompoundingPeriodType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
@@ -6286,28 +6277,18 @@ function showLockinOptions(){
 					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 175px;" value="{{=$ctx.number(currency.decimalPlaces)}}" disabled="disabled"/></td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+					<td>{{=$ctx.doI18N("label.nominalAnnualInterestRate")}}</td>
 					<td>
-							<input id="interestRate" name="interestRate" title="" type="text" value="{{=$ctx.decimal(interestRate, 4)}}" style="width: 50px;" />
-							<select name="interestRatePeriodFrequencyType" id="interestRatePeriodFrequencyType"  title="" style="width: 121px;">
-							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#each interestRatePeriodFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestRatePeriodFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-								{{/if}}
-       						{{/each}}
-							</select>
+						<input id="nominalAnnualInterestRate" name="nominalAnnualInterestRate" title="" type="text" value="{{=$ctx.decimal(nominalAnnualInterestRate, 4)}}" style="width: 50px;" />
 					</td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("label.interestPeriodType")}}</td>
+					<td>{{=$ctx.doI18N("label.interestCompoundingPeriodType")}}</td>
 					<td>
-						<select name="interestPeriodType" id="interestPeriodType"  title="" style="width: 181px;">
+						<select name="interestCompoundingPeriodType" id="interestCompoundingPeriodType"  title="" style="width: 181px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#each interestPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestPeriodType.id)===$ctx.number(id)}}
+							{{#each interestCompoundingPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestCompoundingPeriodType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
 								{{#else}}
 									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
@@ -6440,12 +6421,12 @@ function showLockinOptions(){
 			<span class="rowvalue">{{=$ctx.doI18N(currency.nameCode)}}</span>
 		</div>
 		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.interestRate")}}</span>
-			<span class="rowvalue">{{=interestRate}}% {{=$ctx.doI18N(interestRatePeriodFrequencyType.code)}}</span>
+			<span class="longrowlabel">{{=$ctx.doI18N("label.nominalAnnualInterestRate")}}</span>
+			<span class="rowvalue">{{=nominalAnnualInterestRate}}%</span>
 		</div>
 		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.interestPeriodType")}}</span>
-			<span class="rowvalue">{{=$ctx.doI18N(interestPeriodType.code)}}</span>
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interestCompoundingPeriodType")}}</span>
+			<span class="rowvalue">{{=$ctx.doI18N(interestCompoundingPeriodType.code)}}</span>
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.interestCalculationType")}}</span>
