@@ -5430,16 +5430,13 @@ function auditSearch(useType) {
 
 	};
 
-	var url = 'audit';
-	if (useType == "makerchecker") url = "commands";
-  	executeAjaxRequest(url + '/searchtemplate', 'GET', "", successFunction, formErrorFunction);
+  	executeAjaxRequest(useType + 's/searchtemplate', 'GET', "", successFunction, formErrorFunction);
 
 }
 
 function viewAudits(useType, auditSearchOptions) {
 
-	var url = 'audit';
-	if (useType == "makerchecker") url = "commands";	
+	var url = useType + "s";
 	
 	var paramCount = 1;
 	for (var i in auditSearchOptions)
@@ -5473,7 +5470,7 @@ function viewAudits(useType, auditSearchOptions) {
 					$("a.deletemc").click( function(e) {
 						var linkId = this.id;
 						var entityId = linkId.replace("deletemc", "");
-						var url = 'commands/' + entityId;
+						var url = 'makercheckers/' + entityId;
 						var onMakerCheckerActionSuccessFunction = function(data) {
 							  $('#dialog-form').dialog("close");
 							  viewAudits(useType, auditSearchOptions);
@@ -5484,7 +5481,7 @@ function viewAudits(useType, auditSearchOptions) {
 					$("a.approvemc").click( function(e) {
 						var linkId = this.id;
 						var entityId = linkId.replace("approvemc", "");
-						var url = 'commands/' + entityId + '?command=approve';						
+						var url = 'makercheckers/' + entityId + '?command=approve';						
 						var onSuccessFunction = function(data) {
 							$('#dialog-form').dialog("close");
 							viewAudits(useType, auditSearchOptions);
@@ -5503,7 +5500,7 @@ function viewAudits(useType, auditSearchOptions) {
 
 function viewAuditEntry(auditId) {
 
-	var url = 'audit/' + auditId;
+	var url = 'audits/' + auditId;
 
 	var successFunction = function(data, textStatus, jqXHR) {
 
