@@ -5429,8 +5429,10 @@ function auditSearch(useType) {
 			});
 
 	};
-		
-  	executeAjaxRequest('audit/searchtemplate', 'GET', "", successFunction, formErrorFunction);
+
+	var url = 'audit';
+	if (useType == "makerchecker") url = "commands";
+  	executeAjaxRequest(url + '/searchtemplate', 'GET', "", successFunction, formErrorFunction);
 
 }
 
