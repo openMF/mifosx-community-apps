@@ -3611,6 +3611,7 @@ function showLockinOptions(){
 			{{/if}}
 			<th><b>{{=$ctx.doI18N("madeOnDate")}}</b></th>
 			<th><b>{{=$ctx.doI18N("maker")}}</b></th>
+			<th><b>{{=$ctx.doI18N("officeName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("actionName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("entityName")}}</b></th>
 			<th><b>{{=$ctx.doI18N("resourceId")}}</b></th>
@@ -3631,6 +3632,7 @@ function showLockinOptions(){
 	{{/if}}
 	<td>{{=$ctx.globalDateTime(madeOnDate)}}</td>
 	<td>{{=maker}}</td>
+	<td>{{=officeName}}</td>
 	<td>{{=$ctx.doI18N(actionName)}}</td>
 	<td>{{=$ctx.doI18N(entityName)}}</td>
 	<td>{{=resourceId}}</td>
