@@ -6639,9 +6639,21 @@ function showLockinOptions(){
 							<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 175px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.principal")}}</td>
+                            <td>{{=$ctx.doI18N("label.minimum.principal")}}</td>
+                            <td>
+                                <input id="minPrincipal" name="minPrincipal" title="" type="text" value="{{=$ctx.monetaryValue(currency, minPrincipal)}}" style="width: 175px;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{=$ctx.doI18N("label.principal")}}</td>
+                            <td>
+                                <input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 175px;" />
+                            </td>
+                        </tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.maximum.principal")}}</td>
 							<td>
-								<input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 175px;" />
+								<input id="maxPrincipal" name="maxPrincipal" title="" type="text" value="{{=$ctx.monetaryValue(currency, maxPrincipal)}}" style="width: 175px;" />
 							</td>
 						</tr>
 						<tr>
