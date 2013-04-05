@@ -6585,7 +6585,9 @@ function showLockinOptions(){
 			{{#if $ctx.showTask("VIEWCHARGES")}}
 			<li><a href="#chargestab" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
 			{{/if}}
+			{{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
 			<li><a href="#accounting" title="accounting">{{=$ctx.doI18N("tab.accounting")}}</a></li>
+			{{/if}}
 	    </ul>
 	    
 		<div id="productdetails" style="margin-top: 5px;">
@@ -6816,6 +6818,7 @@ function showLockinOptions(){
 <!-- charges -->
 
 		<!-- accounting -->
+{{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
 		<div id="accounting" style="margin-top: 5px;">
 			<fieldset>
 				<legend>{{=$ctx.doI18N("legend.accounting.rules")}}  </legend>
@@ -7031,6 +7034,7 @@ function showLockinOptions(){
 		</div>
 	</fieldset>
 		</div>
+{{/if}}
 		<!-- end of accounting -->
 	</div>
 </form>

@@ -187,8 +187,10 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
 
-	if (jQuery.MifosXUI.showMenu("ClientsMenu") == true)
+	if (jQuery.MifosXUI.showMenu("ClientsMenu"))
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+	
+	if (jQuery.MifosXUI.showMenu("CollectionSheetMenu"))
 		htmlVar += '  <li><a href="unknown.html" onclick="showCollectionSheet();return false;">' + doI18N("link.topnav.collection.sheet") + '</a></li>';
 	
 	if (jQuery.MifosXUI.showMenu("CheckerMenu") == true)
