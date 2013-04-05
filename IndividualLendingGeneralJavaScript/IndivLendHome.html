@@ -6661,11 +6661,23 @@ function showLockinOptions(){
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.numberof.repayments")}}</td>
+							<td>{{=$ctx.doI18N("label.minimum.numberof.repayments")}}</td>
 							<td>
-								<input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
+								<input id="minNumberOfRepayments" name="minNumberOfRepayments" title="" type="text" value="{{=$ctx.number(minNumberOfRepayments)}}" style="width: 50px;" />
 							</td>
 						</tr>
+						<tr>
+                            <td>{{=$ctx.doI18N("label.numberof.repayments")}}</td>
+                            <td>
+                                <input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{=$ctx.doI18N("label.maximum.numberof.repayments")}}</td>
+                            <td>
+                                <input id="maxNumberOfRepayments" name="maxNumberOfRepayments" title="" type="text" value="{{=$ctx.number(maxNumberOfRepayments)}}" style="width: 50px;" />
+                            </td>
+                        </tr>
 						<tr>
 							<td>{{=$ctx.doI18N("label.repaidevery")}}</td>
 							<td>
@@ -6683,21 +6695,33 @@ function showLockinOptions(){
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+							<td>{{=$ctx.doI18N("label.minimum.nominal.interestrate")}}</td>
 							<td>
-								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 50px;" />
-								
-								<select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 121px;">
-								{{#each interestRateFrequencyTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
+								<input id="minInterestRatePerPeriod" name="minInterestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(minInterestRatePerPeriod, 4)}}" style="width: 50px;" />
+                            </td>
 						</tr>
+						<tr>
+                            <td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+                            <td>
+                                <input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 50px;" />
+                                
+                                <select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 121px;">
+                                {{#each interestRateFrequencyTypeOptions}}
+                                {{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
+                                    <option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+                                {{#else}}
+                                    <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                                {{/if}}
+                                {{/each}}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{=$ctx.doI18N("label.maximum.nominal.interestrate")}}</td>
+                            <td>
+                                <input id="maxInterestRatePerPeriod" name="maxInterestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(maxInterestRatePerPeriod, 4)}}" style="width: 50px;" />
+                            </td>
+                        </tr>
 					</table>
 		</div>
 
