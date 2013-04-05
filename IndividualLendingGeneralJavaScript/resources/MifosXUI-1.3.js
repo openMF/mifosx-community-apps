@@ -279,7 +279,7 @@ isInitialised = false;
 
 		for (var i in mUserPermissions) 
 		{
-			if ((mUserPermissions[i] == "CHECKER_SUPER_USER") || (mUserPermissions[i] == "READ_MAKERCHECKER") || (endsWith(mUserPermissions[i], "_CHECKER") == true)) return true;
+			if ((mUserPermissions[i] == "CHECKER_SUPER_USER") || (endsWith(mUserPermissions[i], "_CHECKER") == true)) return true;
 		}
 		return false;
 	}
