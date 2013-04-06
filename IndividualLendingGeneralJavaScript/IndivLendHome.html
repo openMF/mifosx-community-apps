@@ -296,207 +296,6 @@ $(document).ready(function() {
             </div>
 </script>
 
-<script id="newDepositFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.deposit.information")}}</legend>
-		<div>
-			<table id="productdetails">
-				<tr>
-					<td valign="top">
-
-						<label for="clientname">{{=$ctx.doI18N("form.label.deposit.applicant")}}</label>
-						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
-
-						<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
-						<select name="productId" id="productId">
-							<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
-							{{#each productOptions}}
-							{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-							{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-							{{/if}}
-							{{/each}}
-						</select>
-					</td>
-					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
-					<td valign="top">
-						<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
-						<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(projectedCommencementDate)}}" />
-						<label for="externalId">{{=$ctx.doI18N("form.label.deposit.externalId")}}</label>
-						<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
-					</td>
-				</tr>
-			</table>
-		</div>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
-			<table>
-			<tr>
-				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
-							<td>
-								<input id="deposit" name="deposit" title="" type="text" value="{{=$ctx.decimal(deposit, currency.decimalPlaces)}}" style="width: 125px;" />
-								<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.tenure")}}</td>
-							<td>
-								<input id="tenureInMonths" name="tenureInMonths" title="" type="text" value="{{=$ctx.number(tenureInMonths)}}" style="width: 50px;" />
-							</td>
-						</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.canRenew")}}</td>
-						<td>
-							{{#if renewalAllowed}}
-							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.canPreClose")}}</td>
-						<td>
-							{{#if preClosureAllowed}}
-							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{{=$ctx.doI18N("form.label.deposit.product.isCompoundingAllowed")}}<br/><br />
-							{{=$ctx.doI18N("form.label.deposit.product.isInterestWithdrawable")}}
-						</td>
-						<td>
-							{{#if interestCompoundingAllowed}}
-							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" checked=checked onClick="updateCheckbox()"/><br /><br />
-							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" />
-							{{#else}}
-							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" onClick="updateCheckbox()"/><br /><br />
-							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" checked=checked />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.account.isLockinPeriodAllowed")}}</td>
-						<td>
-							{{#if isLockinPeriodAllowed}}
-							<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					</table>
-				</td>
-
-				<!-- interest details cell -->
-				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.nominal.interestrate")}}</td>
-							<td>
-								<input id="maturityInterestRate" name="maturityInterestRate" title="" type="text" value="{{=$ctx.decimal(maturityInterestRate, 4)}}" style="width: 60px;" />
-							</td>
-						</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.preClosureInterestRate")}}</td>
-						<td>
-							<input id="preClosureInterestRate" name="preClosureInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(preClosureInterestRate,4)}}"/>
-						</td>
-					</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
-							<td>
-								<input id="interestCompoundedEvery" name="interestCompoundedEvery" title="" type="text" value="{{=$ctx.number(interestCompoundedEvery)}}" style="width: 50px;" />
-								
-								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
-								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-					</tr>
-					<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.lockin.period")}}</td>
-							<td>
-								<input id="lockinPeriod" name="lockinPeriod" title="" type="text" value="{{=$ctx.number(lockinPeriod)}}" style="width: 50px;" />
-								
-								<select name="lockinPeriodType" id="lockinPeriodType"  title="" style="width: 121px;">
-								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.lockinPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-					</tr>
-
-					</table>
-				</td>
-
-
-				<td>
-				<!-- Other options -->
-					<div>
-						<span id="toolbar" class="ui-widget-header ui-corner-all">
-							<button type="submit" class="submitdepositapp" id="submitdepositapp" name="_eventId_submit"  title="Submit deposit application.">Submit Deposit application</button>
-							<button type="submit" class="canceldepositapp" id="canceldepositapp" name="_eventId_cancel" title="Cancel deposit application.">Cancel</button>
-						</span>
-					</div>
-				<!-- other options -->
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-</form>
-</script>
-
-
-
-<script id="newDepositFormTemplateMin" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-
-<label for="clientname">{{=$ctx.doI18N("form.label.deposit.applicant")}}</label>
-<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
-
-<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
-<select name="productId" id="productId">
-<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
-{{#each productOptions}}
-{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
-<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-{{#else}}
-<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-{{/if}}
-{{/each}}
-</select>
-</form>
-</script>
-
 <script id="noteListViewTemplate" type="text/x-jquery-tmpl">
 {{#if notes.length > 0}}
 	<div class="ui-widget .ui-widget-content ui-corner-all notecontainer">
@@ -1707,333 +1506,6 @@ $(document).ready(function() {
 	</div>
 </script>
 
-<script id="withdrawAmountFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-
-	<table>
-		<tr>
-			<td>{{=$ctx.doI18N("form.label.deposit.maturity.date")}}</td>
-			<td>
-			<input id="maturesOnDate" name="maturesOnDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(todaysDate)}}"/>
-			</td>
-		</tr>
-	
-		<tr>
-			<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
-			<td>
-			<input title="" type="text" value="{{=$ctx.decimal(deposit, 2)}}" style="width: 125px;"  disabled="disabled"/>
-			</td>
-		</tr>
-
-		<tr>
-			<td>{{=$ctx.doI18N("form.label.deposit.interest.amount")}}</td>
-			<td>
-			<input type="text" value="{{=$ctx.decimal(actualInterestAccrued, 2)}}" style="width: 125px;"  disabled="disabled"/>
-			</td>
-		</tr>
-		<tr>
-			<td>{{=$ctx.doI18N("form.label.deposit.withdraw.amount")}}</td>
-			<td>
-			<input type="text" value="{{=$ctx.decimal(availableWithdrawalAmount, 2)}}" style="width: 125px;"  disabled="disabled"/>
-			</td>
-		</tr>
-	</table>	
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="3" cols="40" id="note" name="note"></textarea>
-
-</form>
-</script>
-
-<script id="withdrawInterestFormTemplate" type="text/x-jquery-tmpl">
- <form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<table>
-		<tr>
-			<td>{{=$ctx.doI18N("form.label.deposit.account.interest.withdraw.amount")}}</td>
-			<td>
-			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(availableInterestForWithdrawal,2)}}" style="width: 125px;" />
-			<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
-			</td>
-		</tr> 
-	</table>
-
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="3" cols="40" id="note" name="note"></textarea>
-
-</form>
-</script>
-
-<script id="stateTransitionDepositFormTemplateForApprove" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
-	<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(todaysDate)}}" />
-
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="2" cols="53" id="note" name="note"></textarea>
-
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
-		<table>
-			<tr>
-				<td valign="top" style="padding-right: 5px; border-right: 0px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
-							<td>
-								<input id="deposit" name="deposit" title="" type="text" value="{{=$ctx.decimal(deposit, $ctx.number(currency.decimalPlaces))}}" style="width: 125px;" />
-								<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
-							</td>
-						</tr> 
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.nominal.interestrate")}}</td>
-							<td>
-								<input id="maturityInterestRate" name="maturityInterestRate" title="" type="text" value="{{=$ctx.decimal(maturityInterestRate, $ctx.number(currency.decimalPlaces))}}" style="width: 60px;" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.tenure")}}</td>
-							<td>
-								<input id="tenureInMonths" name="tenureInMonths" title="" type="text" value="{{=$ctx.number(tenureInMonths)}}" style="width: 50px;" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
-							<td>
-								<input id="interestCompoundedEvery" name="interestCompoundedEvery" title="" type="text" value="{{=$ctx.number(interestCompoundedEvery)}}" style="width: 50px;" />
-							
-								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
-								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-</form>
-</script>
-
-<script id="modifyDepositApplicationFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.deposit.information")}}</legend>
-		<div>
-			<table id="productdetails">
-				<tr>
-					<td valign="top">
-
-						<label for="clientname">{{=$ctx.doI18N("form.label.deposit.applicant")}}</label>
-						<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" />
-
-						<label for="productId">{{=$ctx.doI18N("label.product")}}</label>
-						<select name="productId" id="productId">
-							<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
-							{{#each productOptions}}
-							{{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-							{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-							{{/if}}
-							{{/each}}
-						</select>
-					</td>
-					<td style="text-align:right;vertical-align:bottom;width:50px;">&nbsp;</td>
-					<td valign="top">
-						<label for="commencementDate">{{=$ctx.doI18N("label.commencementDate")}}</label>
-						<input id="commencementDate" name="commencementDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(todaysDate)}}" />
-						<label for="externalId">{{=$ctx.doI18N("form.label.deposit.externalId")}}</label>
-						<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}" />
-					</td>
-				</tr>
-			</table>
-		</div>
-	</fieldset>
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
-			<table>
-			<tr>
-				<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.deposit.amount")}}</td>
-							<td>
-								<input id="deposit" name="deposit" title="" type="text" value="{{=$ctx.decimal(deposit, 2)}}" style="width: 125px;" />
-								<input id="currencyCode" name="currencyCode" title="" type="text" value="{{=currency.code}}" style="width: 40px;" disabled="disabled" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.tenure")}}</td>
-							<td>
-								<input id="tenureInMonths" name="tenureInMonths" title="" type="text" value="{{=$ctx.number(tenureInMonths)}}" style="width: 50px;" />
-							</td>
-						</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.canRenew")}}</td>
-						<td>
-							{{#if renewalAllowed}}
-							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.canPreClose")}}</td>
-						<td>
-							{{#if preClosureAllowed}}
-							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{{=$ctx.doI18N("form.label.deposit.product.isCompoundingAllowed")}}<br/><br />
-							{{=$ctx.doI18N("form.label.deposit.product.isInterestWithdrawable")}}
-						</td>
-						<td>
-							{{#if interestCompoundingAllowed}}
-							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" checked=checked onClick="updateCheckbox()"/><br /><br />
-							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" />
-							{{#else}}
-							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" onClick="updateCheckbox()"/><br /><br />
-							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" checked=checked />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.account.isLockinPeriodAllowed")}}</td>
-						<td>
-							{{#if isLockinPeriodAllowed}}
-							<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					</table>
-				</td>
-
-				<!-- interest details cell -->
-				<td valign="top" style="padding-left: 5px; padding-right: 5px; border-right: 1px solid;">
-					<table>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.nominal.interestrate")}}</td>
-							<td>
-								<input id="maturityInterestRate" name="maturityInterestRate" title="" type="text" value="{{=$ctx.decimal(maturityInterestRate, 4)}}" style="width: 60px;" />
-							</td>
-						</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.preClosureInterestRate")}}</td>
-						<td>
-							<input id="preClosureInterestRate" name="preClosureInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(preClosureInterestRate,4)}}"/>
-						</td>
-					</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
-							<td>
-								<input id="interestCompoundedEvery" name="interestCompoundedEvery" title="" type="text" value="{{=$ctx.number(interestCompoundedEvery)}}" style="width: 50px;" />
-								
-								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
-								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-						</tr>
-					<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.lockin.period")}}</td>
-							<td>
-								<input id="lockinPeriod" name="lockinPeriod" title="" type="text" value="{{=$ctx.number(lockinPeriod)}}" style="width: 50px;" />
-								
-								<select name="lockinPeriodType" id="lockinPeriodType"  title="" style="width: 121px;">
-								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.lockinPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-					</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</fieldset>
-</form>
-</script>
-
-<script id="modifyApprovedDepositApplicationFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
-		   <table>
-			<tr>
-				<td valign="top" style="padding-right: 5px; border-right: 0px solid;">
-					<table>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.canRenew")}}</td>
-						<td>
-							{{#if renewalAllowed}}
-							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					
-					<tr>
-						<td>
-							{{=$ctx.doI18N("form.label.deposit.product.isInterestWithdrawable")}}
-						</td>
-						<td>
-							{{#if isInterestWithdrawable}}
-							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="isInterestWithdrawable" name="isInterestWithdrawable" title="" style="width: 125px;"  />
-							{{/if}}
-						</td>
-					</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
- </form>
-</script>
-
 <script id="formErrorsTemplate" type="text/x-jquery-tmpl">
 <div class="ui-widget">
 	<div class="ui-state-error ui-corner-all">
@@ -2223,210 +1695,6 @@ $(document).ready(function() {
 	</tr>
 	</table>	
 </fieldset>	
-</form>
-</script>
-
-<script id="depositproductListTemplate" type="text/x-jquery-tmpl">
-<table id='depositproductstable' width='100%'>
-	<thead>
-		<tr>
-			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.active")}}</th>
-			<th>&nbsp;</th>
-		</tr>
-	</thead>
-	<tbody>
-{{#each crudRows}}
-<tr>
-	<td title='{{=description}}'>{{=name}}</td>
-	<td>Yes</td>
-	<td>
-		<a id='deactivatedepositproduct{{=id}}' class='deactivatedepositproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deactivate")}}</a>
-		<a id='editdepositproduct{{=id}}' class='editdepositproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-		<a id='deletedepositproduct{{=id}}' class='deletedepositproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
-	</td>
-</tr>
-{{/each}}
-	</tbody>
-</table>
-</script>
-
-<script id="depositproductFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	<fieldset>
-		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" /> 
-		<legend>{{=$ctx.doI18N("form.legend.deposit.product.information")}}</legend> 
-		
-		<label for="name">{{=$ctx.doI18N("form.label.deposit.product.name")}}</label>
-		<input id="name" name="name" type="text" value="{{=name}}" style="width:400px;"/>
-		
-		<label for="description">{{=$ctx.doI18N("form.label.deposit.product.description")}}</label>
-		<textarea cols="73" rows="3" id="description" name="description" title="">{{=description}}</textarea>
-	</fieldset>
-
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.deposit.product.currency")}}</legend>
-		<label for="currencyCode">{{=$ctx.doI18N("form.label.deposit.product.currency")}}</label>
-		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
-            	<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
-			{{#each currencyOptions}}
-                {{#if $parent.parent.data.currencyCode===code}}
-					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}" selected="selected">{{=name}}</option>
-				{{#else}}
-					<option value="{{=code}}" digitsad="{{=$ctx.number(decimalPlaces)}}">{{=name}}</option>
-				{{/if}}
-          	{{/each}}
-		</select>
-		<label for="digitsAfterDecimal">{{=$ctx.doI18N("form.label.deposit.product.decimalplaces")}}</label>
-		<input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 300px;" value="{{=$ctx.number(digitsAfterDecimal)}}" />
-	</fieldset>
-
-	<fieldset>
-		<legend>{{=$ctx.doI18N("form.legend.deposit.product.deposit.terms")}}</legend>
-		
-		<table>
-		<tr>
-			<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
-				<table>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.min.amount")}}</td>
-						<td>
-							<input id="minimumBalance" name="minimumBalance" title="" style="width: 125px;" value="{{=$ctx.decimal(minimumBalance, 2)}}" />
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.max.amount")}}</td>
-						<td>
-							<input id="maximumBalance" name="maximumBalance" title="" style="width: 125px;" value="{{=$ctx.decimal(maximumBalance, 2)}}"/>
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.tenureMonths")}}</td>
-						<td>
-							<input id="tenureInMonths" name="tenureInMonths" title="" style="width: 125px;" value="{{=$ctx.number(tenureInMonths)}}"/>
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.canRenew")}}</td>
-						<td>
-							{{#if renewalAllowed}}
-							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="renewalAllowed" name="renewalAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.canPreClose")}}</td>
-						<td>
-							{{#if preClosureAllowed}}
-							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="preClosureAllowed" name="preClosureAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.isCompoundingAllowed")}}</td>
-						<td>
-							{{#if interestCompoundingAllowed}}
-							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" checked=checked />
-							{{#else}}
-							<input type="checkbox" id="interestCompoundingAllowed" name="interestCompoundingAllowed" title="" style="width: 125px;" />
-							{{/if}}
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.account.isLockinPeriodAllowed")}}</td>
-						<td>
-							{{#if isLockinPeriodAllowed}}
-							<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" checked=checked onClick="showLockinOptions()"/>
-							{{#else}}
-							<input type="checkbox" id="isLockinPeriodAllowed" name="isLockinPeriodAllowed" title="" style="width: 125px;" onClick="showLockinOptions()" />
-							{{/if}}
-						</td>
-					</tr>
-				</table>	
-			</td>
-			<td valign="top" style="padding-right: 5px; border-right: 1px solid;">
-				<table>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.maturityDefaultInterestRate")}}</td>
-						<td>
-							<input id="maturityDefaultInterestRate" name="maturityDefaultInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(maturityDefaultInterestRate,4)}}"/>
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.maturityMinInterestRate")}}</td>
-						<td>
-							<input id="maturityMinInterestRate" name="maturityMinInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(maturityMinInterestRate,4)}}"/>
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.maturityMaxInterestRate")}}</td>
-						<td>
-							<input id="maturityMaxInterestRate" name="maturityMaxInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(maturityMaxInterestRate,4)}}"/>
-						</td>
-					</tr>
-					<tr>
-						<td>{{=$ctx.doI18N("form.label.deposit.product.preClosureInterestRate")}}</td>
-						<td>
-							<input id="preClosureInterestRate" name="preClosureInterestRate" title="" style="width: 125px;" value="{{=$ctx.decimal(preClosureInterestRate,4)}}"/>
-						</td>
-					</tr>
-					<tr>
-							<td>{{=$ctx.doI18N("form.label.deposit.product.interest.compounding.every")}}</td>
-							<td>
-								<input id="interestCompoundedEvery" name="interestCompoundedEvery" title="" type="text" value="{{=$ctx.number(interestCompoundedEvery)}}" style="width: 50px;" />
-								
-								<select name="interestCompoundedEveryPeriodType" id="interestCompoundedEveryPeriodType"  title="" style="width: 121px;">
-								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.interestCompoundedEveryPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-							</td>
-					</tr>
-					<tr id="lockinPeriodRow">
-							<td>{{=$ctx.doI18N("form.label.deposit.product.lockin.period")}}</td>
-							<td>
-								{{#if isLockinPeriodAllowed}}
-								<input id="lockinPeriod" name="lockinPeriod" title="" type="text" value="{{=$ctx.number(lockinPeriod)}}" style="width: 50px;" />
-								<select name="lockinPeriodType" id="lockinPeriodType"  title="" style="width: 121px;">
-								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.lockinPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-								{{else}}
-								<input id="lockinPeriod" name="lockinPeriod" title="" type="text" value="{{=$ctx.number(lockinPeriod)}}" style="width: 50px;" disabled="disabled"/>
-								<select name="lockinPeriodType" id="lockinPeriodType"  title="" style="width: 121px;" disabled="disabled">
-								{{#each interestCompoundedEveryPeriodTypeOptions}}
-								{{#if $ctx.number($parent.parent.data.lockinPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
-								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
-								{{/if}}
-        						{{/each}}
-  								</select>
-								{{/if}}
-								
-							</td>
-					</tr>
-				</table>	
-			</td>
-		</tr>
-		
-	</table>
-	</fieldset>
-
 </form>
 </script>
 
@@ -3493,24 +2761,9 @@ $(document).ready(function() {
 </script>
 
 <!-- end of admin templates -->
-<script type="text/javascript">
-function updateCheckbox(){
-	    var other = $('#interestCompoundingAllowed:checked').val();
-	    if (other == undefined) $("#isInterestWithdrawable").prop("checked", true);
-	    else $("#isInterestWithdrawable").prop("checked", false);
-	
-}
-function showLockinOptions(){
-    var other = $('#isLockinPeriodAllowed:checked').val();
-    //if (other == undefined){$('#lockinPeriodRow').hide();}
-    //else {$('#lockinPeriodRow').show();}
-} 
-</script>
-
 
 <!-- Audit Search -->
 <script id="auditSearchTemplate" type="text/x-jquery-tmpl">
-
 <table width=100%>
 <tr>
 <td valign="top">
@@ -6087,6 +5340,21 @@ function showLockinOptions(){
 					</td>
 				</tr>
 				<tr>
+					<td>{{=$ctx.doI18N("label.interestPostingPeriodType")}}</td>
+					<td>
+						<select name="interestPostingPeriodType" id="interestPostingPeriodType"  title="" style="width: 181px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each interestPostingPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestPostingPeriodType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+       						{{/each}}
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<td>{{=$ctx.doI18N("label.interestCalculationType")}}</td>
 					<td>
 						<select name="interestCalculationType" id="interestCalculationType"  title="" style="width: 181px;">
@@ -6300,6 +5568,21 @@ function showLockinOptions(){
 					</td>
 				</tr>
 				<tr>
+					<td>{{=$ctx.doI18N("label.interestPostingPeriodType")}}</td>
+					<td>
+						<select name="interestPostingPeriodType" id="interestPostingPeriodType"  title="" style="width: 181px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each interestPostingPeriodTypeOptions}}
+								{{#if $ctx.number($parent.parent.data.interestPostingPeriodType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+								{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+       						{{/each}}
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<td>{{=$ctx.doI18N("label.interestCalculationType")}}</td>
 					<td>
 						<select name="interestCalculationType" id="interestCalculationType"  title="" style="width: 181px;">
@@ -6376,6 +5659,7 @@ function showLockinOptions(){
 			<button id="savingsaccountdepositbtn{{=id}}" class="savingsaccountdeposit">{{=$ctx.doI18N("button.deposit")}}</button>
 			<button id="savingsaccountwithdrawalbtn{{=id}}" class="savingsaccountwithdrawal">{{=$ctx.doI18N("button.withdrawal")}}</button>
 			<button id="savingsaccountinterestcalcbtn{{=id}}" class="savingsaccountinterestcalc">{{=$ctx.doI18N("button.calculateInterest")}}</button>
+			<button id="savingsaccountinterestpostbtn{{=id}}" class="savingsaccountinterestpost">{{=$ctx.doI18N("button.postInterest")}}</button>
 			{{/if}}
 			{{#if status.unactivated}}
 			<button id="savingsaccountactivatebtn{{=id}}" class="savingsaccountactivate">{{=$ctx.doI18N("button.activate")}}</button>
@@ -6429,6 +5713,10 @@ function showLockinOptions(){
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.interestCompoundingPeriodType")}}</span>
 			<span class="rowvalue">{{=$ctx.doI18N(interestCompoundingPeriodType.code)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interestPostingPeriodType")}}</span>
+			<span class="rowvalue">{{=$ctx.doI18N(interestPostingPeriodType.code)}}</span>
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.interestCalculationType")}}</span>

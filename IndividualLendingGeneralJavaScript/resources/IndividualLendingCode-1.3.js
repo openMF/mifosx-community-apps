@@ -3412,8 +3412,7 @@ function showILGroup(groupId){
 	}
 	// end of savings product
 	
-	// start of savings account --xxx
-	
+	// start of savings account
 	function loadTabbedSavingsAccountForm(container, clientId, productId, groupId) {
 		
 		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
@@ -3431,17 +3430,16 @@ function showILGroup(groupId){
 			
 			$("#productId").change(function() {
 				var savingsProductId = $("#productId").val();
-				loadTabbedSavingsAccountForm(dialogDiv, data.clientId, savingsProductId);
+				loadTabbedSavingsAccountForm(container, data.clientId, savingsProductId);
 			});
 			
 			$("#activeCheckbox").change(function() {
 				var selected = this.checked;
 				if (selected) {
-					 $("#activationDate").removeAttr("disabled");
+					$("#activationDate").removeAttr("disabled");
 				} else {
 					$("#activationDate").attr("disabled", "disabled");
 				}
-				loadTabbedSavingsAccountForm(dialogDiv, data.clientId, savingsProductId);
 			});
 			
 			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -3449,7 +3447,7 @@ function showILGroup(groupId){
 		};
 		
 		// load savings account template providing selected client and product infomation
-		if(!(clientId === undefined)){
+		if(!(clientId === undefined)) {
 			executeAjaxRequest('savingsaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
 		}
 		else if(!(groupId === undefined)){
@@ -6143,20 +6141,27 @@ function loadSavingAccount(accountId) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountinterestcalcbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=calculateInterest';
-			var templateSelector = "#savingsAccountTransactionFormTemplate";
 			var width = 400; 
 			var height = 280;
-			//var minOffset = 0;
-			//var defaultOffset = 0;
-			//var maxOffset = 0;
 			
 			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
 			popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.calculateInterest', width, height, 0, saveSuccessFunctionReloadSaving);
-			
-//			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.calculateInterest', templateSelector, width, height, saveSuccessFunctionReloadSaving, minOffset, defaultOffset, maxOffset);
 			e.preventDefault();
 		});
 		$('button.savingsaccountinterestcalc span').text(doI18N('button.calculateInterest'));
+		
+		$('.savingsaccountinterestpost').button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
+			var linkId = this.id;
+			var savingAccountId = linkId.replace("savingsaccountinterestpostbtn", "");
+			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=postInterest';
+			var width = 400; 
+			var height = 280;
+			
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.postInterest', width, height, 0, saveSuccessFunctionReloadSaving);
+			e.preventDefault();
+		});
+		$('button.savingsaccountinterestpost span').text(doI18N('button.postInterest'));
 		
 		$('.savingsaccountactivate').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
 			var linkId = this.id;
