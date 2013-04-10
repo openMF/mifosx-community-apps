@@ -371,11 +371,28 @@ function setClientContent(divName) {
 }
 
 function setGroupContent(divName) {
-	var htmlVar = '<div id="newtabs">	<ul><li><a href="unknown.html"'; 
-	htmlVar += ' title="grouptab" class="topleveltab"><span id="grouptabname">' + doI18N("app.loading") + '</span></a></li></ul><div id="grouptab"></div></div>';
+	var htmlVar = '<div id="groupdetails"></div><div id="newtabs">	<ul><li><a href="unknown.html"'; 
+	htmlVar += 	' title="grouptab" class="topleveltab"><span id="grouptabname">' + doI18N("app.loading") + '</span></a></li>'
+	htmlVar += 	' <li><a href="unknown.html"'; 
+	htmlVar += 	' title="groupclientstab" class="topleveltab"><span id="groupclientstabname">' + doI18N("app.loading") + '</span></a></li>'
+	htmlVar += 	' <li><a href="unknown.html"'; 
+	htmlVar += 	' title="groupsummarytab" class="topleveltab"><span id="groupsummarytabname">' + doI18N("app.loading") + '</span></a></li>'
+	htmlVar += 	' </ul><div id="grouptab"></div></div>';
 	
 	$("#" + divName).html(htmlVar);
 }
+
+function setCenterContent(divName) {
+	var htmlVar = '<div id="centerDetails"></div><div id="newtabs">	<ul><li><a href="unknown.html"'; 
+	htmlVar += 	' title="centertab" class="topleveltab"><span id="centertabname">' + doI18N("app.loading") + '</span></a></li>'
+	htmlVar +=	' <li><a href="unknown.html"'; 
+	htmlVar += 	' title="centertabgroups" class="topleveltab"><span id="centertabgroupsname">' + doI18N("app.loading") + '</span></a></li>';
+	htmlVar +=	' <li><a href="unknown.html"'; 
+	htmlVar += 	' title="centertabsummary" class="topleveltab"><span id="centertabsummaryname">' + doI18N("app.loading") + '</span></a></li>';
+	htmlVar += 	'</ul><div id="centertab"></div></div>';
+	$("#" + divName).html(htmlVar);
+}
+
 
 function setAddLoanContent(divName) {
 
@@ -1459,13 +1476,13 @@ function showILGroupListing(){
 			  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
 				
 				//render group drop down data
-				var groupSearchSuccessFunction =  function(data) {
-					var groupSearchObject = new Object();
-				    groupSearchObject.crudRows = data;
-					var tableHtml = $("#allGroupsListTemplate").render(groupSearchObject);
-					$("#groupsInScopeDiv").html(tableHtml);
+				var centerSearchSuccessFunction =  function(data) {
+					var centerSearchObject = new Object();
+				    centerSearchObject.crudRows = data;
+					var tableHtml = $("#allCentersListTemplate").render(centerSearchObject);
+					$("#centersInScopeDiv").html(tableHtml);
 			  	};
-				executeAjaxRequest('groups', 'GET', "", groupSearchSuccessFunction, formErrorFunction);
+				executeAjaxRequest('centers/?underHierarchy=.', 'GET', "", centerSearchSuccessFunction, formErrorFunction);
 	  			
 	    		//search group functionality
 				var searchSuccessFunction =  function(data) {
@@ -1475,17 +1492,6 @@ function showILGroupListing(){
 					$("#groupTableDiv").html(tableHtml);
 				    var oTable=displayListTable("groupstable");
 			  	};
-				
-				// Render Group Hierarchy
-				
-				//render group drop down data
-				var groupLevelSuccessFunction =  function(data) {
-					var groupLevelObject = new Object();
-				    groupLevelObject.crudRows = data;
-					var tableHtml = $("#groupHierarchyTemplate").render(groupLevelObject);
-					$("#groupLevels").html(tableHtml);
-			  	};
-				executeAjaxRequest('grouplevels', 'GET', "", groupLevelSuccessFunction, formErrorFunction);
 				
 				//initialize search button				
 				$("#searchGroupBtn").button({
@@ -1514,8 +1520,8 @@ function showILGroupListing(){
 	});
 }
 
-//Add new group or center
-function addGroup(levelid , parentGroupId) {
+//Add new group
+function addGroup(parentGroupId) {
 	
 		var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
 			$('#dialog-form').dialog("close");
@@ -1523,23 +1529,43 @@ function addGroup(levelid , parentGroupId) {
 		}
 
 		if(parentGroupId === undefined) {
-			var getUrl = 'groups/template?levelId='+levelid;
+			var getUrl = 'groups/template';
 		}
 		else{
-			var getUrl = 'groups/template?levelId='+levelid+'&parentGroupId='+parentGroupId;
+			var getUrl = 'groups/template?parentGroupId='+parentGroupId;
 		}
 
 		var postUrl = 'groups';
 		var templateSelector = "#groupFormTemplate";
 		var width = 900; 
 		var height = 500;
-		var title = 'dialog.title.add.grouping.at.level.' + levelid ;
+		var title = 'dialog.title.add.group';
 		
 		if(!(parentGroupId === undefined)){
 			var extraParam = '{"action":"disable"'  + ' , "parentGroupId":"'+ parentGroupId +'"}';
 		}
 
 		popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addGroupSuccessFunction , extraParam);
+		
+	    e.preventDefault();
+}
+
+//Add new group
+function addCenter() {
+	
+		var addCenterSuccessFunction = function(data, textStatus, jqXHR) {
+			$('#dialog-form').dialog("close");
+			showCenter(data.resourceId);
+		}
+
+		var getUrl = 'centers/template';
+		var postUrl = 'centers';
+		var templateSelector = "#centerFormTemplate";
+		var width = 900; 
+		var height = 500;
+		var title = 'dialog.title.create.center'  ;
+		
+		popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addCenterSuccessFunction);
 		
 	    e.preventDefault();
 }
@@ -1565,18 +1591,18 @@ function addClient(officeId, parentGroupId){
 }
 
 
-//set scope for group search
-function applyGroupSearchFilter(officeHierarchy) {
+//set scope for center search
+function applyCenterSearchFilter(officeHierarchy) {
 	//re-render group drop down data
 	$('#officeId').val(officeHierarchy);
-	var groupSearchSuccessFunction =  function(data) {
-		var groupSearchObject = new Object();
-	    groupSearchObject.crudRows = data;
-		var tableHtml = $("#allGroupsListTemplate").render(groupSearchObject);
-		$("#groupsInScopeDiv").html(tableHtml);
+	var centerSearchSuccessFunction =  function(data) {
+		var centerSearchObject = new Object();
+	    centerSearchObject.crudRows = data;
+		var tableHtml = $("#allCentersListTemplate").render(centerSearchObject);
+		$("#centersInScopeDiv").html(tableHtml);
 	};
 	var sqlSearchValue = "o.hierarchy like '"+ officeHierarchy +"%'";
-	executeAjaxRequest("groups?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", groupSearchSuccessFunction, formErrorFunction);
+	executeAjaxRequest("centers?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", centerSearchSuccessFunction, formErrorFunction);
 }
 
 //loanId, product, loanAccountNo is passed to open loan account in client details
@@ -1839,269 +1865,6 @@ function showILClient(clientId) {
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
 }
 
-
-
-function showClientInGroups(clientId , name){
-
-			var title =name + "-" + clientId;		
-
-			var clientindex = $('#newtabs a[href="#clientdetailstab"]').parent().index(); 
-
-
-    		if(clientindex == -1){
-				$newtabs.tabs( "add", "#clientdetailstab", title);
-			}
-			else{
-
-				$('#newtabs').tabs('select', clientindex);
-				$('#newtabs ul:first li:eq('+ clientindex +') a span').text(title);
-			}
-
-
-
-			var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
-
-			var htmlVar = '<div id="groupclient"><div  id="clientmaintab"></div>'
-			htmlVar += '<div id="groupnewtabs">	<ul><li><a href="unknown.html"'; 
-			htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
-			htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
-			htmlVar += '<li><a href="nothing" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
-			htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div></div></div></div>';
-		    currentTab.html(htmlVar);
-
-		    	var clientUrl = 'clients/' + clientId
-
-	//populate main content
-	var crudObject = new Object();
-	var tableHtml = $("#clientImageAndActionsTemplate").render(crudObject);
-	$("#clientmaintab").html(tableHtml);
-	
-	$groupnewtabs = $("#groupnewtabs").tabs({
-	    	select: function(event, tab) {
-				//alert("client tab selected: " + tab.index);
-				if (tab.index == 0)
-				{
-					if (clientDirty == true)
-					{
-						refreshLoanSummaryInfo(clientUrl);
-						refreshNoteWidget(clientUrl, 'clienttabrightpane');
-
-						clientDirty = false;
-					}
-				}
-				
-				else if (tab.index == 1)
-				{
-					refreshClientIdentifiers(clientUrl);
-				}
-				else if (tab.index == 2){
-					refreshClientDocuments(clientUrl);
-				}
-
-	    		},
-		"add": function( event, ui ) {
-				$groupnewtabs.tabs('select', '#' + ui.panel.id);
-			}
-	});
-	
-	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
-		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-	};
-	        
-	//initialize client image related buttons
-	var imageFetchSuccessFunction = function(data, textStatus, jqXHR) {
-		//showILClient(clientId);
-		$("#customerImage").attr("src",data);
-	};
-
-	var successFunction = function(data, status, xhr) {
-					//do we fetch image data?
-					if(data.imagePresent == true){
-						executeAjaxRequestForImageDownload('clients/' + clientId + '/images', 'GET', imageFetchSuccessFunction, errorFunction);	
-					}
-	        		currentClientId = clientId;
-	        		clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
-	        		var currentTabIndex = $groupnewtabs.tabs('option', 'selected');
-	            	var currentTabAnchor = $groupnewtabs.data('tabs').anchors[currentTabIndex];
-	            
-	        		var tableHtml = $("#clientDataTabTemplate").render(data);
-					$("#clienttab").html(tableHtml);
-					$("#customerName").html(data.displayName);
-
-					$.each(data.parentGroups , function(i, obj) {
-  						$("#clientparentGroups").append('<li><a href="#" onclick="showILGroup('+ obj.id +');">'+ obj.name +'</a></li>');
-					});
-
-					$("#customerOfficeName").html(data.officeName);
-					
-					// retrieve accounts summary info
-					refreshLoanSummaryInfo(clientUrl);
-					
-					// bind click listeners to buttons.
-					$('.deleteclientbtn').button({icons: {
-               			 primary: "ui-icon-trash"}
-                	}).click(function(e) {
-						var url = 'clients/' + clientId;
-						var width = 400; 
-						var height = 225;
-												
-						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
-						e.preventDefault();
-					});
-					$('button.deleteclientbtn span').text(doI18N('dialog.button.delete.client'));
-					
-					$('.editclientbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
-						var getUrl = 'clients/' + clientId + '?template=true';
-						var putUrl = 'clients/' + clientId;
-						var templateSelector = "#editClientFormTemplate";
-						var width = 600; 
-						var height = 400;
-						
-						var saveSuccessFunction = function(data, textStatus, jqXHR) {
-						  	$("#dialog-form").dialog("close");
-						  	showILClient(clientId);
-						}
-						
-						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client", templateSelector, width, height,  saveSuccessFunction);
-					    e.preventDefault();
-					});
-					$('button.editclientbtn span').text(doI18N('dialog.button.edit.client'));
-					
-					$('.newindividualloanbtn').button({icons: {
-               			 primary: "ui-icon-document"}
-                	}).click(function(e) {
-                		launchLoanApplicationDialog(clientId);
-					    e.preventDefault();
-					});
-					$('button.newindividualloanbtn span').text(doI18N('dialog.button.new.loan.application'));
-					
-					$('.addnotebtn').button({icons: {
-               			 primary: "ui-icon-comment"}
-                	}).click(function(e) {
-						var postUrl = 'clients/' + clientId + '/notes';
-						var templateSelector = "#noteFormTemplate";
-						var width = 600; 
-						var height = 400;
-						
-						var saveSuccessFunction = function(data, textStatus, jqXHR) {
-						  	$("#dialog-form").dialog("close");
-						  	refreshNoteWidget('clients/' + clientId, 'clienttabrightpane');
-						}
-						
-						popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
-					    e.preventDefault();
-					});
-					$('button.addnotebtn span').text(doI18N('dialog.button.add.note'));
-
-					refreshNoteWidget(clientUrl, 'clienttabrightpane');
-
-					custom.showRelatedDataTableInfo($groupnewtabs, "m_client", clientId); 
-					
-					$('#captureClientImage').button(
-						{icons: {
-	                	primary: "ui-icon-camera"},
-	                	text: false
-	            	}).click(function(e) {
-	            		var imageUploadSuccessFunction = function(data, textStatus, jqXHR) {
-	            			$("#dialog-form").dialog("close");
-							$("#customerImage").attr("src",imageCanvas.toDataURL("image/jpeg"));
-						};
-						var templateSelector = "#clientImageWebcamFormTemplate";
-						var width = 775; 
-						var height = 400;
-	            		popupDialogWithFormView("", 'clients/' + clientId + '/images', 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  imageUploadSuccessFunction);
-	            		var pos = 0; 
-	            		var ctx = null; 
-	            		var image = [];
-	            		$('#imageCanvas').html('');
-						var imageCanvas = $('#imageCanvas')[0];
-     	            	ctx = imageCanvas.getContext("2d");
-     	            	image = ctx.getImageData(0, 0, 320, 240);
-     	            	
-						saveCB = function(data) {
-							var col = data.split(";");
-							var img = image;
-							for(var i = 0; i < 320; i++) {
-								var tmp = parseInt(col[i]);
-								img.data[pos + 0] = (tmp >> 16) & 0xff;
-								img.data[pos + 1] = (tmp >> 8) & 0xff;
-								img.data[pos + 2] = tmp & 0xff;
-								img.data[pos + 3] = 0xff;
-								pos+= 4;
-							}
-				
-							if (pos >= 4 * 320 * 240) {
-								ctx.putImageData(img, 0, 0);
-								pos = 0;
-							}
-						};
-						
-						$("#webcam").webcam({
-							width: 320,
-							height: 240,
-							mode: "callback",
-							swffile: "jscam_canvas_only.swf",
-							onTick: function() {},
-							onSave: saveCB,
-							onCapture: function() {
-								webcam.save();
-							},
-							quality: 50,
-							debug: function() {},
-							onLoad: function() {}
-						});
-						
-						$('#captureImage').button({icons: {
-		                	primary: "ui-icon-zoomin"},
-		            	}).click(function(e) {
-		            		//reset position
-		            		webcam.capture();
-		            		e.preventDefault();
-		            	});
-						e.preventDefault();
-					});
-				
-					$('#editClientImage').button(
-						{icons: {
-	                	primary: "ui-icon-zoomin"},
-	                	text: false
-	            	}).click(function(e) {
-						var getUrl = '';
-						var putUrl = 'clients/' + clientId + '/images';
-						var templateSelector = "#clientImageUploadFormTemplate";
-						var width = 600; 
-						var height = 250;
-						
-						var saveSuccessFunction = function(data, textStatus, jqXHR) {
-						  $("#dialog-form").dialog("close");
-						  executeAjaxRequestForImageDownload('clients/' + clientId + '/images', 'GET', imageFetchSuccessFunction, errorFunction);
-						};
-						
-						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunction);
-					    e.preventDefault();
-					});
-					//delete client image
-					$('#deleteClientImage').button({icons: {
-	                	primary: "ui-icon-trash"},
-	                	text: false
-	            	}).click(function(e) {
-					var url = 'clients/' + clientId + '/images';
-					var width = 400; 
-					var height = 225;
-					var saveSuccessFunction = function(data, textStatus, jqXHR) {
-							$("#dialog-form").dialog("close");
-						  	$("#customerImage").attr("src","resources/img/client-image-placeholder.png");
-					};
-											
-					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction);
-					
-					e.preventDefault();
-					});
-	        };
-	    
-		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
-}
-
 function refreshClientIdentifiers(clientUrl) {
 		var successFunction =  function(data, textStatus, jqXHR) {
 			var crudObject = new Object();
@@ -2327,10 +2090,24 @@ function showILGroup(groupId){
 		var currentTabIndex = $newtabs.tabs('option', 'selected');
     	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
 		var tableHtml = $("#groupDataTabTemplate").render(data);
+		var groupDetails = $("#groupDetailsTemplate").render(data);
+		var groupClients = $("#groupClientsTabTemplate").render(data);
+		var groupSummary = $("#groupSummaryTabTemplate").render(data);
+
+
+
+
 		groupDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
 
+		$("#groupdetails").html(groupDetails);
 		$("#grouptab").html(tableHtml);
-		$("#grouptabname").html(data.name);
+		$("#grouptabname").html("General");
+		$("#groupclientstab").html(groupClients);
+		$("#groupclientstabname").html("Clients");
+		$("#groupsummarytab").html(groupSummary);
+		$("#groupsummarytabname").html("Summary");
+
+
 
 		refreshGroupLoanSummaryInfo(groupUrl);
 
@@ -2339,14 +2116,14 @@ function showILGroup(groupId){
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
-			$('.newgrouploanbtn').click(function(e) {
+			$('.newgrouploanbtn').button().click(function(e) {
 			var linkId = this.id;
 			var groupId = linkId.replace("newgrouploanbtn", "");
 			launchGroupLoanApplicationDialog(groupId);
 		    e.preventDefault();
 			});
 
-			$('.deletegroupbtn').click(function(e) {
+			$('.deletegroupbtn').button().click(function(e) {
 			var linkId = this.id;
 			var groupId = linkId.replace("deletegroupbtn", "");
 
@@ -2359,8 +2136,18 @@ function showILGroup(groupId){
 			e.preventDefault();
 			});
 
+			$('.addclientbtn').button().click(function(e){
+			var linkId = this.id;
+			var groupId = linkId.replace("addclientbtn", "");
+
+			var officeId = $('#officeId').val();
+
+				addClient(officeId , groupId);
+				e.preventDefault();
+			});
+
 			// bind click listeners to buttons.
-			$('.editgroupbtn').click(function(e) {
+			$('.editgroupbtn').button().click(function(e) {
 				var linkId = this.id;
 				var groupId = linkId.replace("editgroupbtn", "");
 				
@@ -2383,12 +2170,202 @@ function showILGroup(groupId){
 			    e.preventDefault();
 			});
 
-			$('.newbulkloanbtn').click(function(e) {
+			$('.newbulkloanbtn').button().click(function(e) {
 				addLJGBulkMembersLoans(groupId);
 		    	e.preventDefault();
 			});
 
-			$('.unassignstafftogroup').click(function(e){
+			$('.unassignstafftogroup').button().click(function(e){
+
+						var linkId = this.id;
+						var groupId = linkId.replace("unassignstafftogroup", "");
+						var staffId = $('#staffId').val();
+						var postUrl = 'groups/'+ groupId +'/command/unassign_staff';
+						var getUrl = ""
+						
+						var templateSelector = "#loanUnassignmentFormTemplate";
+						var width = 400; 
+						var height = 225;
+						var jsonbody = '{"staffId":"'+staffId+'"}';
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  			$("#dialog-form").dialog("close");
+				  			showILGroup(groupId);
+						}						
+						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
+						//popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunction)		
+						popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction , jsonbody);
+
+						e.preventDefault();
+			});
+
+			$('.addgroupnotebtn').button({icons: {
+                         primary: "ui-icon-comment"}
+            }).click(function(e) {
+                var linkId = this.id;
+                var groupId = linkId.replace("addgroupnotebtn", "");
+                var postUrl = 'groups/' + groupId + '/notes';
+                var templateSelector = "#noteFormTemplate";
+                var width = 600;
+                var height = 400;
+
+                var saveSuccessFunction = function(data, textStatus, jqXHR) {
+                    $("#dialog-form").dialog("close");
+                    refreshNoteWidget('groups/' + groupId, 'groupnotes');
+                }
+
+                popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
+                e.preventDefault();
+            });
+
+            $('button.addgroupnotebtn span').text(doI18N('dialog.button.add.note'));
+
+		});
+
+			$('.addcalendarbtn').button().click(function(e) {
+				var linkId = this.id;
+                var groupId = linkId.replace("addcalendarbtn", "");
+                addCalendar(groupId, 'groups', 'centerCalendarContent');
+                e.preventDefault();
+			});
+	
+	}
+
+	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
+    	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+        $(anchor.hash).html("error occured while ajax loading.");
+    };
+
+	executeAjaxRequest(groupUrl, 'GET', "", successFunction, errorFunction);
+}
+
+function showCenter(centerId){
+	var centerUrl = "centers/"+centerId;
+	setCenterContent("content");
+
+	$newtabs = $("#newtabs").tabs({
+    	select: function(event, tab) {
+			if (tab.index == 0){
+				if (groupDirty == true){
+					refreshGroupLoanSummaryInfo(centerUrl);
+					groupDirty = false;
+				}
+			}
+		},
+		"add": function( event, ui ) {
+				$newtabs.tabs('select', '#' + ui.panel.id);
+			}
+	});
+
+	var successFunction = function(data, status, xhr) {
+		var currentGroupId = centerId;
+		var currentTabIndex = $newtabs.tabs('option', 'selected');
+    	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+		var tableHtml = $("#centerDataTabTemplate").render(data);
+		var centerDetailsHtml = $("#centerDetailsTemplate").render(data);
+		var centerGroupsHtml = $("#centerGroupsTabTemplate").render(data);
+		var centerSummaryHtml = $("#centerSummaryTabTemplate").render(data);
+
+
+		groupDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
+
+		
+		$("#centerDetails").html(centerDetailsHtml);
+		$("#centertab").html(tableHtml);
+		$("#centertabname").html("General");
+
+		$("#centertabsummaryname").html("Summary");
+		$("#centertabsummary").html(centerSummaryHtml);
+		$("#centertabgroups").html(centerGroupsHtml);
+		$("#centertabgroupsname").html("Groups");
+
+		refreshGroupLoanSummaryInfo(centerUrl);
+
+        refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
+        refreshCalendarWidget(currentGroupId, 'groups', 'centerCalendarContent');
+		//improper use of document.ready, correct way is send these function as call back
+		$(document).ready(function() {
+
+			$('.newcenterloanbtn').button().click(function(e) {
+			var linkId = this.id;
+			var centerId = linkId.replace("newcenterloanbtn", "");
+			launchGroupLoanApplicationDialog(centerId);
+		    e.preventDefault();
+			});
+
+			$('.addcalendarbtn').button().click(function(e) {
+			var linkId = this.id;
+			var centerId = linkId.replace("addcalendarbtn", "");
+			addCalendar(centerId, 'groups', 'centerCalendarContent');
+		    e.preventDefault();
+			});
+
+			$('.addgroupbtn').button().click(function(e) {
+
+				var linkId = this.id;
+				var centerId = linkId.replace("addgroupbtn", "");
+
+
+				var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
+				$('#dialog-form').dialog("close");
+				showILGroup(data.resourceId);
+				}
+
+				var getUrl = 'groups/template?centerId='+centerId;
+				var postUrl = 'groups';
+				var templateSelector = "#groupFormTemplate";
+				var width = 900; 
+				var height = 500;
+				var title = 'dialog.title.add.group';
+				var extraParam = '{"action":"disable"'  + ' , "parentGroupId":"'+ centerId +'"}';
+				popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addGroupSuccessFunction , extraParam);
+				e.preventDefault();
+
+			});
+
+			$('.deletecenterbtn').button().click(function(e) {
+			var linkId = this.id;
+			var groupId = linkId.replace("deletecenterbtn", "");
+
+			var url = 'centers/' + centerId;
+			var width = 400; 
+			var height = 225;
+									
+			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
+			
+			e.preventDefault();
+			});
+
+			// bind click listeners to buttons.
+			$('.editcenterbtn').button().click(function(e) {
+				var linkId = this.id;
+				var groupId = linkId.replace("editcenterbtn", "");
+				
+				var getUrl = 'centers/' + centerId + '?template=true';
+				var putUrl = 'centers/' + groupId;
+				var templateSelector = "#centerFormTemplate";
+				var width = 900; 
+				var height = 400;
+				
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	showILGroup(groupId);
+				}
+				
+				var title = 'dialog.title.edit.grouping.at.level.' + data.groupLevelData.levelId;
+
+				var extraParam = '{"action":"disable"}';
+
+				popupDialogWithFormView(getUrl, putUrl, 'PUT', title, templateSelector, width, height,  saveSuccessFunction , extraParam);
+			    e.preventDefault();
+			});
+
+			$('.newbulkloanbtn').button().click(function(e) {
+				addLJGBulkMembersLoans(centerId);
+		    	e.preventDefault();
+			});
+
+			$('.unassignstafftogroup').button().click(function(e){
 
 						var linkId = this.id;
 						var groupId = linkId.replace("unassignstafftogroup", "");
@@ -2442,10 +2419,10 @@ function showILGroup(groupId){
         $(anchor.hash).html("error occured while ajax loading.");
     };
 
-	executeAjaxRequest(groupUrl, 'GET', "", successFunction, errorFunction);
+	executeAjaxRequest(centerUrl, 'GET', "", successFunction, errorFunction);
 }
 
-	function addLJGBulkMembersLoans(groupId){
+function addLJGBulkMembersLoans(groupId){
 		setAddBulkLoanContent("content");
 
 		var addMemberLoanApplicationSuccess = function(data, textStatus, jqXHR) {
@@ -4849,14 +4826,14 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 					// Scenario 3: For editing group extraParam will be undefined
 
 					if(!(extraParam === undefined)){
-						var groupId = jQuery.parseJSON(extraParam).parentGroupId;
+						var centerId = jQuery.parseJSON(extraParam).parentGroupId;
 						var action = jQuery.parseJSON(extraParam).action;
 						$('#officeId').prop('disabled', true);
-						if(!(groupId === undefined) ){
-							$("#parentId option[value='"+ groupId +"']").attr("selected", "selected");
+						if(!(centerId === undefined) ){
+							$("#centerId option[value='"+ centerId +"']").attr("selected", "selected");
 							if(action == 'disable'){
-								$('#parentId').prop('disabled', true);
-								$('<input>').attr({type: 'hidden',id: 'parentId',name: 'parentId',value:groupId}).appendTo('#entityform');
+								$('#centerId').prop('disabled', true);
+								$('<input>').attr({type: 'hidden',id: 'centerId',name: 'centerId',value:centerId}).appendTo('#entityform');
 
 							}
 						}	
@@ -5104,6 +5081,21 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				executeAjaxRequest("groups/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			} else {
 				executeAjaxRequest("groups/template?officeId=" + selectedOfficeId +"&levelId="+data['groupLevelData'].levelId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
+			}
+		})
+	}
+
+	if (templateSelector === "#centerFormTemplate"){
+		$("#dialog-form #officeId").change(function(e){
+			var selectedOfficeId = $(this).val();
+			var officeIdChangeSuccess = function(centerData, textStatus, jqXHR){
+				centerData['officeId'] = selectedOfficeId;
+				repopulateOpenPopupDialogWithFormViewData(centerData, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
+			}
+			if (data['id']){
+				executeAjaxRequest("centers/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
+			} else {
+				executeAjaxRequest("centers/template?officeId=" + selectedOfficeId , "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			}
 		})
 	}
