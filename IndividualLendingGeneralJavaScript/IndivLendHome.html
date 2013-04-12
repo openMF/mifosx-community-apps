@@ -5381,6 +5381,25 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="transactionLoanWaiveInterestFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+    <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+    <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+    <label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+    <input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title="" value="{{=$ctx.globalDate(date)}}"/>
+
+    <label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
+    <input id="transactionAmount" name="transactionAmount" class="text ui-widget-content ui-corner-all" title="" value="{{=$ctx.monetaryValue(currency, amount)}}" />
+
+    <label for="note">{{=$ctx.doI18N("label.note")}}</label>
+    <textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
+   
+</form>
+</script>
+
 <script id="transactionLoanFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -5389,13 +5408,66 @@ $(document).ready(function() {
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
-	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title=""d value="{{=$ctx.globalDate(date)}}"/>
+	<input id="transactionDate" name="transactionDate" class="text ui-widget-content ui-corner-all datepickerfield" title="" value="{{=$ctx.globalDate(date)}}"/>
 
 	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
 	<input id="transactionAmount" name="transactionAmount" class="text ui-widget-content ui-corner-all" title="" value="{{=$ctx.monetaryValue(currency, amount)}}" />
 
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
+    <label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
+    <select id="paymentTypeId" name="paymentTypeId" title="" >
+        {{#if paymentDetailData}}
+            {{#each paymentTypeOptions}}
+                {{#if $parent.parent.data.paymentDetailData.paymentType.id === id)}}
+                    <option value="{{=id}}" selected="true">{{=$ctx.doI18N(code)}}</option>
+                {{#else}}
+                     <option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+                {{/if}}
+            {{/each}}
+        {{#else}}
+            {{#each paymentTypeOptions}}
+                <option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+            {{/each}}
+        {{/if}}
+    </select>
+
+    <label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
+    {{#if paymentDetailData}}
+        <input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail" value="{{=paymentDetailData.accountNumber}}"/> 
+    {{#else}}
+        <input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail"/> 
+    {{/if}}
+
+    <label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
+    {{#if paymentDetailData}}
+        <input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail" value="{{=paymentDetailData.checkNumber}}"/> 
+    {{#else}}
+        <input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail"/> 
+    {{/if}}
+
+    <label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
+    {{#if paymentDetailData}}
+        <input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail" value="{{=paymentDetailData.routingCode}}"/> 
+    {{#else}}
+        <input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail"/> 
+    {{/if}}
+
+    <label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
+    {{#if paymentDetailData}}
+        <input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail" value="{{=paymentDetailData.receiptNumber}}"/>
+    {{#else}}
+        <input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail"/> 
+    {{/if}} 
+
+    <label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
+    {{#if paymentDetailData}}
+        <input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail" value="{{=paymentDetailData.bankNumber}}"/>
+    {{#else}}
+        <input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail"/> 
+    {{/if}} 
+
+    <label for="note">{{=$ctx.doI18N("label.note")}}</label>
+    <textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
+   
 </form>
 </script>
 
