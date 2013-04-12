@@ -6878,16 +6878,21 @@ function loadAssociatedGroups(officeId){
 }
 
 function loadCollectionSheet(groupId){
-    var date = $.datepicker.formatDate('yymmdd', $('#transactionDate').datepicker( "getDate" ));
+	removeErrors('#formerrors');
+    var date = $.datepicker.formatDate('yymmdd', $('#dueDate').datepicker( "getDate" ));
     var getUrl = 'groups/' + groupId + '/collectionsheet?dueDate=' + date;
     var postUrl = 'groups/' + groupId + '/collectionsheet';
     $("#collectionSheetContent").html("");
     var successFunction = function(data){
         var collections = new Object();
-        collections.crudRows = data;
-        var tableHtml = $("#collectionSheetTemplate").render(collections);
-        $("#collectionSheetContent").html(tableHtml);
-                
+        if (data.groups.length <= 0) {
+        	var msg = '<p><b><i> No repayments and disbursal are available for selected Group and meeting date</i></b></p>';
+        	$("#collectionSheetContent").html(msg);
+        }else{
+	        collections.crudRows = data;
+	        var tableHtml = $("#collectionSheetTemplate").render(collections);
+	        $("#collectionSheetContent").html(tableHtml);
+        }  
         var sumTotalDue = function(data){
             var groups = data.groups;
             var loanProducts = data.loanProducts;
@@ -6910,7 +6915,6 @@ function loadCollectionSheet(groupId){
                        groupTotalDisbarsal += tmpAmount;
                        sumTotalDisbarsal += tmpAmount;
                     });
-                    
                     $('#grouptotaldisbursal_' + group.groupId + '_' + loanProd.id).val(groupTotalDisbarsal);
                }); 
                 $('#sumtotaldue_' + loanProd.id).val(sumTotalDue);
@@ -6930,8 +6934,8 @@ function loadCollectionSheet(groupId){
             serializedArray = {};
             serializedArray["locale"] = $('#locale').val();
             serializedArray["dateFormat"] = $('#dateFormat').val();
-            serializedArray["transactionDate"] = $('#transactionDate').val();
-            serializedArray["actualDisbursementDate"] = $('#transactionDate').val();
+            serializedArray["transactionDate"] = $('#dueDate').val();
+            serializedArray["actualDisbursementDate"] = $('#dueDate').val();
             serializedArray["bulkRepaymentTransactions"] = new Array();
             $.each($('.grouptotaldue'), function(i){
                 var transactionAmount = $(this).val();

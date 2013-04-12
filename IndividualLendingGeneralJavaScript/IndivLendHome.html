@@ -7265,6 +7265,8 @@ $(document).ready(function() {
         <div style="width:100%">
             <h1 align="center">{{=$ctx.doI18N("tab.collection.sheet.title")}}</h1>
         </div>
+    <form id="entityform">
+        <div id="formerrors"></div>
         <div style="margin-top: 5px;">
         <table>
             <tr>
@@ -7289,18 +7291,20 @@ $(document).ready(function() {
             </tr>  
             <tr>
                 <td>
-                    <label for="transactiondate">{{=$ctx.doI18N("label.collection.sheet.date.of.transaction")}}</label>
+                    <label for="dueDate">{{=$ctx.doI18N("label.collection.sheet.date.of.transaction")}}</label>
                 </td>
                 <td>
-                    <input id="transactionDate" name="transactionDate" title="" type="text" class="datepickerfieldnoconstraint" value="" />
+                    <input id="dueDate" name="dueDate" title="" type="text" class="datepickerfieldnoconstraint" value="" />
                 </td>
             </tr>    
         </table>
         </div>
+    </form>
        <button id="continuebtn" >{{=$ctx.doI18N("button.continue")}}</button> 
         <br>
         <hr>
         <div id="collectionSheetContent"> </div>
+
 </script>
 
 <script id="collectionSheetTemplate" type="text/x-jquery-tmpl">
@@ -7339,7 +7343,6 @@ $(document).ready(function() {
                             {{/if}}
 
                             {{=name}}
-                            {{=id}}
 
                             </th>
                         {{/each}}
@@ -7361,46 +7364,30 @@ $(document).ready(function() {
                                     {{=clientName}}
                                 </td>
                                 {{#each $parent.parent.parent.parent.data.loanProducts}}
-                                    {{#each $parent.parent.data.loans}}
-                                        {{#if productId === $parent.parent.data.id}}
-                                            {{#if $ctx.numberGreaterThanZero($parent.data.totalDue)}}
-                                                <td>
+                                    <td>
+                                        {{#each $parent.parent.data.loans}}
+                                            {{#if productId === $parent.parent.data.id}}
+                                                {{#if $ctx.numberGreaterThanZero($parent.data.totalDue)}}
                                                     <input id="totaldue_{{=$parent.parent.data.loanId}}" class="grouptotaldue sumtotaldue grouptotaldue_{{=$parent.parent.parent.parent.parent.parent.parent.parent.data.groupId}}_{{=$parent.parent.parent.parent.data.id}} sumtotaldue_{{=$parent.parent.parent.parent.data.id}}" title="" type="text" value="{{=$ctx.decimal($parent.parent.data.totalDue, 2)}}" style="width: 75px;" />
                                                     <input id="principalCurrencyCode" name="principalCurrencyCode" title="" type="text" value="{{=$parent.parent.data.currency.displaySymbol}}" style="width: 30px;" disabled="disabled" />
-                                                </td>
-                                            {{#else}}
-                                                <td>
-                                                &nbsp;
-                                                </td>
-                                                
+                                                {{/if}}
                                             {{/if}}
-                                        {{#else}}
-                                            <td>
-                                                &nbsp;
-                                            </td>
-                                        {{/if}}
-                                    {{/each}}
+                                        {{/each}}
+                                    </td>
                                 {{/each}}
 
                                 {{#each $parent.parent.parent.parent.data.loanProducts}}
-                                    {{#each $parent.parent.data.loans}}
-                                        {{#if productId === $parent.parent.data.id}}
-                                            {{#if $ctx.numberGreaterThanZero($parent.data.disbursementAmount)}}
-                                                <td>
-                                                    <input id="disbursement_{{=$parent.parent.data.loanId}}" class="grouptotaldisbursement sumdisbursement grouptotaldisbursement_{{=$parent.parent.parent.parent.parent.parent.parent.parent.data.groupId}}_{{=$parent.parent.parent.parent.data.id}} sumdisbursement_{{=$parent.parent.parent.parent.data.id}}" title="" type="text" value="{{=$ctx.decimal($parent.parent.data.disbursementAmount, 2)}}" style="width: 75px;" />
+                                    <td>
+                                        {{#each $parent.parent.data.loans}}
+                                            {{#if productId === $parent.parent.data.id}}
+                                                {{#if $ctx.numberGreaterThanZero($parent.data.disbursementAmount)}}
+                                                    
+                                                    <input id="disbursement_{{=$parent.parent.data.loanId}}" class="grouptotaldisbursal sumdisbursement grouptotaldisbursal_{{=$parent.parent.parent.parent.parent.parent.parent.parent.data.groupId}}_{{=$parent.parent.parent.parent.data.id}} sumdisbursement_{{=$parent.parent.parent.parent.data.id}}" title="" type="text" value="{{=$ctx.decimal($parent.parent.data.disbursementAmount, 2)}}" style="width: 75px;" />
                                                     <input id="disbursementCurrencyCode" name="disbursementCurrencyCode" title="" type="text" value="{{=$parent.parent.data.currency.displaySymbol}}" style="width: 30px;" disabled="disabled" />
-                                                </td>
-                                            {{#else}}
-                                                <td>
-                                                    &nbsp;
-                                                </td>
-                                            {{/if}}    
-                                        {{#else}}
-                                            <td>
-                                                &nbsp;
-                                            </td>
-                                        {{/if}}
-                                    {{/each}}
+                                                {{/if}}    
+                                            {{/if}}
+                                        {{/each}}
+                                    </td>
                                 {{/each}}
                             </tr>
                         {{/each}}
@@ -7464,7 +7451,7 @@ $(document).ready(function() {
        <br> 
         <div style="text-align:right;">
             <button id="savebtn" >{{=$ctx.doI18N("button.save")}}</button>
-            <button id="cbtn" >{{=$ctx.doI18N("button.save")}}</button>
+            <button id="cancelbtn" >{{=$ctx.doI18N("button.cancel")}}</button>
         </div>
     </form>
 </script>
