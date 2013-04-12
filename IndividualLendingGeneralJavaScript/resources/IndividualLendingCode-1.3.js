@@ -3854,7 +3854,7 @@ function loadILLoan(loanId) {
 					
 					var templateSelector = "#transactionLoanFormTemplate";
 					var width = 500; 
-					var height = 350;
+					var height = 450;
 					var defaultOffset = offsetToApprovalDate;
 					eval(genSaveSuccessFunctionReloadLoan(loanId));
 		
@@ -3870,7 +3870,7 @@ function loadILLoan(loanId) {
 						var getUrl = 'loans/' + loanId + '/transactions/template?command=waiveinterest';
 						var postUrl = 'loans/' + loanId + '/transactions?command=waiveinterest';
 						
-						var templateSelector = "#transactionLoanFormTemplate";
+						var templateSelector = "#transactionLoanWaiveInterestFormTemplate";
 						var width = 500; 
 						var height = 350;
 						var defaultOffset = offsetToApprovalDate;
@@ -3950,11 +3950,11 @@ function loadILLoan(loanId) {
 					var ids = loanAndRepaymentId.split("_");
 					var loanId = ids[0];
 					var transactionId = ids[1];
-					var getAndPostUrl = 'loans/' + loanId + '/transactions/' + transactionId;
+					var getAndPostUrl = 'loans/' + loanId + '/transactions/' + transactionId + '/?template=true';
 					
 					var templateSelector = "#transactionLoanFormTemplate";
 					var width = 500; 
-					var height = 350;
+					var height = 450;
 					var defaultOffset = offsetToApprovalDate;
 
 					eval(genSaveSuccessFunctionReloadLoan(loanId));						
@@ -4192,6 +4192,49 @@ function loadILLoan(loanId) {
 		
 }
 
+function loadTransactionForm(){
+	//initially hide all payment details
+	$('.paymentDetail').hide();
+
+	var showEFTPaymentDetails = function() {
+	    $('.accountDetail').show();
+	  	$('.routingCodeDetail').show();
+	};
+
+	var showReceiptPaymentDetails = function() {
+	   $('.receiptDetail').show();
+	   $('.bankDetail').show();
+	};
+
+	var showCheckPaymentDetails = function() {
+		$('.accountDetail').show();
+	  	$('.checkDetail').show();
+	  	$('.routingCodeDetail').show();
+	};
+
+	var showDetailFieldsBasedOnPaymentType = function() {
+		var selectedPaymentTypeId = $('#paymentTypeId').val();
+		$('.paymentDetail').hide();
+		//behavior for checks
+	  	if( selectedPaymentTypeId == 2){
+	  		showCheckPaymentDetails();
+	  	}//behavior for receipts
+	  	else if (selectedPaymentTypeId == 3){
+	  		showReceiptPaymentDetails();
+	  	}//behavior for EFT
+	  	else if (selectedPaymentTypeId == 4){
+  			showEFTPaymentDetails();
+	  	}
+	}
+
+	showDetailFieldsBasedOnPaymentType();
+
+	//on change function for payment type Id
+	$('#paymentTypeId').change(function(e) {
+	   showDetailFieldsBasedOnPaymentType();
+	});
+}
+
 function loadGuarantorForm(){
 	//initially hide external guarantor div
 	$('#externalGuarantorDiv').hide();
@@ -4233,7 +4276,6 @@ function loadGuarantorForm(){
         }
     });
 }
-
 
 function refreshLoanDocuments(loanId) {
 		var successFunction =  function(data, textStatus, jqXHR) {
@@ -5102,6 +5144,10 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 
 	if (templateSelector === "#guarantorFormTemplate"){
     	loadGuarantorForm();	
+	}
+
+	if (templateSelector === "#transactionLoanFormTemplate"){
+    	loadTransactionForm();
 	}
 
 	if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
