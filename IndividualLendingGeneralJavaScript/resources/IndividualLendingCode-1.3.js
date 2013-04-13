@@ -2586,7 +2586,7 @@ function addLJGBulkMembersLoans(groupId){
 							var postUrl = 'loans/' + loanId + '?command=disburse';
 							var templateSelector = "#loanDisbursementTemplate";
 							var width = 500; 
-							var height = 350;
+							var height = 450;
 							var defaultOffset = offsetToApprovalDate;
 							popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.disburse.loan', templateSelector, width, height, reloadGroupLoanSummarySaveSuccessFunction(groupUrl),  offsetToSubmittedDate, defaultOffset, maxOffset)
 						    e.preventDefault();
@@ -3649,7 +3649,7 @@ function tabExists(tabId){
 }
 
 
-function loadILLoan(loanId) {
+function loadILLoan(loanId) {   
 	
 	var loanUrl = 'loans/' + loanId + "?associations=all";
 
@@ -3826,13 +3826,15 @@ function loadILLoan(loanId) {
 				$('.disburseloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("disbursebtn", "");
+					var getUrl = 'loans/' + loanId + '/transactions/template?command=disburse';
 					var postUrl = 'loans/' + loanId + '?command=disburse';
 					var templateSelector = "#loanDisbursementTemplate";
 					var width = 500; 
-					var height = 350;
+					var height = 400;
 					var defaultOffset = offsetToExpectedDisbursementDate;
 					eval(genSaveSuccessFunctionReloadLoan(loanId));
-					popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.disburse.loan', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
+			
+					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.repayment", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
 				$('button.disburseloan span').text(doI18N('button.loan.disburse'));
@@ -5152,6 +5154,10 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	}
 
 	if (templateSelector === "#transactionLoanFormTemplate"){
+    	loadTransactionForm();
+	}
+
+	if (templateSelector === "#loanDisbursementTemplate"){
     	loadTransactionForm();
 	}
 
