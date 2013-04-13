@@ -2690,6 +2690,9 @@ function addLJGBulkMembersLoans(groupId){
             serializedArray["calendarId"] = $("#calendarId").val();
         }
 
+        //interestRateFrequencyType is disabled, extract data and send
+        serializedArray["interestRateFrequencyType"] = $("#interestRateFrequencyType").val();
+
 		var newFormData = JSON.stringify(serializedArray);
 
 		var successFunction =  function(data, textStatus, jqXHR) {
@@ -2731,6 +2734,8 @@ function addLJGBulkMembersLoans(groupId){
             serializedArray["calendarId"] = $("#calendarId").val();
         }
 
+        //interestRateFrequencyType is disabled, extract data and send
+        serializedArray["interestRateFrequencyType"] = $("#interestRateFrequencyType").val(); 
 		var newFormData = JSON.stringify(serializedArray);
 		
 		var successFunction =  function(data, textStatus, jqXHR) {
