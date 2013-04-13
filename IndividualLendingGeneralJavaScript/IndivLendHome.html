@@ -5367,6 +5367,29 @@ $(document).ready(function() {
 	<label for="actualDisbursementDate">{{=$ctx.doI18N("label.on")}}</label>
 	<input id="actualDisbursementDate" name="actualDisbursementDate" title="" class="datepickerfield" value="" />
 
+    <label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
+    <select id="paymentTypeId" name="paymentTypeId" title="" >
+        {{#each paymentTypeOptions}}
+                <option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+        {{/each}}
+    </select>
+
+    <label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
+    <input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail"/> 
+
+    <label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
+    <input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail"/> 
+
+    <label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
+    <input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail"/> 
+    
+    <label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
+    <input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail"/> 
+    
+
+    <label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
+    <input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail"/> 
+    
 	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
 	<textarea rows="3" cols="53" id="note" name="note"></textarea>
 </form>
