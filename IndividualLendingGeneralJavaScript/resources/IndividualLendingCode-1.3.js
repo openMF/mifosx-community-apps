@@ -190,15 +190,26 @@ function showMainContainer(containerDivName, username) {
 	if (jQuery.MifosXUI.showMenu("ClientsMenu"))
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
 	
-	if (jQuery.MifosXUI.showMenu("CollectionSheetMenu"))
-		htmlVar += '  <li><a href="unknown.html" onclick="showCollectionSheet();return false;">' + doI18N("link.topnav.collection.sheet") + '</a></li>';
+	if (jQuery.MifosXUI.showMenu("GroupsMenu")) {
+		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.groupings") + '</a>';
+		htmlVar += '		<ul>';
+		
+		if (jQuery.MifosXUI.showMenu("CollectionSheetMenu")) {
+			htmlVar += '  <li><a href="unknown.html" onclick="showCollectionSheet();return false;">' + doI18N("link.topnav.collection.sheet") + '</a></li>';
+		}
+		
+		htmlVar += '	<li><a href="unknown.html" onclick="showCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
+		htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
+		htmlVar += '	<li><a href="unknown.html" onclick="showCommunalBankListing();return false;">' + doI18N("link.topnav.communalbanks") + '</a></li>';
+		
+		htmlVar += '		</ul>';
+		htmlVar += '	</li>';
+	}
 	
-	if (jQuery.MifosXUI.showMenu("CheckerMenu") == true)
+	if (jQuery.MifosXUI.showMenu("CheckerMenu")) {
 		htmlVar += '	<li><a href="unknown.html" onclick="auditSearch(' + "'makerchecker'" + ');return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
-
-	if (jQuery.MifosXUI.showMenu("GroupsMenu") == true)
-		htmlVar += '	<li><a href="unknown.html" onclick="showILGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
-
+	}
+	
 	if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true || jQuery.MifosXUI.showMenu("OrgAdminMenu") == true || jQuery.MifosXUI.showMenu("SysAdminMenu") == true) {
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.administration") + '</a>';
 		htmlVar += '		<ul>';
@@ -354,8 +365,26 @@ function setClientListingContent(divName) {
 	$("#" + divName).html(htmlVar);
 }
 
-function setGroupListingContent(divName){
-	var htmlVar = '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.group.manage") + '</a></li></ul><div id="searchtab"></div></div>';
+function setCenterListingContent(divName) {
+	var htmlVar = '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.center.manage") + '</a></li></ul><div id="searchtab"></div></div>';
+
+	$("#" + divName).html(htmlVar);
+}
+
+function setGroupListingContent(divName) {
+	var htmlVar = "";
+	
+	if (jQuery.MifosXUI.showTask("ADDCLIENT")) {
+		htmlVar = '<button id="addstandardgroup" style="clear: both;">' + doI18N("link.add.new.group") + '</button>';
+	}
+		
+	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.group.manage") + '</a></li></ul><div id="searchtab"></div></div>';
+
+	$("#" + divName).html(htmlVar);
+}
+
+function setCommunalBankListingContent(divName){
+	var htmlVar = '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.communalbank.manage") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
 }
@@ -1444,8 +1473,8 @@ function applyClientSearchFilter(officeHierarchy) {
 	executeAjaxRequest("clients?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", clientSearchSuccessFunction, formErrorFunction);
 }
 
-//HOME list groups functionality
-function showILGroupListing(){
+//HOME list centers functionality
+function showCenterListing(){
 
 	if (jQuery.MifosXUI.showTask("groupSearch") == false)
 	{
@@ -1453,7 +1482,7 @@ function showILGroupListing(){
 		return;
 	}
 
-	setGroupListingContent("content");
+	setCenterListingContent("content");
 
 	$("#tabs").tabs({
 	    select: function(event, ui) {
@@ -1461,9 +1490,9 @@ function showILGroupListing(){
 	    load: function(event, ui) {
 	    },
 	    show: function(event, ui) {
-			var initGroupSearch =  function() {
+			var initSearch =  function() {
 				//render page markup
-				var tableHtml = $("#groupManageTabTemplate").render();
+				var tableHtml = $("#centerManageTabTemplate").render();
 				$("#searchtab").html(tableHtml);
 				
 				//fetch all Offices 
@@ -1515,42 +1544,332 @@ function showILGroupListing(){
 			   	});
 	    	};
 
-	    	initGroupSearch();
+	    	initSearch();
 	    }
 	});
 }
 
-//Add new group
-function addGroup(parentGroupId) {
+//HOME list groups functionality
+function applyGroupSearchFilter(officeHierarchy) {
+	//re-render client drop down data
+	var searchSuccessFunction =  function(data) {
+		var searchObject = new Object();
+		searchObject.crudRows = data;
+		var tableHtml = $("#allGroupsDropdownTemplate").render(searchObject);
+		$("#groupsInScopeDiv").html(tableHtml);
+	};
+	var sqlSearchValue = "o.hierarchy like '"+ officeHierarchy +"%'";
+	executeAjaxRequest("groups?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", searchSuccessFunction, formErrorFunction);
+}
+
+
+//generic UI/dialog components 
+function gernericDialog(dialogDiv, dialogTitleCode, width, height, onOpenFunc, onSaveFunc) {
+	var saveButton = doI18N('dialog.button.save');
+	var cancelButton = doI18N('dialog.button.cancel');
+	
+	var buttonsOpts = {};
+	buttonsOpts[saveButton] = onSaveFunc;
+	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+	
+	dialogDiv.dialog({
+  		title: doI18N(dialogTitleCode), 
+  		width: width, 
+  		height: height, 
+  		modal: true,
+  		buttons: buttonsOpts,
+  		close: function() {
+  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+  			$(this).remove();
+		},
+  		open: onOpenFunc
+  	}).dialog('open');
+}
+
+// standard group form (group + clients, no parents)
+function loadGroupForm(container, officeId, templateIdentifier) {
+	
+	var renderOnSuccessFunction = function(data, textStatus, jqXHR) {
+		var formHtml = $(templateIdentifier).render(data);
+		container.html(formHtml);
+		
+		$("#dialog-form #officeId").change(function() {
+			var selectedValue = $(this).find(":selected").val();
+			loadGroupForm(container, selectedValue, templateIdentifier);
+		});
+	};
+	
+	executeAjaxRequest('groups/template?officeId=' + officeId, 'GET', "", renderOnSuccessFunction, formErrorFunction);
+}
+
+function saveGroup(divContainer, groupId) {
+	var serializationOptions = {};
+	serializationOptions["checkboxesAsBools"] = true;
+	
+	$('#notSelectedClients option').each(function(i) {
+		$(this).attr("selected", "selected");
+	});
+	$('#clientMembers option').each(function(i) {
+		$(this).attr("selected", "selected");
+	});
+	
+	var serializedArray = {};
+	serializedArray = $('#entityform').serializeObject(serializationOptions);
+	
+	var newFormData = JSON.stringify(serializedArray);
+	
+	var successFunction =  function(data, textStatus, jqXHR) {
+		divContainer.dialog("close");
+		showGroupListing();
+	};
+	
+	if (groupId) {
+		executeAjaxRequest('groups/' + groupId, "PUT", newFormData, successFunction, formErrorFunction);
+	} else {
+		executeAjaxRequest('groups', "POST", newFormData, successFunction, formErrorFunction);	
+	}
+}
+
+var launchStandardGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+
+	var groupId = data.id;
+	
+	var templateIdentifier = "#standardGroupFormTemplate";
+	if (groupId) {
+		templateIdentifier = "#standardGroupEditFormTemplate";
+	}
+	
+	var openGroupDialogFunc = function (event, ui) {
+		var formHtml = $(templateIdentifier).render(data);
+		$("#dialog-form").html(formHtml);
+		
+		$("#dialog-form #officeId").change(function() {
+			var selectedValue = $(this).find(":selected").val();
+			loadGroupForm(dialogDiv, selectedValue, templateIdentifier);
+		});
+		
+		$('.multiadd').click(function() {  
+			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#clientMembers');  
+		});
+		
+		$('.multiremove').click(function() {  
+			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
+		});
+		
+		$('.datepickerfield').datepicker({constrainInput: true, dateFormat: custom.datePickerDateFormat});
+		
+		$("#entityform textarea").first().focus();
+		$('#entityform input').first().focus();
+	}
+	
+	var saveNewGroupFunc = function() {
+		saveGroup(dialogDiv, groupId);
+	};
+	
+	var dialog = null;
+	if (groupId) {
+		dialog = gernericDialog(dialogDiv, 'dialog.title.edit.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);	
+	} else {
+		dialog = gernericDialog(dialogDiv, 'dialog.title.add.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);
+	}
+};
+
+var launchCenterGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+
+	var groupId = data.id;
+	
+	var templateIdentifier = "#centerGroupFormTemplate";
+	if (groupId) {
+		templateIdentifier = "#centerGroupEditFormTemplate";
+	}
+	
+	var openGroupDialogFunc = function (event, ui) {
+		var formHtml = $(templateIdentifier).render(data);
+		$("#dialog-form").html(formHtml);
+		
+		$("#dialog-form #officeId").change(function() {
+			var selectedValue = $(this).find(":selected").val();
+			loadGroupForm(dialogDiv, selectedValue, templateIdentifier);
+		});
+		
+		$('.multiadd').click(function() {  
+			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#selectedItems');  
+		});
+		
+		$('.multiremove').click(function() {  
+			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedItems');  
+		});
+		
+		$('.datepickerfield').datepicker({constrainInput: true, dateFormat: custom.datePickerDateFormat});
+		
+		$("#entityform textarea").first().focus();
+		$('#entityform input').first().focus();
+	}
+	
+	var saveNewGroupFunc = function() {
+		saveGroup(dialogDiv, groupId);
+	};
+
+	var dialog = null;
+	if (groupId) {
+		dialog = gernericDialog(dialogDiv, 'dialog.title.edit.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);	
+	} else {
+		dialog = gernericDialog(dialogDiv, 'dialog.title.add.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);
+	}
+};
+
+function launchGroupDialog(groupId) {
+	
+	if (groupId) {
+		executeAjaxRequest('groups/' + groupId + '?template=true', 'GET', "", launchStandardGroupDialogOnSuccessFunction, formErrorFunction);
+	} else {
+		executeAjaxRequest('groups/template', 'GET', "", launchStandardGroupDialogOnSuccessFunction, formErrorFunction);		
+	}
+}
+
+function launchCenterGroupDialog(groupId) {
+	
+	if (groupId) {
+		executeAjaxRequest('groups/' + groupId + '?template=true', 'GET', "", launchCenterGroupDialogOnSuccessFunction, formErrorFunction);
+	} else {
+		executeAjaxRequest('groups/template', 'GET', "", launchCenterGroupDialogOnSuccessFunction, formErrorFunction);		
+	}
+}
+
+function showGroupListing(){
+
+	if (jQuery.MifosXUI.showTask("groupSearch") == false)
+	{
+		alert(doI18N("group.search.not.allowed"));
+		return;
+	}
+
+	setGroupListingContent("content");
+
+	//HOME list clients functionality
+	$("#tabs").tabs({
+	    select: function(event, ui) {
+	    },
+	    load: function(event, ui) {
+	    },
+	    show: function(event, ui) {
+
+	    var initGroupSearch =  function() {
+			//render page markup
+			var tableHtml = $("#groupSearchTabTemplate").render();
+			$("#searchtab").html(tableHtml);
+			
+			//fetch all Offices 
+			var officeSearchSuccessFunction =  function(data) {
+				var officeSearchObject = new Object();
+			    officeSearchObject.crudRows = data;
+				var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
+				$("#officesInScopeDiv").html(tableHtml);
+
+				// add client filter behaviour
+				$("#officeId").change(function(){
+					applyGroupSearchFilter($(this).val());
+				})
+		  	};
+		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
+			
+			//render client drop down data
+			var groupSearchSuccessFunction = function(data) {
+				var searchObject = new Object();
+				searchObject.crudRows = data;
+				var tableHtml = $("#allGroupsDropdownTemplate").render(searchObject);
+				$("#groupsInScopeDiv").html(tableHtml);
+		  	};
+		  	
+			executeAjaxRequest('groups', 'GET', "", groupSearchSuccessFunction, formErrorFunction);
+  			    	
+    		//search client functionality
+			var searchSuccessFunction = function(data) {
+				var searchObject = new Object();
+				searchObject.crudRows = data;
+				var tableHtml = $("#groupSearchResultsTableTemplate").render(searchObject);
+				$("#searchResultsTableTableDiv").html(tableHtml);
+			    var oTable=displayListTable("groupsearchresultstable");
+		  	};
+			
+			//initialize search button				
+			$("#searchGroupBtn").button({
+				icons: {
+	                primary: "ui-icon-search"
+	            }
+	         }).click(function(e){
+	         	var officeHierarchy = $("#officeId").val();
+				var searchValue = $("#searchInput").val();
+				searchValue = searchValue.replace("'", "''");
+
+				//office hierarchy dropdown does not appear for branch users
+				if(officeHierarchy){
+					executeAjaxRequest("groups?name=" + encodeURIComponent(searchValue)+ "&underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", searchSuccessFunction, formErrorFunction);
+				}else{
+					executeAjaxRequest("groups?name=" + encodeURIComponent(searchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
+				}
+			   	e.preventDefault(); 
+		   	});
+	    };
+	    
+	    initGroupSearch();
+	 }
+	});
+
+	$("#addstandardgroup").button().click(function(e) {
+		launchGroupDialog();
+	    e.preventDefault();
+	});
+}
+
+//HOME list communal banks functionality
+function showCommunalBankListing(){
+
+	if (jQuery.MifosXUI.showTask("groupSearch") == false)
+	{
+		alert(doI18N("group.search.not.allowed"));
+		return;
+	}
+
+	setCommunalBankListingContent("content");
+	
+	$("#tabs").tabs();
+}
+
+//Add new group under a center dialog
+function addCenterGroup(officeId, centerId) {
 	
 		var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
 			$('#dialog-form').dialog("close");
-			showILGroup(data.resourceId);
+			showGroup(data.resourceId);
 		}
-
-		if(parentGroupId === undefined) {
-			var getUrl = 'groups/template';
+		
+		if(centerId === undefined) {
+			
+			if (officeId === undefined) {
+				getUrl = 'groups/template?center=true';
+			} else {
+				getUrl = 'groups/template?officeId=' + officeId + '&center=true';
+			}
 		}
-		else{
-			var getUrl = 'groups/template?parentGroupId='+parentGroupId;
+		else {
+			var getUrl = 'groups/template?centerId='+centerId;
 		}
 
 		var postUrl = 'groups';
-		var templateSelector = "#groupFormTemplate";
+		var templateSelector = "#centerGroupBlankFormTemplate";
 		var width = 900; 
 		var height = 500;
 		var title = 'dialog.title.add.group';
 		
-		if(!(parentGroupId === undefined)){
-			var extraParam = '{"action":"disable"'  + ' , "parentGroupId":"'+ parentGroupId +'"}';
-		}
-
-		popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addGroupSuccessFunction , extraParam);
-		
-	    e.preventDefault();
+		popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addGroupSuccessFunction);
 }
 
-//Add new group
+//Add new center
 function addCenter() {
 	
 		var addCenterSuccessFunction = function(data, textStatus, jqXHR) {
@@ -1563,20 +1882,17 @@ function addCenter() {
 		var templateSelector = "#centerFormTemplate";
 		var width = 900; 
 		var height = 500;
-		var title = 'dialog.title.create.center'  ;
+		var title = 'dialog.title.create.center';
 		
 		popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addCenterSuccessFunction);
-		
-	    e.preventDefault();
 }
 
 // Add New Client 
 function addClient(officeId, parentGroupId){
 
-
 		var addClientSuccessFunction = function(data, textStatus, jqXHR) {
 		  $('#dialog-form').dialog("close");
-		  showILGroup(parentGroupId);
+		  showGroup(parentGroupId);
 		}
 
 		var getUrl = 'clients/template';
@@ -1587,7 +1903,6 @@ function addClient(officeId, parentGroupId){
 		
 		var extraParam = '{"officeId":"'+ officeId + '" , "groupId":"'+ parentGroupId +'"}';
 		popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.add.client', templateSelector, width, height, addClientSuccessFunction , extraParam);
-
 }
 
 
@@ -1718,8 +2033,7 @@ function showILClient(clientId) {
 					});
 					$('button.editclientbtn span').text(doI18N('dialog.button.edit.client'));
 					
-					$('.newindividualloanbtn').button({icons: {primary: "ui-icon-document"}
-                	}).click(function(e) {
+					$('.newindividualloanbtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
                 		launchLoanApplicationDialog(clientId);
 					    e.preventDefault();
 					});
@@ -2067,7 +2381,7 @@ function refreshClientDocuments(clientUrl) {
 }
 	
 
-function showILGroup(groupId){
+function showGroup(groupId){
 	var groupUrl = "groups/"+groupId;
 	setGroupContent("content");
 
@@ -2094,9 +2408,6 @@ function showILGroup(groupId){
 		var groupClients = $("#groupClientsTabTemplate").render(data);
 		var groupSummary = $("#groupSummaryTabTemplate").render(data);
 
-
-
-
 		groupDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
 
 		$("#groupdetails").html(groupDetails);
@@ -2106,8 +2417,6 @@ function showILGroup(groupId){
 		$("#groupclientstabname").html("Clients");
 		$("#groupsummarytab").html(groupSummary);
 		$("#groupsummarytabname").html("Summary");
-
-
 
 		refreshGroupLoanSummaryInfo(groupUrl);
 
@@ -2147,26 +2456,18 @@ function showILGroup(groupId){
 			});
 
 			// bind click listeners to buttons.
-			$('.editgroupbtn').button().click(function(e) {
+			$('.editstandardgroupbtn').button().click(function(e) {
 				var linkId = this.id;
-				var groupId = linkId.replace("editgroupbtn", "");
+				var groupId = linkId.replace("editstandardgroupbtn", "");
+				launchGroupDialog(groupId);
+			    e.preventDefault();
+			});
+			
+			$('.editcentergroupbtn').button().click(function(e) {
+				var linkId = this.id;
+				var groupId = linkId.replace("editcentergroupbtn", "");
 				
-				var getUrl = 'groups/' + groupId + '?template=true';
-				var putUrl = 'groups/' + groupId;
-				var templateSelector = "#groupFormTemplate";
-				var width = 900; 
-				var height = 400;
-				
-				var saveSuccessFunction = function(data, textStatus, jqXHR) {
-				  	$("#dialog-form").dialog("close");
-				  	showILGroup(groupId);
-				}
-				
-				var title = 'dialog.title.edit.grouping.at.level.' + data.groupLevelData.levelId;
-
-				var extraParam = '{"action":"disable"}';
-
-				popupDialogWithFormView(getUrl, putUrl, 'PUT', title, templateSelector, width, height,  saveSuccessFunction , extraParam);
+				launchCenterGroupDialog(groupId);
 			    e.preventDefault();
 			});
 
@@ -2190,7 +2491,7 @@ function showILGroup(groupId){
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 				  			$("#dialog-form").dialog("close");
-				  			showILGroup(groupId);
+				  			showGroup(groupId);
 						}						
 						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
 						//popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunction)		
@@ -2305,20 +2606,19 @@ function showCenter(centerId){
 				var linkId = this.id;
 				var centerId = linkId.replace("addgroupbtn", "");
 
-
 				var addGroupSuccessFunction = function(data, textStatus, jqXHR) {
-				$('#dialog-form').dialog("close");
-				showILGroup(data.resourceId);
+					$('#dialog-form').dialog("close");
+					showGroup(data.resourceId);
 				}
 
 				var getUrl = 'groups/template?centerId='+centerId;
 				var postUrl = 'groups';
-				var templateSelector = "#groupFormTemplate";
+				var templateSelector = "#centerGroupFormTemplate";
 				var width = 900; 
 				var height = 500;
 				var title = 'dialog.title.add.group';
-				var extraParam = '{"action":"disable"'  + ' , "parentGroupId":"'+ centerId +'"}';
-				popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addGroupSuccessFunction , extraParam);
+				//var extraParam = '{"action":"disable"'  + ' , "parentGroupId":"'+ centerId +'"}';
+				popupDialogWithFormView(getUrl, postUrl, 'POST', title , templateSelector, width, height, addGroupSuccessFunction);
 				e.preventDefault();
 
 			});
@@ -2349,7 +2649,7 @@ function showCenter(centerId){
 				
 				var saveSuccessFunction = function(data, textStatus, jqXHR) {
 				  	$("#dialog-form").dialog("close");
-				  	showILGroup(groupId);
+				  	showGroup(groupId);
 				}
 				
 				var title = 'dialog.title.edit.grouping.at.level.' + data.groupLevelData.levelId;
@@ -2380,7 +2680,7 @@ function showCenter(centerId){
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 				  			$("#dialog-form").dialog("close");
-				  			showILGroup(groupId);
+				  			showGroup(groupId);
 						}						
 						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
 						//popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunction)		
@@ -2489,7 +2789,7 @@ function addLJGBulkMembersLoans(groupId){
 							var successFunction =  function(data, textStatus, jqXHR) {
 								entityForm.closest("#client" + memberLoanData.clientId).remove();
 							if ($('.entityform').length === 0){
-								showILGroup(groupId);	
+								showGroup(groupId);	
 								}
 							};
 							
@@ -2697,7 +2997,7 @@ function addLJGBulkMembersLoans(groupId){
 			if (clientId) {
 				showILClient(clientId);
 			} else if(!(group === undefined)){
-				showILGroup(group.id);
+				showGroup(group.id);
 			}
 		};
 		
@@ -2738,7 +3038,7 @@ function addLJGBulkMembersLoans(groupId){
 			if (clientId) {
 				showILClient(clientId);
 			} else if(!(group === undefined)){
-				showILGroup(group.id);
+				showGroup(group.id);
 			}
 		};
 		
@@ -3446,7 +3746,7 @@ function addLJGBulkMembersLoans(groupId){
 			if (clientId) {
 				showILClient(clientId);
 			} else {
-				showILGroup(groupId);
+				showGroup(groupId);
 			}
 		};
 		
@@ -3590,7 +3890,7 @@ function addLJGBulkMembersLoans(groupId){
 			if (clientId){
 				showILClient(clientId);
 			} else {
-				showILGroup(groupId);
+				showGroup(groupId);
 			}
 		};
 		
@@ -4884,9 +5184,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 					}
 				}
 				//End group create specific code
-
 		  	};
-		
 
 		if (getUrl == "") popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
 		else executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
@@ -6259,170 +6557,25 @@ function loadSavingAccount(accountId) {
 		
 	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
 }
-function addILSaving(clientId) {
-	setAddSavingContent("content");
 
-	eval(genAddSavingSuccessVar(clientId));
-
-	   executeAjaxRequest('savingaccounts/template?clientId=' + clientId, 'GET', "", successFunction, formErrorFunction);	
-	}	
-	function genAddSavingSuccessVar(clientId) {
-
-	return 'var successFunction = function(data, textStatus, jqXHR) { ' +
-	' var formHtml = $("#newSavingAccountFormTemplateMin").render(data);' +
-	' $("#inputarea").html(formHtml);' +
-	' $("#productId").change(function() {' +
-	' var productId = $("#productId").val();' +
-	' repopulateSavingAccountForm(' + clientId + ', productId);' +
-	' });' +
-	' };'
-	}
-
-function repopulateSavingAccountForm(clientId, productId){
-	successFunction = function(data, textStatus, jqXHR) {
-		var formHtml = $("#newSavingAccountFormTemplate").render(data);
-		
-		$("#inputarea").html(formHtml);
-		
-		$('#productId').change(function() {
-			var productId = $('#productId').val();
-			repopulateSavingAccountForm(clientId, productId);
-		});
-		
-		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
-		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-		
-		calculateSavingSchedule();
-		
-		$('#commencementDate').change(function() {
-			calculateSavingSchedule();
-		});
-
-		$('#externalId').change(function() {
-			calculateSavingSchedule();
-		});
-
-		$('#savingsDepositAmountPerPeriod').change(function() {
-			calculateSavingSchedule();
-		});
-
-		$('#depositEvery').change(function() {
-			calculateSavingSchedule();
-		});
-						
-		$('#tenure').change(function() {
-			calculateSavingSchedule();
-		});
-		
-		$('#tenureType').change(function() {
-			calculateSavingSchedule();
-		});
-
-		$('#savingInterestRate').change(function() {
-			calculateSavingSchedule();
-		});
-		$('#recurringInterestRate').change(function() {
-			calculateSavingSchedule();
-		});
-		
-		$('#interestCalculationMethod').change(function() {
-			calculateSavingSchedule();
-		});
-
-		$('#interestType').change(function() {
-			calculateSavingSchedule();
-		});
-		
-		$('#submitsavingaccountapp').button().click(function(e) {
-			submitSavingAccountApplication(clientId);
-		    e.preventDefault();
-		});
-		$('button#submitsavingaccountapp span').text(doI18N('dialog.button.submit'));
-		
-		$('#cancelsavingaccountapp').button().click(function(e) {
-  			showILClient(clientId);
-		    e.preventDefault();
-		});
-		$('button#cancelsavingaccountapp span').text(doI18N('dialog.button.cancel'));
-	}
-	executeAjaxRequest('savingaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", successFunction, formErrorFunction);
-}	
-
-
-	function submitSavingAccountApplication(clientId) {
-	
-	var newFormData = JSON.stringify($('#entityform').serializeObject());
-	
-	var successFunction =  function(data, textStatus, jqXHR) {
-	  				showILClient(clientId);
-		  };
-	
-	executeAjaxRequest('savingaccounts', "POST", newFormData, successFunction, formErrorFunction);	  
-
-  } 
-	
-  function genSaveSuccessFunctionReloadSaving(savingAccountId) {
-
-		return 'var saveSuccessFunctionReloadSaving = function(data, textStatus, jqXHR) { ' + 
-						  	' $("#dialog-form").dialog("close");' +
-							' loadSavingAccount(' + savingAccountId + ');' +
-							' clientDirty = true;' +
-						'};';
-	}	
+function checkSubmit(e, logonDivName, username, password)
+{
+	 if(e && e.keyCode == 13)
+	 {
+		 setBasicAuthKey(logonDivName, username, password);
+	 }
+}
   
-  function checkSubmit(e, logonDivName, username, password)
-  {
-     if(e && e.keyCode == 13)
-     {
-    	 setBasicAuthKey(logonDivName, username, password);
-     }
-  }
-  
-	function calculateSavingSchedule() {
-		
-		var newFormData = JSON.stringify($('#entityform').serializeObject());
-    	
-		var successFunction = function(data, textStatus, jqXHR) {
-				  		removeErrors("#formerrors");
-				  		var savingScheduleHtml = $("#newSavingScheduleTemplate").render(data);
-				  		$("#schedulearea").html(savingScheduleHtml);
-		};
-		
-		var errorFunction = function(jqXHR, textStatus, errorThrown) {
-						 $("#schedulearea").html("");
-						 handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-		};
-		executeAjaxRequest('savingaccounts?command=calculateSavingSchedule', "POST", newFormData, successFunction, errorFunction);	  
-	}
-	
-	/*function showTenure() {
-		  var e = document.getElementById("tenureType");
-		  var str=e.options[e.selectedIndex].value;
-		  if(str == 1) {
-			document.getElementById("tenure").style.display = "inline";
-		 } else { 
-			document.getElementById("tenure").style.display = "none";
-		 }
-		}*/
-	
-	function postInterestForSavingAccounts(){
-		var url = 'savingaccounts/postinterest';
-		var width = 400; 
-		var height = 225;
-								
-		popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
-	}
-
-    $.fn.enterKey = function (fnc) {
-        return this.each(function () {
-            $(this).keypress(function (ev) {
-                var keycode = (ev.keyCode ? ev.keyCode : ev.which);
-                if (keycode == '13') {
-                    fnc.call(this, ev);
-                }
-            })
+$.fn.enterKey = function (fnc) {
+    return this.each(function () {
+        $(this).keypress(function (ev) {
+            var keycode = (ev.keyCode ? ev.keyCode : ev.which);
+            if (keycode == '13') {
+                fnc.call(this, ev);
+            }
         })
-    }
+    })
+}
 
 
 function refreshCalendarWidget(resourceId, resource, calendarContent) {
@@ -6430,6 +6583,7 @@ function refreshCalendarWidget(resourceId, resource, calendarContent) {
     eval(genRefreshCalendarWidgetSuccessVar(resourceId, resource, calendarContent));
     executeAjaxRequest(resource + '/' + resourceId + '/calendars', 'GET', "", successFunction, formErrorFunction);
 }
+
 function genRefreshCalendarWidgetSuccessVar(resourceId, resource, calendarContent) {
 
 return 'var successFunction = function(data, textStatus, jqXHR) {   ' +

@@ -334,6 +334,63 @@ $(document).ready(function() {
 </form>
 </script>
 
+<!-- Search screens and templates for sections of search screen -->
+<script id="groupSearchTabTemplate" type="text/x-jquery-tmpl">
+<div>	
+	<form method="post" id="viewGroup">
+		<div style="width:100%">
+			<h1 align="center">{{=$ctx.doI18N("tab.group.search.title")}}</h1>
+		</div>
+		<div id="officesInScopeDiv">
+		</div>
+        <hr/>
+		<div style="height: 80px">
+			<div style="float: left">
+					<label for="group">{{=$ctx.doI18N("label.search.by.name")}}</label>
+					<input type="text" maxlength="30" id="searchInput"/>
+					<button id="searchGroupBtn" style="clear: both;" style="height:10px">{{=$ctx.doI18N("button.search")}}</button>
+			</div>
+			
+			<div style="float: right">
+				<div id="groupsInScopeDiv">
+				</div>
+			</div>
+		</div>
+		<div id="searchResultsTableTableDiv">
+		</div>
+	</form>	
+</div>
+</script>
+
+<script id="allGroupsDropdownTemplate" type="text/x-jquery-tmpl">
+	<label for="group">{{=$ctx.doI18N("label.group.search")}}</label>
+	<select name="group" id="group" onChange="showGroup(options[selectedIndex].value);">
+		<option value="0">{{=$ctx.doI18N("option.group.search.first.choice")}}</option>
+		{{#each crudRows}}
+			<option value="{{=id}}">{{=name}}&nbsp;-&nbsp;({{=officeName}})</option>
+	    {{/each}}
+	</select>
+</script>
+
+<script id="groupSearchResultsTableTemplate" type="text/x-jquery-tmpl">
+	<table id='groupsearchresultstable' width='100%'>
+		<thead>
+			<tr>
+				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.displayname")}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each crudRows}}
+			<tr>
+				<td>{{=officeName}}</td>
+				<td><a id='navigateToGroup{{=id}}' href='#' style='margin-right: 5px;' onclick="showGroup({{=id}});">{{=name}}</a></td>				
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+</script>
+
 <script id="clientSearchTabTemplate" type="text/x-jquery-tmpl">
 <div>	
 	<form method="post" id="viewClient" name="viewClient" action="switchToClient">
@@ -345,7 +402,7 @@ $(document).ready(function() {
         <hr/>
 		<div style="height: 80px">
 			<div style="float: left">
-					<label for="client">{{=$ctx.doI18N("label.client.search.by.name")}}</label>
+					<label for="client">{{=$ctx.doI18N("label.search.by.name")}}</label>
 					<input type="text" maxlength="30" id="clientSearchInput"/>
 					<button id="searchClientBtn" style="clear: both;" style="height:10px">{{=$ctx.doI18N("button.search")}}</button>
 			</div>
@@ -361,8 +418,6 @@ $(document).ready(function() {
 </div>
 </script>
 
-
-<!-- All Clients Dropdown-->
 <script id="allClientsDropdownTemplate" type="text/x-jquery-tmpl">
 	<label for="client">{{=$ctx.doI18N("label.client.search")}}</label>
 	
@@ -372,10 +427,8 @@ $(document).ready(function() {
 			<option value="{{=id}}">{{=displayName}}&nbsp;-&nbsp;({{=officeName}})</option>
 	    {{/each}}
 	</select>
-	
 </script>
 
-<!--Applicable Offices-->
 <script id="officesDropdownTemplate" type="text/x-jquery-tmpl">
 	{{#if crudRows.length > 1 }}
 		<div style="width:100%">
@@ -414,20 +467,21 @@ $(document).ready(function() {
 	</table>
 </script>
 
-<script id="groupManageTabTemplate" type="text/x-jquery-tmpl">
+<script id="centerManageTabTemplate" type="text/x-jquery-tmpl">
 <div class="groupcontainer">
 	<form method="post" id="viewGroup" name="viewGroup" action="switchToGroup">
         <input type="hidden" id="officeId" name="officeId" value="" />
         <div class="right80 clearright marginB20">
             <div>
                 <div>
-                            <label for="group">{{=$ctx.doI18N("label.group.search.by.name")}}</label>
-                            <input type="text" maxlength="30" id="groupSearchInput"/>
-                            <button id="searchGroupBtn" style="clear: both;" style="height:10px">{{=$ctx.doI18N("button.group.search")}}</button>
+                	<label for="group">{{=$ctx.doI18N("label.group.search.by.name")}}</label>
+                    <input type="text" maxlength="30" id="groupSearchInput"/>
+                    <button id="searchGroupBtn" style="clear: both;" style="height:10px">{{=$ctx.doI18N("button.group.search")}}</button>
                 </div>
             </div>
-             <br/>
-             <hr/>   
+            <br/>
+            <hr/>
+
             <div id="groupTableDiv">
                 <table width="100%" cellspacing="0" cellpadding="2" border="0" >
                 <tbody>
@@ -487,8 +541,8 @@ $(document).ready(function() {
                     <tr class="fontnormal">
                             <td class="witoutpadding">
                                     <ul>
-                                        <li><a href="#" class="addgroup" onClick="addGroup();">{{=$ctx.doI18N("label.group.manage.create")}}</a></li>
-                                        <li><a href="#" class="addcenter" onClick="addCenter();">{{=$ctx.doI18N("label.center.manage.create")}}</a></li>
+                                        <li><a href="#" class="addgroup" onClick="addCenterGroup();return false;">{{=$ctx.doI18N("label.group.manage.create")}}</a></li>
+                                        <li><a href="#" class="addcenter" onClick="addCenter();return false;">{{=$ctx.doI18N("label.center.manage.create")}}</a></li>
                                     </ul>   
                         </td>
                     </tr>
@@ -528,7 +582,7 @@ $(document).ready(function() {
 			{{#each crudRows}}
 			<tr>
 				<td>{{=officeName}}</td>
-				<td><a id='navigateToGroup{{=id}}' href='#' style='margin-right: 5px;' onclick="showILGroup({{=id}});">{{=name}}</a></td>				
+				<td><a id='navigateToGroup{{=id}}' href='#' style='margin-right: 5px;' onclick="showGroup({{=id}}); return false;">{{=name}}</a></td>				
 			</tr>
 			{{/each}}
 		</tbody>
@@ -667,31 +721,6 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
-	{{#if currentChange}}
-		{{#if currentChange.officeId}}
-	<select id="officeId" name="officeId" title="" style="border: thin solid green;">
-		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-		{{#each allowedOffices}}
-			{{#if $ctx.number($parent.parent.data.currentChange.officeId)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
-			{{/if}}
-        {{/each}}
-	</select>
-		{{#else}}
-		<select id="officeId" name="officeId" title="">
-		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-		{{#each allowedOffices}}
-			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
-			{{/if}}
-        {{/each}}
-		</select>
-		{{/if}} 
-	{{#else}}
 	<select id="officeId" name="officeId" title="">
 		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 		{{#each allowedOffices}}
@@ -702,7 +731,6 @@ $(document).ready(function() {
 			{{/if}}
         {{/each}}
 	</select>
-	{{/if}}
 
 	<table>
 		<tr>
@@ -727,42 +755,26 @@ $(document).ready(function() {
 		</tr>
 	</table>
     <label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
-	{{#if currentChange}}
-		{{#if currentChange.externalId}}
-		<input id="externalId" name="externalId" title="Previous value was {{=externalId}}" type="text" value="{{=currentChange.externalId}}" style="border: thin solid green;"/>
-		{{#else}}
-		<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
-		{{/if}}
-	{{#else}}
 	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
-	{{/if}}
 
 	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<label for="joinedDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
-	{{#if currentChange}}
-		{{#if currentChange.joinedDate}}
-		<input id="joinedDate" name="joinedDate" title="Previous value was {{=$ctx.globalDate(joinedDate)}}" type="text" class="datepickerfield" value="{{=$ctx.globalDate(currentChange.joinedDate)}}" style="border: thin solid green;"/>
-		{{#else}}
-		<input id="joinedDate" name="joinedDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
-		{{/if}}
-	{{#else}}
 	<input id="joinedDate" name="joinedDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
-	{{/if}}
 </form>
 </script>
 
-<script id="groupFormTemplate" type="text/x-jquery-tmpl">
+<script id="centerGroupBlankFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
 	<table>
 		<tr>
 			<td>
 				<div>
-				<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+				<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
 				<select id="officeId" name="officeId" title="">
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-					{{#each allowedOffices}}
+					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
 							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
@@ -773,13 +785,12 @@ $(document).ready(function() {
 				</div>
 			</td>
 			<td>
-			{{#if !groupLevelData.superParent}}
 			<div>
 				<label for="centerId">{{=$ctx.doI18N("label.center")}}</label>
 				<select id="centerId" name="centerId" title="">
                     <option value="">{{=$ctx.doI18N("option.group.select.parent.first.choice")}}</option>
-					{{#each allowedParentGroups}}
-                        {{#if $ctx.number($parent.parent.data.parentId)===$ctx.number(id)}}
+					{{#each centerOptions}}
+                        {{#if $ctx.number($parent.parent.data.centerId)===$ctx.number(id)}}
                             <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
                         {{#else}}
                             <option value="{{=$ctx.number(id)}}">{{=name}}</option>
@@ -787,15 +798,14 @@ $(document).ready(function() {
 					{{/each}}
 				</select>
 				</div>
-			{{/if}}
 			</td>
 		</tr>
 		<tr>
 			<td colspan="2">
-				<label for="staffs">{{=$ctx.doI18N("label.group.staff")}}</label>
+				<label for="staffId">{{=$ctx.doI18N("label.group.staff")}}</label>
 				<select id="staffId" name="staffId" title="">
                     <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
-                    {{#each allowedStaffs}}
+                    {{#each staffOptions}}
                         {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
                             <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
                         {{#else}}
@@ -815,13 +825,12 @@ $(document).ready(function() {
 				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 			</td>
 		</tr>
-		{{#if groupLevelData.canHaveClients}}
 		<tr>
 			<td>
 				<div class="multiselectwidget">
 					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
 					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
-					{{#each allowedClients}}
+					{{#each clientsOptions}}
 						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
 		            {{/each}}
 					</select>
@@ -844,7 +853,344 @@ $(document).ready(function() {
 				</div>
 			</td>
 		</tr>
-		{{/if}}
+	</table>
+</form>
+</script>
+
+<script id="centerGroupFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<div>
+				<input type="hidden" id="officeId" name="officeId" value="{{=officeId}}" />
+				<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+				<select id="office" name="office" title="" disabled=disabled>
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each officeOptions}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+				</div>
+			</td>
+			<td>
+			<div>
+				<input type="hidden" id="centerId" name="centerId" value="{{=centerId}}" />
+				<label for="center">{{=$ctx.doI18N("label.center")}}</label>
+				<select id="center" name="center" title="" disabled=disabled>
+                    <option value="">{{=$ctx.doI18N("option.group.select.parent.first.choice")}}</option>
+					{{#each centerOptions}}
+                        {{#if $ctx.number($parent.parent.data.centerId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                        {{/if}}                            
+					{{/each}}
+				</select>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label for="staffId">{{=$ctx.doI18N("label.group.staff")}}</label>
+				<select id="staffId" name="staffId" title="">
+                    <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
+                    {{#each staffOptions}}
+                        {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+                        {{/if}}                              
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("form.label.group.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+			<td>
+				<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
+				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="multiselectwidget">
+					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+					{{#each clientsOptions}}
+						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            {{/each}}
+					</select>
+					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+				</div>
+			</td>
+			<td>
+				<div class="multiselectwidget">
+					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+					{{#each clientMembers}}
+						{{#if officeName}}
+							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            	{{else}}
+		            		<option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
+		            	{{/if}}
+		            {{/each}}
+					</select>
+					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
+				</div>
+			</td>
+		</tr>
+	</table>
+</form>
+</script>
+
+<script id="centerGroupEditFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<div>
+				<input type="hidden" id="officeId" name="officeId" value="{{=officeId}}" />
+				<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+				<select id="office" name="office" title="" disabled=disabled>
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each officeOptions}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+				</div>
+			</td>
+			<td>
+			<div>
+				<input type="hidden" id="centerId" name="centerId" value="{{=centerId}}" />
+				<label for="center">{{=$ctx.doI18N("label.center")}}</label>
+				<select id="center" name="center" title="" disabled=disabled>
+                    <option value="">{{=$ctx.doI18N("option.group.select.parent.first.choice")}}</option>
+					{{#each centerOptions}}
+                        {{#if $ctx.number($parent.parent.data.centerId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                        {{/if}}                            
+					{{/each}}
+				</select>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label for="staffId">{{=$ctx.doI18N("label.group.staff")}}</label>
+				<select id="staffId" name="staffId" title="">
+                    <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
+                    {{#each staffOptions}}
+                        {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+                        {{/if}}                              
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("form.label.group.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+			<td>
+				<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
+				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="multiselectwidget">
+					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+					{{#each clientsOptions}}
+						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            {{/each}}
+					</select>
+					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+				</div>
+			</td>
+			<td>
+				<div class="multiselectwidget">
+					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+					{{#each clientMembers}}
+						{{#if officeName}}
+							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            	{{else}}
+		            		<option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
+		            	{{/if}}
+		            {{/each}}
+					</select>
+					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
+				</div>
+			</td>
+		</tr>
+	</table>
+</form>
+</script>
+
+<script id="standardGroupFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
+				<select id="officeId" name="officeId" title="">
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each officeOptions}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<label for="staffId">{{=$ctx.doI18N("label.group.staff")}}</label>
+				<select id="staffId" name="staffId" title="">
+                    <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
+                    {{#each staffOptions}}
+                        {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+                        {{/if}}                              
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("form.label.group.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+			<td>
+				<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
+				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="multiselectwidget">
+					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+					{{#each clientOptions}}
+						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            {{/each}}
+					</select>
+					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+				</div>
+			</td>
+			<td>
+				<div class="multiselectwidget">
+					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+					{{#each clientMembers}}
+						{{#if officeName}}
+							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            	{{else}}
+		            		<option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
+		            	{{/if}}
+		            {{/each}}
+					</select>
+					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
+				</div>
+			</td>
+		</tr>
+	</table>
+</form>
+</script>
+
+<script id="standardGroupEditFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
+				<select id="officeId" name="officeId" title="" disabled="disabled">
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each officeOptions}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<label for="staffId">{{=$ctx.doI18N("label.group.staff")}}</label>
+				<select id="staffId" name="staffId" title="">
+                    <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
+                    {{#each staffOptions}}
+                        {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+                        {{#else}}
+                            <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+                        {{/if}}                              
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="name">{{=$ctx.doI18N("form.label.group.name")}}</label>
+				<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+			</td>
+			<td>
+				<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
+				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="multiselectwidget">
+					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+					{{#each clientOptions}}
+						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            {{/each}}
+					</select>
+					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+				</div>
+			</td>
+			<td>
+				<div class="multiselectwidget">
+					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+					{{#each clientMembers}}
+						{{#if officeName}}
+							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+		            	{{else}}
+		            		<option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
+		            	{{/if}}
+		            {{/each}}
+					</select>
+					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
+				</div>
+			</td>
+		</tr>
 	</table>
 </form>
 </script>
@@ -856,10 +1202,10 @@ $(document).ready(function() {
         <tr>
             <td>
                 <div>
-                <label for="office">{{=$ctx.doI18N("label.office")}}</label>
+                <label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
                 <select id="officeId" name="officeId" title="">
                     <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-                    {{#each allowedOffices}}
+                    {{#each officeOptions}}
                         {{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
                             <option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
                         {{#else}}
@@ -873,10 +1219,10 @@ $(document).ready(function() {
         </tr>
         <tr>
             <td colspan="2">
-                <label for="staffs">{{=$ctx.doI18N("label.group.staff")}}</label>
+                <label for="staffId">{{=$ctx.doI18N("label.group.staff")}}</label>
                 <select id="staffId" name="staffId" title="">
                     <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
-                    {{#each allowedStaffs}}
+                    {{#each staffOptions}}
                         {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
                             <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
                         {{#else}}
@@ -899,6 +1245,8 @@ $(document).ready(function() {
     </table>
 </form>
 </script>
+<!-- end of center,group templates. -->
+
 <script id="clientIdentifiersTemplate" type="text/x-jquery-tmpl">
 	{{#if $ctx.showTask("ADDCLIENTIDENTIFIER")}}
 	<table width="100%">
@@ -1159,7 +1507,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each pendingApprovalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}'); return false;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -1282,72 +1630,81 @@ $(document).ready(function() {
 
 <script id="groupDetailsTemplate" type="text/x-jquery-tmpl">
 <div class="breadcrumb">
-    <span class="rowvalue">{{=officeName}}</span> >> 
-    {{#if !groupLevelData.superParent}}<span><a href="#" onClick="showCenter({{=parentId}});">{{=parentName}}</a></span>{{/if}}
+    <span class="rowvalue">{{=officeName}}</span> 
+	{{#if centerId}}>> <span><a href="#" onClick="showCenter({{=centerId}});">{{=centerName}}</a></span>{{/if}}
 </div>
+
 <div style="padding-left: 25px;">
-<input type="hidden" id="staffId" name="staffId" value="{{=staffId}}" />
-<table style="width:100%">
-<tbody>
-<tr>
-<td>
-            <div class="rowvalue heading">{{=name}}</div>
-</td>
-<td valign="top" style="text-align: right">
-    <span id="toolbar" class="ui-widget-header ui-corner-all">
+	<input type="hidden" id="staffId" name="staffId" value="{{=staffId}}" />
+	<table style="width:100%">
+		<tbody>
+			<tr><td><div class="rowvalue heading">{{=name}}</div></td>
+			<td valign="top" style="text-align: right">
+    			<span id="toolbar" class="ui-widget-header ui-corner-all">
+				{{#if centerId}}
+					<button id="editcentergroupbtn{{=id}}" class="editcentergroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
+				{{#else}}
+					<button id="editstandardgroupbtn{{=id}}" class="editstandardgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
+				{{/if}}
         <button id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</button>
         <button id="addclientbtn{{=id}}" class="addclientbtn">Add Client</button>
         <button id="newgrouploanbtn{{=id}}" class="newgrouploanbtn">{{=$ctx.doI18N("label.group.new.loan.account")}}</button>
         <button>{{=$ctx.doI18N("label.group.new.saving.account")}}</button>
         <button id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">{{=$ctx.doI18N("label.group.new.bulk.loan.account")}}</button>
-        <button id="editgroupbtn{{=id}}" class="editgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
         <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">Add Calendar</button>
-    </span>
-</td>
-</tr>
-</tbody>
-</table>
-<br/>
-<br/>
+    			</span>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	<br/>
+	<br/>
 </div>
 </script>
+
 <script id="groupClientsTabTemplate" type="text/x-jquery-tmpl">
-                {{#if groupLevelData.canHaveClients}}
-                <span><b>{{=$ctx.doI18N("label.group.clients.assigned")}}</b></span>
-                <div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
-                {{#each clientMembers}}
-                <div class="row">
-                    <span class="fontnormal"><a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}}</span></a></span>
-                </div>
-                {{/each}}
-                </div>
-                {{/if}}
+{{#if clientMembers}}
+<span><b>{{=$ctx.doI18N("label.group.clients.assigned")}}</b></span>
+<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
+	{{#each clientMembers}}
+    <div class="row">
+		<span class="fontnormal"><a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}}</span></a></span>
+	</div>
+    {{/each}}
+</div>
+{{/if}}
 </script>
+
 <script id="groupSummaryTabTemplate" type="text/x-jquery-tmpl">
-        <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
-                        <tbody><tr>
-                            <td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.performance.history")}}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.client")}} {{=groupSummaryData.totalActiveClients}}</span></td>
-                        </tr>
-                        {{#if groupLevelData.recursable}}
-                        <tr>
-                            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.groups")}} {{=groupLevelData.childLevelName}} : {{=groupSummaryData.totalChildGroups}}</span></td>
-                        </tr>
-                        {{/if}}
-                        <tr>
-                            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.loan.portfolio")}}</span>
-                                {{#each groupSummaryData.totalLoanPortfolio}}
-                                    <br/><span class="fontnormal">{{=code}} : {{=amount}}</span>
-                                {{/each}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.savings")}} </span></td>
-                        </tr>
-                    </tbody></table>    
+{{#if groupSummaryData}}
+<table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+<tbody>
+    <tr>
+        <td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.performance.history")}}</span></td>
+    </tr>
+    <tr>
+        <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.client")}} {{=groupSummaryData.totalActiveClients}}</span></td>
+    </tr>
+    {{#if clients}}
+    <tr>
+        <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.groups")}} Clients? : {{=groupSummaryData.totalChildGroups}}</span></td>
+    </tr>
+    {{/if}}
+    <tr>
+        <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.loan.portfolio")}}</span>
+            {{#each groupSummaryData.totalLoanPortfolio}}
+                <br/><span class="fontnormal">{{=code}} : {{=amount}}</span>
+            {{/each}}
+        </td>
+    </tr>
+    <tr>
+        <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.savings")}} </span></td>
+    </tr>
+</tbody>
+</table>
+{{/if}}
 </script>
+
 <script id="groupDataTabTemplate" type="text/x-jquery-tmpl">
 <div class="groupcontainer">
     <div class="right clearright marginB20" id="groupnotescontainer">
@@ -1412,7 +1769,6 @@ $(document).ready(function() {
 		</div>
     </div>
 	</div>		
-		
 </script>
 
 <script id="centerDetailsTemplate" type="text/x-jquery-tmpl">
@@ -1440,18 +1796,20 @@ $(document).ready(function() {
 <br/>
 </div>
 </script>
+
 <script id="centerGroupsTabTemplate" type="text/x-jquery-tmpl">
-                {{#if groupLevelData.recursable}}
-                <span><b>{{=groupLevelData.childLevelName}}&nbsp;{{=$ctx.doI18N("label.group.assigned")}}</b></span>
-                <p>Click on a {{=groupLevelData.childLevelName}} below to view the {{=groupLevelData.childLevelName}} details</p>
-                <div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
-                {{#each childGroups}}
-                <div class="row">
-                        <span class="fontnormal"><a href="#" onCLick="showILGroup({{=id}});"><span class="rowvalue">{{=name}}</span></a><br></span>
-                </div>
-                {{/each}}
-                </div>
-                {{/if}}
+{{#if groups}}
+<span><b>Groups?&nbsp;{{=$ctx.doI18N("label.group.assigned")}}</b></span>
+<p>Click on a group below to view the group details</p>
+
+<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
+{{#each groups}}
+	<div class="row">
+		<span class="fontnormal"><a href="#" onCLick="showGroup({{=id}}); return false;"><span class="rowvalue">{{=name}}</span></a><br></span>
+    </div>
+{{/each}}
+</div>
+{{/if}}
 </script>
 
 <script id="centerSummaryTabTemplate" type="text/x-jquery-tmpl">
@@ -7150,7 +7508,7 @@ $(document).ready(function() {
 
             {{#else entityType == 'GROUP'}}
 
-                <td><a id='navigateToGroup{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showILGroup({{=entityId}});">{{=entityName}}</a></td>
+                <td><a id='navigateToGroup{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showGroup({{=entityId}}); return false;">{{=entityName}}</a></td>
             
             {{#else}}
             
