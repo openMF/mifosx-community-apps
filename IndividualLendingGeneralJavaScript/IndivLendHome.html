@@ -7933,6 +7933,62 @@ $(document).ready(function() {
             <hr>
         </div>
 </script>
+
+
+<script id="reportListTemplate" type="text/x-jquery-tmpl">
+<table id='reportstable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("reportName")}}</th>
+			<th>{{=$ctx.doI18N("reportType")}}</th>
+			<th>{{=$ctx.doI18N("reportSubType")}}</th>
+			<th>{{=$ctx.doI18N("reportCategory")}}</th>
+			<th>{{=$ctx.doI18N("description")}}</th>
+			<th>{{=$ctx.doI18N("useReport")}}</th>
+			<th>{{=$ctx.doI18N("coreReport")}}</th>
+			<th>&nbsp;</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead
+	<tbody>
+{{#each crudRows}}
+<tr>
+	<td>{{=reportName}}</td>
+	<td>{{=reportType}}</td>
+	<td>{{=reportSubType}}</td>
+	<td>{{=reportCategory}}</td>
+	<td>{{=description}}</td>
+	<td>
+		{{#if useReport}}
+			{{=$ctx.doI18N("boolean.true")}}
+		{{#else}}
+			{{=$ctx.doI18N("boolean.false")}}
+		{{/if}}
+	</td>
+	<td>
+		{{#if coreReport}}
+			{{=$ctx.doI18N("boolean.true")}}
+		{{#else}}
+			{{=$ctx.doI18N("boolean.false")}}
+		{{/if}}
+	</td>
+	<td>
+		<a id='editreport{{=id}}' class='editreport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+	</td>
+	<td>
+		{{#if coreReport}} 
+		{{#else}}
+			<a id='deleteoffice{{=id}}' class='deleteoffice' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+		{{/if}}
+	</td>
+</tr>
+{{/each}}
+	</tbody>
+</table>
+</script>
+
+
+
 </body>
 
 </html>

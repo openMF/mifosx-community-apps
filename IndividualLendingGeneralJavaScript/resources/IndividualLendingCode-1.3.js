@@ -575,6 +575,7 @@ function setSysAdminContent(divName) {
 	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
 	var maintainMakerCheckerUrl = "maintainTable('permission', 'permissions?makerCheckerable=true', 'PUT');return false;";
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST');return false;";
+	var addReportUrl = "maintainTable('report', 'reports', 'POST');return false;";
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("VIEWDATATABLES") == true)
@@ -597,9 +598,12 @@ function setSysAdminContent(divName) {
 	
 	if (jQuery.MifosXUI.showTask("ViewConfiguration") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'configuration'" + ');return false;" id="viewconfiguration">' + doI18N("administration.link.view.configuration") + '</a>';
-	
+
 	if (jQuery.MifosXUI.showTask("ViewAudits") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="auditSearch(' + "'audit'" + ');return false;" id="viewaudits">' + doI18N("administration.link.view.audits") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("ViewReports") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'report'" + ');return false;" id="viewreports">' + doI18N("administration.link.view.reports") + '</a>';
 
 	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
 
