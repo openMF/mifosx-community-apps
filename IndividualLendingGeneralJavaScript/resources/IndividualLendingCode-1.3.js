@@ -4900,7 +4900,7 @@ function showILReporting(reportCategory) {
 
 //var reportingParams = {
  reportingParams = {
-	RESTUrl: baseApiUrl + "reports",
+	RESTUrl: baseApiUrl + "runreports",
 	basicAuthKey: base64,
 	tenantIdentifier: tenantIdentifier,
 	initialLanguage: currentCulture,
