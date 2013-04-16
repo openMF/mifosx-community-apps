@@ -198,7 +198,7 @@ function showMainContainer(containerDivName, username) {
 			htmlVar += '  <li><a href="unknown.html" onclick="showCollectionSheet();return false;">' + doI18N("link.topnav.collection.sheet") + '</a></li>';
 		}
 		
-		htmlVar += '	<li><a href="unknown.html" onclick="showCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
+		htmlVar += '	<li><a href="unknown.html" onclick="showNewCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
 		htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 		htmlVar += '	<li><a href="unknown.html" onclick="showCommunalBankListing();return false;">' + doI18N("link.topnav.communalbanks") + '</a></li>';
 		
@@ -367,6 +367,18 @@ function setClientListingContent(divName) {
 
 function setCenterListingContent(divName) {
 	var htmlVar = '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.center.manage") + '</a></li></ul><div id="searchtab"></div></div>';
+
+	$("#" + divName).html(htmlVar);
+}
+
+function setNewCenterListingContent(divName) {
+	var htmlVar = "";
+	//Add ADDGROUP in MifosXUI
+	if (jQuery.MifosXUI.showTask("ADDCLIENT")) {
+		htmlVar = '<button id="addCenter" style="clear: both;">' + doI18N("link.add.new.center") + '</button>';
+	}
+		
+	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.center.manage") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
 }
@@ -1744,6 +1756,93 @@ function launchCenterGroupDialog(groupId) {
 	}
 }
 
+function showNewCenterListing(){
+
+	//Add centerSearch to MifosXUI
+	if (jQuery.MifosXUI.showTask("groupSearch") == false)
+	{
+		alert(doI18N("center.search.not.allowed"));
+		return;
+	}
+
+	setNewCenterListingContent("content");
+
+	//HOME list clients functionality
+	$("#tabs").tabs({
+	    select: function(event, ui) {
+	    },
+	    load: function(event, ui) {
+	    },
+	    show: function(event, ui) {
+
+	    var initCenterSearch =  function() {
+			//render page markup
+			var tableHtml = $("#centerSearchTabTemplate").render();
+			$("#searchtab").html(tableHtml);
+			
+			//fetch all Offices 
+			var officeSearchSuccessFunction =  function(data) {
+				var officeSearchObject = new Object();
+			    officeSearchObject.crudRows = data;
+				var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
+				$("#officesInScopeDiv").html(tableHtml);
+
+				// add center filter behaviour
+				$("#officeId").change(function(){
+					applyCenterSearchFilter($(this).val());
+				})
+		  	};
+		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
+			
+			//render center drop down data
+			var centerSearchSuccessFunction = function(data) {
+				var searchObject = new Object();
+				searchObject.crudRows = data;
+				var tableHtml = $("#allCentersDropdownTemplate").render(searchObject);
+				$("#centersInScopeDiv").html(tableHtml);
+		  	};
+		  	
+			executeAjaxRequest('centers', 'GET', "", centerSearchSuccessFunction, formErrorFunction);
+  			    	
+    		//search center functionality
+			var searchSuccessFunction = function(data) {
+				var searchObject = new Object();
+				searchObject.crudRows = data;
+				var tableHtml = $("#centerSearchResultsTableTemplate").render(searchObject);
+				$("#searchResultsTableTableDiv").html(tableHtml);
+			    var oTable=displayListTable("centersearchresultstable");
+		  	};
+			
+			//initialize search button				
+			$("#searchCenterBtn").button({
+				icons: {
+	                primary: "ui-icon-search"
+	            }
+	         }).click(function(e){
+	         	var officeHierarchy = $("#officeId").val();
+				var searchValue = $("#searchInput").val();
+				searchValue = searchValue.replace("'", "''");
+
+				//office hierarchy dropdown does not appear for branch users
+				if(officeHierarchy){
+					executeAjaxRequest("centers?name=" + encodeURIComponent(searchValue)+ "&underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", searchSuccessFunction, formErrorFunction);
+				}else{
+					executeAjaxRequest("centers?name=" + encodeURIComponent(searchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
+				}
+			   	e.preventDefault(); 
+		   	});
+	    };
+	    
+	    initCenterSearch();
+	 }
+	});
+
+	$("#addCenter").button().click(function(e) {
+		launchGroupDialog();
+	    e.preventDefault();
+	});
+}
+
 function showGroupListing(){
 
 	if (jQuery.MifosXUI.showTask("groupSearch") == false)
@@ -1781,7 +1880,7 @@ function showGroupListing(){
 		  	};
 		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
 			
-			//render client drop down data
+			//render group drop down data
 			var groupSearchSuccessFunction = function(data) {
 				var searchObject = new Object();
 				searchObject.crudRows = data;
@@ -1791,7 +1890,7 @@ function showGroupListing(){
 		  	
 			executeAjaxRequest('groups', 'GET', "", groupSearchSuccessFunction, formErrorFunction);
   			    	
-    		//search client functionality
+    		//search group functionality
 			var searchSuccessFunction = function(data) {
 				var searchObject = new Object();
 				searchObject.crudRows = data;
@@ -2429,14 +2528,16 @@ function showGroup(groupId){
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
-			$('.newgrouploanbtn').button().click(function(e) {
+			$('.newgrouploanbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
 			var linkId = this.id;
 			var groupId = linkId.replace("newgrouploanbtn", "");
 			launchGroupLoanApplicationDialog(groupId);
 		    e.preventDefault();
 			});
 
-			$('.deletegroupbtn').button().click(function(e) {
+			$('.deletegroupbtn').button({icons: {
+               			 primary: "ui-icon-trash"}
+                	}).click(function(e) {
 			var linkId = this.id;
 			var groupId = linkId.replace("deletegroupbtn", "");
 
@@ -2460,14 +2561,14 @@ function showGroup(groupId){
 			});
 
 			// bind click listeners to buttons.
-			$('.editstandardgroupbtn').button().click(function(e) {
+			$('.editstandardgroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
 				var linkId = this.id;
 				var groupId = linkId.replace("editstandardgroupbtn", "");
 				launchGroupDialog(groupId);
 			    e.preventDefault();
 			});
 			
-			$('.editcentergroupbtn').button().click(function(e) {
+			$('.editcentergroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
 				var linkId = this.id;
 				var groupId = linkId.replace("editcentergroupbtn", "");
 				
@@ -2475,7 +2576,7 @@ function showGroup(groupId){
 			    e.preventDefault();
 			});
 
-			$('.newbulkloanbtn').button().click(function(e) {
+			$('.newbulkloanbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
 				addLJGBulkMembersLoans(groupId);
 		    	e.preventDefault();
 			});
@@ -2523,11 +2624,30 @@ function showGroup(groupId){
                 e.preventDefault();
             });
 
+            $('.groupsavingsbtn').button({icons: {
+               			 primary: "ui-icon-document-b"}
+                	}).click(function(e) {
+                var linkId = this.id;
+                var groupId = linkId.replace("addgroupnotebtn", "");
+                var postUrl = 'groups/' + groupId + '/notes';
+                var templateSelector = "#noteFormTemplate";
+                var width = 600;
+                var height = 400;
+
+                var saveSuccessFunction = function(data, textStatus, jqXHR) {
+                    $("#dialog-form").dialog("close");
+                    refreshNoteWidget('groups/' + groupId, 'groupnotes');
+                }
+
+                popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
+                e.preventDefault();
+            });
+
             $('button.addgroupnotebtn span').text(doI18N('dialog.button.add.note'));
 
 		});
 
-			$('.addcalendarbtn').button().click(function(e) {
+			$('.addcalendarbtn').button({icons: {primary: "ui-icon-calendar"}}).click(function(e) {
 				var linkId = this.id;
                 var groupId = linkId.replace("addcalendarbtn", "");
                 addCalendar(groupId, 'groups', 'centerCalendarContent');
@@ -2551,9 +2671,9 @@ function showCenter(centerId){
 	$newtabs = $("#newtabs").tabs({
     	select: function(event, tab) {
 			if (tab.index == 0){
-				if (groupDirty == true){
+				if (centerDirty == true){
 					refreshGroupLoanSummaryInfo(centerUrl);
-					groupDirty = false;
+					centerDirty = false;
 				}
 			}
 		},
@@ -2572,7 +2692,7 @@ function showCenter(centerId){
 		var centerSummaryHtml = $("#centerSummaryTabTemplate").render(data);
 
 
-		groupDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
+		centerDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
 
 		
 		$("#centerDetails").html(centerDetailsHtml);
@@ -2591,21 +2711,31 @@ function showCenter(centerId){
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
-			$('.newcenterloanbtn').button().click(function(e) {
-			var linkId = this.id;
-			var centerId = linkId.replace("newcenterloanbtn", "");
-			launchGroupLoanApplicationDialog(centerId);
-		    e.preventDefault();
+			// bind click listeners to buttons.
+			$('.editcenterbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
+				var linkId = this.id;
+				var centerId = linkId.replace("editcenterbtn", "");
+				
+				var getUrl = 'centers/' + centerId + '?template=true';
+				var putUrl = 'centers/' + centerId;
+				var templateSelector = "#centerFormTemplate";
+				var width = 900; 
+				var height = 400;
+				
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	showCenter(centerId);
+				}
+				
+				var title = 'dialog.title.edit.center';
+
+				var extraParam = '{"action":"disable"}';
+
+				popupDialogWithFormView(getUrl, putUrl, 'PUT', title, templateSelector, width, height,  saveSuccessFunction , extraParam);
+			    e.preventDefault();
 			});
 
-			$('.addcalendarbtn').button().click(function(e) {
-			var linkId = this.id;
-			var centerId = linkId.replace("addcalendarbtn", "");
-			addCalendar(centerId, 'groups', 'centerCalendarContent');
-		    e.preventDefault();
-			});
-
-			$('.addgroupbtn').button().click(function(e) {
+			$('.addgroupbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
 
 				var linkId = this.id;
 				var centerId = linkId.replace("addgroupbtn", "");
@@ -2627,85 +2757,24 @@ function showCenter(centerId){
 
 			});
 
-			$('.deletecenterbtn').button().click(function(e) {
-			var linkId = this.id;
-			var groupId = linkId.replace("deletecenterbtn", "");
-
-			var url = 'centers/' + centerId;
-			var width = 400; 
-			var height = 225;
-									
-			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
-			
-			e.preventDefault();
-			});
-
-			// bind click listeners to buttons.
-			$('.editcenterbtn').button().click(function(e) {
+			$('.addcalendarbtn').button({icons: {primary: "ui-icon-calendar"}}).click(function(e) {
 				var linkId = this.id;
-				var groupId = linkId.replace("editcenterbtn", "");
-				
-				var getUrl = 'centers/' + centerId + '?template=true';
-				var putUrl = 'centers/' + groupId;
-				var templateSelector = "#centerFormTemplate";
-				var width = 900; 
-				var height = 400;
-				
-				var saveSuccessFunction = function(data, textStatus, jqXHR) {
-				  	$("#dialog-form").dialog("close");
-				  	showGroup(groupId);
-				}
-				
-				var title = 'dialog.title.edit.grouping.at.level.' + data.groupLevelData.levelId;
-
-				var extraParam = '{"action":"disable"}';
-
-				popupDialogWithFormView(getUrl, putUrl, 'PUT', title, templateSelector, width, height,  saveSuccessFunction , extraParam);
+				var centerId = linkId.replace("addcalendarbtn", "");
+				addCalendar(centerId, 'groups', 'centerCalendarContent');
 			    e.preventDefault();
 			});
 
-			$('.newbulkloanbtn').button().click(function(e) {
-				addLJGBulkMembersLoans(centerId);
-		    	e.preventDefault();
-			});
-
-			$('.unassignstafftogroup').button().click(function(e){
-
-						var linkId = this.id;
-						var groupId = linkId.replace("unassignstafftogroup", "");
-						var staffId = $('#staffId').val();
-						var postUrl = 'groups/'+ groupId +'/command/unassign_staff';
-						var getUrl = ""
-						
-						var templateSelector = "#loanUnassignmentFormTemplate";
-						var width = 400; 
-						var height = 225;
-						var jsonbody = '{"staffId":"'+staffId+'"}';
-						
-						var saveSuccessFunction = function(data, textStatus, jqXHR) {
-				  			$("#dialog-form").dialog("close");
-				  			showGroup(groupId);
-						}						
-						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
-						//popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunction)		
-						popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction , jsonbody);
-
-						e.preventDefault();
-			});
-
-			$('.addgroupnotebtn').button({icons: {
-                         primary: "ui-icon-comment"}
-            }).click(function(e) {
+			$('.addgroupnotebtn').button({icons: {primary: "ui-icon-comment"}}).click(function(e) {
                 var linkId = this.id;
-                var groupId = linkId.replace("addgroupnotebtn", "");
-                var postUrl = 'groups/' + groupId + '/notes';
+                var centerId = linkId.replace("addgroupnotebtn", "");
+                var postUrl = 'groups/' + centerId + '/notes';
                 var templateSelector = "#noteFormTemplate";
                 var width = 600;
                 var height = 400;
 
                 var saveSuccessFunction = function(data, textStatus, jqXHR) {
                     $("#dialog-form").dialog("close");
-                    refreshNoteWidget('groups/' + groupId, 'groupnotes');
+                    refreshNoteWidget('groups/' + centerId, 'groupnotes');
                 }
 
                 popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
@@ -2713,6 +2782,19 @@ function showCenter(centerId){
             });
 
             $('button.addgroupnotebtn span').text(doI18N('dialog.button.add.note'));
+
+			$('.deletecenterbtn').button({icons:{primary: "ui-icon-trash"}}).click(function(e) {
+				var linkId = this.id;
+				var centerId = linkId.replace("deletecenterbtn", "");
+
+				var url = 'centers/' + centerId;
+				var width = 400; 
+				var height = 225;
+										
+				popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
+				
+				e.preventDefault();
+			});
 
 		});
 		
@@ -2723,7 +2805,7 @@ function showCenter(centerId){
         $(anchor.hash).html("error occured while ajax loading.");
     };
 
-	executeAjaxRequest(centerUrl, 'GET', "", successFunction, errorFunction);
+	executeAjaxRequest(centerUrl + '?associations=groups', 'GET', "", successFunction, errorFunction);
 }
 
 function addLJGBulkMembersLoans(groupId){
@@ -6594,6 +6676,7 @@ return 'var successFunction = function(data, textStatus, jqXHR) {   ' +
           ' var calendar = new Object();' + 
           ' calendar.crudRows = data;' +
           ' var tableHtml = $("#calendarWidgetFormTemplate").render(calendar);' +
+          'if(calendar.crudRows.length > 0){var addCalbtn = $(".addcalendarbtn"); if(addCalbtn != undefined){addCalbtn.remove();}}' +
           ' $("#' + calendarContent + '").html(tableHtml);' +
           ' $(".editcalendar").click(function(e) { ' +
                 ' var linkId = this.id;' +
