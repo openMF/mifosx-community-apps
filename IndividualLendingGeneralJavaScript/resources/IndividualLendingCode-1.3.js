@@ -94,6 +94,10 @@ crudData = {
 				refreshListNeeded: true,
 				dialogWidth: 900,
 				dialogHeight: 300
+			},
+		report: {
+			editTemplateNeeded: false,
+			refreshListNeeded: true
 			}
 		};
 
@@ -4917,7 +4921,8 @@ function refreshLoanDocuments(loanId) {
 
 		var dialogWidth = crudData[tableName].dialogWidth;
 		var dialogHeight = crudData[tableName].dialogHeight;
-
+		if (dialogWidth == undefined) dialogWidth = $(window).width() - 20;
+		if (dialogHeight == undefined) dialogHeight = $(window).height() - 20;
 		
 		var genSSF = 'var saveSuccessFunction = function(data, textStatus, jqXHR) {';
 		genSSF += '$("#dialog-form").dialog("close");';

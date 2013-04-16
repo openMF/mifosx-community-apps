@@ -7943,10 +7943,15 @@ $(document).ready(function() {
 			<th>{{=$ctx.doI18N("reportSubType")}}</th>
 			<th>{{=$ctx.doI18N("reportCategory")}}</th>
 			<th>{{=$ctx.doI18N("description")}}</th>
-			<th>{{=$ctx.doI18N("useReport")}}</th>
 			<th>{{=$ctx.doI18N("coreReport")}}</th>
+			<th>{{=$ctx.doI18N("useReport")}}</th>
 			<th>&nbsp;</th>
-			<th>&nbsp;</th>
+			{{#if $ctx.showTask("UpdateReport")}}
+				<th>&nbsp;</th>
+			{{/if}}
+			{{#if $ctx.showTask("DeleteReport")}}
+				<th>&nbsp;</th>
+			{{/if}}
 		</tr>
 	</thead
 	<tbody>
@@ -7958,13 +7963,6 @@ $(document).ready(function() {
 	<td>{{=reportCategory}}</td>
 	<td>{{=description}}</td>
 	<td>
-		{{#if useReport}}
-			{{=$ctx.doI18N("boolean.true")}}
-		{{#else}}
-			{{=$ctx.doI18N("boolean.false")}}
-		{{/if}}
-	</td>
-	<td>
 		{{#if coreReport}}
 			{{=$ctx.doI18N("boolean.true")}}
 		{{#else}}
@@ -7972,14 +7970,39 @@ $(document).ready(function() {
 		{{/if}}
 	</td>
 	<td>
-		<a id='editreport{{=id}}' class='editreport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
-	</td>
-	<td>
-		{{#if coreReport}} 
+		{{#if $ctx.showTask("UpdateReport")}}
+			{{#if useReport}}
+				<a id='disablereport{{=id}}' class='disablereport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("boolean.true")}}</a>
+			{{#else}}
+				<a id='enablereport{{=id}}' class='enablereport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("boolean.false")}}</a>
+			{{/if}}
 		{{#else}}
-			<a id='deleteoffice{{=id}}' class='deleteoffice' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+			{{#if useReport}}
+				{{=$ctx.doI18N("boolean.true")}}
+			{{#else}}
+				{{=$ctx.doI18N("boolean.false")}}
+			{{/if}}
 		{{/if}}
 	</td>
+	<td>
+			<a id='viewreport{{=id}}' class='viewreport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.view")}}</a>
+	</td>
+	{{#if $ctx.showTask("UpdateReport")}}
+		<td>
+			{{#if coreReport}} 
+			{{#else}}
+				<a id='editreport{{=id}}' class='editreport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.edit")}}</a>
+			{{/if}}
+		</td>
+	{{/if}}
+	{{#if $ctx.showTask("DeleteReport")}}
+		<td>
+			{{#if coreReport}} 
+			{{#else}}
+				<a id='deleteoffice{{=id}}' class='deleteoffice' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+			{{/if}}
+		</td>
+	{{/if}}
 </tr>
 {{/each}}
 	</tbody>
