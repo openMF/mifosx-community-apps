@@ -1460,8 +1460,8 @@ function showILGroup(groupId){
 				e.preventDefault();
 			});
     		$('button.renewdepositaccount span').text(doI18N('label.renew.deposit.account'));
- 
-			$('.withdrawdepositamount').button().click(function(e) {
+    		
+    		$('.withdrawdepositamount').button().click(function(e) {
 				var linkId = this.id;
 				var depositAccountId = linkId.replace("withdrawbtn", "");
 				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrawal';
@@ -1476,6 +1476,38 @@ function showILGroup(groupId){
 				e.preventDefault();
 			});
     		$('button.withdrawdepositamount span').text(doI18N('label.withdraw.deposit.amount'));
+ 
+			$('.modifydepositapplication').button().click(function(e) {
+				var linkId = this.id;
+				var depositAccountId = linkId.replace("modifydepositbtn", "");
+				var postUrl = 'depositaccounts/' + depositAccountId;
+				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true';
+				var templateSelector = "#modifyDepositApplicationFormTemplate";
+				var width = 850; 
+				var height = 450;
+
+				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
+				popupDialogWithFormView(getUrl, postUrl, 'PUT', 'dialog.title.edit.deposit.account', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
+			    
+				e.preventDefault();
+			});
+    		$('button.modifydepositapplication span').text(doI18N('label.modify.deposit.account'));
+    		
+    		$('.modifyapproveddepositapplication').button().click(function(e) {
+				var linkId = this.id;
+				var depositAccountId = linkId.replace("modifyapproveddepositbtn", "");
+				var postUrl = 'depositaccounts/' + depositAccountId;
+				var getUrl = 'depositaccounts/' + depositAccountId + '?template=true&?associations=all';
+				var templateSelector = "#modifyApprovedDepositApplicationFormTemplate";
+				var width = 400; 
+				var height = 250;
+
+				eval(genSaveSuccessFunctionReloadDeposit(depositAccountId));
+				popupDialogWithFormView(getUrl, postUrl, 'PUT', 'dialog.title.edit.deposit.account', templateSelector, width, height, saveSuccessFunctionReloadDeposit);
+			    
+				e.preventDefault();
+			});
+    		$('button.modifyapproveddepositapplication span').text(doI18N('label.modify.deposit.account'));
 
     		
     		$('.undoapprovedepositapplication').button().click(function(e) {
@@ -1495,7 +1527,7 @@ function showILGroup(groupId){
     		
     		$('.withdrawnbyapplicant').button().click(function(e) {
 				var linkId = this.id;
-				var depositAccountId = linkId.replace("withdrawnbyapplicantloanbtn", "");
+				var depositAccountId = linkId.replace("withdrawnbyapplicantbtn", "");
 				var postUrl = 'depositaccounts/' + depositAccountId + '?command=withdrewbyclient';
 				var templateSelector = "#stateTransitionDepositFormTemplate";
 				var width = 400; 
