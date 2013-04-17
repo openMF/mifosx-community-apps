@@ -560,7 +560,7 @@ $(document).ready(function() {
         {{/each}}
     </ul>   
 </script>
-<!-- All Office List-->
+
 <script id="allOfficesListTemplate" type="text/x-jquery-tmpl">
    <ul>
         {{#each crudRows}}
@@ -569,7 +569,6 @@ $(document).ready(function() {
     </ul>   
 </script>
 
-<!--Group search results table-->
 <script id="groupsTableTemplate" type="text/x-jquery-tmpl">
 	<table id='groupstable' width='100%'>
 		<thead>
@@ -587,181 +586,6 @@ $(document).ready(function() {
 			{{/each}}
 		</tbody>
 	</table>
-</script>
-
-<script id="clientImageAndActionsTemplate" type="text/x-jquery-tmpl">
-<form id="clientImageForm">
-		<table style="width:100%">
-			<tr>
-				<td>
-					<img id="customerImage" src="resources/img/client-image-placeholder.png" width="100" height="100"/>
-					<br/>
-					<span id="modifyImageToolbar" class="ui-widget-header ui-corner-all">
-								<button id="captureClientImage"></button>
-						   		<button id="editClientImage"></button>
-						   		<button id="deleteClientImage"></button>
-					</span>
-				</td>
-				<td valign="top" align="left">
-					<br/>
-					<br/>
-					<b><span id="customerName"></span></b>
-					<br/>
-                    <ul Style="padding-left: 0px;" id="clientparentGroups"></ul>
-					<span id="customerOfficeName"></span>
-				</td>
-				<td valign="top" style="text-align: right">
-					<span id="toolbar" class="ui-widget-header ui-corner-all">
-
-					{{#if $ctx.showTask("EditClient")}}
-						<button id="editclientbtn{{=id}}" class="editclientbtn">Edit client</button>
-					{{/if}}
-
-					{{#if $ctx.showTask("AddLoan")}}
-						<button id="newindividualloanbtn{{=id}}" class="newindividualloanbtn">New loan application</button>
-					{{/if}}
-
-					{{#if $ctx.showTask("AddClientNote")}}
-						<button id="addnotebtn{{=id}}" class="addnotebtn">Add note</button>
-					{{/if}}
-
-					{{#if $ctx.showTask("AddSavingAccount")}}
-						<button id="newsavingbtn{{=id}}" class="newsavingbtn">New savings account</button>
-					{{/if}}
-
-					{{#if $ctx.showTask("DeleteClient")}}
-						<button id="deleteclientbtn{{=id}}" class="deleteclientbtn">Delete client</button>
-					{{/if}}
-
-					</span>
-				</td>
-			<tr>
-		</table>
-</form>
-</script>
-
-<script id="clientImageUploadFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform" >
-    <div id="formerrors"></div>
-	<table>
-		<tr>
-			<td colspan="2" valign="top">
-				<label for="file">{{=$ctx.doI18N("label.client.browse.image")}}</label>
-				<input type="file" name="file" id="file" size="65"></input>
-			</td>
-		</tr>
-	</table>
- </form>
-</script>
-
-<script id="clientImageWebcamFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform" >
-    <div id="formerrors"></div>
-	<table style="width:100%">
-		<tr>
-			<td><div id="webcam" style="width:320px;height:240px"></div></td>
-			<td><button id="captureImage">{{=$ctx.doI18N("button.capture.image")}}</button></td>
-			<td><canvas id="imageCanvas" height="240" width="320"></canvas></td>
-		</tr>
-	</table>
- </form>
-</script>
-
-<script id="editClientFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
-	<select id="officeId" name="officeId" title="">
-		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-		{{#each allowedOffices}}
-			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
-			{{/if}}
-        {{/each}}
-	</select>
-
-	<table>
-		<tr>
-			<td>
-				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
-				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
-			</td>
-			<td>
-				<label for="middlename">{{=$ctx.doI18N("label.middlename")}}</label>
-				<input id="middlename" name="middlename" title="" type="text" value="{{=middlename}}"/>
-			</td>
-			<td>
-				<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
-				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
-			</td>
-		<tr>
-		<tr>
-			<td colspan="2">
-				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
-				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>
-			</td>
-		</tr>
-	</table>
-	<label for="accountNo">{{=$ctx.doI18N("label.accountNo")}}</label>
-	<input id="accountNo" name="accountNo" title="" type="text" value="{{=accountNo}}"/>
-
-    <label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
-	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
-
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-	<label for="joinedDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
-	<input id="joinedDate" name="joinedDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
-</form>
-</script>
-
-<script id="clientFormTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
-	<select id="officeId" name="officeId" title="">
-		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-		{{#each allowedOffices}}
-			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
-			{{/if}}
-        {{/each}}
-	</select>
-
-	<table>
-		<tr>
-			<td>
-				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
-				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
-			</td>
-			<td>
-				<label for="middlename">{{=$ctx.doI18N("label.middlename")}}</label>
-				<input id="middlename" name="middlename" title="" type="text" value="{{=middlename}}"/>
-			</td>
-			<td>
-				<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
-				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
-			</td>
-		<tr>
-		<tr>
-			<td colspan="2">
-				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
-				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>
-			</td>
-		</tr>
-	</table>
-    <label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
-	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
-
-	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-	<label for="joinedDate">{{=$ctx.doI18N("label.joiningdate")}}</label>
-	<input id="joinedDate" name="joinedDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(joinedDate)}}"/>
-</form>
 </script>
 
 <script id="centerGroupBlankFormTemplate" type="text/x-jquery-tmpl">
@@ -1582,50 +1406,6 @@ $(document).ready(function() {
 {{/if}}
 
 {{/if}}
-</script>
-
-<script id="clientDataTabTemplate" type="text/x-jquery-tmpl">
-<div id="clienttabcontent">
-	<div id="clienttableftpane" style="float:left; max-width: 700px; width: 700px;">
-		{{#if allChanges}}
-		<div class="row" style="border: 1px dashed red;">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.changes.awaiting")}}</span>
-			<span class="rowvalue">{{=allChanges.length}}</span>
-		</div>
-		{{/if}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.name")}}</span>
-			<span class="rowvalue">{{=displayName}}</span>
-		</div>
-		{{#if accountNo}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.accountNo")}}</span>
-			<span class="rowvalue">{{=accountNo}}</span>
-		</div>
-		{{/if}}
-		{{#if externalId}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
-			<span class="rowvalue">{{=externalId}}</span>
-		</div>
-		{{/if}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
-			<span class="rowvalue">{{=officeName}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.joinedon")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(joinedDate)}}</span>
-		</div>
-
-		<div id="clientaccountssummary"></div>
-	</div>
-	<!-- end of left pane content -->
-
-	<!-- placeholder for notes content -->
-	<div id="clienttabrightpane" style="float:right;max-width:400px;width:400px;"></div>
-</div>
-<div style="clear: both;"></div>
 </script>
 
 <script id="groupDetailsTemplate" type="text/x-jquery-tmpl">
@@ -6417,23 +6197,6 @@ $(document).ready(function() {
 </div>
 </script>
 
-<script id="savingsAccountActivationTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
-    <div id="formerrors"></div>
-	</div>
-	<table cellspacing="4px" cellpadding="8px">
-		<tr>
-			<td>
-				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
-				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}"/>
-			</td>
-		</tr>
-	</table>
-</form>
-</script> 
-
 <script id="savingsAccountTransactionFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
@@ -7479,8 +7242,318 @@ $(document).ready(function() {
 </script>
 <!-- end of new loan application templates -->
 
-<!--Global search -->
+<!-- generic or common templates -->
+<script id="activationTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	</div>
+	<table cellspacing="4px" cellpadding="8px">
+		<tr>
+			<td>
+				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}"/>
+			</td>
+		</tr>
+	</table>
+</form>
+</script> 
+<!-- end of generic or common templates -->
 
+<!-- Client Screens -->
+<script id="clientFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+	<select id="officeId" name="officeId" title="">
+		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+		{{#each officeOptions}}
+			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			{{/if}}
+        {{/each}}
+	</select>
+
+	<table>
+		<tr>
+			<td>
+				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
+				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
+			</td>
+			<td>
+				<label for="middlename">{{=$ctx.doI18N("label.middlename")}}</label>
+				<input id="middlename" name="middlename" title="" type="text" value="{{=middlename}}"/>
+			</td>
+			<td>
+				<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
+				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2">
+				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
+				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
+				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+			</td>
+		</tr>
+		{{#if clientPendingApprovalAllowed}}
+		<tr>
+			<td>
+				<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+				<input id="activeCheckbox" type="checkbox" name="active" value="false" />
+			</td>
+			<td>
+				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="" />
+			</td>
+		</tr>
+		{{#else}}
+		<tr>
+			<td>
+				<input type="hidden" id="active" name="active" value="true" />
+				<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+				<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
+			</td>
+			<td>
+				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
+			</td>
+		</tr>
+		{{/if}}
+	</table>
+</form>
+</script>
+
+<script id="editClientFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+	<select id="officeId" name="officeId" title="">
+		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+		{{#each officeOptions}}
+			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			{{/if}}
+        {{/each}}
+	</select>
+
+	<table>
+		<tr>
+			<td>
+				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
+				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
+			</td>
+			<td>
+				<label for="middlename">{{=$ctx.doI18N("label.middlename")}}</label>
+				<input id="middlename" name="middlename" title="" type="text" value="{{=middlename}}"/>
+			</td>
+			<td>
+				<label for="lastname">{{=$ctx.doI18N("label.lastname")}}</label>
+				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
+			</td>
+		<tr>
+		<tr>
+			<td colspan="2">
+				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
+				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label for="accountNo">{{=$ctx.doI18N("label.accountNo")}}</label>
+				<input id="accountNo" name="accountNo" title="" type="text" value="{{=accountNo}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
+				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+			</td>
+		</tr>
+	</table>
+</form>
+</script>
+
+<script id="clientToolbarTemplate">
+<div style="padding-bottom: 4px;">
+<table style="width:100%">
+<tr>
+	<td valign="top" align="left">
+		<b><span id="customerName">{{=displayName}}</span></b>
+		<br/>
+		<span id="customerOfficeName">{{=officeName}}</span>
+	</td>
+	<td valign="top" style="text-align: right">
+			<span id="toolbar" class="ui-widget-header ui-corner-all">
+
+		{{#if activationDate}}
+		
+		{{#else}}
+			{{#if $ctx.showTask("ActivateClient")}}
+				<button id="activateclientbtn" class="activateclient">Activate</button>
+			{{/if}}
+			
+			{{#if $ctx.showTask("DeleteClient")}}
+				<button id="deleteclientbtn" class="deleteclientbtn">Delete</button>
+			{{/if}}
+		{{/if}}
+
+			{{#if $ctx.showTask("EditClient")}}
+				<button id="editclientbtn" class="editclientbtn">Edit</button>
+			{{/if}}
+
+			{{#if $ctx.showTask("AddClientNote")}}
+				<button id="addnotebtn" class="addnotebtn">Add note</button>
+			{{/if}}
+
+		{{#if activationDate}}
+			{{#if $ctx.showTask("AddLoan")}}
+				<button id="newindividualloanbtn" class="newindividualloanbtn">New loan application</button>
+			{{/if}}
+
+			{{#if $ctx.showTask("AddSavingAccount")}}
+				<button id="newsavingbtn" class="newsavingbtn">New savings account</button>
+			{{/if}}
+		{{/if}}
+			</span>
+		</td>
+	<tr>
+</table>
+</div>
+</script>
+
+<script id="clientDataTabTemplate" type="text/x-jquery-tmpl">
+<div id="clienttabcontent">
+	<table>
+		<tr>
+			<!-- left pane -->
+			<td>
+				<!-- inside table -->
+					<table>
+						<tr>
+							<!-- cell 1 -->
+							<td valign="top">
+								<form id="clientImageForm">
+									<img id="customerImage" src="resources/img/client-image-placeholder.png" width="100" height="100"/>
+									<br/>
+									<span id="modifyImageToolbar" class="ui-widget-header ui-corner-all">
+										<button id="captureClientImage"></button>
+										<button id="editClientImage"></button>
+										<button id="deleteClientImage"></button>
+									</span>
+								</form>
+							</td>
+							
+							<td valign="top">
+								<div id="clienttableftpane" style="float:left; max-width: 700px; width: 700px;">
+									<div class="row">
+										<span class="longrowlabel">{{=$ctx.doI18N("label.name")}}</span>
+										<span class="rowvalue">{{=displayName}}</span>
+									</div>
+									<div class="row">
+										<span class="longrowlabel">{{=$ctx.doI18N("label.accountNo")}}</span>
+										<span class="rowvalue">{{=accountNo}}</span>
+									</div>
+									{{#if externalId}}
+									<div class="row">
+										<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
+										<span class="rowvalue">{{=externalId}}</span>
+									</div>
+									{{/if}}
+									<div class="row">
+										<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
+										<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
+									</div>
+									{{#if activationDate}}
+									<div class="row">
+										<span class="longrowlabel">{{=$ctx.doI18N("label.activationDate")}}</span>
+										<span class="rowvalue">{{=$ctx.globalDate(activationDate)}}</span>
+									</div>
+									{{/if}}
+							
+									<div class="row">
+										<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
+										<span class="rowvalue">{{=officeName}}</span>
+									</div>
+									{{#if groups}}
+									<div class="row">
+										<span class="longrowlabel">{{=$ctx.doI18N("label.memberOf")}}</span>
+										<span class="rowvalue">
+										{{#each groups}}{{=name}},&nbsp;{{/each}}
+										</span>
+									</div>
+									{{/if}}
+								</div>
+							</td>
+						</tr>
+					
+						<tr colspan="2">
+							<td valign="top">
+								<div id="clientaccountssummary"></div>
+							</td>
+						</tr>
+					</table>
+				<!-- end of inside table -->
+			</td>
+
+			<!-- right pane -->
+			<td valign="top" style="max-width:400px; width:400px;">
+				<!-- placeholder for notes content -->
+				<div id="clienttabrightpane"></div>
+			</td>
+		</tr>
+	</table>
+</div>
+<div style="clear: both;"></div>
+</script>
+
+<script id="clientImageUploadFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table>
+		<tr>
+			<td colspan="2" valign="top">
+				<label for="file">{{=$ctx.doI18N("label.client.browse.image")}}</label>
+				<input type="file" name="file" id="file" size="65"></input>
+			</td>
+		</tr>
+	</table>
+ </form>
+</script>
+
+<script id="clientImageWebcamFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+	<table style="width:100%">
+		<tr>
+			<td><div id="webcam" style="width:320px;height:240px"></div></td>
+			<td><button id="captureImage">{{=$ctx.doI18N("button.capture.image")}}</button></td>
+			<td><canvas id="imageCanvas" height="240" width="320"></canvas></td>
+		</tr>
+	</table>
+ </form>
+</script>
+<!-- end of client -->
+
+
+<!--Global search -->
 <script id="globalSearchListTemplate" type="text/x-jquery-tmpl">
 
 <table id='globalSearchtable' width='100%'>

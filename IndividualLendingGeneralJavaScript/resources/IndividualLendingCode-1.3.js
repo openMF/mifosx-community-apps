@@ -406,8 +406,8 @@ function setCommunalBankListingContent(divName){
 }
 
 function setClientContent(divName) {
-	var htmlVar = '<div  id="clientmaintab"></div>'
-	htmlVar += '<div id="newtabs">	<ul><li><a href="unknown.html"'; 
+	var htmlVar = '<div  id="clienttoolbar"></div>'
+	htmlVar += '<div id="clientdatatabs">	<ul><li><a href="unknown.html"'; 
 	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
 	htmlVar += '<li><a href="nothing" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
@@ -2048,12 +2048,8 @@ function showILClient(clientId) {
 	var clientUrl = 'clients/' + clientId
 
 	setClientContent("content");
-	//populate main content
-	var crudObject = new Object();
-	var tableHtml = $("#clientImageAndActionsTemplate").render(crudObject);
-	$("#clientmaintab").html(tableHtml);
 	
-	$newtabs = $("#newtabs").tabs({
+	$newtabs = $("#clientdatatabs").tabs({
 	    	select: function(event, tab) {
 				//alert("client tab selected: " + tab.index);
 				if (tab.index == 0)
@@ -2087,7 +2083,6 @@ function showILClient(clientId) {
 	        
 	//initialize client image related buttons
 	var imageFetchSuccessFunction = function(data, textStatus, jqXHR) {
-		//showILClient(clientId);
 		$("#customerImage").attr("src",data);
 	};
 
@@ -2101,16 +2096,39 @@ function showILClient(clientId) {
 	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
 	            	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
 	            
+	            	//populate main content
+	            	var crudObject = new Object();
+	            	var tableHtml = $("#clientToolbarTemplate").render(data);
+	            	$("#clienttoolbar").html(tableHtml);
+	            	
 	        		var tableHtml = $("#clientDataTabTemplate").render(data);
 					$("#clienttab").html(tableHtml);
-					$("#customerName").html(data.displayName);
-					$("#customerOfficeName").html(data.officeName);
 					
+//					$("#customerName").html(data.displayName);
+//					$("#customerOfficeName").html(data.officeName);
 					
 					// retrieve accounts summary info
 					refreshLoanSummaryInfo(clientUrl);
-										
+					
 					// bind click listeners to buttons.
+					$('.activateclient').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
+						var linkId = this.id;
+						var getUrl = 'clients/' + clientId + '?command=activate&template=true';
+						var postUrl = 'clients/' + clientId + '?command=activate';
+						var templateSelector = "#activationTemplate";
+						var width = 400; 
+						var height = 225;
+
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						  	$("#dialog-form").dialog("close");
+						  	showILClient(clientId);
+						}
+						
+						popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.activation', templateSelector, width, height, saveSuccessFunction);
+					    e.preventDefault();
+					});
+					$('button.activateclient span').text(doI18N('button.activate'));
+					
 					$('.deleteclientbtn').button({icons: {
                			 primary: "ui-icon-trash"}
                 	}).click(function(e) {
@@ -2121,7 +2139,7 @@ function showILClient(clientId) {
 						popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
 						e.preventDefault();
 					});
-					$('button.deleteclientbtn span').text(doI18N('dialog.button.delete.client'));
+					$('button.deleteclientbtn span').text(doI18N('link.action.delete'));
 					
 					$('.editclientbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
 						var getUrl = 'clients/' + clientId + '?template=true';
@@ -2138,7 +2156,7 @@ function showILClient(clientId) {
 						popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.client", templateSelector, width, height,  saveSuccessFunction);
 					    e.preventDefault();
 					});
-					$('button.editclientbtn span').text(doI18N('dialog.button.edit.client'));
+					$('button.editclientbtn span').text(doI18N('link.action.edit'));
 					
 					$('.newindividualloanbtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
                 		launchLoanApplicationDialog(clientId);
@@ -5242,6 +5260,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 
 				if (templateSelector == "#clientFormTemplate") 
 				{
+					
 					if(!(extraParam === undefined))
 						{
 							var officeId = jQuery.parseJSON(extraParam).officeId;
@@ -6601,7 +6620,7 @@ function loadSavingAccount(accountId) {
 			var savingAccountId = linkId.replace("savingsaccountactivatebtn", "");
 			var getUrl = 'savingsaccounts/' + savingAccountId + '?command=activate&template=true';
 			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=activate';
-			var templateSelector = "#savingsAccountActivationTemplate";
+			var templateSelector = "#activationTemplate";
 			var width = 400; 
 			var height = 225;
 			
