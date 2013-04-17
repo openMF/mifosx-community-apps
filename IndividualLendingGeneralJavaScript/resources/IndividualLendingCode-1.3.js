@@ -1640,7 +1640,7 @@ function saveGroup(divContainer, groupId) {
 	
 	var successFunction =  function(data, textStatus, jqXHR) {
 		divContainer.dialog("close");
-		showGroupListing();
+		showGroup(groupId);
 	};
 	
 	if (groupId) {
@@ -1717,11 +1717,11 @@ var launchCenterGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR)
 		});
 		
 		$('.multiadd').click(function() {  
-			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#selectedItems');  
+			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#clientMembers');  
 		});
 		
 		$('.multiremove').click(function() {  
-			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedItems');  
+			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
 		});
 		
 		$('.datepickerfield').datepicker({constrainInput: true, dateFormat: custom.datePickerDateFormat});
@@ -2551,35 +2551,35 @@ function showGroup(groupId){
 		$(document).ready(function() {
 
 			$('.newgrouploanbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
-			var linkId = this.id;
-			var groupId = linkId.replace("newgrouploanbtn", "");
-			launchGroupLoanApplicationDialog(groupId);
-		    e.preventDefault();
+				var linkId = this.id;
+				var groupId = linkId.replace("newgrouploanbtn", "");
+				launchGroupLoanApplicationDialog(groupId);
+			    e.preventDefault();
 			});
 
 			$('.deletegroupbtn').button({icons: {
                			 primary: "ui-icon-trash"}
                 	}).click(function(e) {
-			var linkId = this.id;
-			var groupId = linkId.replace("deletegroupbtn", "");
+				var linkId = this.id;
+				var groupId = linkId.replace("deletegroupbtn", "");
 
-			var url = 'groups/' + groupId;
-			var width = 400; 
-			var height = 225;
-									
-			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
-			
-			e.preventDefault();
+				var url = 'groups/' + groupId;
+				var width = 400; 
+				var height = 225;
+										
+				popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
+				
+				e.preventDefault();
 			});
 
 			$('.addclientbtn').button().click(function(e){
-			var linkId = this.id;
-			var groupId = linkId.replace("addclientbtn", "");
+				var linkId = this.id;
+				var groupId = linkId.replace("addclientbtn", "");
 
-			var officeId = $('#officeId').val();
+				var officeId = data.officeId;
 
-				addClient(officeId , groupId);
-				e.preventDefault();
+					addClient(officeId , groupId);
+					e.preventDefault();
 			});
 
 			// bind click listeners to buttons.
@@ -2844,7 +2844,7 @@ function addLJGBulkMembersLoans(groupId){
 
 		} 
 
-		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=200';
+		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300';
 		executeAjaxRequest(url, 'GET', "", addMemberLoanApplicationSuccess, formErrorFunction);
 	}
 

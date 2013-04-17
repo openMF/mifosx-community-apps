@@ -651,31 +651,31 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td>
-				<div class="multiselectwidget">
-					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
-					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
-					{{#each clientsOptions}}
-						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
-		            {{/each}}
-					</select>
-					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
-				</div>
-			</td>
-			<td>
-				<div class="multiselectwidget">
-					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
-					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
-					{{#each clientMembers}}
-						{{#if officeName}}
-							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
-		            	{{else}}
-		            		<option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
-		            	{{/if}}
-		            {{/each}}
-					</select>
-					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
-				</div>
-			</td>
+                <div class="multiselectwidget">
+                    <label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+                    <select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+                    {{#each clientOptions}}
+                        <option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+                    {{/each}}
+                    </select>
+                    <a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+                </div>
+            </td>
+            <td>
+                <div class="multiselectwidget">
+                    <label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+                    <select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+                    {{#each clientMembers}}
+                        {{#if officeName}}
+                            <option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+                        {{else}}
+                            <option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
+                        {{/if}}
+                    {{/each}}
+                    </select>
+                    <a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
+                </div>
+            </td>
 		</tr>
 	</table>
 </form>
@@ -749,7 +749,7 @@ $(document).ready(function() {
 				<div class="multiselectwidget">
 					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
 					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
-					{{#each clientsOptions}}
+					{{#each clientOptions}}
 						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
 		            {{/each}}
 					</select>
@@ -783,7 +783,6 @@ $(document).ready(function() {
 		<tr>
 			<td>
 				<div>
-				<input type="hidden" id="officeId" name="officeId" value="{{=officeId}}" />
 				<label for="office">{{=$ctx.doI18N("label.office")}}</label>
 				<select id="office" name="office" title="" disabled=disabled>
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
@@ -799,17 +798,21 @@ $(document).ready(function() {
 			</td>
 			<td>
 			<div>
-				<input type="hidden" id="centerId" name="centerId" value="{{=centerId}}" />
 				<label for="center">{{=$ctx.doI18N("label.center")}}</label>
 				<select id="center" name="center" title="" disabled=disabled>
                     <option value="">{{=$ctx.doI18N("option.group.select.parent.first.choice")}}</option>
-					{{#each centerOptions}}
+					{{#if centerName}}
+                        <option value="{{=centerId}}" selected="selected">{{=centerName}}</option>
+                    {{/if}}
+                    <!-- Do not allow to change center
+                    {{#each centerOptions}}
                         {{#if $ctx.number($parent.parent.data.centerId)===$ctx.number(id)}}
                             <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
                         {{#else}}
                             <option value="{{=$ctx.number(id)}}">{{=name}}</option>
                         {{/if}}                            
 					{{/each}}
+                    -->
 				</select>
 				</div>
 			</td>
@@ -844,7 +847,7 @@ $(document).ready(function() {
 				<div class="multiselectwidget">
 					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
 					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
-					{{#each clientsOptions}}
+					{{#each clientOptions}}
 						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
 		            {{/each}}
 					</select>
@@ -1446,16 +1449,17 @@ $(document).ready(function() {
 </script>
 
 <script id="groupClientsTabTemplate" type="text/x-jquery-tmpl">
-{{#if clientMembers}}
+
 <span><b>{{=$ctx.doI18N("label.group.clients.assigned")}}</b></span>
-<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
+<div style="border: 1px solid #CECECE; height:100px; width:500px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
+{{#if clientMembers}}
 	{{#each clientMembers}}
     <div class="row">
 		<span class="fontnormal"><a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}}</span></a></span>
 	</div>
     {{/each}}
-</div>
 {{/if}}
+</div>
 </script>
 
 <script id="groupSummaryTabTemplate" type="text/x-jquery-tmpl">
@@ -1585,7 +1589,7 @@ $(document).ready(function() {
 <span><b>{{=$ctx.doI18N("label.group.assigned")}}</b></span>
 <p>{{=$ctx.doI18N("label.center.group.view.group.details")}}</p>
 
-<div style="border: 1px solid #CECECE; height:100px; width:250px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
+<div style="border: 1px solid #CECECE; height:100px; width:500px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
 {{#each groups}}
 	<div class="row">
 		<span class="fontnormal"><a href="#" onCLick="showGroup({{=id}}); return false;"><span class="rowvalue">{{=name}}</span></a><br></span>
