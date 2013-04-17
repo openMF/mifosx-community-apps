@@ -1842,7 +1842,7 @@ function showNewCenterListing(){
 	});
 
 	$("#addCenter").button().click(function(e) {
-		launchGroupDialog();
+		addCenter();
 	    e.preventDefault();
 	});
 }
@@ -2816,6 +2816,30 @@ function showCenter(centerId){
 				popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
 				
 				e.preventDefault();
+			});
+
+			$('.unassignstafftogroup').button().click(function(e){
+
+						var linkId = this.id;
+						var groupId = linkId.replace("unassignstafftogroup", "");
+						var staffId = $('#staffId').val();
+						var postUrl = 'groups/'+ groupId +'/command/unassign_staff';
+						var getUrl = ""
+						
+						var templateSelector = "#loanUnassignmentFormTemplate";
+						var width = 400; 
+						var height = 225;
+						var jsonbody = '{"staffId":"'+staffId+'"}';
+						
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  			$("#dialog-form").dialog("close");
+				  			showGroup(groupId);
+						}						
+						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
+						//popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunction)		
+						popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction , jsonbody);
+
+						e.preventDefault();
 			});
 
 		});
@@ -5270,6 +5294,16 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 							$('<input>').attr({type: 'hidden',id: 'officeId',name: 'officeId',value:officeId}).appendTo('#entityform');
 							$('<input>').attr({type: 'hidden',id: 'groupId',name: 'groupId',value:groupId}).appendTo('#entityform');
 						}	
+				}
+
+				if (templateSelector == "#centerFormTemplate") {
+					if(!(extraParam === undefined)){
+						var action = jQuery.parseJSON(extraParam).action;
+						if(action == 'disable'){
+							var office = $('.officeId');
+							office.attr('disabled','disabled');
+						}
+					}
 				}
 
 				if (templateSelector == "#groupFormTemplate") 

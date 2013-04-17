@@ -1030,7 +1030,7 @@ $(document).ready(function() {
             <td>
                 <div>
                 <label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
-                <select id="officeId" name="officeId" title="" disabled="true">
+                <select id="officeId" class="officeId" name="officeId" title="">
                     <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
                     {{#each officeOptions}}
                         {{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
