@@ -6587,6 +6587,8 @@ function showLockinOptions(){
 			{{/if}}
 			{{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
 			<li><a href="#accounting" title="accounting">{{=$ctx.doI18N("tab.accounting")}}</a></li>
+			{{#else}}
+			<li><a href="#accounting" title="accounting" style="display: none">{{=$ctx.doI18N("tab.accounting")}}</a></li>
 			{{/if}}
 	    </ul>
 	    
@@ -7034,6 +7036,8 @@ function showLockinOptions(){
 		</div>
 	</fieldset>
 		</div>
+{{#else}}
+	<input type="hidden" name="accountingRule" value="1" /> 
 {{/if}}
 		<!-- end of accounting -->
 	</div>
