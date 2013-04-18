@@ -6655,10 +6655,10 @@ $(document).ready(function() {
 
 	<table>
 			<tr>
-				<td valign="top">
+				<td class='applicant' valign="top">
 				{{=$ctx.doI18N("label.applicant")}}
 				</td>
-				<td valign="top">
+				<td class='applicant' valign="top">
 				{{#if clientName}}
 				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
 				{{/if}}
@@ -8189,6 +8189,90 @@ $(document).ready(function() {
     <br/>
     <br/>
 </div>
+</script>
+
+<script id="jlgbulkloanmemberselect" type="text/x-jquery-tmpl">
+    <div id="membesselect" class="ui-widget-content ui-corner-all">
+        <h3 class="ui-widget-header ui-corner-all" style = 'height:30px; text-align:centers; margin:5px;'>Member Select</h3>
+        <h1 align="center">{{=$ctx.doI18N("tab.group.bulk.loan.member.select.title")}}</h1> 
+        <br>
+        <div style='margin:10px;'>
+            <table id='loanproductstable' width='40%'>
+                <tr>
+                    <td>
+                        {{=$ctx.doI18N("label.group.loan.product.name")}}
+                    </td>
+                    <td>
+                        <select name="productId" id="productId" class="productId">
+                            <option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
+                            {{#each productOptions}}
+                                {{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
+                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                                {{#else}}
+                                <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <table id='memberstable' width='80%'>
+                <tr>
+                    <td>
+                        <div class="multiselectwidget">
+                            <label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+                            <select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+                            {{#each group.clientMembers}}
+                                <option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+                            {{/each}}
+                            </select>
+                            <a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="multiselectwidget">
+                            <label for="loanMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+                            <select id="loanMembers" name="loanMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
+                            
+                            </select>
+                            <a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <button id="continuebtn" >{{=$ctx.doI18N("button.continue")}}</button>  
+            <br>
+        </div>
+    </div>
+    <br>
+    <div id="jlgloancontainer" style="display:none;">
+        <div id="memberloanapplications" class="ui-widget-content ui-corner-all">
+            <h3 class="ui-widget-header ui-corner-all" style = 'height:30px; text-align:centers; margin:5px;'>New loan applications</h3>
+            <table>
+                <tr>
+                    <td>
+                        <div class="multiselectwidget">
+                            <label for="loanMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+                            <select id="selectedmembers" name="selectedmembers" title="" class="multiselectwidget selectedmembers" multiple="multiple" style="width:400px;height:125px;">
+                            
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <hr>
+            <div id="jlgloanproductdetails">
+
+            </div>
+            <br>
+            <button id="backbtn" >{{=$ctx.doI18N("button.back")}}</button>&nbsp;&nbsp;&nbsp;
+            <button id="savebtn" >{{=$ctx.doI18N("button.save")}}</button>  
+            <br>
+        </div>
+    </div>
 </script>
 
 <script id="centerGroupsTabTemplate" type="text/x-jquery-tmpl">
