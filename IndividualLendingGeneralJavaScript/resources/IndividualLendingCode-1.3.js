@@ -1641,6 +1641,7 @@ function saveGroup(divContainer, groupId) {
 	var successFunction =  function(data, textStatus, jqXHR) {
 		console.log("success saving group: " + groupId + " >> " + data.resourceId);
 		divContainer.dialog("close");
+
 		if (groupId === undefined || groupId == null) {
 			groupId = data.resourceId;
 		}
@@ -2604,7 +2605,8 @@ function showGroup(groupId){
 			});
 
 			$('.newbulkloanbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
-				addLJGBulkMembersLoans(groupId);
+				//addLJGBulkMembersLoans(groupId);
+				jlgBulkMembersLoanWizard(groupId);
 		    	e.preventDefault();
 			});
 
@@ -2850,12 +2852,94 @@ function showCenter(centerId){
 		
 	}
 
-	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
+	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
     	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
         $(anchor.hash).html("error occured while ajax loading.");
     };
 
 	executeAjaxRequest(centerUrl + '?associations=groupMembers', 'GET', "", successFunction, errorFunction);
+}
+
+//step - 1 get all clients for loan application
+function jlgBulkMembersLoanWizard(groupId){
+	setAddBulkLoanContent("content");
+
+	var viewMemberselection = function(data, textStatus, jqXHR) {
+		var memberHtml = $("#jlgbulkloanmemberselect").render(data);
+
+		$("#jlgloans").append(memberHtml);
+
+		$('.multiadd').click(function() {  
+			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#loanMembers');  
+		});
+		
+		$('.multiremove').click(function() {  
+			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
+		});
+
+		$('#continuebtn').button({icons: { primary: "ui-icon-circle-arrow-e"}}).click(function(e){
+			
+			//get Loan product details
+			var container = $('#jlgloanproductdetails');
+			var loanProductId = $('#productId').val(); 
+			var membersLength = $('#loanMembers > option').length;
+
+			if(loanProductId === undefined || membersLength === undefined || membersLength <= 0){
+				return false;
+			}
+
+			$('#membesselect').hide();
+			$('#jlgloancontainer').show();
+			loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, true);
+			//$('#selectedmembers').html('');
+			$("#selectedmembers option").remove();
+			$('#selectedmembers').empty().append(function(){
+                var output = "";
+                $('#loanMembers option').each(function(i) {  
+                    output += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
+                });
+                //alert(output);
+                return output;
+            });	
+
+			$('#backbtn').button({icons: { primary: "ui-icon-circle-arrow-w"}}).click(function(e){
+				$('#membesselect').show();
+				$('#jlgloancontainer').hide();
+			});
+
+            $('#savebtn').button({icons: { primary: "ui-icon-disk"}}).click(function(e){
+                var serializedArray = {};
+                serializedArray = $('#entityform').serializeObject();
+                serializedArray['productId'] = loanProductId;
+                serializedArray['groupId'] = groupId;
+                var isError = false;
+                var totalSelectedMembers = $('#selectedmembers > option').length;
+                $('#selectedmembers option').each(function(index) {  
+                    var serializedArray1 = serializedArray;
+                    serializedArray1['clientId'] = $(this).val();
+                    var newFormData = JSON.stringify(serializedArray);
+                    var successFunction =  function(data, textStatus, jqXHR) {
+                        if (index === totalSelectedMembers - 1) {
+					        showGroup(groupId);
+					    }
+                        
+                    };
+                    
+                    var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
+                        formErrorFunction(jqXHR, textStatus, errorThrown);
+                        isError = true;
+                    };
+            		if(isError) return false;
+            		//alert($(this).val());
+                    executeAjaxRequest('loans', "POST", newFormData , successFunction, formErrorFunction);
+                });
+            });		
+		});
+		
+	}
+
+	var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300';
+	executeAjaxRequest(url, 'GET', "", viewMemberselection, formErrorFunction);	
 }
 
 function addLJGBulkMembersLoans(groupId){
@@ -2944,7 +3028,7 @@ function addLJGBulkMembersLoans(groupId){
 
 		} 
 
-		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=200' + '&productId=' + productId;
+		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300' + '&productId=' + productId;
 
 		executeAjaxRequest(url, 'GET', "", addMemberLoanApplicationSuccess, formErrorFunction);
 	}	
@@ -3383,7 +3467,7 @@ function addLJGBulkMembersLoans(groupId){
 
 	};
 	
-	function loadTabbedLoanApplicationForm(container, clientId, productId , group) {
+	function loadTabbedLoanApplicationForm(container, clientId, productId , group, isJLG) {
 		
 		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
 			// show full application form with values defaulted
@@ -3481,6 +3565,14 @@ function addLJGBulkMembersLoans(groupId){
                 }
                 //Attach meeting calendar
                 loadAvailableCalendars(resource, data.clientId, data.id, groupId);   
+            }
+
+            if(isJLG){
+            	//hide applicant and display applicants
+            	//disable loan product
+            	$('.applicant').each(function(i) {
+					$(this).html('');
+				});
             }
 
 		};
