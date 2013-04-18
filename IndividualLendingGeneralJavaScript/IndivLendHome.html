@@ -877,6 +877,8 @@ $(document).ready(function() {
 <script id="standardGroupFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<table>
 		<tr>
 			<td>
@@ -916,6 +918,27 @@ $(document).ready(function() {
 				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 			</td>
 		</tr>
+
+		<tr>
+			<td>
+				<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+				{{#if active}}
+				<input type="hidden" id="active" name="active" value="true" />
+				<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
+				{{else}}
+				<input id="activeCheckbox" type="checkbox" name="active" value="false" />
+				{{/if}}
+			</td>
+			<td>
+				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+				{{#if active}}
+				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />    
+				{{else}}
+				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="" />
+				{{/if}}
+			</td>
+		</tr>
+
 		<tr>
 			<td>
 				<div class="multiselectwidget">
@@ -1025,51 +1048,54 @@ $(document).ready(function() {
 <script id="centerFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
-    <table>
-        <tr>
-            <td>
-                <div>
-                <label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
-                <select id="officeId" class="officeId" name="officeId" title="">
-                    <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-                    {{#each officeOptions}}
-                        {{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
-                        {{#else}}
-                            <option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
-                        {{/if}}
-                    {{/each}}
-                </select>
-                </div>
-            </td>
-            <td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <label for="staffId">{{=$ctx.doI18N("label.group.staff")}}</label>
-                <select id="staffId" name="staffId" title="">
-                    <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
-                    {{#each staffOptions}}
-                        {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
-                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
-                        {{#else}}
-                            <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
-                        {{/if}}                              
-                    {{/each}}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="name">{{=$ctx.doI18N("form.label.group.name")}}</label>
-                <input id="name" name="name" title="" type="text" value="{{=name}}"/>
-            </td>
-            <td>
-                <label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
-                <input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
-            </td>
-        </tr>
-    </table>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+ 	<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
+ 	<select id="officeId" class="officeId" name="officeId" title="">
+     <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+     {{#each officeOptions}}
+         {{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+             <option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+         {{#else}}
+             <option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+         {{/if}}
+     {{/each}}
+ 	</select>
+
+ 	<label for="staffId">{{=$ctx.doI18N("label.group.staff")}}</label>
+ 	<select id="staffId" name="staffId" title="">
+     <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
+     {{#each staffOptions}}
+         {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+             <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+         {{#else}}
+             <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+         {{/if}}                              
+     {{/each}}
+ 	</select>
+
+ 	<label for="name">{{=$ctx.doI18N("form.label.group.name")}}</label>
+ 	<input id="name" name="name" title="" type="text" value="{{=name}}"/>
+
+ 	<label for="externalId">{{=$ctx.doI18N("label.externalId")}}</label>
+ 	<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
+
+	<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+	{{#if active}}
+	<input type="hidden" id="locale" name="active" value="true" />
+	<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
+	{{else}}
+	<input id="activeCheckbox" type="checkbox" name="active" value="false" />
+	{{/if}}
+	
+	<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+	{{#if active}}
+	<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />    
+	{{else}}
+	<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="" />
+	{{/if}}       
 </form>
 </script>
 <!-- end of center,group templates. -->
@@ -1327,90 +1353,6 @@ $(document).ready(function() {
  </form>
 </script>
 
-<script id="clientAccountSummariesTemplate" type="text/x-jquery-tmpl">
-<p><b>{{=$ctx.doI18N("heading.loanaccount.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(pendingApprovalLoanCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
-	<span class="rowvalue">
-	{{#each pendingApprovalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}'); return false;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(awaitingDisbursalLoanCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.disbursal")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
-	<span class="rowvalue">
-	{{#each awaitingDisbursalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(activeLoanCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.active")}} ({{=$ctx.number(activeLoanCount)}}):</span>
-	<span class="rowvalue">
-	{{#each openLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(closedLoanCount)}}
-<div class="row">
-	<div class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedLoanCount)}}):</div>
-	<div class="rowvalue">
-	{{#each closedLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</div>
-</div>
-{{/if}}
-
-{{#if $ctx.showTask("VIEWSAVINGPRODUCTS")}}
-<p><b>{{=$ctx.doI18N("heading.savingaccount.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(pendingApprovalSavingAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalSavingAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each pendingApprovalSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(approvedSavingAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedSavingAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each approvedSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(closedSavingAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedSavingAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each closedSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{/if}}
-</script>
-
 <script id="groupDetailsTemplate" type="text/x-jquery-tmpl">
 <div class="breadcrumb">
     <span class="rowvalue">{{=officeName}}</span> 
@@ -1552,132 +1494,6 @@ $(document).ready(function() {
 		</div>
     </div>
 	</div>		
-</script>
-
-<script id="centerDetailsTemplate" type="text/x-jquery-tmpl">
-<div style="padding-left: 25px;">
-    <input type="hidden" id="staffId" name="staffId" value="{{=staffId}}" />
-    <input type="hidden" id="officeId" name="officeId" value="{{=officeId}}" />
-    <table style="width:100%">
-        <tbody>
-            <tr>
-                <td>
-                    <div class="rowvalue heading">{{=name}}</div>
-                </td>
-                <td valign="top" style="text-align: right">
-                    <span id="toolbar" class="ui-widget-header ui-corner-all">
-                        <button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
-                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
-                        <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">
-                            {{=$ctx.doI18N("label.group.attach.meeting")}}</button>
-                        {{#if $ctx.showTask("AddGroupNote")}}
-                            <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
-                        {{/if}}
-                        <button id="deletecenterbtn{{=id}}" class="deletecenterbtn">{{=$ctx.doI18N("label.center.delete")}}</button>
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <br/>
-    <br/>
-</div>
-</script>
-
-<script id="centerGroupsTabTemplate" type="text/x-jquery-tmpl">
-{{#if groups}}
-<span><b>{{=$ctx.doI18N("label.group.assigned")}}</b></span>
-<p>{{=$ctx.doI18N("label.center.group.view.group.details")}}</p>
-
-<div style="border: 1px solid #CECECE; height:100px; width:500px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
-{{#each groups}}
-	<div class="row">
-		<span class="fontnormal"><a href="#" onCLick="showGroup({{=id}}); return false;"><span class="rowvalue">{{=name}}</span></a><br></span>
-    </div>
-{{/each}}
-</div>
-{{/if}}
-</script>
-
-<script id="centerSummaryTabTemplate" type="text/x-jquery-tmpl">
-        <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
-                        <tbody><tr>
-                            <td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.performance.history")}}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.client")}} {{=groupSummaryData.totalActiveClients}}</span></td>
-                        </tr>
-                        {{#if groupLevelData.recursable}}
-                        <tr>
-                            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.groups")}} {{=groupLevelData.childLevelName}} : {{=groupSummaryData.totalChildGroups}}</span></td>
-                        </tr>
-                        {{/if}}
-                        <tr>
-                            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.loan.portfolio")}}</span>
-                                {{#each groupSummaryData.totalLoanPortfolio}}
-                                    <br/><span class="fontnormal">{{=code}} : {{=amount}}</span>
-                                {{/each}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.savings")}} </span></td>
-                        </tr>
-                    </tbody></table>    
-</script>
-<script id="centerDataTabTemplate" type="text/x-jquery-tmpl">
-<div class="groupcontainer">
-    <div class="right clearright marginB20" id="groupnotescontainer">
-        <div id="groupnotes">
-
-        </div>
-        <br>
-        <div>
-            <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
-                <tbody>
-                    <tr>
-                        <td class="bluetablehead05">
-                            <span class="fontnormalbold">{{=$ctx.doI18N("label.group.calendar.details")}}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div id="centerCalendarContent">
-                            </div>
-                        </td>
-                    </tr>
-                     
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="left">
-            <div id="grouptabcontent">
-            <div class="rowvalue">Office : {{=officeName}}</div>
-            {{#if staffName}}
-                <div class="row">
-                    <span class="rowvalue">{{=$ctx.doI18N("label.group.staff")}}</span>
-                        <span class="rowvalue">{{=staffName}}</span>
-                        <span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">{{=$ctx.doI18N("label.group.unassign.staff")}}</a>
-                        </span>
-                </div>
-            {{/if}}
-            <div class="row">
-                 <span class="rowvalue">{{=$ctx.doI18N("label.group.system.id")}}{{=id}}</span>
-            </div>
-            <div class="row">
-                    <span class="rowvalue">{{=$ctx.doI18N("label.group.externalid")}}</span>
-                    <span class="rowvalue">{{=externalId}}</span>
-            </div>
-
-            <div id="grouptableftpane" style="float:left;width:100%">
-                <br>
-                
-            </div>
-            <!-- end of left pane content -->
-        </div>
-    </div>
-    </div>      
-        
 </script>
 
 <script id="groupAccountSummariesTemplate" type="text/x-jquery-tmpl">
@@ -7395,7 +7211,7 @@ $(document).ready(function() {
 </form>
 </script>
 
-<script id="clientToolbarTemplate">
+<script id="clientToolbarTemplate" type="text/x-jquery-tmpl">
 <div style="padding-bottom: 4px;">
 <table style="width:100%">
 <tr>
@@ -7553,6 +7369,90 @@ $(document).ready(function() {
 		</tr>
 	</table>
  </form>
+</script>
+
+<script id="clientAccountSummariesTemplate" type="text/x-jquery-tmpl">
+<p><b>{{=$ctx.doI18N("heading.loanaccount.overview")}}</b></p>
+{{#if $ctx.numberGreaterThanZero(pendingApprovalLoanCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
+	<span class="rowvalue">
+	{{#each pendingApprovalLoans}}
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}'); return false;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(awaitingDisbursalLoanCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.disbursal")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
+	<span class="rowvalue">
+	{{#each awaitingDisbursalLoans}}
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(activeLoanCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.active")}} ({{=$ctx.number(activeLoanCount)}}):</span>
+	<span class="rowvalue">
+	{{#each openLoans}}
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(closedLoanCount)}}
+<div class="row">
+	<div class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedLoanCount)}}):</div>
+	<div class="rowvalue">
+	{{#each closedLoans}}
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+	{{/each}}
+	</div>
+</div>
+{{/if}}
+
+{{#if $ctx.showTask("VIEWSAVINGPRODUCTS")}}
+<p><b>{{=$ctx.doI18N("heading.savingaccount.overview")}}</b></p>
+{{#if $ctx.numberGreaterThanZero(pendingApprovalSavingAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalSavingAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each pendingApprovalSavingAccounts}}
+		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(approvedSavingAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedSavingAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each approvedSavingAccounts}}
+		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{#if $ctx.numberGreaterThanZero(closedSavingAccountsCount)}}
+<div class="row">
+	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedSavingAccountsCount)}}):</span>
+	<span class="rowvalue">
+	{{#each closedSavingAccounts}}
+		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+	{{/each}}
+	</span>
+</div>
+{{/if}}
+
+{{/if}}
 </script>
 <!-- end of client -->
 
@@ -8208,6 +8108,132 @@ $(document).ready(function() {
     </table>
 </script>
 
-</body>
+<script id="centerDataTabTemplate" type="text/x-jquery-tmpl">
+<div class="groupcontainer">
+    <div class="right clearright marginB20" id="groupnotescontainer">
+        <div id="groupnotes">
+        </div>
+        <br>
+        <div>
+            <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+                <tbody>
+                    <tr>
+                        <td class="bluetablehead05">
+                            <span class="fontnormalbold">{{=$ctx.doI18N("label.group.calendar.details")}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="centerCalendarContent">
+                            </div>
+                        </td>
+                    </tr>
+                     
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="left">
+            <div id="grouptabcontent">
+            <div class="rowvalue">Office : {{=officeName}}</div>
+            {{#if staffName}}
+                <div class="row">
+                    <span class="rowvalue">{{=$ctx.doI18N("label.group.staff")}}</span>
+                        <span class="rowvalue">{{=staffName}}</span>
+                        <span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">{{=$ctx.doI18N("label.group.unassign.staff")}}</a>
+                        </span>
+                </div>
+            {{/if}}
+            <div class="row">
+                 <span class="rowvalue">{{=$ctx.doI18N("label.group.system.id")}}{{=id}}</span>
+            </div>
+            <div class="row">
+                    <span class="rowvalue">{{=$ctx.doI18N("label.group.externalid")}}</span>
+                    <span class="rowvalue">{{=externalId}}</span>
+            </div>
 
+            <div id="grouptableftpane" style="float:left;width:100%">
+                <br>
+            </div>
+            <!-- end of left pane content -->
+        </div>
+    </div>
+</div>
+</script>
+
+<script id="centerDetailsTemplate" type="text/x-jquery-tmpl">
+<div style="padding-left: 25px;">
+    <input type="hidden" id="staffId" name="staffId" value="{{=staffId}}" />
+    <input type="hidden" id="officeId" name="officeId" value="{{=officeId}}" />
+    <table style="width:100%">
+        <tbody>
+            <tr>
+                <td>
+                    <div class="rowvalue heading">{{=name}}</div>
+                </td>
+                <td valign="top" style="text-align: right">
+                    <span id="toolbar" class="ui-widget-header ui-corner-all">
+                        <button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
+                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
+                        <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">
+                            {{=$ctx.doI18N("label.group.attach.meeting")}}</button>
+                        {{#if $ctx.showTask("AddGroupNote")}}
+                            <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
+                        {{/if}}
+                        <button id="deletecenterbtn{{=id}}" class="deletecenterbtn">{{=$ctx.doI18N("label.center.delete")}}</button>
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    <br/>
+</div>
+</script>
+
+<script id="centerGroupsTabTemplate" type="text/x-jquery-tmpl">
+{{#if groupMembers}}
+<span><b>{{=$ctx.doI18N("label.group.assigned")}}</b></span>
+<p>{{=$ctx.doI18N("label.center.group.view.group.details")}}</p>
+
+<div style="border: 1px solid #CECECE; height:100px; width:500px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
+{{#each groupMembers}}
+	<div class="row">
+		<span class="fontnormal"><a href="#" onCLick="showGroup({{=id}}); return false;"><span class="rowvalue">{{=name}}</span></a><br></span>
+    </div>
+{{/each}}
+</div>
+{{/if}}
+</script>
+
+<script id="centerSummaryTabTemplate" type="text/x-jquery-tmpl">
+<table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+	<tbody>
+        <tr>
+            <td class="bluetablehead05"><span class="fontnormalbold">{{=$ctx.doI18N("label.group.performance.history")}}</span></td>
+        </tr>
+        <tr>
+            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.client")}} {{=groupSummaryData.totalActiveClients}}</span></td>
+        </tr>
+        {{#if groupLevelData.recursable}}
+        <tr>
+            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.active.groups")}} {{=groupLevelData.childLevelName}} : {{=groupSummaryData.totalChildGroups}}</span></td>
+        </tr>
+        {{/if}}
+        <tr>
+            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.loan.portfolio")}}</span>
+                {{#each groupSummaryData.totalLoanPortfolio}}
+                    <br/><span class="fontnormal">{{=code}} : {{=amount}}</span>
+                {{/each}}
+            </td>
+        </tr>
+        <tr>
+            <td class="paddingL10"><span class="fontnormal8pt">{{=$ctx.doI18N("label.group.total.savings")}} </span></td>
+        </tr>
+   	</tbody>
+</table>    
+</script>
+<!-- end of centers api -->
+
+</body>
 </html>

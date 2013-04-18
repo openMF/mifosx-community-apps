@@ -1639,7 +1639,11 @@ function saveGroup(divContainer, groupId) {
 	var newFormData = JSON.stringify(serializedArray);
 	
 	var successFunction =  function(data, textStatus, jqXHR) {
+		console.log("success saving group: " + groupId + " >> " + data.resourceId);
 		divContainer.dialog("close");
+		if (groupId === undefined || groupId == null) {
+			groupId = data.resourceId;
+		}
 		showGroup(groupId);
 	};
 	
@@ -1686,6 +1690,7 @@ var launchStandardGroupDialogOnSuccessFunction = function(data, textStatus, jqXH
 	
 	var saveNewGroupFunc = function() {
 		saveGroup(dialogDiv, groupId);
+		
 	};
 	
 	var dialog = null;
@@ -1745,7 +1750,7 @@ var launchCenterGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR)
 function launchGroupDialog(groupId) {
 	
 	if (groupId) {
-		executeAjaxRequest('groups/' + groupId + '?template=true', 'GET', "", launchStandardGroupDialogOnSuccessFunction, formErrorFunction);
+		executeAjaxRequest('groups/' + groupId + '?template=true&associations=clientMembers', 'GET', "", launchStandardGroupDialogOnSuccessFunction, formErrorFunction);
 	} else {
 		executeAjaxRequest('groups/template', 'GET', "", launchStandardGroupDialogOnSuccessFunction, formErrorFunction);		
 	}
@@ -1754,7 +1759,7 @@ function launchGroupDialog(groupId) {
 function launchCenterGroupDialog(groupId) {
 	
 	if (groupId) {
-		executeAjaxRequest('groups/' + groupId + '?template=true', 'GET', "", launchCenterGroupDialogOnSuccessFunction, formErrorFunction);
+		executeAjaxRequest('groups/' + groupId + '?template=true&associations=clientMembers', 'GET', "", launchCenterGroupDialogOnSuccessFunction, formErrorFunction);
 	} else {
 		executeAjaxRequest('groups/template', 'GET', "", launchCenterGroupDialogOnSuccessFunction, formErrorFunction);		
 	}
@@ -2678,12 +2683,12 @@ function showGroup(groupId){
 	
 	}
 
-	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
+	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
     	handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
         $(anchor.hash).html("error occured while ajax loading.");
     };
-
-	executeAjaxRequest(groupUrl, 'GET', "", successFunction, errorFunction);
+    
+	executeAjaxRequest(groupUrl + '?associations=clientMembers', 'GET', "", successFunction, errorFunction);
 }
 
 function showCenter(centerId){
@@ -2752,7 +2757,6 @@ function showCenter(centerId){
 				var title = 'dialog.title.edit.center';
 
 				var extraParam = '{"action":"disable"}';
-
 				popupDialogWithFormView(getUrl, putUrl, 'PUT', title, templateSelector, width, height,  saveSuccessFunction , extraParam);
 			    e.preventDefault();
 			});
@@ -2851,7 +2855,7 @@ function showCenter(centerId){
         $(anchor.hash).html("error occured while ajax loading.");
     };
 
-	executeAjaxRequest(centerUrl + '?associations=groups', 'GET', "", successFunction, errorFunction);
+	executeAjaxRequest(centerUrl + '?associations=groupMembers', 'GET', "", successFunction, errorFunction);
 }
 
 function addLJGBulkMembersLoans(groupId){
@@ -2949,9 +2953,9 @@ function addLJGBulkMembersLoans(groupId){
 	// function to retrieve and display loan summary information in it placeholder
 	function refreshLoanSummaryInfo(clientUrl) {
 		var successFunction =  function(data, textStatus, jqXHR) {
-				  			var tableHtml = $("#clientAccountSummariesTemplate").render(data);
-				  			$("#clientaccountssummary").html(tableHtml);
-			  			}
+			var tableHtml = $("#clientAccountSummariesTemplate").render(data);
+			$("#clientaccountssummary").html(tableHtml);
+		}
   		executeAjaxRequest(clientUrl + '/loans', 'GET', "", successFunction, formErrorFunction);	  	
 	}
 	
@@ -4035,14 +4039,14 @@ function showILLoan(loanId, product, loanAccountNo) {
 	var newLoanTabId='loan'+loanId+'tab';
 	//show existing tab if this Id is already present
 	if(tabExists(newLoanTabId)){
-		var index = $('#newtabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
-		$('#newtabs').tabs('select', index);
+		var index = $('#clientdatatabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
+		$('#clientdatatabs').tabs('select', index);
 		
 		var title = product + ": #" + loanAccountNo;		
 		if (undefined === loanAccountNo) {
 			title = product + ": #" + loanId;
 		}
-		$('#newtabs .ui-tabs-selected:first a').text(title);
+		$('#clientdatatabs .ui-tabs-selected:first a').text(title);
 	}
 	//else create new tab and set identifier properties
 	else{
@@ -4053,9 +4057,9 @@ function showILLoan(loanId, product, loanAccountNo) {
 		$newtabs.tabs( "add", "unknown.html", title);
 		loadILLoan(loanId);
 		//add ids and titles to newly added div's and a'hrefs
-		var lastAHref=$('#newtabs> ul > li:last > a');
-		var lastDiv=$('#newtabs > div:last')
-		var lastButOneDiv=$('#newtabs > div:last').prev();
+		var lastAHref=$('#clientdatatabs> ul > li:last > a');
+		var lastDiv=$('#clientdatatabs > div:last')
+		var lastButOneDiv=$('#clientdatatabs > div:last').prev();
 		lastAHref.attr('href','#loan'+loanId+'tab');
 		lastButOneDiv.attr('id',newLoanTabId);
 		//the add functionality seems to be adding a dummy div at the end 
@@ -4067,7 +4071,7 @@ function showILLoan(loanId, product, loanAccountNo) {
 //checks for existence of tab with given Id
 function tabExists(tabId){
     var tabFound = false;
-    $('#newtabs > div').each(function(index, ui) {
+    $('#clientdatatabs > div').each(function(index, ui) {
         if($(ui).attr('id') == tabId){
         	tabFound = true;
         }
@@ -4091,7 +4095,7 @@ function loadILLoan(loanId) {
 	            
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);
 	        		
-	        		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+	        		var currentTab = $("#clientdatatabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		currentTab.html(tableHtml);
 
 	        		var curTabID = currentTab.prop("id")
@@ -4164,7 +4168,7 @@ function loadILLoan(loanId) {
 	        		//var $loantabs = $(".loantabs").tabs({
 		        	var $loantabs = $("#loantabs" + loanId).tabs({
 						"show": function(event, ui) {
-							var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+							var curTab = $('#clientdatatabs .ui-tabs-panel:not(.ui-tabs-hide)');
 			      			var curTabID = curTab.prop("id")
 						},
 						"select": function( event, ui ) {
@@ -6558,8 +6562,8 @@ function showSavingAccount(accountId, accountNo, productName) {
 	
 	//show existing tab if this Id is already present
 	if(tabExists(newSavingTabId)){
-		var index = $('#newtabs a[href="#'+ newSavingTabId +'"]').parent().index(); 
-		$('#newtabs').tabs('select', index);
+		var index = $('#clientdatatabs a[href="#'+ newSavingTabId +'"]').parent().index(); 
+		$('#clientdatatabs').tabs('select', index);
 	}
 	//else create new tab and set identifier properties
 	else{
@@ -6567,9 +6571,9 @@ function showSavingAccount(accountId, accountNo, productName) {
 		$newtabs.tabs( "add", "unknown.html", title);
 		loadSavingAccount(accountId);
 		//add ids and titles to newly added div's and a'hrefs
-		var lastAHref=$('#newtabs> ul > li:last > a');
-		var lastDiv=$('#newtabs > div:last')
-		var lastButOneDiv=$('#newtabs > div:last').prev();
+		var lastAHref=$('#clientdatatabs> ul > li:last > a');
+		var lastDiv=$('#clientdatatabs > div:last')
+		var lastButOneDiv=$('#clientdatatabs > div:last').prev();
 		lastAHref.attr('href','#saving'+accountId+'tab');
 		lastButOneDiv.attr('id',newSavingTabId);
 		//the add functionality seems to be adding a dummy div at the end 
@@ -6595,14 +6599,14 @@ function loadSavingAccount(accountId) {
     	
     	var data = new Object();
 		
-		var currentTab = $("#newtabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+		var currentTab = $("#clientdatatabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
 		currentTab.html(tableHtml);
 
 		var curTabID = currentTab.prop("id");
 		
 		var $savingtabs = $("#savingtabs" + accountId).tabs({
 			"show": function(event, ui) {
-				var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+				var curTab = $('#savingtabs .ui-tabs-panel:not(.ui-tabs-hide)');
       			var curTabID = curTab.prop("id")
 			}
 		});
