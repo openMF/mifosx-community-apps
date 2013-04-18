@@ -5034,6 +5034,8 @@ function refreshLoanDocuments(loanId) {
 					e.preventDefault();
 				})
 
+				
+				
 				var oTable;
 				if (tableName == "report") oTable= displayEnhancedListTable(tableName + "stable")
 				else oTable = displayListTable(tableName + "stable");

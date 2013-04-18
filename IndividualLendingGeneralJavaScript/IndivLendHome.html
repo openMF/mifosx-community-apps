@@ -7927,9 +7927,6 @@ $(document).ready(function() {
 			<th>{{=$ctx.doI18N("coreReport")}}</th>
 			<th>{{=$ctx.doI18N("useReport")}}</th>
 			<th>&nbsp;</th>
-			{{#if $ctx.showTask("UpdateReport")}}
-				<th>&nbsp;</th>
-			{{/if}}
 			{{#if $ctx.showTask("DeleteReport")}}
 				<th>&nbsp;</th>
 			{{/if}}
@@ -7958,16 +7955,8 @@ $(document).ready(function() {
 		{{/if}}
 	</td>
 	<td>
-			<a id='viewreport{{=id}}' class='viewreport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.view")}}</a>
+		<a id='editreport{{=id}}' class='editreport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
 	</td>
-	{{#if $ctx.showTask("UpdateReport")}}
-		<td>
-			{{#if coreReport}} 
-			{{#else}}
-				<a id='editreport{{=id}}' class='editreport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.edit")}}</a>
-			{{/if}}
-		</td>
-	{{/if}}
 	{{#if $ctx.showTask("DeleteReport")}}
 		<td>
 			{{#if coreReport}} 
@@ -7989,43 +7978,64 @@ $(document).ready(function() {
 	<fieldset>
 	<table>
 	 <tr>
-	  <td>
+	  <td valign="top">
 		<label for="reportName">{{=$ctx.doI18N("reportName")}}</label>
-		<input id="reportName" name="reportName" title="" type="text" value="{{=reportName}}" size="50"/>
+		{{#if coreReport}}
+			{{=reportName}}
+		{{#else}}
+			<input id="reportName" name="reportName" title="" type="text" value="{{=reportName}}" size="50"/>
+		{{/if}}
 	  </td>
-	  <td>
+	  <td width="20px"></td>
+	  <td valign="top">
 		<label for="reportType">{{=$ctx.doI18N("reportType")}}</label>
-		<select id="reportType" name="reportType" title="">
+		{{#if coreReport}}
+			{{=reportType}}
+		{{#else}}
+			<select id="reportType" name="reportType" title="">
             <option value=""></option>
-			{{#each allowedReportTypes}}
-                {{#if $data===$parent.parent.data.reportType}}
-				<option value="{{=$data}}" selected="selected">{{=$ctx.doI18N($data)}}</option>
-                {{#else}}
-				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
-                {{/if}}
-            {{/each}}
-		</select>
+				{{#each allowedReportTypes}}
+                	{{#if $data===$parent.parent.data.reportType}}
+					<option value="{{=$data}}" selected="selected">{{=$ctx.doI18N($data)}}</option>
+                	{{#else}}
+					<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
+                	{{/if}}
+            	{{/each}}
+			</select>
+		{{/if}}
 	  </td>
-	  <td>
+	  <td width="20px"></td>
+	  <td valign="top">
 		<label for="reportSubType">{{=$ctx.doI18N("reportSubType")}}</label>
-		<select id="reportSubType" name="reportSubType" title="">
-            <option value=""></option>
-			{{#each allowedReportSubTypes}}
-                {{#if $data===$parent.parent.data.reportSubType}}
-				<option value="{{=$data}}" selected="selected">{{=$ctx.doI18N($data)}}</option>
-                {{#else}}
-				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
-                {{/if}}
-            {{/each}}
-		</select>
+		{{#if coreReport}}
+			{{=reportSubType}}
+		{{#else}}
+			<select id="reportSubType" name="reportSubType" title="">
+            	<option value=""></option>
+				{{#each allowedReportSubTypes}}
+                	{{#if $data===$parent.parent.data.reportSubType}}
+						<option value="{{=$data}}" selected="selected">{{=$ctx.doI18N($data)}}</option>
+                	{{#else}}
+						<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
+                	{{/if}}
+            	{{/each}}
+			</select>
+		{{/if}}
 	  </td>
 	 </tr>
 	 <tr>
-	  <td>
+	  <td valign="top">
 		<label for="reportCategory">{{=$ctx.doI18N("reportCategory")}}</label>
-		<input id="reportCategory" name="reportCategory" title="" type="text" value="{{=reportCategory}}" size="50"/>
+		{{#if coreReport}}
+			{{=reportCategory}}
+		{{#else}}
+			<input id="reportCategory" name="reportCategory" title="" type="text" value="{{=reportCategory}}" size="50"/>
+		{{/if}}
 	  </td>
-	  <td>
+	  <td width="20px"></td>
+	  <td></td>
+	  <td width="20px"></td>
+	  <td valign="top">
 		<label for="useReport">{{=$ctx.doI18N("useReport")}}</label>
 		{{#if useReport}}
 			<input id="useReport" name="useReport" type="checkbox" value="{{=useReport}}" checked="true"/>
@@ -8033,20 +8043,27 @@ $(document).ready(function() {
 			<input id="useReport" name="useReport" type="checkbox" value="{{=useReport}}"/>
 		{{/if}}
 	  </td>
-	  <td></td>
 	 </tr>
 	</table>
 	<table>
 	 <tr>
 	  <td>
 		<label for="description">{{=$ctx.doI18N("description")}}</label>
-		<textarea id="description" name="description" cols="100" rows="3">{{=description}}</textarea>
+		{{#if coreReport}}
+			<textarea readonly=true cols="100" rows="3">{{=description}}</textarea>
+		{{#else}}
+			<textarea id="description" name="description" cols="100" rows="3">{{=description}}</textarea>
+		{{/if}}
 	  </td>
 	 </tr>
 	 <tr>
 	  <td>
 		<label for="reportSql">{{=$ctx.doI18N("reportSql")}}</label>
-		<textarea id="reportSql" name="reportSql" cols="100" rows="12">{{=reportSql}}</textarea>
+		{{#if coreReport}}
+			<textarea readonly=true cols="100" rows="12">{{=reportSql}}</textarea>
+		{{#else}}
+			<textarea id="reportSql" name="reportSql" cols="100" rows="12">{{=reportSql}}</textarea>
+		{{/if}}
 	  </td>
 	 </tr>
 	</table>
