@@ -1692,7 +1692,6 @@ var launchStandardGroupDialogOnSuccessFunction = function(data, textStatus, jqXH
 	
 	var saveNewGroupFunc = function() {
 		saveGroup(dialogDiv, groupId);
-		
 	};
 	
 	var dialog = null;
@@ -2110,9 +2109,6 @@ function showILClient(clientId) {
 	            	
 	        		var tableHtml = $("#clientDataTabTemplate").render(data);
 					$("#clienttab").html(tableHtml);
-					
-//					$("#customerName").html(data.displayName);
-//					$("#customerOfficeName").html(data.officeName);
 					
 					// retrieve accounts summary info
 					refreshLoanSummaryInfo(clientUrl);
@@ -2532,6 +2528,7 @@ function showGroup(groupId){
 	});
 
 	var successFunction = function(data, status, xhr) {
+		
 		var currentGroupId = groupId;
 		var currentTabIndex = $newtabs.tabs('option', 'selected');
     	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
@@ -2556,6 +2553,25 @@ function showGroup(groupId){
         refreshCalendarWidget(currentGroupId, 'groups', 'centerCalendarContent');
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
+			
+			$('.activategroup').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
+				var linkId = this.id;
+				var getUrl = 'groups/' + currentGroupId + '?command=activate&template=true';
+				var postUrl = 'groups/' + currentGroupId + '?command=activate';
+				var templateSelector = "#activationTemplate";
+				var width = 400; 
+				var height = 225;
+
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	showGroup(currentGroupId);
+				}
+				
+				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.activation', templateSelector, width, height, saveSuccessFunction);
+			    e.preventDefault();
+			});
+			$('button.activategroup span').text(doI18N('button.activate'));
+			
 
 			$('.newgrouploanbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
 				var linkId = this.id;
@@ -2564,9 +2580,7 @@ function showGroup(groupId){
 			    e.preventDefault();
 			});
 
-			$('.deletegroupbtn').button({icons: {
-               			 primary: "ui-icon-trash"}
-                	}).click(function(e) {
+			$('.deletegroupbtn').button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
 				var linkId = this.id;
 				var groupId = linkId.replace("deletegroupbtn", "");
 
@@ -2585,8 +2599,8 @@ function showGroup(groupId){
 
 				var officeId = data.officeId;
 
-					addClient(officeId , groupId);
-					e.preventDefault();
+				addClient(officeId , groupId);
+				e.preventDefault();
 			});
 
 			// bind click listeners to buttons.
@@ -2724,7 +2738,6 @@ function showCenter(centerId){
 
 		centerDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
 
-		
 		$("#centerDetails").html(centerDetailsHtml);
 		$("#centertab").html(tableHtml);
 		$("#centertabname").html("General");
@@ -2742,6 +2755,24 @@ function showCenter(centerId){
 		$(document).ready(function() {
 
 			// bind click listeners to buttons.
+			$('.activatecenter').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
+				var linkId = this.id;
+				var getUrl = 'centers/' + currentGroupId + '?command=activate&template=true';
+				var postUrl = 'centers/' + currentGroupId + '?command=activate';
+				var templateSelector = "#activationTemplate";
+				var width = 400; 
+				var height = 225;
+
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				  	$("#dialog-form").dialog("close");
+				  	showCenter(currentGroupId);
+				}
+				
+				popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.activation', templateSelector, width, height, saveSuccessFunction);
+			    e.preventDefault();
+			});
+			$('button.activatecenter span').text(doI18N('button.activate'));
+			
 			$('.editcenterbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
 				var linkId = this.id;
 				var centerId = linkId.replace("editcenterbtn", "");
@@ -6457,7 +6488,6 @@ function simpleOptionsHtml(htmlOptions) {
 	return htmlVar;
 }
 
-
 //Error functions		
 function removeErrors(placeholderDiv) {
 		// remove error class from all input fields
@@ -6496,8 +6526,10 @@ function handleXhrError(jqXHR, textStatus, errorThrown, templateSelector, placeh
 		  	var errorArray = new Array();
 		  	var arrayIndex = 0;
 		  	$.each(valErrors, function() {
+		  	
+		      // add error class to input in dialog
 		  	  var fieldId = '#' + this.parameterName;
-		  	  $(fieldId).addClass("ui-state-error");
+		  	  $("#dialog-form #entityform " + fieldId).addClass("ui-state-error");
 		  	  
 		  	  var errorObj = new Object();
 		  	  errorObj.field = this.parameterName;

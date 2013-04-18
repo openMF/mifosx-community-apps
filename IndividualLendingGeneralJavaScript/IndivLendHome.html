@@ -974,6 +974,10 @@ $(document).ready(function() {
 <script id="standardGroupEditFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
+
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
 	<table>
 		<tr>
 			<td>
@@ -1013,6 +1017,21 @@ $(document).ready(function() {
 				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 			</td>
 		</tr>
+	
+		{{#if active}}
+		<tr>
+			<td>
+			<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+			<input type="hidden" id="active" name="active" value="true" />
+			<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
+			</td>
+			<td>
+			<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+			<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
+			</td>
+		</tr>
+		{{/if}}
+
 		<tr>
 			<td>
 				<div class="multiselectwidget">
@@ -1366,20 +1385,32 @@ $(document).ready(function() {
 			<tr><td><div class="rowvalue heading">{{=name}}</div></td>
 			<td valign="top" style="text-align: right">
     			<span id="toolbar" class="ui-widget-header ui-corner-all">
-				{{#if centerId}}
-					<button id="editcentergroupbtn{{=id}}" class="editcentergroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
-				{{#else}}
-					<button id="editstandardgroupbtn{{=id}}" class="editstandardgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
-				{{/if}}
-        <button id="newgrouploanbtn{{=id}}" class="newgrouploanbtn">{{=$ctx.doI18N("label.group.new.loan.account")}}</button>
+	{{#if activationDate}}
+		{{#if centerId}}
+			<button id="editcentergroupbtn{{=id}}" class="editcentergroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
+		{{#else}}
+			<button id="editstandardgroupbtn{{=id}}" class="editstandardgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
+		{{/if}}
+
+ 		<button id="newgrouploanbtn{{=id}}" class="newgrouploanbtn">{{=$ctx.doI18N("label.group.new.loan.account")}}</button>
         <button class="groupsavingsbtn">{{=$ctx.doI18N("label.group.new.saving.account")}}</button>
+		<button id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">{{=$ctx.doI18N("label.group.new.bulk.loan.account")}}</button>
+	{{#else}}
+		{{#if $ctx.showTask("ActivateGroup")}}
+		<button id="activategroup{{=id}}" class="activategroup">Activate</button>
+		{{/if}}
+		{{#if centerId}}
+			<button id="editcentergroupbtn{{=id}}" class="editcentergroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
+		{{#else}}
+			<button id="editstandardgroupbtn{{=id}}" class="editstandardgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
+		{{/if}}
+		<button id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</button>
+		{{/if}}
         <button id="addclientbtn{{=id}}" class="addclientbtn">{{=$ctx.doI18N("label.group.add.client")}}</button>
-        <button id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">{{=$ctx.doI18N("label.group.new.bulk.loan.account")}}</button>
         <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>
         {{#if $ctx.showTask("AddGroupNote")}}
             <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
-        {{/if}}
-        <button id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</button>
+    {{/if}}
     			</span>
 			</td>
 		</tr>
@@ -1391,7 +1422,6 @@ $(document).ready(function() {
 </script>
 
 <script id="groupClientsTabTemplate" type="text/x-jquery-tmpl">
-
 <span><b>{{=$ctx.doI18N("label.group.clients.assigned")}}</b></span>
 <div style="border: 1px solid #CECECE; height:100px; width:500px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
 {{#if clientMembers}}
@@ -1438,7 +1468,6 @@ $(document).ready(function() {
 <div class="groupcontainer">
     <div class="right clearright marginB20" id="groupnotescontainer">
         <div id="groupnotes">
-
         </div>
         <div>
             <br>
@@ -1461,39 +1490,52 @@ $(document).ready(function() {
         </div>
     </div>
     <div class="left">
-    			<div id="grouptabcontent">
-    			<div id="grouptableftpane" style="float:left;width:100%">
-                <input type="hidden" id="staffId" name="staffId" value="{{=staffId}}" />
-                <div class="rowvalue">{{=officeName}}</div>
+    	<div id="grouptabcontent">
+    		<div id="grouptableftpane" style="float:left;width:100%">
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.name")}}</span>
+					<span class="rowvalue">{{=name}}</span>
+				</div>
+				{{#if externalId}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
+					<span class="rowvalue">{{=externalId}}</span>
+				</div>
+				{{/if}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
+					<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
+				</div>
+				{{#if activationDate}}
+					<div class="row">
+						<span class="longrowlabel">{{=$ctx.doI18N("label.activationDate")}}</span>
+						<span class="rowvalue">{{=$ctx.globalDate(activationDate)}}</span>
+					</div>
+				{{/if}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
+					<span class="rowvalue">{{=officeName}}</span>
+				</div>
                 {{#if staffName}}
-                    <div class="row">
-                        <span class="rowvalue">{{=$ctx.doI18N("label.group.staff")}}</span>
-                            <span class="rowvalue">{{=staffName}}</span>
-                            <span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">{{=$ctx.doI18N("label.group.unassign.staff")}}</a>
-                            </span>
-                    </div>
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.group.staff")}}</span>
+					<span class="rowvalue">{{=staffName}}</span>
+					<span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">
+					{{=$ctx.doI18N("label.group.unassign.staff")}}</a></span>
+				</div>
                 {{/if}}
-                <div class="row">
-                     <span class="rowvalue">{{=$ctx.doI18N("label.group.system.id")}}{{=id}}</span>
-                </div>
-                <div class="row">
-                        <span class="rowvalue">{{=$ctx.doI18N("label.group.externalid")}}</span>
-                        <span class="rowvalue">{{=externalId}}</span>
-                </div>
 				<br>
 				<div class="row">
 					<span class="rowvalue heading">{{=$ctx.doI18N("label.group.account.information")}}</span>
 				</div>
 				<br/>
-				<br/>
 				<div id="groupaccountssummary"></div>
-                <br/>
                 <br/>
             </div>
 			<!-- end of left pane content -->
 		</div>
     </div>
-	</div>		
+</div>		
 </script>
 
 <script id="groupAccountSummariesTemplate" type="text/x-jquery-tmpl">
@@ -7089,7 +7131,7 @@ $(document).ready(function() {
 	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
-	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
+	<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
 	<select id="officeId" name="officeId" title="">
 		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 		{{#each officeOptions}}
@@ -7128,30 +7170,26 @@ $(document).ready(function() {
 				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 			</td>
 		</tr>
-		{{#if clientPendingApprovalAllowed}}
+
 		<tr>
 			<td>
-				<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
-				<input id="activeCheckbox" type="checkbox" name="active" value="false" />
-			</td>
-			<td>
-				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
-				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="" />
-			</td>
-		</tr>
-		{{#else}}
-		<tr>
-			<td>
-				<input type="hidden" id="active" name="active" value="true" />
-				<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
-				<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
-			</td>
-			<td>
-				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
-				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
-			</td>
-		</tr>
+			<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+		{{#if active}}
+			<input type="hidden" id="active" name="active" value="true" />
+			<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
+		{{else}}
+			<input id="activeCheckbox" type="checkbox" name="active" value="false" />
 		{{/if}}
+			</td>
+			<td>
+			<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+		{{#if active}}
+			<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />    
+		{{else}}
+			<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="" />
+		{{/if}} 
+			</td>
+		</tr>
 	</table>
 </form>
 </script>
@@ -7207,6 +7245,20 @@ $(document).ready(function() {
 				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 			</td>
 		</tr>
+
+		{{#if active}}
+		<tr>
+			<td>
+			<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+			<input type="hidden" id="active" name="active" value="true" />
+			<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
+			</td>
+			<td>
+			<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+			<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
+			</td>
+		</tr>
+		{{/if}}
 	</table>
 </form>
 </script>
@@ -7316,7 +7368,7 @@ $(document).ready(function() {
 									<div class="row">
 										<span class="longrowlabel">{{=$ctx.doI18N("label.memberOf")}}</span>
 										<span class="rowvalue">
-										{{#each groups}}{{=name}},&nbsp;{{/each}}
+										{{#each groups}}<a href="#" onclick="showGroup('{{=id}}'); return false;">{{=name}}</a>,&nbsp;{{/each}}
 										</span>
 									</div>
 									{{/if}}
@@ -8154,23 +8206,44 @@ $(document).ready(function() {
         </div>
     </div>
     <div class="left">
-            <div id="grouptabcontent">
-            <div class="rowvalue">Office : {{=officeName}}</div>
-            {{#if staffName}}
-                <div class="row">
-                    <span class="rowvalue">{{=$ctx.doI18N("label.group.staff")}}</span>
-                        <span class="rowvalue">{{=staffName}}</span>
-                        <span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">{{=$ctx.doI18N("label.group.unassign.staff")}}</a>
-                        </span>
-                </div>
-            {{/if}}
-            <div class="row">
-                 <span class="rowvalue">{{=$ctx.doI18N("label.group.system.id")}}{{=id}}</span>
-            </div>
-            <div class="row">
-                    <span class="rowvalue">{{=$ctx.doI18N("label.group.externalid")}}</span>
-                    <span class="rowvalue">{{=externalId}}</span>
-            </div>
+		<div id="grouptabcontent">
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.name")}}</span>
+					<span class="rowvalue">{{=name}}</span>
+				</div>
+				{{#if externalId}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
+					<span class="rowvalue">{{=externalId}}</span>
+				</div>
+				{{/if}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
+					<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
+				</div>
+				{{#if activationDate}}
+					<div class="row">
+						<span class="longrowlabel">{{=$ctx.doI18N("label.activationDate")}}</span>
+						<span class="rowvalue">{{=$ctx.globalDate(activationDate)}}</span>
+					</div>
+				{{/if}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
+					<span class="rowvalue">{{=officeName}}</span>
+				</div>
+                {{#if staffName}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.group.staff")}}</span>
+					<span class="rowvalue">{{=staffName}}</span>
+					<span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">
+					{{=$ctx.doI18N("label.group.unassign.staff")}}</a></span>
+				</div>
+                {{/if}}
+				<br>
+				<div class="row">
+					<span class="rowvalue heading">{{=$ctx.doI18N("label.group.account.information")}}</span>
+				</div>
+				<br/>
 
             <div id="grouptableftpane" style="float:left;width:100%">
                 <br>
@@ -8193,14 +8266,26 @@ $(document).ready(function() {
                 </td>
                 <td valign="top" style="text-align: right">
                     <span id="toolbar" class="ui-widget-header ui-corner-all">
-                        <button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
-                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
-                        <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">
-                            {{=$ctx.doI18N("label.group.attach.meeting")}}</button>
-                        {{#if $ctx.showTask("AddGroupNote")}}
-                            <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
-                        {{/if}}
-                        <button id="deletecenterbtn{{=id}}" class="deletecenterbtn">{{=$ctx.doI18N("label.center.delete")}}</button>
+
+						{{#if activationDate}}
+							<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
+	                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
+    	                    <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>
+	                        {{#if $ctx.showTask("AddGroupNote")}}
+    	                    <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
+        	                {{/if}}
+						{{#else}}
+							{{#if $ctx.showTask("ActivateCenter")}}
+							<button id="activatecenter{{=id}}" class="activatecenter">Activate</button>
+							{{/if}}
+							<button id="deletecenterbtn{{=id}}" class="deletecenterbtn">{{=$ctx.doI18N("label.center.delete")}}</button>
+							<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
+	                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
+    	                    <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>
+	                        {{#if $ctx.showTask("AddGroupNote")}}
+    	                    <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
+        	                {{/if}}
+						{{/if}}
                     </span>
                 </td>
             </tr>
