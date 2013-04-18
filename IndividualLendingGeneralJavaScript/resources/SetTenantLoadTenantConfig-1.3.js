@@ -24,7 +24,10 @@ custom = {
 
 	// fit popups to height & width of current window
 	fitPopupWidth : "",
-	fitPopupHeight : ""
+	fitPopupHeight : "",
+	
+	// various layouts for jquery datatables
+	jqueryDataTableLayout : ""
 };
 
 custom.showFirstPage = function() {
@@ -450,6 +453,115 @@ custom.fitPopupWidth = function() {
 custom.fitPopupHeight = function() {
 	return $(window).height() - 20;
 }
+
+
+
+custom.jqueryDataTableLayout = {
+		basic: function() {
+			return {
+			"bSort": true,
+			"aaSorting": [], //disable initial sort
+			"bInfo": true,
+			"bJQueryUI": true,
+			"bRetrieve": false,
+			"bScrollCollapse": false,
+			"bPaginate": false,
+			"bLengthChange": false,
+			"bFilter": false,
+			"bAutoWidth": false,
+			"oLanguage": {
+						"sEmptyTable": doI18N("rpt.no.entries"),
+						"sZeroRecords": doI18N("rpt.no.matching.entries"),
+						"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
+						"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
+							"oPaginate": {
+    									"sFirst"    : doI18N("rpt.first"),
+    									"sLast"     : doI18N("rpt.last"),
+    									"sNext"     : doI18N("rpt.next"),
+    									"sPrevious" : doI18N("rpt.previous")
+									},
+						"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
+						"sSearch": doI18N("rpt.search")
+				}
+			}
+		},
+		enhanced: function() {
+				return  {
+				"aaSorting": [], //disable initial sort
+				"sDom": 'lfTip<"top"<"clear">>rt',
+				"oTableTools": {
+						"aButtons": [{	"sExtends": "copy",
+									"sButtonText": doI18N("Copy to Clipboard")
+											}, 
+								{	"sExtends": "xls",
+									"sButtonText": doI18N("Save to CSV")
+								}
+								],
+						"sSwfPath": "resources/libs/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
+					        },
+					        
+				"sPaginationType": "full_numbers",
+				"oLanguage": {
+							"sEmptyTable": doI18N("rpt.no.entries"),
+							"sZeroRecords": doI18N("rpt.no.matching.entries"),
+							"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
+							"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
+		        				"oPaginate": {
+		            						"sFirst"    : doI18N("rpt.first"),
+		            						"sLast"     : doI18N("rpt.last"),
+		            						"sNext"     : doI18N("rpt.next"),
+		            						"sPrevious" : doI18N("rpt.previous")
+		        						},
+							"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
+							"sSearch": doI18N("rpt.search")
+						},
+				"bDeferRender": true,
+				"bProcessing": true,
+				"aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]]
+			}
+		},
+		withExportOption: function() {
+			return {
+				"bSort": true,
+				"aaSorting": [], //disable initial sort
+				"bInfo": true,
+				"sDom": 'lfTip<"top"<"clear">>rt',
+				"oTableTools": {
+					"aButtons": [{	"sExtends": "copy",
+								"sButtonText": doI18N("Copy to Clipboard")
+										}, 
+							{	"sExtends": "xls",
+								"sButtonText": doI18N("Save to CSV")
+							}
+							],
+					"sSwfPath": "resources/libs/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
+			     },
+				"bJQueryUI": true,
+				"bRetrieve": false,
+				"bScrollCollapse": false,
+				"bPaginate": false,
+				"bLengthChange": false,
+				"bFilter": false,
+				"bAutoWidth": false,
+				"oLanguage": {
+							"sEmptyTable": doI18N("rpt.no.entries"),
+							"sZeroRecords": doI18N("rpt.no.matching.entries"),
+							"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
+							"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
+    							"oPaginate": {
+        									"sFirst"    : doI18N("rpt.first"),
+        									"sLast"     : doI18N("rpt.last"),
+        									"sNext"     : doI18N("rpt.next"),
+        									"sPrevious" : doI18N("rpt.previous")
+    									},
+							"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
+							"sSearch": doI18N("rpt.search")
+				}
+			}
+		}
+
+}
+
 
 // establish the tenant and include any tenant specific javascript configuration
 // file

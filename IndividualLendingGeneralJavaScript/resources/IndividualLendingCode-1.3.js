@@ -91,9 +91,7 @@ crudData = {
 		},
 		datatable: {
 				editTemplateNeeded: false,
-				refreshListNeeded: true,
-				dialogWidth: 900,
-				dialogHeight: 300
+				refreshListNeeded: true
 			},
 		report: {
 			editTemplateNeeded: true,
@@ -621,6 +619,9 @@ function setSysAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("ViewReports") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'report'" + ');return false;" id="viewreports">' + doI18N("administration.link.view.reports") + '</a>';
 
+	if (jQuery.MifosXUI.showTask("AddReport") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="' + addReportUrl + '" id="addreport">' + doI18N("administration.link.add.report") + '</a>';
+	
 	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
 
 	$("#" + divName).html(simpleOptionsHtml(htmlOptions));
@@ -4924,23 +4925,7 @@ function refreshLoanDocuments(loanId) {
 				
 					e.preventDefault();
 				});
-				
-				$("a.disablereport").click( function(e) {// still to do JPW
-					var linkId = this.id;
-					var entityId = linkId.replace("disablereport", "");
-					var resourceUrl = "reports/?" + entityId
-					
-					var width = 400; 
-					var height = 150;
-					var saveSuccessFunction = function(data, textStatus, jqXHR) {
-					  	$("#dialog-form").dialog("close");
-					  	refreshTableView(tableName);
-					};
-					popupConfirmationDialogAndPost(resourceUrl, 'PUT', 'dialog.title.confirmation.required', width, height, entityId, saveSuccessFunction);
-				
-					e.preventDefault();
-				});
-				
+								
 				//#Add/Edit Code Values
                 $("a.editcodevalue").click( function(e) {
                     var linkId = this.id;
@@ -5049,7 +5034,10 @@ function refreshLoanDocuments(loanId) {
 					e.preventDefault();
 				})
 
-				var oTable = displayListTable(tableName + "stable");
+				var oTable;
+				if (tableName == "report") oTable= displayEnhancedListTable(tableName + "stable")
+				else oTable = displayListTable(tableName + "stable");
+				
 			  };
 		
 		if(tableName=="employee"){
@@ -5075,8 +5063,8 @@ function refreshLoanDocuments(loanId) {
 
 		var dialogWidth = crudData[tableName].dialogWidth;
 		var dialogHeight = crudData[tableName].dialogHeight;
-		if (dialogWidth == undefined) dialogWidth = $(window).width() - 20;
-		if (dialogHeight == undefined) dialogHeight = $(window).height() - 20;
+		if (dialogWidth == undefined) dialogWidth = custom.fitPopupWidth();
+		if (dialogHeight == undefined) dialogHeight = custom.fitPopupHeight();
 		
 		var genSSF = 'var saveSuccessFunction = function(data, textStatus, jqXHR) {';
 		genSSF += '$("#dialog-form").dialog("close");';
@@ -6090,7 +6078,7 @@ function viewAudits(useType, auditSearchOptions) {
 					});
 				}
 
-				var oTable = displayEnhancedListTable("auditstable");
+				var oTable = displayEnhancedListTable("auditstable")
 	};
 		
 	executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
@@ -6440,112 +6428,15 @@ $.fn.serializeArray = function (options) {
 
 	
 function displayListTable(tableDiv) {
-
-	return  $("#" + tableDiv).dataTable( {
-					"bSort": true,
-					"aaSorting": [], //disable initial sort
-					"bInfo": true,
-					"bJQueryUI": true,
-					"bRetrieve": false,
-					"bScrollCollapse": false,
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": false,
-					"bAutoWidth": false,
-					"oLanguage": {
-								"sEmptyTable": doI18N("rpt.no.entries"),
-								"sZeroRecords": doI18N("rpt.no.matching.entries"),
-								"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
-								"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
-        							"oPaginate": {
-            									"sFirst"    : doI18N("rpt.first"),
-            									"sLast"     : doI18N("rpt.last"),
-            									"sNext"     : doI18N("rpt.next"),
-            									"sPrevious" : doI18N("rpt.previous")
-        									},
-								"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
-								"sSearch": doI18N("rpt.search")
-					}
-				} );
+	return  $("#" + tableDiv).dataTable(custom.jqueryDataTableLayout.basic());
 }
 
-function displayEnhancedListTable(tablediv) {
-
-	return  $("#" + tablediv).dataTable( {
-		"aaSorting": [], //disable initial sort
-		"sDom": 'lfTip<"top"<"clear">>rt',
-		"oTableTools": {
-				"aButtons": [{	"sExtends": "copy",
-							"sButtonText": doI18N("Copy to Clipboard")
-									}, 
-						{	"sExtends": "xls",
-							"sButtonText": doI18N("Save to CSV")
-						}
-						],
-				"sSwfPath": "resources/libs/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
-			        },
-			        
-		"sPaginationType": "full_numbers",
-		"oLanguage": {
-					"sEmptyTable": doI18N("rpt.no.entries"),
-					"sZeroRecords": doI18N("rpt.no.matching.entries"),
-					"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
-					"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
-        				"oPaginate": {
-            						"sFirst"    : doI18N("rpt.first"),
-            						"sLast"     : doI18N("rpt.last"),
-            						"sNext"     : doI18N("rpt.next"),
-            						"sPrevious" : doI18N("rpt.previous")
-        						},
-					"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
-					"sSearch": doI18N("rpt.search")
-				},
-		"bDeferRender": true,
-		"bProcessing": true,
-		"aLengthMenu": [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]]
-	})
-
+function displayEnhancedListTable(tableDiv) {
+	return  $("#" + tableDiv).dataTable(custom.jqueryDataTableLayout.enhanced());
 }
 
-function displayListTableWithExportOption(tablediv) {
-
-	return  $("#" + tablediv).dataTable( {
-					"bSort": true,
-					"aaSorting": [], //disable initial sort
-					"bInfo": true,
-					"sDom": 'lfTip<"top"<"clear">>rt',
-					"oTableTools": {
-						"aButtons": [{	"sExtends": "copy",
-									"sButtonText": doI18N("Copy to Clipboard")
-											}, 
-								{	"sExtends": "xls",
-									"sButtonText": doI18N("Save to CSV")
-								}
-								],
-						"sSwfPath": "resources/libs/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
-				     },
-					"bJQueryUI": true,
-					"bRetrieve": false,
-					"bScrollCollapse": false,
-					"bPaginate": false,
-					"bLengthChange": false,
-					"bFilter": false,
-					"bAutoWidth": false,
-					"oLanguage": {
-								"sEmptyTable": doI18N("rpt.no.entries"),
-								"sZeroRecords": doI18N("rpt.no.matching.entries"),
-								"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
-								"SInfoFiltered": "(" + doI18N("rpt.filtered.from") + " _max_ " + doI18N("rpt.total.entries") + ")",
-        							"oPaginate": {
-            									"sFirst"    : doI18N("rpt.first"),
-            									"sLast"     : doI18N("rpt.last"),
-            									"sNext"     : doI18N("rpt.next"),
-            									"sPrevious" : doI18N("rpt.previous")
-        									},
-								"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
-								"sSearch": doI18N("rpt.search")
-					}
-				} );
+function displayListTableWithExportOption(tableDiv) {
+	return  $("#" + tableDiv).dataTable(custom.jqueryDataTableLayout.withExportOption());
 }
 
 
