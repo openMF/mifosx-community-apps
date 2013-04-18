@@ -8080,7 +8080,7 @@ $(document).ready(function() {
 		<td>
 			{{#if coreReport}} 
 			{{#else}}
-				<a id='deleteoffice{{=id}}' class='deleteoffice' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+				<a id='deletereport{{=id}}' class='deletereport' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
 			{{/if}}
 		</td>
 	{{/if}}
@@ -8088,6 +8088,67 @@ $(document).ready(function() {
 {{/each}}
 	</tbody>
 </table>
+</script>
+
+<script id="reportFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.officetransaction.details")}}</legend>
+
+	<table>
+	 <tr>
+	  <td>
+		<label for="reportName">{{=$ctx.doI18N("reportName")}}</label>
+		<input id="reportName" name="reportName" title="" type="text" value="{{=reportName}}" size="50"/>
+	  </td>
+	 </tr>
+	 <tr>
+	  <td>
+		<label for="reportType">{{=$ctx.doI18N("reportType")}}</label>
+		<select id="reportType" name="reportType" title="">
+            <option value=""></option>
+			{{#each allowedReportTypes}}
+                {{#if $data===$parent.parent.data.reportType}}
+				<option value="{{=$data}}" selected="selected">{{=$ctx.doI18N($data)}}</option>
+                {{#else}}
+				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
+                {{/if}}
+            {{/each}}
+		</select>
+	  </td>
+	 </tr>
+	 <tr>
+	  <td>
+		<label for="reportSubType">{{=$ctx.doI18N("reportSubType")}}</label>
+		<select id="reportSubType" name="reportSubType" title="">
+            <option value=""></option>
+			{{#each allowedReportSubTypes}}
+                {{#if $data===$parent.parent.data.reportSubType}}
+				<option value="{{=$data}}" selected="selected">{{=$ctx.doI18N($data)}}</option>
+                {{#else}}
+				<option value="{{=$data}}">{{=$ctx.doI18N($data)}}</option>
+                {{/if}}
+            {{/each}}
+		</select>
+	  </td>
+	 </tr>
+	 <tr>
+	  <td>
+		<label for="reportCategory">{{=$ctx.doI18N("reportCategory")}}</label>
+		<input id="reportCategory" name="reportCategory" title="" type="text" value="{{=reportCategory}}" size="50"/>
+	  </td>
+	 </tr>
+	 <tr>
+	  <td>
+		<label for="description">{{=$ctx.doI18N("description")}}</label>
+		<input id="description" name="description" title="" type="text" value="{{=description}}" size="70"/>
+	  </td>
+	 </tr>
+	</table>
+	</fieldset>
+</form>
 </script>
 
 <!-- Search screens and templates for Center -->

@@ -96,7 +96,7 @@ crudData = {
 				dialogHeight: 300
 			},
 		report: {
-			editTemplateNeeded: false,
+			editTemplateNeeded: true,
 			refreshListNeeded: true
 			}
 		};
@@ -4812,7 +4812,7 @@ function refreshLoanDocuments(loanId) {
 				
 					e.preventDefault();
 				});
-				
+
 				$("a.disableconfiguration").click( function(e) {
 					var linkId = this.id;
 					var configName = linkId.replace("disableconfiguration-", "");
@@ -4825,6 +4825,22 @@ function refreshLoanDocuments(loanId) {
 					  	refreshTableView(tableName);
 					};
 					popupConfirmationDialogAndPost(resourceUrl, 'PUT', 'dialog.title.confirmation.required', width, height, configName, saveSuccessFunction);
+				
+					e.preventDefault();
+				});
+				
+				$("a.disablereport").click( function(e) {// still to do JPW
+					var linkId = this.id;
+					var entityId = linkId.replace("disablereport", "");
+					var resourceUrl = "reports/?" + entityId
+					
+					var width = 400; 
+					var height = 150;
+					var saveSuccessFunction = function(data, textStatus, jqXHR) {
+					  	$("#dialog-form").dialog("close");
+					  	refreshTableView(tableName);
+					};
+					popupConfirmationDialogAndPost(resourceUrl, 'PUT', 'dialog.title.confirmation.required', width, height, entityId, saveSuccessFunction);
 				
 					e.preventDefault();
 				});
@@ -4859,7 +4875,7 @@ function refreshLoanDocuments(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction'|| tableName == 'report') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 
