@@ -414,7 +414,7 @@ function setClientContent(divName) {
 }
 
 function setGroupContent(divName) {
-	var htmlVar = '<div id="groupdetails"></div><div id="newtabs">	<ul><li><a href="unknown.html"'; 
+	var htmlVar = '<div id="groupdetails"></div><div id="groupdatatabs">	<ul><li><a href="unknown.html"'; 
 	htmlVar += 	' title="grouptab" class="topleveltab"><span id="grouptabname">' + doI18N("app.loading") + '</span></a></li>'
 	htmlVar += 	' <li><a href="unknown.html"'; 
 	htmlVar += 	' title="groupclientstab" class="topleveltab"><span id="groupclientstabname">' + doI18N("app.loading") + '</span></a></li>'
@@ -426,7 +426,7 @@ function setGroupContent(divName) {
 }
 
 function setCenterContent(divName) {
-	var htmlVar = '<div id="centerDetails"></div><div id="newtabs">	<ul><li><a href="unknown.html"'; 
+	var htmlVar = '<div id="centerDetails"></div><div id="centerdatatabs">	<ul><li><a href="unknown.html"'; 
 	htmlVar += 	' title="centertab" class="topleveltab"><span id="centertabname">' + doI18N("app.loading") + '</span></a></li>'
 	htmlVar +=	' <li><a href="unknown.html"'; 
 	htmlVar += 	' title="centertabgroups" class="topleveltab"><span id="centertabgroupsname">' + doI18N("app.loading") + '</span></a></li>';
@@ -2043,8 +2043,8 @@ function showLoanFromSearch(clientId, loanId, product, loanAccountNo){
     if(!(typeof loanId === "undefined" && typeof product === "undefined" && typeof loanAccountNo === "undefined" )){
         showILLoan(loanId, product, loanAccountNo);
         var newLoanTabId='loan'+loanId+'tab';
-        var index = $('#newtabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
-        $('#newtabs').tabs('select', index);
+        var index = $('#clientdatatabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
+        $('#clientdatatabs').tabs('select', index);
     }
     
     
@@ -2513,7 +2513,7 @@ function showGroup(groupId){
 	var groupUrl = "groups/"+groupId;
 	setGroupContent("content");
 
-	$newtabs = $("#newtabs").tabs({
+	$newtabs = $("#groupdatatabs").tabs({
     	select: function(event, tab) {
 			if (tab.index == 0){
 				if (groupDirty == true){
@@ -2691,12 +2691,21 @@ function showGroup(groupId){
 
 		});
 
-			$('.addcalendarbtn').button({icons: {primary: "ui-icon-calendar"}}).click(function(e) {
-				var linkId = this.id;
-                var groupId = linkId.replace("addcalendarbtn", "");
-                addCalendar(groupId, 'groups', 'centerCalendarContent');
-                e.preventDefault();
-			});
+		$('.addcalendarbtn').button({icons: {primary: "ui-icon-calendar"}}).click(function(e) {
+			var linkId = this.id;
+            var groupId = linkId.replace("addcalendarbtn", "");
+            addCalendar(groupId, 'groups', 'centerCalendarContent');
+            e.preventDefault();
+		});
+
+		$('.addnewjlgloanbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
+			var linkId = this.id;
+            var clientId = linkId.replace("addnewjlgloanbtn", "");
+            var groupId = currentGroupId;
+            launchJLGLoanApplicationDialog(clientId, groupId);
+            e.preventDefault();
+		});
+			
 	
 	}
 
@@ -2712,7 +2721,7 @@ function showCenter(centerId){
 	var centerUrl = "centers/"+centerId;
 	setCenterContent("content");
 
-	$newtabs = $("#newtabs").tabs({
+	$newtabs = $("#centerdatatabs").tabs({
     	select: function(event, tab) {
 			if (tab.index == 0){
 				if (centerDirty == true){
@@ -2892,89 +2901,88 @@ function showCenter(centerId){
 	executeAjaxRequest(centerUrl + '?associations=groupMembers', 'GET', "", successFunction, errorFunction);
 }
 
-//step - 1 get all clients for loan application
-function jlgBulkMembersLoanWizard(groupId){
-	setAddBulkLoanContent("content");
+	function jlgBulkMembersLoanWizard(groupId){
+		setAddBulkLoanContent("content");
 
-	var viewMemberselection = function(data, textStatus, jqXHR) {
-		var memberHtml = $("#jlgbulkloanmemberselect").render(data);
+		var viewMemberselection = function(data, textStatus, jqXHR) {
+			var memberHtml = $("#jlgbulkloanmemberselect").render(data);
 
-		$("#jlgloans").append(memberHtml);
+			$("#jlgloans").append(memberHtml);
 
-		$('.multiadd').click(function() {  
-			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#loanMembers');  
-		});
-		
-		$('.multiremove').click(function() {  
-			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
-		});
-
-		$('#continuebtn').button({icons: { primary: "ui-icon-circle-arrow-e"}}).click(function(e){
+			$('.multiadd').click(function() {  
+				return !$('.multiNotSelectedItems option:selected').remove().appendTo('#loanMembers');  
+			});
 			
-			//get Loan product details
-			var container = $('#jlgloanproductdetails');
-			var loanProductId = $('#productId').val(); 
-			var membersLength = $('#loanMembers > option').length;
-
-			if(loanProductId === undefined || membersLength === undefined || membersLength <= 0){
-				return false;
-			}
-
-			$('#membesselect').hide();
-			$('#jlgloancontainer').show();
-			loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, true);
-			//$('#selectedmembers').html('');
-			$("#selectedmembers option").remove();
-			$('#selectedmembers').empty().append(function(){
-                var output = "";
-                $('#loanMembers option').each(function(i) {  
-                    output += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
-                });
-                //alert(output);
-                return output;
-            });	
-
-			$('#backbtn').button({icons: { primary: "ui-icon-circle-arrow-w"}}).click(function(e){
-				$('#membesselect').show();
-				$('#jlgloancontainer').hide();
+			$('.multiremove').click(function() {  
+				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
 			});
 
-            $('#savebtn').button({icons: { primary: "ui-icon-disk"}}).click(function(e){
-                var serializedArray = {};
-                serializedArray = $('#entityform').serializeObject();
-                serializedArray['productId'] = loanProductId;
-                serializedArray['groupId'] = groupId;
-                var isError = false;
-                var totalSelectedMembers = $('#selectedmembers > option').length;
-                $('#selectedmembers option').each(function(index) {  
-                    var serializedArray1 = serializedArray;
-                    serializedArray1['clientId'] = $(this).val();
-                    var newFormData = JSON.stringify(serializedArray);
-                    var successFunction =  function(data, textStatus, jqXHR) {
-                        if (index === totalSelectedMembers - 1) {
-					        showGroup(groupId);
-					    }
-                        
-                    };
-                    
-                    var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
-                        formErrorFunction(jqXHR, textStatus, errorThrown);
-                        isError = true;
-                    };
-            		if(isError) return false;
-            		//alert($(this).val());
-                    executeAjaxRequest('loans', "POST", newFormData , successFunction, formErrorFunction);
-                });
-            });		
-		});
-		
+			$('#continuebtn').button({icons: { primary: "ui-icon-circle-arrow-e"}}).click(function(e){
+				
+				//get Loan product details
+				var container = $('#jlgloanproductdetails');
+				var loanProductId = $('#productId').val(); 
+				var membersLength = $('#loanMembers > option').length;
+
+				if(loanProductId === undefined || membersLength === undefined || membersLength <= 0){
+					return false;
+				}
+
+				$('#membesselect').hide();
+				$('#jlgloancontainer').show();
+				loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, true);
+				//$('#selectedmembers').html('');
+				$("#selectedmembers option").remove();
+				$('#selectedmembers').empty().append(function(){
+	                var output = "";
+	                $('#loanMembers option').each(function(i) {  
+	                    output += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
+	                });
+	                //alert(output);
+	                return output;
+	            });	
+
+				$('#backbtn').button({icons: { primary: "ui-icon-circle-arrow-w"}}).click(function(e){
+					$('#membesselect').show();
+					$('#jlgloancontainer').hide();
+				});
+
+	            $('#savebtn').button({icons: { primary: "ui-icon-disk"}}).click(function(e){
+	                var serializedArray = {};
+	                serializedArray = $('#entityform').serializeObject();
+	                serializedArray['productId'] = loanProductId;
+	                serializedArray['groupId'] = groupId;
+	                var isError = false;
+	                var totalSelectedMembers = $('#selectedmembers > option').length;
+	                $('#selectedmembers option').each(function(index) {  
+	                    var serializedArray1 = serializedArray;
+	                    serializedArray1['clientId'] = $(this).val();
+	                    var newFormData = JSON.stringify(serializedArray);
+	                    var successFunction =  function(data, textStatus, jqXHR) {
+	                        if (index === totalSelectedMembers - 1) {
+						        showGroup(groupId);
+						    }
+	                        
+	                    };
+	                    
+	                    var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
+	                        formErrorFunction(jqXHR, textStatus, errorThrown);
+	                        isError = true;
+	                    };
+	            		if(isError) return false;
+	            		//alert($(this).val());
+	                    executeAjaxRequest('loans', "POST", newFormData , successFunction, formErrorFunction);
+	                });
+	            });		
+			});
+			
+		}
+
+		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300';
+		executeAjaxRequest(url, 'GET', "", viewMemberselection, formErrorFunction);	
 	}
 
-	var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300';
-	executeAjaxRequest(url, 'GET', "", viewMemberselection, formErrorFunction);	
-}
-
-function addLJGBulkMembersLoans(groupId){
+	function addLJGBulkMembersLoans(groupId){
 		setAddBulkLoanContent("content");
 
 		var addMemberLoanApplicationSuccess = function(data, textStatus, jqXHR) {
@@ -3234,11 +3242,7 @@ function addLJGBulkMembersLoans(groupId){
 
 		//If JLG loan, send group id and calendar id
 		if(!(group === undefined)){
-		    if(clientId === undefined){
-                serializedArray["groupId"] = group.id;//This is group loan
-		    }else{
-		        serializedArray["groupId"] = $("#groupSelId").val();//This is JLG loan given to Client
-            }
+            serializedArray["groupId"] = group.id;//This is group loan
             serializedArray["calendarId"] = $("#calendarId").val();
         }
 
@@ -3275,11 +3279,7 @@ function addLJGBulkMembersLoans(groupId){
 
         //If JLG loan, send group id and calendar id
         if(!(group === undefined)){
-            if(clientId === undefined){
-                serializedArray["groupId"] = group.id;//This is group loan
-            }else{
-                serializedArray["groupId"] = $("#groupSelId").val();//This is JLG loan given to Client
-            }
+            serializedArray["groupId"] = group.id;//This is group loan
             serializedArray["calendarId"] = $("#calendarId").val();
         }
 
@@ -3340,6 +3340,10 @@ function addLJGBulkMembersLoans(groupId){
 		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
 	}
 	
+	function launchJLGLoanApplicationDialog(clientId, groupId) {
+		executeAjaxRequest('loans/template?clientId=' + clientId + '&groupId=' + groupId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
+	}
+
 	function launchGroupLoanApplicationDialog(groupId) {
 		executeAjaxRequest('loans/template?groupId=' + groupId+'&lendingStrategy=300', 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
 	}
@@ -3600,6 +3604,7 @@ function addLJGBulkMembersLoans(groupId){
             }
 
             if(isJLG){
+            	//This is for bulk JLG loans
             	//hide applicant and display applicants
             	//disable loan product
             	$('.applicant').each(function(i) {
@@ -3609,11 +3614,14 @@ function addLJGBulkMembersLoans(groupId){
 
 		};
 		
+		
+		if(!(clientId === undefined) && !(group === undefined)){
+			//Client Id and Group Id are not null for JLG loans 
+			executeAjaxRequest('loans/template?clientId=' + clientId + '&groupId=' + group.id + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+		}else if(!(clientId === undefined)){
 		// loan loan application template providing selected client and product infomation
-		if(!(clientId === undefined)){
 			executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
-			}
-		else if(!(group === undefined)){
+		}else if(!(group === undefined)){
 			executeAjaxRequest('loans/template?groupId=' + group.id + '&productId=' + productId+"&lendingStrategy=300", 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
  		}	
 	}
@@ -4132,11 +4140,11 @@ function addLJGBulkMembersLoans(groupId){
         return false;
     }
 
-	function genSaveSuccessFunctionReloadLoan(loanId) {
-
+	function genSaveSuccessFunctionReloadLoan(loanId, parenttab) {
 		return 'var saveSuccessFunctionReloadLoan = function(data, textStatus, jqXHR) { ' + 
 						  	' $("#dialog-form").dialog("close");' +
-							' loadILLoan(' + loanId + ');' +
+						  	' var contentTab = ' + parenttab + ';' +
+							' loadLoan(' + loanId + ', "' + parenttab + '");' +
 							' clientDirty = true;' +
 							' groupDirty = true;' +
 						'};';
@@ -4160,17 +4168,25 @@ function addLJGBulkMembersLoans(groupId){
 	
 	
 function showILLoan(loanId, product, loanAccountNo) {
+	showLoan(loanId, product, loanAccountNo, 'clientdatatabs');	
+}
+
+function showGroupLoan(loanId, product, loanAccountNo) {
+	showLoan(loanId, product, loanAccountNo, 'groupdatatabs');	
+}
+
+function showLoan(loanId, product, loanAccountNo, parenttab){
 	var newLoanTabId='loan'+loanId+'tab';
 	//show existing tab if this Id is already present
-	if(tabExists(newLoanTabId)){
-		var index = $('#clientdatatabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
-		$('#clientdatatabs').tabs('select', index);
+	if(tabExists(parenttab, newLoanTabId)){
+		var index = $('#'+ parenttab +' a[href="#'+ newLoanTabId +'"]').parent().index(); 
+		$('#'+ parenttab).tabs('select', index);
 		
 		var title = product + ": #" + loanAccountNo;		
-		if (undefined === loanAccountNo) {
+		if (undefined === loanAccountNo || loanAccountNo == '') {
 			title = product + ": #" + loanId;
 		}
-		$('#clientdatatabs .ui-tabs-selected:first a').text(title);
+		$('#'+ parenttab +' .ui-tabs-selected:first a').text(title);
 	}
 	//else create new tab and set identifier properties
 	else{
@@ -4179,11 +4195,11 @@ function showILLoan(loanId, product, loanAccountNo) {
 			title = product + ": #" + loanId;
 		}
 		$newtabs.tabs( "add", "unknown.html", title);
-		loadILLoan(loanId);
+		loadLoan(loanId, parenttab);
 		//add ids and titles to newly added div's and a'hrefs
-		var lastAHref=$('#clientdatatabs> ul > li:last > a');
-		var lastDiv=$('#clientdatatabs > div:last')
-		var lastButOneDiv=$('#clientdatatabs > div:last').prev();
+		var lastAHref=$('#'+ parenttab +'> ul > li:last > a');
+		var lastDiv=$('#'+ parenttab +' > div:last')
+		var lastButOneDiv=$('#'+ parenttab +' > div:last').prev();
 		lastAHref.attr('href','#loan'+loanId+'tab');
 		lastButOneDiv.attr('id',newLoanTabId);
 		//the add functionality seems to be adding a dummy div at the end 
@@ -4193,9 +4209,9 @@ function showILLoan(loanId, product, loanAccountNo) {
 }
 
 //checks for existence of tab with given Id
-function tabExists(tabId){
+function tabExists(parenttab, tabId){
     var tabFound = false;
-    $('#clientdatatabs > div').each(function(index, ui) {
+    $('#' + parenttab + ' > div').each(function(index, ui) {
         if($(ui).attr('id') == tabId){
         	tabFound = true;
         }
@@ -4203,9 +4219,16 @@ function tabExists(tabId){
     return tabFound;
 }
 
+function loadILLoan(loanId) {
+	loadLoan(loanId);	
+}
 
-function loadILLoan(loanId) {   
-	
+function loadGroupLoan(loanId) {
+	loadLoan(loanId);	
+}
+
+function loadLoan(loanId, parenttab) {   
+	var parenttab = parenttab;	
 	var loanUrl = 'loans/' + loanId + "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
@@ -4219,7 +4242,7 @@ function loadILLoan(loanId) {
 	            
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);
 	        		
-	        		var currentTab = $("#clientdatatabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+	        		var currentTab = $("#"+parenttab).children(".ui-tabs-panel").not(".ui-tabs-hide");
 	        		currentTab.html(tableHtml);
 
 	        		var curTabID = currentTab.prop("id")
@@ -4292,7 +4315,7 @@ function loadILLoan(loanId) {
 	        		//var $loantabs = $(".loantabs").tabs({
 		        	var $loantabs = $("#loantabs" + loanId).tabs({
 						"show": function(event, ui) {
-							var curTab = $('#clientdatatabs .ui-tabs-panel:not(.ui-tabs-hide)');
+							var curTab = $('#' + parenttab + ' .ui-tabs-panel:not(.ui-tabs-hide)');
 			      			var curTabID = curTab.prop("id")
 						},
 						"select": function( event, ui ) {
@@ -4346,7 +4369,7 @@ function loadILLoan(loanId) {
 						var width = 500; 
 						var height = 350;
 						var defaultOffset = offsetToSubmittedDate;
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 						popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.approve.loan', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
 					    e.preventDefault();
 				});
@@ -4360,7 +4383,7 @@ function loadILLoan(loanId) {
 						var width = 500; 
 						var height = 350;
 						var defaultOffset = offsetToSubmittedDate;
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 						popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.loan.approval', templateSelector, width, height, saveSuccessFunctionReloadLoan, offsetToSubmittedDate, defaultOffset, maxOffset)
 					    e.preventDefault();
 				});
@@ -4387,7 +4410,7 @@ function loadILLoan(loanId) {
 					var width = 500; 
 					var height = 400;
 					var defaultOffset = offsetToExpectedDisbursementDate;
-					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 			
 					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.repayment", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
@@ -4402,7 +4425,7 @@ function loadILLoan(loanId) {
 					var width = 500; 
 					var height = 350;
 					var defaultOffset = offsetToApprovalDate;
-					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 					popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undo.loan.disbursal', templateSelector, width, height, saveSuccessFunctionReloadLoan,  offsetToSubmittedDate, defaultOffset, maxOffset)
 				    e.preventDefault();
 				});
@@ -4418,7 +4441,7 @@ function loadILLoan(loanId) {
 					var width = 500; 
 					var height = 450;
 					var defaultOffset = offsetToApprovalDate;
-					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 		
 					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.repayment", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
@@ -4437,7 +4460,7 @@ function loadILLoan(loanId) {
 						var height = 350;
 						var defaultOffset = offsetToApprovalDate;
 						
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 						
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.waive.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
@@ -4456,7 +4479,7 @@ function loadILLoan(loanId) {
 					var height = 350;
 					var defaultOffset = offsetToApprovalDate;
 					
-					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 					
 					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.writeoff.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
@@ -4475,7 +4498,7 @@ function loadILLoan(loanId) {
 					var height = 350;
 					var defaultOffset = offsetToApprovalDate;
 					
-					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 					
 					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.closeasrescheduledloan.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
@@ -4494,7 +4517,7 @@ function loadILLoan(loanId) {
 					var height = 350;
 					var defaultOffset = offsetToApprovalDate;
 					
-					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 					
 					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.close.loan", templateSelector, width, height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
@@ -4519,7 +4542,7 @@ function loadILLoan(loanId) {
 					var height = 450;
 					var defaultOffset = offsetToApprovalDate;
 
-					eval(genSaveSuccessFunctionReloadLoan(loanId));						
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));						
 					popupDialogWithFormView(getAndPostUrl, getAndPostUrl, 'POST', "dialog.title.adjust.loan.repayment", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
@@ -4550,7 +4573,7 @@ function loadILLoan(loanId) {
                     searializedArray["transactionAmount"] = 0;
                     var jsonString = JSON.stringify(searializedArray);
                 
-                    eval(genSaveSuccessFunctionReloadLoan(loanId));
+                    eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
                     popupConfirmationDialogAndPost(postURL, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan,jsonString);
                     e.preventDefault();
                 }); 
@@ -4565,7 +4588,7 @@ function loadILLoan(loanId) {
 						var width = 450; 
 						var height = 300;
 
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addLoanCharge", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
@@ -4580,7 +4603,7 @@ function loadILLoan(loanId) {
                         var width = 550; 
                         var height = 425;
 
-                        eval(genSaveSuccessFunctionReloadLoan(loanId));
+                        eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
                         popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addCollateral", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
                         e.preventDefault();
                 });
@@ -4601,7 +4624,7 @@ function loadILLoan(loanId) {
 						var height = 350;
 						
 						
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 						//update hidden loan Id
     		$("#").val(loanId);
 	            		popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
@@ -4619,7 +4642,7 @@ function loadILLoan(loanId) {
 							var deleteUrl = 'loans/'+loanId+'/guarantors/' + val.id;
 							var width = 500; 
 							var height = 350;
-							eval(genSaveSuccessFunctionReloadLoan(loanId));
+							eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 							popupConfirmationDialogAndPost(deleteUrl, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan);
 		            		e.preventDefault();
 		            	});
@@ -4637,7 +4660,7 @@ function loadILLoan(loanId) {
 						var width = 425; 
 						var height = 225;
 
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.loan.officer", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
@@ -4653,7 +4676,7 @@ function loadILLoan(loanId) {
 						var templateSelector = "#loanUnassignmentFormTemplate";
 						var width = 400; 
 						var height = 225;
-						eval(genSaveSuccessFunctionReloadLoan(loanId));
+						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 						
 						popupDialogWithFormViewData("", postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunctionReloadLoan)		
 						e.preventDefault();
@@ -4670,7 +4693,7 @@ function loadILLoan(loanId) {
 					var width = 425; 
 					var height = 225;
 
-					eval(genSaveSuccessFunctionReloadLoan(loanId));
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 					popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.accountno", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
@@ -6578,7 +6601,7 @@ function showSavingAccount(accountId, accountNo, productName) {
 	var newSavingTabId='saving'+accountId+'tab';
 	
 	//show existing tab if this Id is already present
-	if(tabExists(newSavingTabId)){
+	if(tabExists('clientdatatabs', newSavingTabId)){
 		var index = $('#clientdatatabs a[href="#'+ newSavingTabId +'"]').parent().index(); 
 		$('#clientdatatabs').tabs('select', index);
 	}
@@ -7145,36 +7168,7 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
         executeAjaxRequest('groups/' + groupId + '/calendars?associations=parentCalendars', 'GET', "", getcalendarSuccessFunction, formErrorFunction);
     }
     
-    $('#groupSelId').change(function(){
-        
-        executeAjaxRequest('groups/' + $(this).val() + '/calendars?associations=parentCalendars', 'GET', "", getcalendarSuccessFunction, formErrorFunction);    
-    });
-
-    var groupsSuccessFunction = function(data, textStatus, jqXHR) {
-        
-        $('#groupSelId').empty().append(function() {
-            var output = '<option value=0> -- Select a group -- </option>';
-            $.each(data.parentGroups, function(key, value){
-                output += '<option value=' + value.id + '>' + value.name + '</option>';
-            });
-            return output;
-        });
-        
-        if(groupId){
-            $('#groupSelId').val(groupId);
-            loadGroupCalendars(groupId);
-        }
-        
-        if(loanId){
-            loadAttachedCalendarToLoan(loanId);
-        }
-    }
-
-    if(resource === 'clients'){
-        //get client parent groups
-        executeAjaxRequest('clients/' + resourceId + '?fields=id,parentGroups', 'GET', "", groupsSuccessFunction, formErrorFunction);
-    }else if(resource === 'groups'){
-        $('.grouprow').hide();
+	if(resource === 'groups' || !(groupId === undefined)){
         loadGroupCalendars(groupId);
     }
 }
