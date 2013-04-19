@@ -1423,14 +1423,22 @@ $(document).ready(function() {
 
 <script id="groupClientsTabTemplate" type="text/x-jquery-tmpl">
 <span><b>{{=$ctx.doI18N("label.group.clients.assigned")}}</b></span>
-<div style="border: 1px solid #CECECE; height:100px; width:500px; overflow: auto; padding:6px; margin-top:5px;" id="Layer2">
-{{#if clientMembers}}
-	{{#each clientMembers}}
-    <div class="row">
-		<span class="fontnormal"><a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}}</span></a></span>
-	</div>
-    {{/each}}
-{{/if}}
+<div class="row">
+    <span class="rowvalue">
+        <table>
+        {{#if clientMembers}}
+        	{{#each clientMembers}}
+                <tr>
+                    <td>
+            		<span class="loanaccount"><a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}} : # {{=accountNo}}</span></a></span>
+                    </td>
+                    <td>
+                    <button id="addnewjlgloanbtn{{=id}}" class="addnewjlgloanbtn">{{=$ctx.doI18N("label.group.new.client.loan.account")}}</button>
+                    </td>
+                </tr>
+            {{/each}}
+        {{/if}}
+    </span>
 </div>
 </script>
 
@@ -1549,7 +1557,7 @@ $(document).ready(function() {
         <div><b>Loan</b></div>
         <div>
         <span>
-        <a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
+        <a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
         </span>
         <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}
         </span>
@@ -1566,7 +1574,7 @@ $(document).ready(function() {
         <div><b>Loan</b></div>
         <div>
 		    <span>
-                <a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
+                <a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
             </span>
             <span style="float:right;"><img src="resources/img/status_activegreen.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.approved")}}
             </span>
@@ -1583,7 +1591,7 @@ $(document).ready(function() {
         <div><b>Loan</b></div>
         <div>
 		<span>
-            <a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
+            <a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
         </span>
         <span style="float:right;"><img src="resources/img/status_activegreen.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.active")}}</span>
         </div>
@@ -1598,7 +1606,7 @@ $(document).ready(function() {
         <span class="loanaccount">
         <div><b>Loan</b></div>
         <div>
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
         <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
         </div>
         </span>
@@ -6643,21 +6651,21 @@ $(document).ready(function() {
 	{{#if clientId}}
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
 	{{/if}}
-	{{#if groupId}}
-	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
+	{{#if group}}
+	<input type="hidden" id="groupId" name="groupId" value="{{=group.id}}" />
 	{{/if}}
 	<table>
 			<tr>
 				<td valign="top">
-				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}{{/if}}
-				{{#if groupName}}{{=$ctx.doI18N("label.applicant")}}{{/if}}
+				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}<br><br>{{/if}}
+				{{#if group}}{{=$ctx.doI18N("label.group")}}{{/if}}
 				</td>
 				<td valign="top">
 				{{#if clientName}}
-				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" /><br><br>
 				{{/if}}
-				{{#if groupName}}
-				<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
+				{{#if group}}
+				<input id="groupname" name="groupName" title="" type="text" value="{{=group.name}}" disabled="disabled" style="width: 300px;" />
 				{{/if}}
 				</td>
 
@@ -6689,8 +6697,8 @@ $(document).ready(function() {
 	{{#if clientId}}
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
 	{{/if}}
-	{{#if groupId}}
-	<input type="hidden" id="groupId" name="groupId" value="{{=groupId}}" />
+	{{#if group}}
+	<input type="hidden" id="groupId" name="groupId" value="{{=group.id}}" />
 	{{/if}}
 	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
@@ -6698,14 +6706,19 @@ $(document).ready(function() {
 	<table>
 			<tr>
 				<td class='applicant' valign="top">
-				{{=$ctx.doI18N("label.applicant")}}
+				{{#if clientName}}
+                    {{=$ctx.doI18N("label.applicant")}}<br><br>
+                {{/if}}
+                {{#if group}}
+                    {{=$ctx.doI18N("label.group")}}
+                {{/if}}    
 				</td>
 				<td class='applicant' valign="top">
 				{{#if clientName}}
-				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" /><br><br>
 				{{/if}}
-				{{#if groupName}}
-				<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
+				{{#if group}}
+				<input id="groupname" name="groupName" title="" type="text" value="{{=group.name}}" disabled="disabled" style="width: 300px;" />
 				{{/if}}
 				</td>
 
@@ -7947,14 +7960,6 @@ $(document).ready(function() {
         <!-- MIFOSX-278 -->
 
             <table>
-                <!-- Client can associate with multiple groups, allow to change group -->
-                <tr class="grouprow">
-                    <td>{{=$ctx.doI18N("label.group")}}</td>
-                    <td>
-                        <select id="groupSelId" class="groupSelId" title="">
-                        </select>
-                    </td>
-                </tr>
                 <tr class="calendarrow">
                     <td>{{=$ctx.doI18N("label.meeting.calendar")}}</td>
                     <td>
