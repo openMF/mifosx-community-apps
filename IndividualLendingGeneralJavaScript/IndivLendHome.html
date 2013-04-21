@@ -746,6 +746,25 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td>
+				<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+				{{#if active}}
+				<input type="hidden" id="active" name="active" value="true" />
+				<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
+				{{else}}
+				<input id="activeCheckbox" type="checkbox" name="active" value="false" />
+				{{/if}}
+			</td>
+			<td>
+				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+				{{#if active}}
+				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />    
+				{{else}}
+				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="" />
+				{{/if}}
+			</td>
+		</tr>
+		<tr>
+			<td>
 				<div class="multiselectwidget">
 					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
 					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
@@ -842,6 +861,19 @@ $(document).ready(function() {
 				<input id="externalId" name="externalId" title="" type="text" value="{{=externalId}}"/>
 			</td>
 		</tr>
+		{{#if active}}
+		<tr>
+			<td>
+			<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
+			<input type="hidden" id="active" name="active" value="true" />
+			<input id="activeCheckbox" type="checkbox" name="active" value="true" checked disabled=disabled/>
+			</td>
+			<td>
+			<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+			<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
+			</td>
+		</tr>
+		{{/if}}
 		<tr>
 			<td>
 				<div class="multiselectwidget">
@@ -7214,7 +7246,7 @@ $(document).ready(function() {
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
-	<select id="officeId" name="officeId" title="">
+	<select id="officeId" name="officeId" title="" disabled=disabled>
 		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 		{{#each officeOptions}}
 			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
