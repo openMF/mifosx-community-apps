@@ -6622,6 +6622,15 @@ function showSavingAccount(accountId, accountNo, productName) {
 		}
 }
 
+function genSaveSuccessFunctionReloadSaving(savingAccountId) {
+
+	return 'var saveSuccessFunctionReloadSaving = function(data, textStatus, jqXHR) { ' +
+	' $("#dialog-form").dialog("close");' +
+	' loadSavingAccount(' + savingAccountId + ');' +
+	' clientDirty = true;' +
+	'};';
+}
+
 function loadSavingAccount(accountId) {
 	
 	var accountUrl = 'savingsaccounts/' + accountId+ "?associations=all";
