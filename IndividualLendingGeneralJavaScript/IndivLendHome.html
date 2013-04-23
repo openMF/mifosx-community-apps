@@ -684,6 +684,8 @@ $(document).ready(function() {
 <script id="centerGroupFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
+    <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+    <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<table>
 		<tr>
 			<td>
@@ -798,6 +800,8 @@ $(document).ready(function() {
 <script id="centerGroupEditFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
+    <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+    <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<table>
 		<tr>
 			<td>
@@ -1439,7 +1443,12 @@ $(document).ready(function() {
 		<button id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</button>
 		{{/if}}
         <button id="addclientbtn{{=id}}" class="addclientbtn">{{=$ctx.doI18N("label.group.add.client")}}</button>
-        <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>
+        {{#if centerId}}
+        
+        {{#else}}
+            <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>   
+        {{/if}}
+
         {{#if $ctx.showTask("AddGroupNote")}}
             <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
     {{/if}}
@@ -1560,7 +1569,7 @@ $(document).ready(function() {
 				<div class="row">
 					<span class="longrowlabel">{{=$ctx.doI18N("label.group.staff")}}</span>
 					<span class="rowvalue">{{=staffName}}</span>
-					<span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">
+					<span style="margin-left:10px;"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">
 					{{=$ctx.doI18N("label.group.unassign.staff")}}</a></span>
 				</div>
                 {{/if}}
@@ -1584,65 +1593,45 @@ $(document).ready(function() {
 <p><b>{{=$ctx.doI18N("heading.group.account.loanaccount.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(pendingApprovalLoanCount)}}
 <div class="row">
-	{{#each pendingApprovalLoans}}
-    <span class="loanaccount">
-        <div><b>Loan</b></div>
-        <div>
-        <span>
-        <a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
-        </span>
-        <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}
-        </span>
-        </div>
-        </span>
-	{{/each}}
-</div>    
+    <span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
+    <span class="rowvalue">
+    {{#each pendingApprovalLoans}}
+        <span class="loanaccount"><a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}', '{{=accountNo}}'); return false;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+    {{/each}}
+    </span>
+</div>
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(awaitingDisbursalLoanCount)}}
 <div class="row">
-	{{#each awaitingDisbursalLoans}}
-        <span class="loanaccount">
-        <div><b>Loan</b></div>
-        <div>
-		    <span>
-                <a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
-            </span>
-            <span style="float:right;"><img src="resources/img/status_activegreen.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.approved")}}
-            </span>
-        </div>
-        </span>
-	{{/each}}
+    <span class="longrowlabel">{{=$ctx.doI18N("label.pending.disbursal")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
+    <span class="rowvalue">
+    {{#each awaitingDisbursalLoans}}
+        <span class="loanaccount"><a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+    {{/each}}
+    </span>
 </div>
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(activeLoanCount)}}
 <div class="row">
-	{{#each openLoans}}
-        <span class="loanaccount">
-        <div><b>Loan</b></div>
-        <div>
-		<span>
-            <a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a>
-        </span>
-        <span style="float:right;"><img src="resources/img/status_activegreen.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.active")}}</span>
-        </div>
-        </span>
-	{{/each}}
+    <span class="longrowlabel">{{=$ctx.doI18N("label.active")}} ({{=$ctx.number(activeLoanCount)}}):</span>
+    <span class="rowvalue">
+    {{#each openLoans}}
+        <span class="loanaccount"><a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+    {{/each}}
+    </span>
 </div>
 {{/if}}
 
 {{#if $ctx.numberGreaterThanZero(closedLoanCount)}}
 <div class="row">
-	{{#each closedLoans}}
-        <span class="loanaccount">
-        <div><b>Loan</b></div>
-        <div>
-		<span class="loanaccount"><a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=id}}</a></span>
-        <span style="float:right;"><img src="resources/img/status_yellow.gif">&nbsp;{{=$ctx.doI18N("label.group.loan.status.pendding")}}</span>
-        </div>
-        </span>
-	{{/each}}
+    <div class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedLoanCount)}}):</div>
+    <div class="rowvalue">
+    {{#each closedLoans}}
+        <span class="loanaccount"><a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+    {{/each}}
+    </div>
 </div>
 {{/if}}
 
@@ -7624,44 +7613,60 @@ $(document).ready(function() {
                     <input id="description" name="description" title="" type="text" value="{{=description}}" size="30"/>
                 </td>
                 <td>
-                    <label for="location">{{=$ctx.doI18N("label.calendar.location")}}</label>
-                    <input id="location" name="location" title="" type="text" value="{{=location}}" size="30"/>
+                    <label class='location' for="location">{{=$ctx.doI18N("label.calendar.location")}}</label>
+                    <input class='location' id="location" name="location" title="" type="text" value="{{=location}}" size="30"/>
                 </td>
             </tr>
             <tr>
                 <td>
                     <label for="type">{{=$ctx.doI18N("label.calendar.type")}}</label>
-                    <select id="typeId" name="typeId" title="" value="{{=type.id}}">
-                        <option value="">{{=$ctx.doI18N("calendar.type.first.choice")}}</option>
+                    <select id="meetingTypeId" name="meetingTypeId" title="" value="{{=type.id}}">
+                        <option value="" selected=true>{{=$ctx.doI18N("calendar.type.first.choice")}}</option>
                         {{#each calendarTypeOptions}}
-                        <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                            <option value="{{=$ctx.number(id)}}">
+                                {{#if value === 'COLLECTION'}}
+                                    {{=$ctx.doI18N("lable.meeting.type.option.collection")}}
+                                {{#else value === 'TRAINING'}}
+                                    {{=$ctx.doI18N("lable.meeting.type.option.training")}}
+                                {{#else value === 'AUDIT'}}
+                                    {{=$ctx.doI18N("lable.meeting.type.option.audit")}}
+                                {{#else value === 'GENERAL'}}
+                                    {{=$ctx.doI18N("lable.meeting.type.option.general")}}
+                                {{#else}}
+                                    {{=value}}
+                                {{/if}}                                
+
+
+                            </option>
                         {{/each}}
                     </select>
                 </td>
 
                 <td>
                     <label for="startDate">{{=$ctx.doI18N("label.calendar.start.date")}}</label>
-                    <input id="startDate" name="startDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(startDate)}}" />
+                    <input id="startDate" name="startDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(startDate)}}" />
                 </td>
                 
             </tr>
-            <tr>
+            <tr class='duration'>
                 <td>
                     <label for="duration">{{=$ctx.doI18N("label.calendar.duration")}}</label>
                     <input id="duration" name="duration" title="" type="text" value="{{=duration}}" size="10"/>
                 </td>
                 <td>
-                    <label for="remindBy">{{=$ctx.doI18N("label.calendar.remind.by")}}</label>
-                    <select id="remindById" name="remindById" title="" value="{{=remindBy.id}}">
-                        <option value="">{{=$ctx.doI18N("calendar.remind.by.first.choice")}}</option>
-                        {{#each remindByOptions}}
-                        <option value="{{=$ctx.number(id)}}">{{=value}}</option>
-                        {{/each}}
-                    </select>
+                    {{#if remindBy}}
+                        <label for="remindBy">{{=$ctx.doI18N("label.calendar.remind.by")}}</label>
+                        <select id="remindById" name="remindById" title="" value="{{=remindBy.id}}">
+                            <option value="">{{=$ctx.doI18N("calendar.remind.by.first.choice")}}</option>
+                            {{#each remindByOptions}}
+                            <option value="{{=$ctx.number(id)}}">{{=value}}</option>
+                            {{/each}}
+                        </select>
+                    {{/if}}
                     
                 </td>
             </tr>
-            <tr>
+            <tr class="reminders">
                 <td>
                    <label for="firstReminder">{{=$ctx.doI18N("label.calendar.first.reminder")}}</label>
                     <input id="firstReminder" name="firstReminder" title="" type="text" value="{{=firstReminder}}" size="10"/> 
@@ -7731,7 +7736,7 @@ $(document).ready(function() {
                     </td>
                     
                 </tr>
-                <tr>
+                <tr class="endsafter">
                     <td>
                                                 
                     </td>
@@ -7741,7 +7746,7 @@ $(document).ready(function() {
                     </td>
                     
                 </tr>
-                <tr>
+                <tr class="endson">
                     <td>
                                                 
                     </td>
@@ -7760,10 +7765,27 @@ $(document).ready(function() {
         <div class="notespacer">
             <span class="ui-icon ui-icon-calendar" style="float: left; margin-right: 5px;"></span>
             <span>Name: {{=title}}</span>
-            &nbsp;&nbsp;&nbsp;:<span><a href="#" class="editcalendar" id="editcalendarlink{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</a></span>
+            {{#if $parent.parent.data.resource === entityType.value}}
+            &nbsp;&nbsp;&nbsp;:
+                <span>
+                    <a href="#" class="editcalendar" entityType="{{=entityType.value}}" entityId="{{=entityId}}" id="editcalendarlink{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</a>
+                </span>
+            {{/if}}
         </div>
         <div class="notespacer">
-            <span>Meeting type: {{=type.value}}</span>
+            <span>Meeting type: 
+                {{#if type.value === 'COLLECTION'}}
+                    {{=$ctx.doI18N("lable.meeting.type.option.collection")}}
+                {{#else type.value === 'TRAINING'}}
+                    {{=$ctx.doI18N("lable.meeting.type.option.training")}}
+                {{#else type.value === 'AUDIT'}}
+                    {{=$ctx.doI18N("lable.meeting.type.option.audit")}}
+                {{#else type.value === 'GENERAL'}}
+                    {{=$ctx.doI18N("lable.meeting.type.option.general")}}
+                {{#else}}
+                    {{=type.value}}
+                {{/if}}   
+            </span>
         </div>
         <div class="notespacer">
             <span>Start Date: {{=$ctx.globalDate(startDate)}}</span>
@@ -7774,7 +7796,7 @@ $(document).ready(function() {
         </div>
         
         <div class="notespacer" id="showrecurlink">
-            <span><a href="#" class="recurshow" id="recurshow{{=id}}"> Show Recurring Dates </a> </span>
+            <span><a href="#" class="recurshow" id="recurshow{{=id}}"> Next 10 recurring dates </a> </span>
         </div>
         {{/if}}
         <div class="notespacer" class="recurringdata" name="recurringdata" id="recurringdata{{=id}}" style="display: none;">
@@ -8272,7 +8294,7 @@ $(document).ready(function() {
 				<div class="row">
 					<span class="longrowlabel">{{=$ctx.doI18N("label.group.staff")}}</span>
 					<span class="rowvalue">{{=staffName}}</span>
-					<span style="float:right"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">
+					<span style="margin-left:10px;"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">
 					{{=$ctx.doI18N("label.group.unassign.staff")}}</a></span>
 				</div>
                 {{/if}}

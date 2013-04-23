@@ -2759,7 +2759,7 @@ function showCenter(centerId){
 		refreshGroupLoanSummaryInfo(centerUrl);
 
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
-        refreshCalendarWidget(currentGroupId, 'groups', 'centerCalendarContent');
+        refreshCalendarWidget(currentGroupId, 'centers', 'centerCalendarContent');
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
@@ -2829,7 +2829,7 @@ function showCenter(centerId){
 			$('.addcalendarbtn').button({icons: {primary: "ui-icon-calendar"}}).click(function(e) {
 				var linkId = this.id;
 				var centerId = linkId.replace("addcalendarbtn", "");
-				addCalendar(centerId, 'groups', 'centerCalendarContent');
+				addCalendar(centerId, 'centers', 'centerCalendarContent');
 			    e.preventDefault();
 			});
 
@@ -2868,9 +2868,9 @@ function showCenter(centerId){
 			$('.unassignstafftogroup').button().click(function(e){
 
 						var linkId = this.id;
-						var groupId = linkId.replace("unassignstafftogroup", "");
+						var centerId = linkId.replace("unassignstafftogroup", "");
 						var staffId = $('#staffId').val();
-						var postUrl = 'groups/'+ groupId +'/command/unassign_staff';
+						var postUrl = 'groups/'+ centerId +'/command/unassign_staff';
 						var getUrl = ""
 						
 						var templateSelector = "#loanUnassignmentFormTemplate";
@@ -2880,7 +2880,7 @@ function showCenter(centerId){
 						
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 				  			$("#dialog-form").dialog("close");
-				  			showGroup(groupId);
+				  			showCenter(centerId);
 						}						
 						//popupDialogWithFormView(jsonbody, postUrl, 'POST', 'dialog.title.assign.loan.officer', templateSelector ,width, height, saveSuccessFunctionReloadLoan );
 						//popupDialogWithFormViewData(jsonbody, postUrl, 'POST', 'dialog.title.unassign.loan.officer', templateSelector, width, height, saveSuccessFunction)		
@@ -5616,13 +5616,8 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             serializedArray["dateFormat"] = $('#dateFormat').val();
             serializedArray["title"] = $('#title').val();
             serializedArray["description"] = $('#description').val();
-            serializedArray["location"] = $('#location').val();
-            serializedArray["typeId"] = $('#typeId').val();
+            serializedArray["typeId"] = $('#meetingTypeId').val();
             serializedArray["startDate"] = $('#startDate').val();
-            serializedArray["duration"] = $('#duration').val();
-            serializedArray["remindById"] = $('#remindById').val();
-            serializedArray["firstReminder"] = $('#firstReminder').val();
-            serializedArray["secondReminder"] = $('#secondReminder').val();
             serializedArray["repeating"] = $('#repeating').val()==="on"?true:false;
             serializedArray["recurrence"] = rrule;
             
@@ -5630,6 +5625,14 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
                 if($('#endson').is(':checked')){
                     serializedArray["endDate"] = $('#endondate').val();
                 }
+            }
+
+            if($('#meetingTypeId').val() != "1"){
+            	serializedArray["location"] = $('#location').val();
+            	serializedArray["duration"] = $('#duration').val();
+	            serializedArray["remindById"] = $('#remindById').val();
+	            serializedArray["firstReminder"] = $('#firstReminder').val();
+	            serializedArray["secondReminder"] = $('#secondReminder').val();
             }
             
         }
@@ -6794,7 +6797,12 @@ $.fn.enterKey = function (fnc) {
 function refreshCalendarWidget(resourceId, resource, calendarContent) {
                     
     eval(genRefreshCalendarWidgetSuccessVar(resourceId, resource, calendarContent));
-    executeAjaxRequest(resource + '/' + resourceId + '/calendars', 'GET', "", successFunction, formErrorFunction);
+    if (resource == 'centers') {
+    	executeAjaxRequest(resource + '/' + resourceId + '/calendars', 'GET', "", successFunction, formErrorFunction);
+    }else{
+    	executeAjaxRequest(resource + '/' + resourceId + '/calendars?associations=parentCalendars', 'GET', "", successFunction, formErrorFunction);
+    }
+    
 }
 
 function genRefreshCalendarWidgetSuccessVar(resourceId, resource, calendarContent) {
@@ -6802,22 +6810,24 @@ function genRefreshCalendarWidgetSuccessVar(resourceId, resource, calendarConten
 return 'var successFunction = function(data, textStatus, jqXHR) {   ' +
           ' var calendar = new Object();' + 
           ' calendar.crudRows = data;' +
+          ' var tmp = "' + resource.toUpperCase() + '";' + 
+          ' calendar.resource = tmp;' +
           ' var tableHtml = $("#calendarWidgetFormTemplate").render(calendar);' +
           'if(calendar.crudRows.length > 0){var addCalbtn = $(".addcalendarbtn"); if(addCalbtn != undefined){addCalbtn.remove();}}' +
           ' $("#' + calendarContent + '").html(tableHtml);' +
           ' $(".editcalendar").click(function(e) { ' +
                 ' var linkId = this.id;' +
+                ' var resourceName = "' + resource + '";' +
+                ' var resourceId = ' + resourceId + ';' +
+                ' var entityType = $(this).attr("entityType");' +
+                ' var entityId = $(this).attr("entityId");' +
+                ' if (entityType) {' +
+                	'resourceName = entityType.toLowerCase();' +
+                	' resourceId = entityId;' +
+                ' }' + 
                 ' var contentDiv = ' + calendarContent + ';' +
                 ' var calendarId = linkId.replace("editcalendarlink", "");' +
-                ' var getAndPutUrl = "' + resource + "/" + resourceId + '/calendars/" + calendarId;' +
-                ' var templateSelector = "#calendarFormTemplate";' +
-                ' var width = 600;' +
-                ' var height = 550;' +
-                ' var saveSuccessFunction = function(data, textStatus, jqXHR) {' +
-                    ' $("#dialog-form").dialog("close");' +
-                    ' refreshCalendarWidget(' + resourceId + ',' + resource + ',contentDiv);' +
-                ' };' +
-                ' editCalendar(' + resourceId + ',"' + resource + '","' + calendarContent + '",calendarId);' +
+                ' editCalendar(resourceId, resourceName,"' + calendarContent + '",calendarId);' +
                 //' popupDialogWithFormView(getAndPutUrl, getAndPutUrl, "PUT", "dialog.title.edit.note", templateSelector, width, height,  saveSuccessFunction);' +
                 ' e.preventDefault();' +
           ' });' +
@@ -6873,9 +6883,6 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         }
         
         popupDialogWithFormViewData(data, postPutUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
-        
-        $('#typeId').val(data.type.id);
-        $('#remindById').val(data.remindBy.id);
 
         var repeats =  $('select.repeats');
         var repeatsEvery = $('select.repeatsEvery');
@@ -6890,6 +6897,16 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         $('input:checkbox[name=repeating]').change(function(){
             var repeatdetails = $('#repeatingdetails');
             var checked = this.checked ? repeatdetails.show(): repeatdetails.hide();
+            //collection meeting never ends
+            //alert($('#meetingTypeId').val());
+            if($('#meetingTypeId').val() == "1"){
+            	$('.endsafter').hide();
+		    	$('.endson').hide();
+            }else{
+            	$('.endsafter').show();
+		    	$('.endson').show();
+            }
+            
         });
         
         var repeatsOptions = {
@@ -6925,7 +6942,25 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
                 $('#weeklyoptions').hide();
             }
         });
-    
+    	
+        $('#meetingTypeId').change(function() {
+            var meetingTypeId = $(this).val();
+            if(meetingTypeId == "1"){
+        		$('.location').hide();//Not required for collection meeting
+		        $('.reminders').hide();//Not required for collection meeting
+		        $('.duration').hide();//Not required for collection meeting
+		        $('input:checkbox[name=repeating]').prop('checked', true);
+		        $('input:checkbox[name=repeating]').trigger('change');
+		        
+            }else{
+            	$('.location').show();
+	        	$('.reminders').show();
+    		    $('.duration').show();
+    		    $('input:checkbox[name=repeating]').prop('checked', false);
+		        $('input:checkbox[name=repeating]').trigger('change');
+            }
+        });
+
         $( "input:radio" ).on( "click", function() {
             var checkedValue = $("input:checked").val();
             switch (checkedValue) {
@@ -6998,6 +7033,19 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
             }
                 
         }
+
+                //hide non-required fields, enable them based on selected meeting type
+
+        $('.location').hide();
+        $('.reminders').hide();
+        $('.duration').hide();
+
+        $('#meetingTypeId').val(data.type.id);
+        $('#meetingTypeId').trigger('change');
+        if(data.remindBy){
+        	$('#remindById').val(data.remindBy.id);	
+        }
+        
                                        
     }
 
@@ -7098,10 +7146,10 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
                     var selectedCalendar = selectedCalendars[0];//get calendar from array
                     var recurringDates = selectedCalendar.recurringDates;
                     var firstDate = recurringDates[0];//First recurring date
-                    var secondDate = recurringDates[1];//Second recurring date
+                    //var secondDate = recurringDates[1];//Second recurring date
                     
                     $( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(firstDate));
-                    $( '#repaymentsStartingFromDate' ).val(custom.helperFunctions.globalDate(secondDate));
+                    //$( '#repaymentsStartingFromDate' ).val(custom.helperFunctions.globalDate(secondDate));
                     
                     //Set loan term
                     
