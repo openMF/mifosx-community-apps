@@ -95,6 +95,7 @@ div.loantabs {margin-top: 5px;}
 td.witoutpadding{padding-top: 0px; padding-bottom: 0px;}
 #groupLevels ul{padding-left: 0px; margin-top: 0px; margin-bottom: 0px;}
 .heading {color: #000000;font-family: Arial,Verdana,Helvetica,sans-serif;font-size: 11pt;font-weight: bold;text-decoration: none;}
+.notecontent{word-wrap: break-word;}
 
 /** Global Search css **/
 .sb_wrapper{position:absolute;top:80px;left:40px;width:300px !important;margin:0;padding:0}
