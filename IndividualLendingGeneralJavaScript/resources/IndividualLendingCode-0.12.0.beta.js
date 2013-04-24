@@ -7115,13 +7115,19 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
     var getcalendarSuccessFunction = function(data, textStatus, jqXHR) {
         var calendars = new Object();
         calendars.crudRows = data;
-        
+        var output = "";
+        if(calendars.crudRows.length > 1){
+        	output = '<option value=0> -- Select a meeting -- </option>';
+        }
+
         $('#calendarId').empty().append(function(){
-            var output = '<option value=0> -- Select a meeting -- </option>';
+            
             $.each(calendars.crudRows, function(key, value){
                 output += '<option value=' + value.id + '>' + value.title + ' - ';
                 if(value.entityType.value === 'CLIENTS'){
                     output += doI18N("label.select.calendar.client");
+                } else if(value.entityType.value === 'CENTERS'){
+                    output += doI18N("label.select.calendar.center");
                 } else if(value.entityType.value === 'GROUPS'){
                     output += doI18N("label.select.calendar.group");
                 } else if(value.entityType.value === 'LOANS'){
@@ -7132,7 +7138,7 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
             });
             return output;
         });
-        
+
         $('#calendarId').change(function(){
             var calendarId = $(this).val();
             if(calendarId !== 0){
@@ -7144,7 +7150,7 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
             
                 if (selectedCalendars.length > 0) {
                     var selectedCalendar = selectedCalendars[0];//get calendar from array
-                    var recurringDates = selectedCalendar.recurringDates;
+                    var recurringDates = selectedCalendar.nextTenRecurringDates;
                     var firstDate = recurringDates[0];//First recurring date
                     //var secondDate = recurringDates[1];//Second recurring date
                     
@@ -7218,6 +7224,10 @@ function loadAvailableCalendars(resource, resourceId, loanId, groupId){
         
         if(loanId) {
             loadAttachedCalendarToLoan(loanId);
+        }
+
+        if(calendars.crudRows.length === 1){
+        	$('#calendarId').trigger('change');
         }
     }
             
