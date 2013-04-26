@@ -5684,13 +5684,13 @@ $(document).ready(function() {
 			<table>
 				<tr>
 					<td>{{=$ctx.doI18N("label.minRequiredOpeningBalance")}}</td>
-					<td><input id="minRequiredOpeningBalance" name="minRequiredOpeningBalance" title="" type="text" value="{{=$ctx.monetaryValue(currency, minRequiredOpeningBalance)}}" style="width: 215px;" /></td>
+					<td colspan="2"><input id="minRequiredOpeningBalance" name="minRequiredOpeningBalance" title="" type="text" value="{{=$ctx.monetaryValue(currency, minRequiredOpeningBalance)}}" style="width: 215px;" /></td>
 				</tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.lockedinfor")}}</td>
 					<td>
-						<input id="lockinPeriodFrequency" name="lockinPeriodFrequency" title="" type="text" value="{{=$ctx.number(lockinPeriodFrequency)}}" style="width: 50px;" />
-						<select name="lockinPeriodFrequencyType" id="lockinPeriodFrequencyType"  title="" style="width: 121px;">
+						<input id="lockinPeriodFrequency" name="lockinPeriodFrequency" title="" type="text" value="{{=$ctx.number(lockinPeriodFrequency)}}" style="width: 75px;" />
+						<select name="lockinPeriodFrequencyType" id="lockinPeriodFrequencyType"  title="" style="width: 135px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#if lockinPeriodFrequencyType}}
 							{{#each lockinPeriodFrequencyTypeOptions}}
@@ -5706,6 +5706,46 @@ $(document).ready(function() {
        							{{/each}}
 							{{/if}}
 						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.withdrawalFee")}}</td>
+					<td>
+						{{#if withdrawalFeeType}}
+
+							{{#if $ctx.number(withdrawalFeeType.id)===2}}
+							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, withdrawalFeeAmount)}}" style="width: 75px;" />
+							{{#else}}
+							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" value="{{=$ctx.decimal(withdrawalFeeAmount, 4)}}" style="width: 75px;" />
+							{{/if}}
+
+							<select name="withdrawalFeeType" id="withdrawalFeeType"  title="" style="width: 135px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#if withdrawalFeeType}}
+							{{#each withdrawalFeeTypeOptions}}
+									{{#if $ctx.number($parent.parent.data.withdrawalFeeType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+									{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+									{{/if}}
+       						{{/each}}
+							{{#else}}
+								{{#each withdrawalFeeTypeOptions}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+       							{{/each}}
+							{{/if}}
+							</select>
+						{{#else}}
+							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" 
+										value="{{=$ctx.monetaryValue(currency, withdrawalFeeAmount)}}" style="width: 75px;" />
+
+							<select name="withdrawalFeeType" id="withdrawalFeeType"  title="" style="width: 135px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each withdrawalFeeTypeOptions}}
+								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+   							{{/each}}
+							</select>
+						{{/if}}
 					</td>
 				</tr>
 			</table>
@@ -5936,6 +5976,46 @@ $(document).ready(function() {
 						</select>
 					</td>
 				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.withdrawalFee")}}</td>
+					<td>
+						{{#if withdrawalFeeType}}
+
+							{{#if $ctx.number(withdrawalFeeType.id)===2}}
+							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, withdrawalFeeAmount)}}" style="width: 75px;" />
+							{{#else}}
+							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" value="{{=$ctx.decimal(withdrawalFeeAmount, 4)}}" style="width: 75px;" />
+							{{/if}}
+
+							<select name="withdrawalFeeType" id="withdrawalFeeType"  title="" style="width: 135px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#if withdrawalFeeType}}
+							{{#each withdrawalFeeTypeOptions}}
+									{{#if $ctx.number($parent.parent.data.withdrawalFeeType.id)===$ctx.number(id)}}
+									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+									{{#else}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+									{{/if}}
+       						{{/each}}
+							{{#else}}
+								{{#each withdrawalFeeTypeOptions}}
+									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+       							{{/each}}
+							{{/if}}
+							</select>
+						{{#else}}
+							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" 
+										value="{{=$ctx.monetaryValue(currency, withdrawalFeeAmount)}}" style="width: 75px;" />
+
+							<select name="withdrawalFeeType" id="withdrawalFeeType"  title="" style="width: 135px;">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each withdrawalFeeTypeOptions}}
+								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+   							{{/each}}
+							</select>
+						{{/if}}
+					</td>
+				</tr>
 			</table>
 		</div>
 	</div>
@@ -6020,6 +6100,20 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.doI18N(interestCalculationDaysInYearType.code)}}</span>
 		</div>
 		<br/>
+		{{#if withdrawalFeeType}}
+			{{#if $ctx.number(withdrawalFeeType.id)===1}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawalFee")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, withdrawalFeeAmount)}} {{=$ctx.doI18N(withdrawalFeeType.code)}}</span>
+		</div>
+			{{#else}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawalFee")}}</span>
+			<span class="rowvalue">{{=$ctx.decimal(withdrawalFeeAmount, 4)}} {{=$ctx.doI18N(withdrawalFeeType.code)}}</span>
+		</div>
+			{{/if}}
+		{{/if}}
+		<br/>
 		<br/>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
@@ -6044,6 +6138,10 @@ $(document).ready(function() {
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.totalWithdrawals")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalWithdrawals)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalWithdrawalFees")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalWithdrawalFees)}}</span>
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestEarned")}}</span>
