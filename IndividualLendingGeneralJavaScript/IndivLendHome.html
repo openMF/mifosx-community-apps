@@ -8190,7 +8190,7 @@ $(document).ready(function() {
 	  <td valign="top">
 		<label for="reportName">{{=$ctx.doI18N("reportName")}}</label>
 		{{#if coreReport}}
-			{{=reportName}}
+			<input readonly="readonly" type="text" value="{{=reportName}}" size="50"/>
 		{{#else}}
 			<input id="reportName" name="reportName" title="" type="text" value="{{=reportName}}" size="50"/>
 		{{/if}}
@@ -8199,7 +8199,7 @@ $(document).ready(function() {
 	  <td valign="top">
 		<label for="reportType">{{=$ctx.doI18N("reportType")}}</label>
 		{{#if coreReport}}
-			{{=reportType}}
+			<input readonly="readonly" type="text" value="{{=$ctx.doI18N(reportType)}}" size="8"/>
 		{{#else}}
 			<select id="reportType" name="reportType" title="">
             <option value=""></option>
@@ -8217,7 +8217,11 @@ $(document).ready(function() {
 	  <td valign="top">
 		<label for="reportSubType">{{=$ctx.doI18N("reportSubType")}}</label>
 		{{#if coreReport}}
-			{{=reportSubType}}
+			{{#if reportSubType}}
+				<input readonly="readonly" type="text" value="{{=$ctx.doI18N(reportSubType)}}" size="8"/>
+			{{#else}}
+				<input readonly="readonly" type="text" value="" size="8"/>
+        	{{/if}}
 		{{#else}}
 			<select id="reportSubType" name="reportSubType" title="">
             	<option value=""></option>
@@ -8231,14 +8235,13 @@ $(document).ready(function() {
 			</select>
 		{{/if}}
 	  </td>
-	 </tr>
-	 <tr>
+	  <td width="20px"></td>
 	  <td valign="top">
 		<label for="reportCategory">{{=$ctx.doI18N("reportCategory")}}</label>
 		{{#if coreReport}}
-			{{=reportCategory}}
+			<input readonly="readonly" type="text" value="{{=reportCategory}}" size="30"/>
 		{{#else}}
-			<input id="reportCategory" name="reportCategory" title="" type="text" value="{{=reportCategory}}" size="50"/>
+			<input id="reportCategory" name="reportCategory" title="" type="text" value="{{=reportCategory}}" size="30"/>
 		{{/if}}
 	  </td>
 	  <td width="20px"></td>
@@ -8259,9 +8262,9 @@ $(document).ready(function() {
 	  <td>
 		<label for="description">{{=$ctx.doI18N("description")}}</label>
 		{{#if coreReport}}
-			<textarea readonly=true cols="100" rows="3">{{=description}}</textarea>
+			<textarea readonly=true cols="150" rows="3">{{=description}}</textarea>
 		{{#else}}
-			<textarea id="description" name="description" cols="100" rows="3">{{=description}}</textarea>
+			<textarea id="description" name="description" cols="150" rows="3">{{=description}}</textarea>
 		{{/if}}
 	  </td>
 	 </tr>
@@ -8269,9 +8272,9 @@ $(document).ready(function() {
 	  <td>
 		<label for="reportSql">{{=$ctx.doI18N("reportSql")}}</label>
 		{{#if coreReport}}
-			<textarea readonly=true cols="100" rows="12">{{=reportSql}}</textarea>
+			<textarea readonly=true cols="150" rows="12">{{=reportSql}}</textarea>
 		{{#else}}
-			<textarea id="reportSql" name="reportSql" cols="100" rows="12">{{=reportSql}}</textarea>
+			<textarea id="reportSql" name="reportSql" cols="150" rows="10">{{=reportSql}}</textarea>
 		{{/if}}
 	  </td>
 	 </tr>
