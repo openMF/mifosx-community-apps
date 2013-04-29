@@ -6766,7 +6766,7 @@ $(document).ready(function() {
 <script id="loanApplicationSelectProductDialogTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
     <div id="formerrors"></div>
-
+    
 	{{#if clientId}}
 	<input type="hidden" id="clientId" name="clientId" value="{{=clientId}}" />
 	{{/if}}
@@ -6821,7 +6821,7 @@ $(document).ready(function() {
 	{{/if}}
 	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-
+    <input type="hidden" id="loanType" name="loanType" value="{{=loanType}}" />
 	<table>
 			<tr>
 				<td class='applicant' valign="top">
@@ -6917,7 +6917,7 @@ $(document).ready(function() {
 
 		<div id="loanterms" style="margin-top: 5px;">
 		    <div id="meetingCalendarPlaceholder">
-		        <!-- JLG loans in client context uses same template to load the loan -->
+		        <!-- Meeting calendars placeholder for JLG, JLG bulk and group loans -->
 		    </div>
 			<table>
 				<tr>
@@ -8473,6 +8473,7 @@ $(document).ready(function() {
 <script id="jlgbulkloanmemberselect" type="text/x-jquery-tmpl">
     <div id="membesselect" class="ui-widget-content ui-corner-all">
         <h3 class="ui-widget-header ui-corner-all" style = 'height:30px; text-align:centers; margin:5px;'>Member Select</h3>
+        
         <h1 align="center">{{=$ctx.doI18N("tab.group.bulk.loan.member.select.title")}}</h1> 
         <br>
         <div style='margin:10px;'>
