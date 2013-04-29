@@ -4035,8 +4035,8 @@ $(document).ready(function() {
 				<th>{{=$ctx.doI18N("table.heading.createdBy")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.entryId")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.transactionId")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.credit")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.debit")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.credit")}}</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -4052,12 +4052,12 @@ $(document).ready(function() {
 				<td>{{=id}}</td>
 				<td>{{=transactionId}}</td>
 				<td>
-					{{#if entryType.value == "CREDIT"}}
+					{{#if entryType.value == "DEBIT"}}
 						{{=$ctx.decimal(amount, 2)}}
 					{{/if}}
 				</td>
 				<td>
-					{{#if entryType.value == "DEBIT"}}
+					{{#if entryType.value == "CREDIT"}}
 						{{=$ctx.decimal(amount, 2)}}
 					{{/if}}
 				</td>
