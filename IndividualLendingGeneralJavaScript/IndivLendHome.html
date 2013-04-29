@@ -8280,6 +8280,20 @@ $(document).ready(function() {
 	 </tr>
 	</table>
 	</fieldset>
+<hr>
+
+<table border="1">
+	<thead>
+		<tr>
+			<th><b>{{=$ctx.doI18N("parameterName")}}</b></th>
+		</tr>
+	</thead
+	<tbody>
+	{{#each reportParameters}}
+		<tr><td>{{=$ctx.doI18N(parameterName)}}</td></tr>
+	{{/each}}
+	</tbody>
+</table>
 </form>
 </script>
 

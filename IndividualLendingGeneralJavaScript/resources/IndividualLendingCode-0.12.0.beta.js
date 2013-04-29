@@ -5173,7 +5173,6 @@ function refreshLoanDocuments(loanId) {
 			if (crudData[tableName].editTemplateNeeded == true) getUrl = resourceUrl + '?template=true'
 			else getUrl = resourceUrl;
 			
-			
 			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction);
 		}
 		
