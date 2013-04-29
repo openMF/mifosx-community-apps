@@ -70,7 +70,7 @@ table.pretty thead tr th.lefthighlightcol, table.pretty tbody tr td.lefthighligh
 table.pretty thead tr th.righthighlightcol, table.pretty tbody tr td.righthighlightcol, table.pretty tfoot tr th.righthighlightcol {border-right: solid 2px #2E6E9E;}
 table.pretty thead tr th.lefthighlightcolheader, table.pretty tbody tr td.lefthighlightcolheader, table.pretty tfoot tr th.lefthighlightcolheader {border-left: solid 2px #2E6E9E;}
 table.pretty thead tr th.righthighlightcolheader, table.pretty tbody tr td.righthighlightcolheader, table.pretty tfoot tr th.righthighlightcolheader {border-right: solid 2px #2E6E9E;}
-
+table tr td.cellalignright {text-align:right}
 div.loantabs {margin-top: 5px;}
 
 /**css for comboboxes**/

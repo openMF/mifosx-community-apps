@@ -4051,12 +4051,12 @@ $(document).ready(function() {
 				<td>{{=createdByUserName}}</td>
 				<td>{{=id}}</td>
 				<td>{{=transactionId}}</td>
-				<td>
+				<td class="cellalignright">
 					{{#if entryType.value == "DEBIT"}}
 						{{=$ctx.decimal(amount, 2)}}
 					{{/if}}
 				</td>
-				<td>
+				<td class="cellalignright">
 					{{#if entryType.value == "CREDIT"}}
 						{{=$ctx.decimal(amount, 2)}}
 					{{/if}}
