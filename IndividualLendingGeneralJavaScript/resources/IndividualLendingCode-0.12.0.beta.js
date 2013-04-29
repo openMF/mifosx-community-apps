@@ -2930,7 +2930,9 @@ function showCenter(centerId){
 
 				$('#membesselect').hide();
 				$('#jlgloancontainer').show();
-				loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, true);
+				var isjlgbulk = true;
+				var loanType = 'jlg';
+				loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, loanType, isjlgbulk);
 				//$('#selectedmembers').html('');
 				$("#selectedmembers option").remove();
 				$('#selectedmembers').empty().append(function(){
@@ -2952,6 +2954,7 @@ function showCenter(centerId){
 	                serializedArray = $('#entityform').serializeObject();
 	                serializedArray['productId'] = loanProductId;
 	                serializedArray['groupId'] = groupId;
+	                serializedArray["calendarId"] = $("#calendarId").val();
 	                var isError = false;
 	                var totalSelectedMembers = $('#selectedmembers > option').length;
 	                $('#selectedmembers option').each(function(index) {  
@@ -2971,17 +2974,18 @@ function showCenter(centerId){
 	                    };
 	            		if(isError) return false;
 	            		//alert($(this).val());
-	                    executeAjaxRequest('loans', "POST", newFormData , successFunction, formErrorFunction);
+	                    executeAjaxRequest('loans', "POST", newFormData , successFunction, customFormErrorFunction);
 	                });
 	            });		
 			});
 			
 		}
 
-		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300';
+		var url = 'loans/template?templateType=jlgbulk&groupId=' + groupId + '&lendingStrategy=300';
 		executeAjaxRequest(url, 'GET', "", viewMemberselection, formErrorFunction);	
 	}
-
+/*
+	### Not in use - delete after testing
 	function addLJGBulkMembersLoans(groupId){
 		setAddBulkLoanContent("content");
 
@@ -3072,7 +3076,7 @@ function showCenter(centerId){
 
 		executeAjaxRequest(url, 'GET', "", addMemberLoanApplicationSuccess, formErrorFunction);
 	}	
-
+*/
 
 	// function to retrieve and display loan summary information in it placeholder
 	function refreshLoanSummaryInfo(clientUrl) {
@@ -3171,7 +3175,7 @@ function showCenter(centerId){
 					if (memberLoanDetailsElement.children().length > 0 ){
 						memberLoanDetailsElement.toggle();
 					} else {
-						executeAjaxRequest('loans/' + loanId + '?associations=permissions', 'GET', "", showMemberLoanDetailsSuccess, formErrorFunction);
+						executeAjaxRequest('loans/' + loanId + '?associations=permissions,meeting', 'GET', "", showMemberLoanDetailsSuccess, formErrorFunction);
 					}
 
 					
@@ -3232,7 +3236,7 @@ function showCenter(centerId){
 		executeAjaxRequest('loans/' + loanId , "PUT", newFormData, successFunction, formErrorFunction);	  
 	}
 	
-	function submitTabbedLoanApplication(divContainer, clientId, group) {
+	function submitTabbedLoanApplication(divContainer, clientId, group, loanType) {
 		
 		var serializationOptions = {};
 		serializationOptions["checkboxesAsBools"] = true;
@@ -3240,9 +3244,9 @@ function showCenter(centerId){
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
 
-		//If JLG loan, send group id and calendar id
-		if(!(group === undefined)){
-            serializedArray["groupId"] = group.id;//This is group loan
+		
+		if(loanType === 'jlg' || loanType === 'group'){
+            serializedArray["groupId"] = group.id;
             serializedArray["calendarId"] = $("#calendarId").val();
         }
 
@@ -3250,9 +3254,9 @@ function showCenter(centerId){
 
 		var successFunction =  function(data, textStatus, jqXHR) {
 			divContainer.dialog("close");
-			if (clientId) {
+			if (loanType === 'individual' || loanType === 'jlg') {
 				showILClient(clientId);
-			} else if(!(group === undefined)){
+			} else if(loanType === 'group'){
 				showGroup(group.id);
 			}
 		};
@@ -3297,55 +3301,60 @@ function showCenter(centerId){
 		executeAjaxRequest('loans/' + loanId , "PUT", newFormData, successFunction, formErrorFunction);	  
 	}
 	
-	var launchLoanApplicationDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
-		var dialogDiv = $("<div id='dialog-form'></div>");
-		var saveButton = doI18N('dialog.button.save');
-		var cancelButton = doI18N('dialog.button.cancel');
+	var launchLoanApplicationDialogOnSuccessFunction = function(loanType){
 		
-		var buttonsOpts = {};
-		buttonsOpts[saveButton] = function() {
-			submitTabbedLoanApplication(dialogDiv, data.clientId, data.group);
+		return  function(data, textStatus, jqXHR) {
+
+			var dialogDiv = $("<div id='dialog-form'></div>");
+			var saveButton = doI18N('dialog.button.save');
+			var cancelButton = doI18N('dialog.button.cancel');
+			
+			var buttonsOpts = {};
+			buttonsOpts[saveButton] = function() {
+				submitTabbedLoanApplication(dialogDiv, data.clientId, data.group, loanType);
+			};
+			// end of buttonsOpts for save button
+			
+			buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+			
+			dialogDiv.dialog({
+			  		title: doI18N('dialog.title.newLoanApplication'), 
+			  		width: 1200, 
+			  		height: 575, 
+			  		modal: true,
+			  		buttons: buttonsOpts,
+			  		close: function() {
+			  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+			  			$(this).remove();
+					},
+			  		open: function (event, ui) {
+			  			if (data.loanProductId) {
+			  				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, data.loanProductId , data.group, loanType);
+			  			} else {
+			  				var formHtml = $("#loanApplicationSelectProductDialogTemplate").render(data);
+			  				dialogDiv.html(formHtml);
+			  			}
+						
+						$("#productId").change(function() {
+							var loanProductId = $("#productId").val();
+							loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId , data.group, loanType);
+						});
+			  		}
+			  	}).dialog('open');		
 		};
-		// end of buttonsOpts for save button
-		
-		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
-		
-		dialogDiv.dialog({
-		  		title: doI18N('dialog.title.newLoanApplication'), 
-		  		width: 1200, 
-		  		height: 575, 
-		  		modal: true,
-		  		buttons: buttonsOpts,
-		  		close: function() {
-		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
-		  			$(this).remove();
-				},
-		  		open: function (event, ui) {
-		  			if (data.loanProductId) {
-		  				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, data.loanProductId , data.group);
-		  			} else {
-		  				var formHtml = $("#loanApplicationSelectProductDialogTemplate").render(data);
-		  				dialogDiv.html(formHtml);
-		  			}
-					
-					$("#productId").change(function() {
-						var loanProductId = $("#productId").val();
-						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId , data.group);
-					});
-		  		}
-		  	}).dialog('open');		
-	};
+
+	}
 	
 	function launchLoanApplicationDialog(clientId) {
-		executeAjaxRequest('loans/template?clientId=' + clientId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
+		executeAjaxRequest('loans/template?templateType=individual&clientId=' + clientId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction("individual"), formErrorFunction);
 	}
 	
 	function launchJLGLoanApplicationDialog(clientId, groupId) {
-		executeAjaxRequest('loans/template?clientId=' + clientId + '&groupId=' + groupId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
+		executeAjaxRequest('loans/template?templateType=jlg&clientId=' + clientId + '&groupId=' + groupId, 'GET', "", launchLoanApplicationDialogOnSuccessFunction("jlg"), formErrorFunction);
 	}
 
 	function launchGroupLoanApplicationDialog(groupId) {
-		executeAjaxRequest('loans/template?groupId=' + groupId+'&lendingStrategy=300', 'GET', "", launchLoanApplicationDialogOnSuccessFunction, formErrorFunction);
+		executeAjaxRequest('loans/template?templateType=group&groupId=' + groupId+'&lendingStrategy=300', 'GET', "", launchLoanApplicationDialogOnSuccessFunction("group"), formErrorFunction);
 	}
 
 	var launchModifyLoanApplicationDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
@@ -3381,18 +3390,19 @@ function showCenter(centerId){
 					
 					$("#productId").change(function() {
 						var loanProductId = $("#productId").val();
-						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId);
+						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, data.loanType.value.toLowerCase());
 					});
 		  		}
 		  	}).dialog('open');		
 	};
 	
 	function launchModifyLoanApplicationDialog(loanId) {
-		executeAjaxRequest('loans/' + loanId + '?template=true&associations=charges,collateral', 'GET', "", launchModifyLoanApplicationDialogOnSuccessFunction, formErrorFunction);
+		executeAjaxRequest('loans/' + loanId + '?template=true&associations=charges,collateral,meeting', 'GET', "", launchModifyLoanApplicationDialogOnSuccessFunction, formErrorFunction);
 	}
 	
 	var renderLoanApplicationTabs = function(container, data) {
 		// show full application form with values defaulted
+		data.loanType = data.loanType.value.toLowerCase();
 		var formHtml = $("#loanApplicationDialogTemplate").render(data);
 		container.html(formHtml);
 		
@@ -3410,7 +3420,7 @@ function showCenter(centerId){
 		
 		$("#productId").change(function() {
 			var loanProductId = $("#productId").val();
-			loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId);
+			loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, data.loanType);
 		});
 		
 		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -3473,7 +3483,7 @@ function showCenter(centerId){
 			
 			// have to add 'id' as a field (along with 'loanCollateralOptions') otherwise platform thinks it has to filter it out of json results
 			var productId = $("#productId").val();
-			executeAjaxRequest('loans/template?productId='+ productId +'&fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
+			executeAjaxRequest('loans/template?templateType=collateral&productId='+ productId +'&fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
 		    e.preventDefault();
 		});
 		
@@ -3486,26 +3496,19 @@ function showCenter(centerId){
 			 });
 	    }
 	    
-	    //Scenario - Modify Loan application 
-        var group = data.group;
-        if(!(group === undefined)){
-            //This is a group loan
-            var groupId = group.id;
-            if(data.clientId === undefined){
-                resource = 'groups'; //If client Id is null then New loan is created for group
-            }else{
-                resource = 'clients'
-            }
-            //Attach meeting calendar/Loan meeting calendars for Group loans
-            loadAvailableCalendars(resource, data.clientId, data.id, groupId);   
+	    if(data.calendarOptions){
+	        loadAvailableCalendars(data.calendarOptions, data.meeting);   
         }
         
 
 	};
 	
-	function loadTabbedLoanApplicationForm(container, clientId, productId , group, isJLG) {
+	function loadTabbedLoanApplicationForm(container, clientId, productId , group, loanType, isjlgbulk) {
 		
 		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
+			//set loan type
+			data.loanType = loanType;
+
 			// show full application form with values defaulted
 			var formHtml = $("#loanApplicationDialogTemplate").render(data);
 			container.html(formHtml);
@@ -3524,7 +3527,7 @@ function showCenter(centerId){
 			
 			$("#productId").change(function() {
 				var loanProductId = $("#productId").val();
-				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId );
+				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, loanType );
 			});
 			
 			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -3584,29 +3587,17 @@ function showCenter(centerId){
 				
 				// have to add 'id' as a field (along with 'loanCollateralOptions') otherwise platform thinks it has to filter it out of json results
 				var productId = $("#productId").val();
-				executeAjaxRequest('loans/template?productId='+ productId +'&fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
+				executeAjaxRequest('loans/template?templateType=collateral&productId='+ productId +'&fields=id,loanCollateralOptions', 'GET', "", addLoanCollateralItemSuccess, formErrorFunction);
 			    e.preventDefault();
 			});
-			
-			//Scenario - New Loan application 
-            var group = data.group;
-            if(!(group === undefined)){
-                //This is a group loan
-                var groupId = group.id;
-                var resource;
-                if(data.clientId === undefined){
-                    resource = 'groups'; //If client Id is null then New loan is created for group
-                }else{
-                    resource = 'clients'
-                }
-                //Attach meeting calendar
-                loadAvailableCalendars(resource, data.clientId, data.id, groupId);   
-            }
 
-            if(isJLG){
-            	//This is for bulk JLG loans
-            	//hide applicant and display applicants
-            	//disable loan product
+			if(data.calendarOptions){
+				loadAvailableCalendars(data.calendarOptions);   
+			}
+                
+
+            if(isjlgbulk){
+            	//This is for bulk JLG loans hide applicant
             	$('.applicant').each(function(i) {
 					$(this).html('');
 				});
@@ -3617,12 +3608,14 @@ function showCenter(centerId){
 		
 		if(!(clientId === undefined) && !(group === undefined)){
 			//Client Id and Group Id are not null for JLG loans 
-			executeAjaxRequest('loans/template?clientId=' + clientId + '&groupId=' + group.id + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+			executeAjaxRequest('loans/template?templateType=jlg&clientId=' + clientId + '&groupId=' + group.id + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
 		}else if(!(clientId === undefined)){
 		// loan loan application template providing selected client and product infomation
-			executeAjaxRequest('loans/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+			executeAjaxRequest('loans/template?templateType=individual&clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+		}else if(isjlgbulk && !(group === undefined)) {
+			executeAjaxRequest('loans/template?templateType=jlgbulk&groupId=' + group.id + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
 		}else if(!(group === undefined)){
-			executeAjaxRequest('loans/template?groupId=' + group.id + '&productId=' + productId+"&lendingStrategy=300", 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+			executeAjaxRequest('loans/template?templateType=group&groupId=' + group.id + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
  		}	
 	}
 	
@@ -7104,139 +7097,126 @@ function convertToRfc5545(){
     return rrule;
 }
 
-function loadAvailableCalendars(resource, resourceId, loanId, groupId){
-    var loanId = loanId;
-    var groupId = groupId;
-    var resourceId = resourceId;
-
+function loadAvailableCalendars(data, meeting){
     var tableHtml = $('#meetingCalendarTemplate').render();
     $('#meetingCalendarPlaceholder').html(tableHtml);
-    
-    var getcalendarSuccessFunction = function(data, textStatus, jqXHR) {
-        var calendars = new Object();
-        calendars.crudRows = data;
-        var output = "";
-        if(calendars.crudRows.length > 1){
-        	output = '<option value=0> -- Select a meeting -- </option>';
-        }
+    var calendars = new Object();
+    calendars.crudRows = data;
+    var output = "";
+    if(calendars.crudRows.length > 1){
+    	output = '<option value=0> -- Select a meeting -- </option>';
+    }
 
-        $('#calendarId').empty().append(function(){
-            
-            $.each(calendars.crudRows, function(key, value){
-                output += '<option value=' + value.id + '>' + value.title + ' - ';
-                if(value.entityType.value === 'CLIENTS'){
-                    output += doI18N("label.select.calendar.client");
-                } else if(value.entityType.value === 'CENTERS'){
-                    output += doI18N("label.select.calendar.center");
-                } else if(value.entityType.value === 'GROUPS'){
-                    output += doI18N("label.select.calendar.group");
-                } else if(value.entityType.value === 'LOANS'){
-                    output += doI18N("label.select.calendar.loan");
-                }
-                    
-                output += '</option>';
-            });
-            return output;
-        });
-
-        $('#calendarId').change(function(){
-            var calendarId = $(this).val();
-            if(calendarId !== 0){
-            
-                //set first recurring date as expected disbursal date
-                var selectedCalendars = $.grep(calendars.crudRows, function(n, i) {
-                    return n.id == calendarId;
-                });
-            
-                if (selectedCalendars.length > 0) {
-                    var selectedCalendar = selectedCalendars[0];//get calendar from array
-                    var recurringDates = selectedCalendar.nextTenRecurringDates;
-                    var firstDate = recurringDates[0];//First recurring date
-                    //var secondDate = recurringDates[1];//Second recurring date
-                    
-                    $( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(firstDate));
-                    //$( '#repaymentsStartingFromDate' ).val(custom.helperFunctions.globalDate(secondDate));
-                    
-                    //Set loan term
-                    
-                    var matches = /FREQ=([^;]+);?/.exec(selectedCalendar.recurrence);
-                    if (matches) {
-                        var freq = matches[1];
-                        var loantermoptionvalue;
-                        if(freq === 'DAILY'){
-                            loantermoptionvalue = 0;
-                        }else if(freq === 'WEEKLY'){
-                            loantermoptionvalue = 1;
-                        }else if(freq === 'MONTHLY'){
-                            loantermoptionvalue = 2;
-                        }else if(freq === 'YEARLY'){
-                            loantermoptionvalue = 3;
-                        }
-                        
-                        $('#loanTermFrequencyType').val(loantermoptionvalue);
-                        $('#repaymentFrequencyType').val(loantermoptionvalue);
-                    }
-                    
-                    //Set repaymentEvery 
-                    matches = /INTERVAL=([0-9]+);?/.exec(data.recurrence);
-                    if (matches) {
-                        interval = matches[1];
-                    } else {
-                        interval = '1';
-                    }
-                    
-                    $('#repaymentEvery').val(interval);        
-                }
-
+    $('#calendarId').empty().append(function(){
+        
+        $.each(calendars.crudRows, function(key, value){
+            output += '<option value=' + value.id + '>' + value.title + ' - ';
+            if(value.entityType.value === 'CLIENTS'){
+                output += doI18N("label.select.calendar.client");
+            } else if(value.entityType.value === 'CENTERS'){
+                output += doI18N("label.select.calendar.center");
+            } else if(value.entityType.value === 'GROUPS'){
+                output += doI18N("label.select.calendar.group");
+            } else if(value.entityType.value === 'LOANS'){
+                output += doI18N("label.select.calendar.loan");
             }
+                
+            output += '</option>';
         });
+        return output;
+    });
 
-        var availableDate = function(date) {
-              
-            var recurringDates = [];
-            var selectedcals = $.grep(calendars.crudRows, function(n, i) {
-                return n.id == $("#calendarId").val();
+    $('#calendarId').change(function(){
+        var calendarId = $(this).val();
+        if(calendarId !== 0){
+        
+            //set first recurring date as expected disbursal date
+            var selectedCalendars = $.grep(calendars.crudRows, function(n, i) {
+                return n.id == calendarId;
             });
         
-            if (selectedcals.length > 0) {
-                var selcal = selectedcals[0];
-                var recudatearr = selcal.recurringDates;
-                $.each(recudatearr, function(n,i){
-                    var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
-                    //alert(newdate);
-                    recurringDates[n] = newdate;
-                });
+            if (selectedCalendars.length > 0) {
+                var selectedCalendar = selectedCalendars[0];//get calendar from array
+                var recurringDates = selectedCalendar.nextTenRecurringDates;
+                var firstDate = recurringDates[0];//First recurring date
+                //var secondDate = recurringDates[1];//Second recurring date
+                
+                $( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(firstDate));
+                //$( '#repaymentsStartingFromDate' ).val(custom.helperFunctions.globalDate(secondDate));
+                
+                //Set loan term
+                
+                var matches = /FREQ=([^;]+);?/.exec(selectedCalendar.recurrence);
+                if (matches) {
+                    var freq = matches[1];
+                    var loantermoptionvalue;
+                    if(freq === 'DAILY'){
+                        loantermoptionvalue = 0;
+                    }else if(freq === 'WEEKLY'){
+                        loantermoptionvalue = 1;
+                    }else if(freq === 'MONTHLY'){
+                        loantermoptionvalue = 2;
+                    }else if(freq === 'YEARLY'){
+                        loantermoptionvalue = 3;
+                    }
+                    
+                    $('#loanTermFrequencyType').val(loantermoptionvalue);
+                    $('#repaymentFrequencyType').val(loantermoptionvalue);
+                }
+                
+                //Set repaymentEvery 
+                matches = /INTERVAL=([0-9]+);?/.exec(data.recurrence);
+                if (matches) {
+                    interval = matches[1];
+                } else {
+                    interval = '1';
+                }
+                
+                $('#repaymentEvery').val(interval);        
             }
-        
-            var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
 
-            if ($.inArray(ymd, recurringDates) < 0 ) {
-                return [false, "","unAvailable"];
-            } else {
-                return [true,"","Available"];
-            }
         }
-        $( '#expectedDisbursementDate' ).datepicker( "destroy" );
-        $('#expectedDisbursementDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
+    });
 
-        $( '#repaymentsStartingFromDate' ).datepicker( "destroy" );
-        $('#repaymentsStartingFromDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
-        
-        if(loanId) {
-            loadAttachedCalendarToLoan(loanId);
-        }
-
-        if(calendars.crudRows.length === 1){
-        	$('#calendarId').trigger('change');
-        }
-    }
-            
-    var loadGroupCalendars = function(groupId){
-        executeAjaxRequest('groups/' + groupId + '/calendars?associations=parentCalendars', 'GET', "", getcalendarSuccessFunction, formErrorFunction);
-    }
+    var availableDate = function(date) {
+          
+        var recurringDates = [];
+        var selectedcals = $.grep(calendars.crudRows, function(n, i) {
+            return n.id == $("#calendarId").val();
+        });
     
-	if(resource === 'groups' || !(groupId === undefined)){
-        loadGroupCalendars(groupId);
+        if (selectedcals.length > 0) {
+            var selcal = selectedcals[0];
+            var recudatearr = selcal.recurringDates;
+            $.each(recudatearr, function(n,i){
+                var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
+                //alert(newdate);
+                recurringDates[n] = newdate;
+            });
+        }
+        
+        var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
+
+        if ($.inArray(ymd, recurringDates) < 0 ) {
+            return [false, "","unAvailable"];
+        } else {
+            return [true,"","Available"];
+        }
+    }
+    $( '#expectedDisbursementDate' ).datepicker( "destroy" );
+    $('#expectedDisbursementDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
+
+    $( '#repaymentsStartingFromDate' ).datepicker( "destroy" );
+    $('#repaymentsStartingFromDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
+    
+    if(meeting) {
+        $("#calendarId").val(meeting.id);
+        //if(expectedDisbursementDate){
+        //	$( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(expectedDisbursementDate));	
+        //}        
+    }else if(calendars.crudRows.length === 1){
+    	//if meeting is not attached then only trigger change event
+    	$('#calendarId').trigger('change');
     }
 }
 function loadAttachedCalendarToLoan(loanId){
