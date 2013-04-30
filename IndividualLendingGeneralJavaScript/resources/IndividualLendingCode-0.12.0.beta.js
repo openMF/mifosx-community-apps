@@ -1388,7 +1388,7 @@ $.urlConstructor = function(sSource,oSettings){
 $.prepareDataToSend = function(aoData){
 	
 	var jsonData = {
-			offset:aoData[3].value+1,
+			offset:aoData[3].value,
 			limit:aoData[4].value,
 	};
 
