@@ -4035,8 +4035,8 @@ $(document).ready(function() {
 				<th>{{=$ctx.doI18N("table.heading.createdBy")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.entryId")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.transactionId")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.credit")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.debit")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.credit")}}</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -4051,13 +4051,13 @@ $(document).ready(function() {
 				<td>{{=createdByUserName}}</td>
 				<td>{{=id}}</td>
 				<td>{{=transactionId}}</td>
-				<td>
-					{{#if entryType.value == "CREDIT"}}
+				<td class="cellalignright">
+					{{#if entryType.value == "DEBIT"}}
 						{{=$ctx.decimal(amount, 2)}}
 					{{/if}}
 				</td>
-				<td>
-					{{#if entryType.value == "DEBIT"}}
+				<td class="cellalignright">
+					{{#if entryType.value == "CREDIT"}}
 						{{=$ctx.decimal(amount, 2)}}
 					{{/if}}
 				</td>
@@ -6288,8 +6288,8 @@ $(document).ready(function() {
 	    <div id="productterms" style="margin-top: 5px;">
 					<table>
 						<tr>
-						<td>{{=$ctx.doI18N("label.currency")}}</td>
-							<td>
+							<td>{{=$ctx.doI18N("label.currency")}}</td>
+							<td colspan="2">
 							<select id="currencyCode" name="currencyCode" title="" style="width: 181px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
 		            			<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 							{{#each currencyOptions}}
@@ -6304,50 +6304,52 @@ $(document).ready(function() {
 						</tr>
 						<tr>
 							<td>{{=$ctx.doI18N("label.decimalplaces")}}</td>
-							<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 175px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
+							<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 100px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
 						</tr>
-						<tr>
-                            <td>{{=$ctx.doI18N("label.minimum.principal")}}</td>
-                            <td>
-                                <input id="minPrincipal" name="minPrincipal" title="" type="text" value="{{=$ctx.monetaryValue(currency, minPrincipal)}}" style="width: 175px;" />
-                            </td>
-                        </tr>
                         <tr>
-                            <td>{{=$ctx.doI18N("label.principal")}}</td>
-                            <td>
-                                <input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 175px;" />
+                            <td class="withsubdesc">{{=$ctx.doI18N("label.principal")}}</td>
+							<td class="withsubdesc">
+                                <input id="minPrincipal" name="minPrincipal" title="" type="text" value="{{=$ctx.monetaryValue(currency, minPrincipal)}}" style="width: 100px;" />
                             </td>
+                            <td class="withsubdesc">
+                                <input id="principal" name="principal" title="" type="text" value="{{=$ctx.monetaryValue(currency, principal)}}" style="width: 100px;" />
+                            </td>
+							<td class="withsubdesc">
+								<input id="maxPrincipal" name="maxPrincipal" title="" type="text" value="{{=$ctx.monetaryValue(currency, maxPrincipal)}}" style="width: 100px;" />
+							</td>
                         </tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.maximum.principal")}}</td>
-							<td>
-								<input id="maxPrincipal" name="maxPrincipal" title="" type="text" value="{{=$ctx.monetaryValue(currency, maxPrincipal)}}" style="width: 175px;" />
-							</td>
-						</tr>
-						<tr>
-							<td>{{=$ctx.doI18N("label.minimum.numberof.repayments")}}</td>
-							<td>
-								<input id="minNumberOfRepayments" name="minNumberOfRepayments" title="" type="text" value="{{=$ctx.number(minNumberOfRepayments)}}" style="width: 50px;" />
-							</td>
-						</tr>
-						<tr>
-                            <td>{{=$ctx.doI18N("label.numberof.repayments")}}</td>
-                            <td>
-                                <input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 50px;" />
-                            </td>
+							<td class="labelrow"></td>
+                            <td class="labelrow">{{=$ctx.doI18N("label.minimum")}}</td>
+							<td class="labelrow">{{=$ctx.doI18N("label.default")}}</td>
+                            <td class="labelrow">{{=$ctx.doI18N("label.maximum")}}</td>
                         </tr>
-                        <tr>
-                            <td>{{=$ctx.doI18N("label.maximum.numberof.repayments")}}</td>
-                            <td>
-                                <input id="maxNumberOfRepayments" name="maxNumberOfRepayments" title="" type="text" value="{{=$ctx.number(maxNumberOfRepayments)}}" style="width: 50px;" />
+
+						<tr>
+							<td class="withsubdesc">{{=$ctx.doI18N("label.numberof.repayments")}}</td>
+							<td class="withsubdesc">
+								<input id="minNumberOfRepayments" name="minNumberOfRepayments" title="" type="text" value="{{=$ctx.number(minNumberOfRepayments)}}" style="width: 100px;" />
+							</td>
+							<td class="withsubdesc">
+                                <input id="numberOfRepayments" name="numberOfRepayments" title="" type="text" value="{{=$ctx.number(numberOfRepayments)}}" style="width: 100px;" />
                             </td>
+							<td class="withsubdesc">
+                                <input id="maxNumberOfRepayments" name="maxNumberOfRepayments" title="" type="text" value="{{=$ctx.number(maxNumberOfRepayments)}}" style="width: 100px;" />
+                            </td>
+						</tr>
+						<tr>
+							<td class="labelrow"></td>
+                            <td class="labelrow">{{=$ctx.doI18N("label.minimum")}}</td>
+							<td class="labelrow">{{=$ctx.doI18N("label.default")}}</td>
+                            <td class="labelrow">{{=$ctx.doI18N("label.maximum")}}</td>
                         </tr>
 						<tr>
 							<td>{{=$ctx.doI18N("label.repaidevery")}}</td>
 							<td>
-								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 50px;" />
-								
-								<select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 121px;">
+								<input id="repaymentEvery" name="repaymentEvery" title="" type="text" value="{{=$ctx.number(repaymentEvery)}}" style="width: 100px;" />
+							</td>
+							<td>	
+								<select name="repaymentFrequencyType" id="repaymentFrequencyType"  title="" style="width: 100px;">
 								{{#each repaymentFrequencyTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.repaymentFrequencyType.id)===$ctx.number(id)}}
 									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
@@ -6359,17 +6361,18 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.minimum.nominal.interestrate")}}</td>
-							<td>
-								<input id="minInterestRatePerPeriod" name="minInterestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(minInterestRatePerPeriod, 4)}}" style="width: 50px;" />
+							<td class="withsubdesc">{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
+							<td class="withsubdesc">
+								<input id="minInterestRatePerPeriod" name="minInterestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(minInterestRatePerPeriod, 4)}}" style="width: 100px;" />
                             </td>
-						</tr>
-						<tr>
-                            <td>{{=$ctx.doI18N("label.nominal.interestrate")}}</td>
-                            <td>
-                                <input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 50px;" />
-                                
-                                <select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 121px;">
+							<td class="withsubdesc">
+								<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(interestRatePerPeriod, 4)}}" style="width: 100px;" />
+							</td>
+							<td class="withsubdesc">
+                                <input id="maxInterestRatePerPeriod" name="maxInterestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(maxInterestRatePerPeriod, 4)}}" style="width: 100px;" />
+                            </td>                            
+                            <td class="withsubdesc">
+                                <select name="interestRateFrequencyType" id="interestRateFrequencyType"  title="" style="width: 100px;">
                                 {{#each interestRateFrequencyTypeOptions}}
                                 {{#if $ctx.number($parent.parent.data.interestRateFrequencyType.id)===$ctx.number(id)}}
                                     <option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
@@ -6381,10 +6384,10 @@ $(document).ready(function() {
                             </td>
                         </tr>
                         <tr>
-                            <td>{{=$ctx.doI18N("label.maximum.nominal.interestrate")}}</td>
-                            <td>
-                                <input id="maxInterestRatePerPeriod" name="maxInterestRatePerPeriod" title="" type="text" value="{{=$ctx.decimal(maxInterestRatePerPeriod, 4)}}" style="width: 50px;" />
-                            </td>
+							<td class="labelrow"></td>
+							<td class="labelrow">{{=$ctx.doI18N("label.minimum")}}</td>
+							<td class="labelrow">{{=$ctx.doI18N("label.default")}}</td>
+                            <td class="labelrow">{{=$ctx.doI18N("label.maximum")}}</td>
                         </tr>
 					</table>
 		</div>
