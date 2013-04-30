@@ -7,9 +7,9 @@
 
 <link rel="SHORTCUT ICON" href="resources/favicon.ico" />
 <link rel="stylesheet" type="text/css" href="resources/allinone.css" />
-<link rel="stylesheet" type="text/css" href="resources/libs/DataTables-1.8.2/extras/TableTools/media/css/TableTools.css" />
-<link rel="stylesheet" type="text/css"	href="resources/libs/DataTables-1.8.2/media/css/demo_page.css" />
-<link rel="stylesheet" type="text/css"	href="resources/libs/DataTables-1.8.2/media/css/demo_table.css" />
+<link rel="stylesheet" type="text/css" href="resources/libs/DataTables-1.9.4/extras/TableTools/media/css/TableTools.css" />
+<link rel="stylesheet" type="text/css"	href="resources/libs/DataTables-1.9.4/media/css/demo_page.css" />
+<link rel="stylesheet" type="text/css"	href="resources/libs/DataTables-1.9.4/media/css/demo_table_jui.css" />
 <link rel="stylesheet" type="text/css"	href="resources/libs/jquery-ui-1.8.16.custom/css/smoothness/jquery-ui-1.8.16.custom.css" />
 <link rel="stylesheet" type="text/css"	href="resources/libs/jquery-ui-timepicker-addon.css" />
 
@@ -19,7 +19,7 @@
 <!-- JQuery/JQuery UI is used. JQuery data tables are used to display rows of data - especially in reporting (stretchyreporting) -->
 <script type="text/javascript" src="resources/libs/jquery-1.7.min.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.8.16.custom/js/jquery-ui-1.8.16.custom.min.js"></script>
-<script type="text/javascript"	src="resources/libs/DataTables-1.8.2/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"	src="resources/libs/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery.dataTables.TitleNumeric.js"></script>
 <script type="text/javascript"	src="resources/libs/DataTables-1.8.2/extras/TableTools/media/js/ZeroClipboard.js"></script>
 <script type="text/javascript"	src="resources/libs/DataTables-1.8.2/extras/TableTools/media/js/TableTools.min.js"></script>
@@ -91,7 +91,6 @@ $(document).ready(function() {
 
 //IndividualLendingCode.js is the file to look at
 	initialiseAndShowLogon();
-	
 });
 </script>
 
@@ -399,22 +398,10 @@ $(document).ready(function() {
 		</div>
 		<div id="officesInScopeDiv">
 		</div>
-        <hr/>
-		<div style="height: 80px">
-			<div style="float: left">
-					<label for="client">{{=$ctx.doI18N("label.search.by.name")}}</label>
-					<input type="text" maxlength="30" id="clientSearchInput"/>
-					<button id="searchClientBtn" style="clear: both;" style="height:10px">{{=$ctx.doI18N("button.search")}}</button>
-			</div>
-			
-			<div style="float: right">
-				<div id="clientsInScopeDiv">
-				</div>
-			</div>
-		</div>
-		<div id="clientTableDiv">
-		</div>
+        <hr/>	
 	</form>	
+    <div id="clientTableDiv">
+    </div>
 </div>
 </script>
 
@@ -432,22 +419,23 @@ $(document).ready(function() {
 <script id="officesDropdownTemplate" type="text/x-jquery-tmpl">
 	{{#if crudRows.length > 1 }}
 		<div style="width:100%">
-				<label for="office">{{=$ctx.doI18N("label.data.scope")}}</label>
-				<select id="officeId" name="officeId">
-					{{#each crudRows}}
-						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=hierarchy}}" selected="selected">{{=nameDecorated}}</option>
-						{{#else}}
-							<option value="{{=hierarchy}}">{{=nameDecorated}}</option>
-						{{/if}}
-			        {{/each}}
-				</select>
+				<label for="office">{{=$ctx.doI18N("label.data.scope")}}
+    				<select id="officeId" name="officeId">
+    					{{#each crudRows}}
+    						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+    							<option value="{{=hierarchy}}" selected="selected">{{=nameDecorated}}</option>
+    						{{#else}}
+    							<option value="{{=hierarchy}}">{{=nameDecorated}}</option>
+    						{{/if}}
+    			        {{/each}}
+    				</select>
+                </label>
 		</div>
 	{{/if}}
 </script>
 
 <script id="clientsTableTemplate" type="text/x-jquery-tmpl">
-	<table id='clientstable' width='100%'>
+	<table id='clientstable' width='100%' class="display">
 		<thead>
 			<tr>
 				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
@@ -456,13 +444,9 @@ $(document).ready(function() {
 			</tr>
 		</thead>
 		<tbody>
-			{{#each crudRows}}
-			<tr>
-				<td>{{=officeName}}</td>
-				<td><a id='navigateToClient{{=id}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=id}});">{{=accountNo}}</a></td>
-				<td><a id='navigateToClient{{=id}}' href='#' style='margin-right: 5px;' onclick="showILClient({{=id}});">{{=displayName}}</a></td>				
-			</tr>
-			{{/each}}
+            <tr>
+                <td colspan="5" class="dataTables_empty">Loading data from server</td>
+            </tr>			
 		</tbody>
 	</table>
 </script>
