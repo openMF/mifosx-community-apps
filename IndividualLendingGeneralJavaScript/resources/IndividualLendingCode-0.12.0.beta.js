@@ -249,7 +249,11 @@ function showMainContainer(containerDivName, username) {
 	}
 	
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
-    htmlVar += '    <li id="search_element" class="sb_wrapper">';
+    
+	htmlVar += '</ul>';
+	htmlVar += '<ul id="nav" class="floatright">';
+	
+	htmlVar += '    <li id="search_element" class="sb_wrapper">';
 
     htmlVar += '           <input id="sb_input" name="sb_input" class="sb_input" type="text" placeholder="Search" />';
     htmlVar += '           <button type="submit" class="globalsearchbtn ui-icon-search" id="globalsearchbtn" name="globalsearchbtn" title="Global Search">Search</button>';
@@ -264,8 +268,7 @@ function showMainContainer(containerDivName, username) {
     htmlVar += '           </ul>';
 
     htmlVar += '    </li>';
-	htmlVar += '</ul>';
-	htmlVar += '<ul id="nav" class="floatright">';
+	
 	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.culture") + '</a>';
 	htmlVar += '		<ul>';
 	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowFirstPage(' + "'" + 'en' + "'" + ');return false;">English</a></li>';

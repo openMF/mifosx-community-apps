@@ -101,8 +101,9 @@ td.witoutpadding{padding-top: 0px; padding-bottom: 0px;}
 .notecontent{word-wrap: break-word;}
 
 /** Global Search css **/
-.sb_wrapper{position:absolute;top:80px;left:40px;width:300px !important;margin:0;padding:0}
+.sb_wrapper{position:absolute;top:80px; right:10px; width:300px !important;margin-right:-30px;padding:0}
 .sb_wrapper input[type=text],ul.sb_dropdown{border:1px 1px 0px 1px solid #DDDDFF;background:#FFFFFF;font-size:12px;font-family:"Myriad Pro", "Trebuchet MS", sans-serif;-moz-box-shadow:1px 1px 3px #555;-webkit-box-shadow:1px 1px 3px #555;-box-shadow:1px 1px 3px #555;outline:none;text-shadow:1px 1px 1px #fff;width:200px !important;;float:left;margin:0px;padding:5px 3px 5px 5px}
+.sb_wrapper button{margin-top:0}
 ul.sb_dropdown{float:left;list-style:none;width:210px !important;-moz-border-radius:0 0 10px 10px;-webkit-border-bottom-right-radius:10px;-webkit-border-bottom-left-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;padding:6px 5px}
 ul.sb_dropdown li{font-size:16px;line-height:32px;height:32px;float:left;width:100%}
 ul.sb_dropdown li input[type=checkbox]{float:left;margin:10px 4px 0 5px}
