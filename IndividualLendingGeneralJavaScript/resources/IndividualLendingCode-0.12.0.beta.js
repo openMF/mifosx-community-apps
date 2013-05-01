@@ -1379,9 +1379,9 @@ function setAccountSettingsContent(divName) {
 $.urlConstructor = function(sSource,oSettings){
 	if(typeof oSettings.aaSorting[0] ==='undefined')
 	{
-		return baseApiUrl + sSource+"paginated";
+		return baseApiUrl + "clients";
 	}else
-		return baseApiUrl + sSource+"paginatedandsorted?orderBy="+oSettings.aoColumns[(oSettings.aaSorting[0][0])].mDataProp+"&sortOrder="+oSettings.aaSorting[0][1];
+		return baseApiUrl + "clients?orderBy="+oSettings.aoColumns[(oSettings.aaSorting[0][0])].mDataProp+"&sortOrder="+oSettings.aaSorting[0][1];
 
 }
 

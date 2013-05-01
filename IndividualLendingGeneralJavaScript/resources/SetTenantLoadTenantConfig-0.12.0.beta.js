@@ -502,7 +502,7 @@ custom.jqueryDataTableServerSide = {
 			"sPaginationType": "full_numbers",
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "clients/",
+			"sAjaxSource": "",
 			"fnServerData": serverData(),
 			"fnDrawCallback":function()
 							{
