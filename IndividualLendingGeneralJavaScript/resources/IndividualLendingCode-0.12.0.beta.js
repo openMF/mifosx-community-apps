@@ -1376,6 +1376,76 @@ function setAccountSettingsContent(divName) {
 	$("#" + divName).html(htmlVar);
 }
 
+$.urlConstructor = function(sSource,oSettings){
+	if(typeof oSettings.aaSorting[0] ==='undefined')
+	{
+		return baseApiUrl + "clients";
+	}else
+		return baseApiUrl + "clients?orderBy="+oSettings.aoColumns[(oSettings.aaSorting[0][0])].mDataProp+"&sortOrder="+oSettings.aaSorting[0][1];
+
+}
+
+$.prepareDataToSend = function(aoData){
+	
+	var jsonData = {
+			offset:aoData[3].value,
+			limit:aoData[4].value,
+	};
+
+	if(aoData[9].value !="")
+	{
+		var searchValue = aoData[9].value;
+		searchValue = searchValue.replace("'", "''");
+		//office hierarchy dropdown does not appear for branch users
+		var sqlSearchValue = "display_name like '%" + searchValue + "%'";
+		jsonData.sqlSearch = sqlSearchValue;
+	}
+	//not appropriate here 
+	if($("#officeId").val()!= undefined)
+	{
+		jsonData.underHierarchy =  encodeURIComponent($("#officeId").val())
+	}
+	return jsonData;
+}
+
+var serverData = function()
+{
+	 return function (sSource, aoData, fnCallback, oSettings) {
+		 oSettings.jqXHR = $.ajax({ 
+							url : $.urlConstructor(sSource,oSettings),
+							type : "GET", //POST, GET, PUT or DELETE 
+							contentType : "application/json; charset=utf-8", 
+							dataType : 'json', 
+							data : $.prepareDataToSend(aoData), 
+							cache : false, 
+							beforeSend : function(xhr) { 
+									if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+									if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
+								}, 
+							success : function (json) {
+				            	var data = {
+				            		iTotalRecords : 200, //no need of this
+				            		iTotalDisplayRecords : json.totalFilteredRecords,
+				            		//sEcho:3, //this should be matched
+				            		aaData:json.pageItems
+				            	};				                         
+				                fnCallback(data);
+				            }
+						}); 
+    }
+}
+
+var initTableConf = function (tableId,oTable)
+{
+	//Unbind search functoin on keypress
+	$("#"+tableId+"_filter input").unbind();
+	//Bind search function on enter key
+	$("#"+tableId+"_filter input").bind('keyup', function(e) {
+   			if(e.keyCode == 13) {
+    			oTable.fnFilter(this.value);   
+			}
+		}); 
+}
 
 function showILClientListing() {
 
@@ -1395,63 +1465,30 @@ function showILClientListing() {
 	    },
 	    show: function(event, ui) {
 
-	    	var initClientSearch =  function() {
+			var initClientSearch =  function() {  	
 			//render page markup
 			var tableHtml = $("#clientSearchTabTemplate").render();
 			$("#searchtab").html(tableHtml);
-			
+
+			var clientsTableHtml = $("#clientsTableTemplate").render();
+			$("#clientTableDiv").html(clientsTableHtml);
+
+			var oTable = $("#clientstable").dataTable(custom.jqueryDataTableServerSide.paginated("clientstable"));
+			initTableConf("clientstable",oTable);
+
 			//fetch all Offices 
 			var officeSearchSuccessFunction =  function(data) {
 				var officeSearchObject = new Object();
 			    officeSearchObject.crudRows = data;
 				var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
-				$("#officesInScopeDiv").html(tableHtml);
+				$("#custom").html(tableHtml);
 
 				// add client filter behaviour
 				$("#officeId").change(function(){
-					applyClientSearchFilter($(this).val());
+					oTable.fnDraw();
 				})
 		  	};
-		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
-			
-			//render client drop down data
-			var clientSearchSuccessFunction =  function(data) {
-				var clientSearchObject = new Object();
-			    clientSearchObject.crudRows = data;
-				var tableHtml = $("#allClientsDropdownTemplate").render(clientSearchObject);
-				$("#clientsInScopeDiv").html(tableHtml);
-		  	};
-			executeAjaxRequest('clients', 'GET', "", clientSearchSuccessFunction, formErrorFunction);
-  			    	
-    		//search client functionality
-			var searchSuccessFunction =  function(data) {
-				var clientSearchObject = new Object();
-			    clientSearchObject.crudRows = data;
-				var tableHtml = $("#clientsTableTemplate").render(clientSearchObject);
-				$("#clientTableDiv").html(tableHtml);
-			    var oTable=displayListTable("clientstable");
-		  	};
-			
-			//initialize search button				
-			$("#searchClientBtn").button({
-				icons: {
-	                primary: "ui-icon-search"
-	            }
-	         }).click(function(e){
-	         	//get selected office
-	         	var officeHierarchy = $("#officeId").val();
-	         	//get search parameter
-				var searchValue = $("#clientSearchInput").val();
-				searchValue = searchValue.replace("'", "''");
-				//office hierarchy dropdown does not appear for branch users
-				var sqlSearchValue = "display_name like '%" + searchValue + "%'"; 
-				if(officeHierarchy){
-					executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue)+ "&underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", searchSuccessFunction, formErrorFunction);
-				}else{
-					executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
-				}
-			   	e.preventDefault(); 
-		   	});
+		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);			
 	    };
 	  	  //initialize the client search tab
 		 initClientSearch();
@@ -2059,6 +2096,7 @@ function showILClient(clientId) {
 	    	select: function(event, tab) {
 				//alert("client tab selected: " + tab.index);
 				if (tab.index == 0)
+
 				{
 					if (clientDirty == true)
 					{

@@ -283,6 +283,33 @@ custom.datatablePresentation = {
 	}
 };
 
+//table properties
+custom.datatablePresentation2 = {
+	"clientstable":	[{
+				        "mDataProp": "officeId",
+				        "aTargets":  [0]
+				    },
+				    {
+				        "mDataProp": "accountNo",
+				        "aTargets": [1],
+				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
+				        {
+				        	$(nTd).html('<a id="navigateToClient'+oData.id+'" href="#" onclick="showILClient('+oData.id+');">'+sData+'</a>');
+				        }
+				    },
+				    {
+				        "mDataProp": "displayName",
+				        "aTargets": [2]
+				    },
+				    {
+				        "mDataProp": "id",
+				        "aTargets": [3],
+				        "bVisible":false
+				    }]
+
+				
+}
+
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 		appTablePKValue) {
 
@@ -454,7 +481,59 @@ custom.fitPopupHeight = function() {
 	return $(window).height() - 20;
 }
 
+custom.jqueryDataTableServerSide = {
 
+	paginated:function(tableId)
+		{
+			return{
+			"bSort": true,
+			"aaSorting": [], //disable initial sort
+			"bInfo": true,
+			"bJQueryUI": true,
+			"bRetrieve": true,
+			"bStateSave": true,
+			"bScrollCollapse": true,
+			"bPaginate": true,
+			"bLengthChange": true,
+			"bFilter": true,
+			"sDom": '<"H"lfr<"#custom">>t<"F"ip> ',
+			"aLengthMenu" :[200, 150, 100, 50],
+			"bAutoWidth": true,
+			"sPaginationType": "full_numbers",
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": "",
+			"fnServerData": serverData(),
+			"fnDrawCallback":function()
+							{
+								$("#"+tableId+" tr").click(function() {
+									if ( $(this).hasClass('row_selected') ) {
+										$(this).removeClass('row_selected');
+									}
+									else {
+										$('tr.row_selected').removeClass('row_selected');
+										$(this).addClass('row_selected');
+									}
+								} );								
+							},
+			"aoColumnDefs": custom.datatablePresentation2[tableId],
+			"oLanguage": {
+						"sEmptyTable": doI18N("rpt.no.entries"),
+						"sZeroRecords": doI18N("rpt.no.matching.entries"),
+						"sInfo": doI18N("rpt.showing") + " _START_ " + doI18N("rpt.to") + " _END_ " + doI18N("rpt.of") + " _TOTAL_ " + doI18N("rpt.records"),
+						"sInfoFiltered": "",
+							"oPaginate": {
+    									"sFirst"    : doI18N("rpt.first"),
+    									"sLast"     : doI18N("rpt.last"),
+    									"sNext"     : doI18N("rpt.next"),
+    									"sPrevious" : doI18N("rpt.previous")
+									},
+						"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
+						"sSearch": doI18N("rpt.search")
+				}
+			}
+		}
+}
 
 custom.jqueryDataTableLayout = {
 		basic: function() {
@@ -497,7 +576,7 @@ custom.jqueryDataTableLayout = {
 									"sButtonText": doI18N("Save to CSV")
 								}
 								],
-						"sSwfPath": "resources/libs/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
+						"sSwfPath": "resources/libs/DataTables-1.9.4/extras/TableTools/media/swf/copy_cvs_xls.swf"
 					        },
 					        
 				"sPaginationType": "full_numbers",
@@ -534,7 +613,7 @@ custom.jqueryDataTableLayout = {
 								"sButtonText": doI18N("Save to CSV")
 							}
 							],
-					"sSwfPath": "resources/libs/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls.swf"
+					"sSwfPath": "resources/libs/DataTables-1.9.4/extras/TableTools/media/swf/copy_cvs_xls.swf"
 			     },
 				"bJQueryUI": true,
 				"bRetrieve": false,
