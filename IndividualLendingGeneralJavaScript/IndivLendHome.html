@@ -4099,6 +4099,12 @@ $(document).ready(function() {
 		<td>{{=$ctx.doI18N("label.createdDate")}}</td>
 		<td>{{=$ctx.globalDate(createdDate)}}</td>
 	</tr>
+	{{#if referenceNumber}}
+	<tr>
+		<td>{{=$ctx.doI18N("label.referenceNumber")}}</td>
+		<td>{{=referenceNumber}}</td>
+	</tr>
+	{{/if}}
 	<tr>
 		<td>{{=$ctx.doI18N("label.comments")}}</td>
 		<td><textarea readonly rows="7" cols="50">{{=comments}}</textarea></td>
@@ -4157,6 +4163,12 @@ $(document).ready(function() {
 				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
 				{{/each}}
 			</select></td>
+		</tr>
+		<tr>
+			<td><label for="referenceNumber">{{=$ctx.doI18N("label.referenceNumber")}}</label></td>
+			<td>
+			<input id="referenceNumber" name="referenceNumber" title="" type="text" value="{{=referenceNumber}}" />
+			</td>
 		</tr>
 		<tr>
 			<td><label for="transactionDate">{{=$ctx.doI18N("label.transactionDate")}}</label></td>
