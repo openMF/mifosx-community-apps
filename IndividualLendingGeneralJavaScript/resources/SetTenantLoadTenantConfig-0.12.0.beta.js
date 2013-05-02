@@ -286,7 +286,7 @@ custom.datatablePresentation = {
 //table properties
 custom.datatablePresentation2 = {
 	"clientstable":	[{
-				        "mDataProp": "officeId",
+				        "mDataProp": "officeName",
 				        "aTargets":  [0]
 				    },
 				    {
