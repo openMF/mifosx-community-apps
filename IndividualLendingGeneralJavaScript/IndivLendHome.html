@@ -5728,6 +5728,15 @@ $(document).ready(function() {
 						{{/if}}
 					</td>
 				</tr>
+				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+				<tr>
+					<td>{{=$ctx.doI18N("label.annualFee")}}</td>
+					<td>
+						<input id="annualFeeAmount" name="annualFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, annualFeeAmount)}}" style="width: 75px;" />
+						{{=$ctx.doI18N("label.on")}}
+						<input id="annualFeeOnMonthDay" name="annualFeeOnMonthDay" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(annualFeeOnMonthDay)}}" />
+					</td>
+				</tr>
 			</table>
 		</div>
 	</div>
@@ -5937,7 +5946,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.lockedinfor")}}</td>
 					<td>
-						<input id="lockinPeriodFrequency" name="lockinPeriodFrequency" title="" type="text" value="{{=$ctx.number(lockinPeriodFrequency)}}" style="width: 50px;" />
+						<input id="lockinPeriodFrequency" name="lockinPeriodFrequency" title="" type="text" value="{{=$ctx.number(lockinPeriodFrequency)}}" style="width: 75px;" />
 						<select name="lockinPeriodFrequencyType" id="lockinPeriodFrequencyType"  title="" style="width: 121px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#if lockinPeriodFrequencyType}}
@@ -5994,6 +6003,15 @@ $(document).ready(function() {
    							{{/each}}
 							</select>
 						{{/if}}
+					</td>
+				</tr>
+				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+				<tr>
+					<td>{{=$ctx.doI18N("label.annualFee")}}</td>
+					<td>
+						<input id="annualFeeAmount" name="annualFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, annualFeeAmount)}}" style="width: 75px;" />
+						{{=$ctx.doI18N("label.on")}}
+						<input id="annualFeeOnMonthDay" name="annualFeeOnMonthDay" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(annualFeeOnMonthDay)}}" />
 					</td>
 				</tr>
 			</table>
@@ -6093,6 +6111,14 @@ $(document).ready(function() {
 		</div>
 			{{/if}}
 		{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.annualFee")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, annualFeeAmount)}} {{=$ctx.doI18N("label.on")}} {{=$ctx.monthDayDate(annualFeeOnMonthDay)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.annualFeeNextDueDate")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(annualFeeNextDueDate)}}</span>
+		</div>
 		<br/>
 		<br/>
 		<div class="row">
@@ -6124,20 +6150,17 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalWithdrawalFees)}}</span>
 		</div>
 		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalAnnualFees")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalAnnualFees)}}</span>
+		</div>
+		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestEarned")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalInterestEarned)}}</span>
 		</div>
-		{{#if summary.totalInterestPosted}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestPosted")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalInterestPosted)}}</span>
 		</div>
-		{{#else}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestPosted")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, 0)}}</span>
-		</div>
-		{{/if}}
 	</div>
 		
 	{{#if transactions}}

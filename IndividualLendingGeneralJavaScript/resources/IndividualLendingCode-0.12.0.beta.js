@@ -3977,6 +3977,16 @@ function showCenter(centerId){
 		  			
 		  			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+					
+					$('.noyeardatepickerfield').datepicker(
+					{
+						constrainInput: true, 
+						defaultDate: 0, 
+						dateFormat: 'dd MM',
+						changeMonth: true,
+				        changeYear: false,
+				        showButtonPanel: true
+				    });
 		  		}
 		  	}).dialog('open');		
 	};

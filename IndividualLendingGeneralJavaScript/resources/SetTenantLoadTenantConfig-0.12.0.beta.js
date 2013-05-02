@@ -137,6 +137,31 @@ custom.helperFunctions = {
 			return "??";
 		}
 	},
+	monthDayDate : function(dateParts) {
+		try {
+			if (undefined != dateParts) {
+				
+				var d = new Date();
+				
+				var month = parseInt(dateParts[0])-1; // zero indexed in javascript
+				var day = parseInt(dateParts[1]);
+				var year = d.getFullYear();
+				
+				d.setFullYear(year, month, day);
+
+				if (custom.datePickerDateFormat == 'dd MM yy')
+					return Globalize.format(d, "dd MMMM");
+
+				if (custom.datePickerDateFormat == 'yy-mm-dd')
+					return Globalize.format(d, "MM-dd");
+
+				return "??Format??";
+			} else
+				return "";
+		} catch (e) {
+			return "??";
+		}
+	},
 	globalDate : function(dateParts) {
 		try {
 			if (undefined != dateParts) {
