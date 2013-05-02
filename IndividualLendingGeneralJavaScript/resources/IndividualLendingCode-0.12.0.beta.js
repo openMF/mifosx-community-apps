@@ -1658,6 +1658,19 @@ function loadGroupForm(container, officeId, templateIdentifier) {
 			var selectedValue = $(this).find(":selected").val();
 			loadGroupForm(container, selectedValue, templateIdentifier);
 		});
+
+		$('.multiadd').click(function() {  
+			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#clientMembers');  
+		});
+		
+		$('.multiremove').click(function() {  
+			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
+		});
+		
+		$('.datepickerfield').datepicker({constrainInput: true, dateFormat: custom.datePickerDateFormat});
+		
+		$("#entityform textarea").first().focus();
+		$('#entityform input').first().focus();
 	};
 	
 	executeAjaxRequest('groups/template?officeId=' + officeId, 'GET', "", renderOnSuccessFunction, formErrorFunction);
