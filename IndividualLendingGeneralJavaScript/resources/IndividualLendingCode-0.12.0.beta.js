@@ -1693,7 +1693,6 @@ function saveGroup(divContainer, groupId) {
 	var newFormData = JSON.stringify(serializedArray);
 	
 	var successFunction =  function(data, textStatus, jqXHR) {
-		console.log("success saving group: " + groupId + " >> " + data.resourceId);
 		divContainer.dialog("close");
 
 		if (groupId === undefined || groupId == null) {
@@ -3782,10 +3781,8 @@ function showCenter(centerId){
 		  				"show": function(event, ui) {
 		  					var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
 		  	      			var curTabID = curTab.prop("id");
-//		  	      			console.log("current tab: " + curTab.index);
 		  				},
 		  				"select": function( event, ui ) {
-//		  					console.log("selected tab: " + ui.index);
 		  				}
 		  			});
 		  			
@@ -4126,23 +4123,21 @@ function showCenter(centerId){
 	}
 	// end of savings account
 	
-	function removeLoanCharge(loanId, loanChargeId) {
+	function removeLoanCharge(loanId, loanChargeId, parenttab) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
 			$("#dialog-form").dialog("close");
-			loadILLoan(loanId);
+			loadILLoan(loanId, parenttab);
 		};
 
 		popupConfirmationDialogAndPost('loans/' + loanId +'/charges/' + loanChargeId, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
-
-		return false;
 	}
 	
-	function modifyLoanCharge(loanId, loanChargeId) {
+	function modifyLoanCharge(loanId, loanChargeId, parenttab) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
 			$("#dialog-form").dialog("close");
-			loadILLoan(loanId);
+			loadILLoan(loanId, parenttab);
 		};
 		
 		var getAndPutUrl = 'loans/' + loanId +'/charges/' + loanChargeId;
@@ -4155,11 +4150,11 @@ function showCenter(centerId){
 		return false;
 	}
 	
-	function waiveLoanCharge(loanId, loanChargeId) {
+	function waiveLoanCharge(loanId, loanChargeId, parenttab) {
 
 		var successFunction = function(data, textStatus, jqXHR) {
 			$("#dialog-form").dialog("close");
-			loadILLoan(loanId);
+			loadILLoan(loanId, parenttab);
 		};
 
 		popupConfirmationDialogAndPost('loans/' + loanId +'/charges/' + loanChargeId + '?command=waive', 'POST', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
@@ -4276,20 +4271,21 @@ function tabExists(parenttab, tabId){
     return tabFound;
 }
 
-function loadILLoan(loanId) {
-	loadLoan(loanId);	
+function loadILLoan(loanId, parenttab) {
+	loadLoan(loanId, parenttab);	
 }
 
 function loadGroupLoan(loanId) {
-	loadLoan(loanId);	
+	loadLoan(loanId);
 }
 
-function loadLoan(loanId, parenttab) {   
+function loadLoan(loanId, parenttab) {
+	console.log("using partenttab: " + parenttab);
 	var parenttab = parenttab;	
 	var loanUrl = 'loans/' + loanId + "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
-	        	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
+		handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
 	};
 
 	var successFunction = function(data, status, xhr) {
@@ -4771,19 +4767,15 @@ function loadLoan(loanId, parenttab) {
                                 primary: "ui-icon-flag"},
                                 text: false
                             }).click(function(e) {
-                                waiveLoanCharge(loanId,val.id);
+                                waiveLoanCharge(loanId,val.id,parenttab);
                                 e.preventDefault();
                             });
                         }
                         
                         //delete loan charge buttons
                         if(document.getElementById('deleteloan'+ loanId +'charge'+val.id)){
-                            $('#deleteloan'+ loanId +'charge'+val.id).button(
-                                {icons: {
-                                primary: "ui-icon-trash"},
-                                text: false
-                            }).click(function(e) {
-                                removeLoanCharge(loanId,val.id);
+                            $('#deleteloan'+ loanId +'charge'+val.id).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+                                removeLoanCharge(loanId,val.id,parenttab);
                                 e.preventDefault();
                             });
                         }
@@ -4794,7 +4786,7 @@ function loadLoan(loanId, parenttab) {
                                 primary: "ui-icon-pencil"},
                                 text: false
                             }).click(function(e) {
-                                modifyLoanCharge(loanId,val.id);
+                                modifyLoanCharge(loanId,val.id,parenttab);
                                 e.preventDefault();
                             });
                         }
