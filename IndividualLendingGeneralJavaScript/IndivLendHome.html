@@ -7293,8 +7293,15 @@ $(document).ready(function() {
         {{/each}}
 	</select>
 
-	<table>
-		<tr>
+	<table width="100%">
+        <tr>
+            <td colspan="2">
+                <label>{{=$ctx.doI18N("label.clienttype")}}</label>
+                <input type="radio" name="clientType" value="1" checked="true">{{=$ctx.doI18N("label.individual")}}</input>
+                <input type="radio" name="clientType" value="2">{{=$ctx.doI18N("label.corporate")}}</input>
+            </td>
+        </tr>
+		<tr id="individualRow">
 			<td>
 				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
 				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
@@ -7308,7 +7315,7 @@ $(document).ready(function() {
 				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
 			</td>
 		<tr>
-		<tr>
+		<tr id="businessRow" hidden="true">
 			<td colspan="2">
 				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
 				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>

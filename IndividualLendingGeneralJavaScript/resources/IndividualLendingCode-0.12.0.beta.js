@@ -5607,6 +5607,18 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 		} 
 		serializedArray = $('#entityform').serializeObject(serializationOptions);	
 		
+		//manipulate serialized array for clients
+		if (postUrl.toLowerCase().indexOf("clients") >= 0) {
+			if (serializedArray["clientType"]=="1") {
+				delete serializedArray["fullname"];
+			} else if (serializedArray["clientType"]=="2"){
+				delete serializedArray["firstname"];
+				delete serializedArray["middlename"];
+				delete serializedArray["lastname"];
+			}
+			delete serializedArray["clientType"];
+		}
+
 		//manipulate serialized array for guarantors
     	if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
     	   //TODO: Vishwas...var is repeated
@@ -5844,6 +5856,21 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				}			
 			}
 		})
+	}
+
+	if (templateSelector === "#clientFormTemplate") {
+
+		//onchange events for radio button clientType
+		$("input[name='clientType']").change(function() {
+	  		var selectedValue = $(this).val();
+	  		if (selectedValue == "1"){
+	  		    $("#individualRow").show();
+	  		   	$("#businessRow").hide();
+			}else if (selectedValue == "2"){
+				$("#individualRow").hide();
+				$("#businessRow").show()
+			}
+		});
 	}
 
 	$('#addclientmembers').click(function() {  
