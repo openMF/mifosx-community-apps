@@ -6555,7 +6555,7 @@ $(document).ready(function() {
 					<legend>{{=$ctx.doI18N("legend.assets")}}</legend>	
 				<table style="width:100%">
 						<tr>
-							<td>{{=$ctx.doI18N("label.fundSource")}}</td>
+							<td title="{{=$ctx.doI18N(\"fundSourceTooltip\")}}">{{=$ctx.doI18N("label.fundSource")}}</td>
 							<td>
 								<select id="fundSourceAccountId" name="fundSourceAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6574,7 +6574,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.loanPortfolio")}}</td>
+							<td title="{{=$ctx.doI18N(\"loanPortfolioTooltip\")}}">{{=$ctx.doI18N("label.loanPortfolio")}}</td>
 							<td>
 								<select id="loanPortfolioAccountId" name="loanPortfolioAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6593,7 +6593,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr id="interestReceivableRow">
-							<td>{{=$ctx.doI18N("label.interestReceivable")}}</td>
+							<td  title="{{=$ctx.doI18N(\"interestReceivableTooltip\")}}">{{=$ctx.doI18N("label.interestReceivable")}}</td>
 							<td>
 								<select id="receivableInterestAccountId" name="receivableInterestAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6612,7 +6612,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr id="feeReceivableRow">
-							<td>{{=$ctx.doI18N("label.feeReceivable")}}</td>
+							<td  title="{{=$ctx.doI18N(\"feeReceivableTooltip\")}}">{{=$ctx.doI18N("label.feeReceivable")}}</td>
 							<td>
 								<select id="receivableFeeAccountId" name="receivableFeeAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6631,7 +6631,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr id="penaltyReceivableRow">
-							<td>{{=$ctx.doI18N("label.penaltyReceivable")}}</td>
+							<td  title="{{=$ctx.doI18N(\"penaltyReceivableTooltip\")}}">{{=$ctx.doI18N("label.penaltyReceivable")}}</td>
 							<td>
 								<select id="receivablePenaltyAccountId" name="receivablePenaltyAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6655,7 +6655,7 @@ $(document).ready(function() {
 					<legend>{{=$ctx.doI18N("legend.income")}}</legend>	
 				<table style="width:100%">
 						<tr>
-							<td>{{=$ctx.doI18N("label.incomeFromInterest")}}</td>
+							<td title="{{=$ctx.doI18N(\"incomeFromInterestTooltip\")}}">{{=$ctx.doI18N("label.incomeFromInterest")}}</td>
 							<td>
 								<select id="interestOnLoanAccountId" name="interestOnLoanAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6674,7 +6674,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.incomeFromFees")}}</td>
+							<td title="{{=$ctx.doI18N(\"incomeFromFeeTooltip\")}}">{{=$ctx.doI18N("label.incomeFromFees")}}</td>
 							<td>
 								<select id="incomeFromFeeAccountId" name="incomeFromFeeAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6693,7 +6693,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.incomeFromPenalties")}}</td>
+							<td title="{{=$ctx.doI18N(\"incomeFromPenaltyTooltip\")}}">{{=$ctx.doI18N("label.incomeFromPenalties")}}</td>
 							<td>
 								<select id="incomeFromPenaltyAccountId" name="incomeFromPenaltyAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6717,7 +6717,7 @@ $(document).ready(function() {
 					<legend>{{=$ctx.doI18N("legend.expenses")}}</legend>	
 				<table style="width:100%">
 						<tr>
-							<td>{{=$ctx.doI18N("label.loanLossesWrittenOff")}}</td>
+							<td title="{{=$ctx.doI18N(\"lossesWrittenOffTooltip\")}}">{{=$ctx.doI18N("label.loanLossesWrittenOff")}}</td>
 							<td>
 								<select id="writeOffAccountId" name="writeOffAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
