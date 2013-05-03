@@ -4347,7 +4347,12 @@ $(document).ready(function() {
 			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 			<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
-			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
+			
+		{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
+			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;"/>
+		{{#else}}
+			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>			
+		{{/if}}
 
 		{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
 			<label for="dueDate">Due for collection on:</label>

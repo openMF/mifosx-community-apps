@@ -4280,7 +4280,6 @@ function loadGroupLoan(loanId) {
 }
 
 function loadLoan(loanId, parenttab) {
-	console.log("using partenttab: " + parenttab);
 	var parenttab = parenttab;	
 	var loanUrl = 'loans/' + loanId + "?associations=all";
 
