@@ -6541,11 +6541,10 @@ $(document).ready(function() {
 					{{#else}}
 					<input type="radio" name="accountingRule" value="2">{{=$ctx.doI18N("label.cash")}}</input>
 					{{/if}}
-					{{#if accountingRule.value == "ACCRUAL BASED"}}
+					<!-- disabled accrual accounting for release 1.0.0
 					<input type="radio" name="accountingRule" value="3" checked="true">{{=$ctx.doI18N("label.accrual")}}</input>
-					{{#else}}
 					<input type="radio" name="accountingRule" value="3">{{=$ctx.doI18N("label.accrual")}}</input>
-					{{/if}}
+					-->
 				</td>
 				</tr>
 			</table>
