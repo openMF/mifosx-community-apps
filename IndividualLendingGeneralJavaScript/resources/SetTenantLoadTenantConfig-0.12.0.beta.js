@@ -330,9 +330,19 @@ custom.datatablePresentation2 = {
 				        "mDataProp": "id",
 				        "aTargets": [3],
 				        "bVisible":false
-				    }]
-
-				
+				    }],
+	"centerstable":	[{
+				        "mDataProp": "officeName",
+				        "aTargets":  [0]
+				    },
+				    {
+				        "mDataProp": "name",
+				        "aTargets": [1],
+				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
+				        {
+				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showCenter('+oData.id+');">'+sData+'</a>');
+				        }
+				    }]				
 }
 
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,
@@ -521,13 +531,14 @@ custom.jqueryDataTableServerSide = {
 			"bPaginate": true,
 			"bLengthChange": true,
 			"bFilter": true,
-			"sDom": '<"H"lfr<"#custom">>t<"F"ip> ',
-			"aLengthMenu" :[200, 150, 100, 50],
+			"sDom": '<"H"lfr<"#'+tableId+'custom">>t<"F"ip> ',
+			"iDisplayLength" : 200,
+			"aLengthMenu" :[200, 150, 100, 50, 10],
 			"bAutoWidth": true,
 			"sPaginationType": "full_numbers",
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "",
+			"sAjaxSource": tableId.replace("table",""),
 			"fnServerData": serverData(),
 			"fnDrawCallback":function()
 							{

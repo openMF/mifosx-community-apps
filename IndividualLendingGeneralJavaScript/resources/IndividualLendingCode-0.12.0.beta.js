@@ -1382,22 +1382,22 @@ function setAccountSettingsContent(divName) {
 $.urlConstructor = function(sSource,oSettings){
 	if(typeof oSettings.aaSorting[0] ==='undefined')
 	{
-		return baseApiUrl + "clients";
+		return baseApiUrl + sSource;
 	}else
-		return baseApiUrl + "clients?orderBy="+oSettings.aoColumns[(oSettings.aaSorting[0][0])].mDataProp+"&sortOrder="+oSettings.aaSorting[0][1];
+		return baseApiUrl + sSource +"?orderBy="+oSettings.aoColumns[(oSettings.aaSorting[0][0])].mDataProp+"&sortOrder="+oSettings.aaSorting[0][1];
 
 }
 
-$.prepareDataToSend = function(aoData){
+$.prepareDataToSend = function(oSettings){
 	
 	var jsonData = {
-			offset:aoData[3].value,
-			limit:aoData[4].value,
+			offset:oSettings._iDisplayStart,
+			limit:oSettings._iDisplayLength,
 	};
 
-	if(aoData[9].value !="")
+	if(oSettings.oPreviousSearch.sSearch !="")
 	{
-		var searchValue = aoData[9].value;
+		var searchValue = oSettings.oPreviousSearch.sSearch;
 		searchValue = searchValue.replace("'", "''");
 		//office hierarchy dropdown does not appear for branch users
 		var sqlSearchValue = "display_name like '%" + searchValue + "%'";
@@ -1419,7 +1419,7 @@ var serverData = function()
 							type : "GET", //POST, GET, PUT or DELETE 
 							contentType : "application/json; charset=utf-8", 
 							dataType : 'json', 
-							data : $.prepareDataToSend(aoData), 
+							data : $.prepareDataToSend(oSettings), 
 							cache : false, 
 							beforeSend : function(xhr) { 
 									if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
@@ -1484,7 +1484,7 @@ function showILClientListing() {
 				var officeSearchObject = new Object();
 			    officeSearchObject.crudRows = data;
 				var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
-				$("#custom").html(tableHtml);
+				$("#clientstablecustom").html(tableHtml);
 
 				// add client filter behaviour
 				$("#officeId").change(function(){
@@ -1601,7 +1601,7 @@ function showCenterListing(){
 					}else{
 						executeAjaxRequest("groups?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
 					}
-				   	e.preventDefault(); 
+					e.preventDefault();
 			   	});
 	    	};
 
@@ -1842,57 +1842,25 @@ function showNewCenterListing(){
 			var tableHtml = $("#centerSearchTabTemplate").render();
 			$("#searchtab").html(tableHtml);
 			
+			var centerTableHtml = $("#centerTableTemplate").render();
+			$("#centerTableDiv").html(centerTableHtml);
+			
+			var oTable = $("#centerstable").dataTable(custom.jqueryDataTableServerSide.paginated("centerstable"));
+			initTableConf("centerstable",oTable);
+			
 			//fetch all Offices 
 			var officeSearchSuccessFunction =  function(data) {
 				var officeSearchObject = new Object();
 			    officeSearchObject.crudRows = data;
 				var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
-				$("#officesInScopeDiv").html(tableHtml);
+				$("#centerstablecustom").html(tableHtml);
 
 				// add center filter behaviour
 				$("#officeId").change(function(){
-					applyCenterSearchFilter($(this).val());
+					oTable.fnDraw();
 				})
 		  	};
 		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
-			
-			//render center drop down data
-			var centerSearchSuccessFunction = function(data) {
-				var searchObject = new Object();
-				searchObject.crudRows = data;
-				var tableHtml = $("#allCentersDropdownTemplate").render(searchObject);
-				$("#centersInScopeDiv").html(tableHtml);
-		  	};
-		  	
-			executeAjaxRequest('centers', 'GET', "", centerSearchSuccessFunction, formErrorFunction);
-  			    	
-    		//search center functionality
-			var searchSuccessFunction = function(data) {
-				var searchObject = new Object();
-				searchObject.crudRows = data;
-				var tableHtml = $("#centerSearchResultsTableTemplate").render(searchObject);
-				$("#searchResultsTableTableDiv").html(tableHtml);
-			    var oTable=displayListTable("centersearchresultstable");
-		  	};
-			
-			//initialize search button				
-			$("#searchCenterBtn").button({
-				icons: {
-	                primary: "ui-icon-search"
-	            }
-	         }).click(function(e){
-	         	var officeHierarchy = $("#officeId").val();
-				var searchValue = $("#searchInput").val();
-				searchValue = searchValue.replace("'", "''");
-
-				//office hierarchy dropdown does not appear for branch users
-				if(officeHierarchy){
-					executeAjaxRequest("centers?name=" + encodeURIComponent(searchValue)+ "&underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", searchSuccessFunction, formErrorFunction);
-				}else{
-					executeAjaxRequest("centers?name=" + encodeURIComponent(searchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
-				}
-			   	e.preventDefault(); 
-		   	});
 	    };
 	    
 	    initCenterSearch();
