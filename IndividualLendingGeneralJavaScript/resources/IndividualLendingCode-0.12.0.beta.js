@@ -5849,7 +5849,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		})
 	}
 
-	if (templateSelector === "#clientFormTemplate") {
+	if (templateSelector === "#clientFormTemplate" || templateSelector === "#editClientFormTemplate") {
 
 		//onchange events for radio button clientType
 		$("input[name='clientType']").change(function() {
@@ -5862,6 +5862,31 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				$("#businessRow").show()
 			}
 		});
+
+		if (!(data.fullname == undefined)) {
+			$("#individualRow").hide();
+	  		$("#businessRow").show();
+		} else {
+			$("#individualRow").show();
+	  		$("#businessRow").hide();
+		}
+	}
+
+	if (templateSelector === "#chargeFormTemplate") {
+		$("#chargeCalculationType").change(function() {
+			var selectedValue = $(this).val();
+	  		if (selectedValue == "1"){
+	  			$("label[for='amount']").text(doI18N('label.amount'));
+			}else if (selectedValue == "2"){
+				$("label[for='amount']").text(doI18N('label.percentage'));
+			}
+		});
+
+		if(data.chargeCalculationType.id == "1") {
+			$("label[for='amount']").text(doI18N('label.amount'));
+		} else if (data.chargeCalculationType.id == "2") {
+			$("label[for='amount']").text(doI18N('label.percentage'));
+		}
 	}
 
 	$('#addclientmembers').click(function() {  
