@@ -2545,8 +2545,6 @@ $(document).ready(function() {
 		<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
 		<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 		<input id="name" name="name" title="" type="text" value="{{=name}}" size="25"/>
-		<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
-		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
 		<label for="currencyCode">{{=$ctx.doI18N("label.currency")}}</label>
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
         	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
@@ -2615,6 +2613,8 @@ $(document).ready(function() {
 				{{/each}}
 			{{/if}}
 		</select>
+        <label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
+        <input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
 		<label for="active">{{=$ctx.doI18N("label.active")}}</label>
 		{{#if active}}
 			<input type="checkbox" id="active" name="active" title="" style="width: 125px;" checked=checked />
@@ -7295,7 +7295,7 @@ $(document).ready(function() {
 
 	<table width="100%">
         <tr>
-            <td colspan="2">
+            <td colspan="3">
                 <label>{{=$ctx.doI18N("label.clienttype")}}</label>
                 <input type="radio" name="clientType" value="1" checked="true">{{=$ctx.doI18N("label.individual")}}</input>
                 <input type="radio" name="clientType" value="2">{{=$ctx.doI18N("label.corporate")}}</input>
@@ -7369,8 +7369,21 @@ $(document).ready(function() {
         {{/each}}
 	</select>
 
-	<table>
-		<tr>
+	<table width='100%'>
+        <tr>
+            <td colspan='3'>
+                <label>{{=$ctx.doI18N("label.clienttype")}}</label>
+                {{#if fullname}}
+                    <input type="radio" name="clientType" value="1">{{=$ctx.doI18N("label.individual")}}</input>
+                    <input type="radio" name="clientType" value="2" checked="true">{{=$ctx.doI18N("label.corporate")}}</input>
+                {{#else}}
+                    <input type="radio" name="clientType" value="1" checked="true">{{=$ctx.doI18N("label.individual")}}</input>
+                    <input type="radio" name="clientType" value="2">{{=$ctx.doI18N("label.corporate")}}</input>
+                {{/if}}
+
+            </td>
+        </tr>
+		<tr id="individualRow">
 			<td>
 				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
 				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
@@ -7384,7 +7397,7 @@ $(document).ready(function() {
 				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
 			</td>
 		<tr>
-		<tr>
+		<tr id="businessRow">
 			<td colspan="2">
 				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
 				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>
@@ -7403,7 +7416,6 @@ $(document).ready(function() {
 			</td>
 		</tr>
 
-		{{#if active}}
 		<tr>
 			<td>
 			<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
@@ -7415,7 +7427,7 @@ $(document).ready(function() {
 			<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
 			</td>
 		</tr>
-		{{/if}}
+
 	</table>
 </form>
 </script>
