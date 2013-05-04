@@ -8323,19 +8323,69 @@ $(document).ready(function() {
 	</fieldset>
 <hr>
 
-<table border="1">
+{{#if coreReport}}
+	<table border="1">
+	<thead>
+			<tr>
+				<th><b>{{=$ctx.doI18N("parameterName")}}</b></th>
+				<th><b>{{=$ctx.doI18N("reportParameterName")}}</b></th>
+			</tr>
+	</thead>
+	<tbody>
+		{{#each reportParameters}}
+			<tr>
+				<td>{{=$ctx.doI18N(parameterName)}}</td>
+				<td>{{=reportParameterName}}</td>
+			</tr>
+		{{/each}}
+	</tbody>
+	</table>
+{{#else}}
+	{{=$ctx.doI18N("Note")}}<br>
+	<i>{{=$ctx.doI18N("reportParametersNote")}}</i><br><br>
+	<!-- reportParameters -->
+	 <select id="reportParameterOptions">
+	    <option value="">{{=$ctx.doI18N("option.first.choice")}}</option>
+		{{#each allowedParameters}}
+			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(parameterName)}}</option>
+      	{{/each}}
+	 </select>
+	 <button id="reportParameter-add">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+	<table id="reportparameterstable" class="pretty displayschedule">
 	<thead>
 		<tr>
 			<th><b>{{=$ctx.doI18N("parameterName")}}</b></th>
+			<th><b>{{=$ctx.doI18N("reportParameterName")}}</b></th>
+			<th></th>
 		</tr>
-	</thead
+	</thead>
 	<tbody>
 	{{#each reportParameters}}
-		<tr><td>{{=$ctx.doI18N(parameterName)}}</td></tr>
+		<tr>
+			<td>
+				<input id="reportParameters[{{=$itemNumber}}][id]" name="reportParameters[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=$ctx.number(id)}}" />
+				<input title="" disabled value="{{=$ctx.doI18N(parameterName)}}" />
+			</td>
+			<td><input id="reportParameters[{{=$itemNumber}}][reportParameterName]" name="reportParameters[{{=$itemNumber}}][reportParameterName]" title="" value="{{=reportParameterName}}" /></td>
+			<td><button id="reportParameters-remove{{=$itemNumber}}" class="reportParameters-remove">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+		</tr>
 	{{/each}}
 	</tbody>
-</table>
+	</table>
+	<!-- reportParameters -->
+{{/if}}
 </form>
+</script>
+
+<script id="AddReportParameterRowTemplate" type="text/x-jquery-tmpl">
+<tr>
+	<td>
+		<input id="reportParameters[{{=index}}][id]" name="reportParameters[{{=index}}][id]" class="id" title="" type="hidden" value="{{=$ctx.number(id)}}" />
+		<input title="" disabled value="{{=$ctx.doI18N(parameterName)}}" />
+	</td>
+	<td><input id="reportParameters[{{=index}}][reportParameterName]" name="reportParameters[{{=index}}][reportParameterName]" title="" value="{{=reportParameterName}}" /></td>
+	<td><button id="reportParameters-remove{{=index}}" class="reportParameters-remove">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+</tr>
 </script>
 
 <!-- Search screens and templates for Center -->

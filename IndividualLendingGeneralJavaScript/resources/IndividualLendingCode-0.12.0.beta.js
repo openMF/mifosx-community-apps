@@ -592,7 +592,7 @@ function setSysAdminContent(divName) {
 	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
 	var maintainMakerCheckerUrl = "maintainTable('permission', 'permissions?makerCheckerable=true', 'PUT');return false;";
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST');return false;";
-	var addReportUrl = "maintainTable('report', 'reports', 'POST');return false;";
+	var addReportUrl = "launchReportDialog(null);return false;";
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("VIEWDATATABLES") == true)
@@ -5043,7 +5043,12 @@ function refreshLoanDocuments(loanId) {
 					if(tableName == 'employee'){
 						resourceUrl = "staff" + "/" + entityId;
 					}
-					maintainTable(tableName, resourceUrl, 'PUT');
+					if (tableName == 'report') {
+						launchReportDialog(entityId);
+					}
+					else {
+						maintainTable(tableName, resourceUrl, 'PUT');
+					}
 					e.preventDefault();
 				});
 
@@ -5153,7 +5158,7 @@ function refreshLoanDocuments(loanId) {
 	
 
 	function maintainTable(tableName, resourceUrl, submitType, putPostQuery) {
-		
+		alert(tableName + " - " + resourceUrl + " - " + submitType + " - " +  putPostQuery)
 		if (!(submitType == "PUT" || submitType == "POST"))
 		{
 			alert("System Error - Invalid submitType: " + submitType);
@@ -5227,7 +5232,129 @@ function refreshLoanDocuments(loanId) {
 	}
 
 
-		
+function launchReportDialog(reportId) {
+	if (reportId) {
+		executeAjaxRequest('reports/' + reportId + '?template=true', 'GET', "", launchReportDialogOnSuccessFunction, formErrorFunction);
+	} else {
+		executeAjaxRequest('reports/template', 'GET', "", launchReportDialogOnSuccessFunction, formErrorFunction);
+	}
+}
+
+function submitTabbedReport(divContainer, id) {
+	
+	var serializationOptions = {};
+	serializationOptions["checkboxesAsBools"] = true;
+	
+	var serializedArray = {};
+	serializedArray = $('#entityform').serializeObject(serializationOptions);
+	
+	if (!serializedArray["reportParameters"]) {
+		serializedArray["reportParameters"] = new Array();
+	}
+	
+	var newFormData = JSON.stringify(serializedArray);
+	
+	var successFunction =  function(data, textStatus, jqXHR) {
+		divContainer.dialog("close");
+		refreshTableView("report");
+	};
+	
+	if (id) {
+		executeAjaxRequest('reports/' + id, "PUT", newFormData, successFunction, formErrorFunction);
+	} else {
+		executeAjaxRequest('reports', "POST", newFormData, successFunction, formErrorFunction);
+	}
+}
+
+var launchReportDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+	var dialogDiv = $("<div id='dialog-form'></div>");
+	var saveButton = doI18N('dialog.button.save');
+	var cancelButton = doI18N('dialog.button.cancel');
+	
+	var buttonsOpts = {};
+	buttonsOpts[saveButton] = function() {
+		submitTabbedReport(dialogDiv, data.id);
+	};
+	// end of buttonsOpts for save button
+	
+	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+	 
+	var titleCode = 'dialog.title.add.report';
+	if (data.id){
+		titleCode = 'dialog.title.report.details';
+	}	
+	
+	dialogDiv.dialog({
+	  		title: doI18N(titleCode), 
+	  		width: dialogWidth = custom.fitPopupWidth(), 
+	  		height: dialogHeight = custom.fitPopupHeight(), 
+	  		modal: true,
+	  		buttons: buttonsOpts,
+	  		close: function() {
+	  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+	  			$(this).remove();
+			},
+	  		open: function (event, ui) {
+	  			
+	  			var formHtml = $("#reportFormTemplate").render(data);
+	  			dialogDiv.html(formHtml);
+	  			/*
+	  			var loanproducttabs = $(".loanproducttabs").tabs({
+	  				"show": function(event, ui) {
+	  					var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+	  	      			var curTabID = curTab.prop("id");
+	  				},
+	  				"select": function( event, ui ) {
+	  				}
+	  			});
+	  			*/
+  				
+				var reportParameterIndex = 0;
+				if(undefined === data.reportParameters || data.reportParameters === null) {
+					reportParameterIndex = 0;
+				} else {
+					reportParameterIndex = data["reportParameters"].length;
+				}
+				
+				$("#reportParameter-add").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+					
+					var parameterId = $('#reportParameterOptions option:selected').val();
+
+					if (parameterId && undefined != parameterId && parameterId > 0) {
+					
+						var parameterName = $('#reportParameterOptions option:selected').text();
+						reportParameterIndex++;
+					
+						var newRowTemplateData = {};
+						newRowTemplateData["index"] = reportParameterIndex;
+						newRowTemplateData["id"] = parameterId;
+						newRowTemplateData["parameterName"] = parameterName;
+						var html = $("#AddReportParameterRowTemplate").render(newRowTemplateData);
+						$("#reportparameterstable tbody").append(html);
+				  									
+						$('#reportparameterstable tbody tr:last .reportParameters-remove').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+								$(this).closest('tr').remove();
+			            		e.preventDefault();
+						});
+					
+					}
+				    e.preventDefault();
+				});
+				
+				if(undefined === data.reportParameters || data.reportParameters === null) {
+					// do nothing
+				} else {
+					 $("#reportparameterstable tbody tr .reportParameters-remove").each(function(index) {
+						 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+							$(this).closest('tr').remove();
+			            	e.preventDefault();
+			            });
+					 });
+				}
+	  		}
+	  	}).dialog('open');		
+};
+	
 
 /* reports code */
 
