@@ -1896,57 +1896,25 @@ function showGroupListing(){
 			var tableHtml = $("#groupSearchTabTemplate").render();
 			$("#searchtab").html(tableHtml);
 			
+			var groupTableHtml = $("#groupTableTemplate").render();
+			$("#groupTableDiv").html(groupTableHtml);
+
+			var oTable = $("#groupstable").dataTable(custom.jqueryDataTableServerSide.paginated("groupstable"));
+			initTableConf("groupstable",oTable);
+			
 			//fetch all Offices 
 			var officeSearchSuccessFunction =  function(data) {
 				var officeSearchObject = new Object();
 			    officeSearchObject.crudRows = data;
 				var tableHtml = $("#officesDropdownTemplate").render(officeSearchObject);
-				$("#officesInScopeDiv").html(tableHtml);
+				$("#groupstablecustom").html(tableHtml);
 
 				// add client filter behaviour
 				$("#officeId").change(function(){
-					applyGroupSearchFilter($(this).val());
+					oTable.fnDraw();
 				})
 		  	};
-		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
-			
-			//render group drop down data
-			var groupSearchSuccessFunction = function(data) {
-				var searchObject = new Object();
-				searchObject.crudRows = data;
-				var tableHtml = $("#allGroupsDropdownTemplate").render(searchObject);
-				$("#groupsInScopeDiv").html(tableHtml);
-		  	};
-		  	
-			executeAjaxRequest('groups', 'GET', "", groupSearchSuccessFunction, formErrorFunction);
-  			    	
-    		//search group functionality
-			var searchSuccessFunction = function(data) {
-				var searchObject = new Object();
-				searchObject.crudRows = data;
-				var tableHtml = $("#groupSearchResultsTableTemplate").render(searchObject);
-				$("#searchResultsTableTableDiv").html(tableHtml);
-			    var oTable=displayListTable("groupsearchresultstable");
-		  	};
-			
-			//initialize search button				
-			$("#searchGroupBtn").button({
-				icons: {
-	                primary: "ui-icon-search"
-	            }
-	         }).click(function(e){
-	         	var officeHierarchy = $("#officeId").val();
-				var searchValue = $("#searchInput").val();
-				searchValue = searchValue.replace("'", "''");
-
-				//office hierarchy dropdown does not appear for branch users
-				if(officeHierarchy){
-					executeAjaxRequest("groups?name=" + encodeURIComponent(searchValue)+ "&underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", searchSuccessFunction, formErrorFunction);
-				}else{
-					executeAjaxRequest("groups?name=" + encodeURIComponent(searchValue), 'GET', "", searchSuccessFunction, formErrorFunction);
-				}
-			   	e.preventDefault(); 
-		   	});
+		  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);					
 	    };
 	    
 	    initGroupSearch();

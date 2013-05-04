@@ -342,7 +342,19 @@ custom.datatablePresentation2 = {
 				        {
 				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showCenter('+oData.id+');">'+sData+'</a>');
 				        }
-				    }]				
+				    }],
+	"groupstable":	[{
+				        "mDataProp": "officeName",
+				        "aTargets":  [0]
+				    },
+				    {
+				        "mDataProp": "name",
+				        "aTargets": [1],
+				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
+				        {
+				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showGroup('+oData.id+');">'+sData+'</a>');
+				        }
+				    }]						
 }
 
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,
