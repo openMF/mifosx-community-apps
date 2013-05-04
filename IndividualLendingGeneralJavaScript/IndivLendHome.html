@@ -8225,7 +8225,15 @@ $(document).ready(function() {
 <form id="entityform">
     <div id="formerrors"></div>
 
-	<fieldset>
+
+<div id="reportMaintenanceTabs">
+  <ul>
+    <li><a href="#reportMaintenanceTab-details">{{=$ctx.doI18N("report.maintenance.details")}}</a></li>
+    <li><a href="#reportMaintenanceTab-sql">{{=$ctx.doI18N("report.maintenance.sql")}}</a></li>
+    <li><a href="#reportMaintenanceTab-reportParameters">{{=$ctx.doI18N("report.maintenance.reportParameters")}}</a></li>
+  </ul>
+
+  <div id="reportMaintenanceTab-details">
 	<table>
 	 <tr>
 	  <td valign="top">
@@ -8276,7 +8284,8 @@ $(document).ready(function() {
 			</select>
 		{{/if}}
 	  </td>
-	  <td width="20px"></td>
+	</tr>
+	<tr>
 	  <td valign="top">
 		<label for="reportCategory">{{=$ctx.doI18N("reportCategory")}}</label>
 		{{#if coreReport}}
@@ -8298,30 +8307,40 @@ $(document).ready(function() {
 	  </td>
 	 </tr>
 	</table>
+
 	<table>
 	 <tr>
 	  <td>
 		<label for="description">{{=$ctx.doI18N("description")}}</label>
 		{{#if coreReport}}
-			<textarea readonly=true cols="150" rows="3">{{=description}}</textarea>
+			<textarea readonly=true cols="150" rows="12">{{=description}}</textarea>
 		{{#else}}
-			<textarea id="description" name="description" cols="150" rows="3">{{=description}}</textarea>
-		{{/if}}
-	  </td>
-	 </tr>
-	 <tr>
-	  <td>
-		<label for="reportSql">{{=$ctx.doI18N("reportSql")}}</label>
-		{{#if coreReport}}
-			<textarea readonly=true cols="150" rows="12">{{=reportSql}}</textarea>
-		{{#else}}
-			<textarea id="reportSql" name="reportSql" cols="150" rows="10">{{=reportSql}}</textarea>
+			<textarea id="description" name="description" cols="150" rows="12">{{=description}}</textarea>
 		{{/if}}
 	  </td>
 	 </tr>
 	</table>
-	</fieldset>
-<hr>
+  </div>
+
+
+  <div id="reportMaintenanceTab-sql">
+	<table>
+	 <tr>
+	  <td>
+		<label for="reportSql">{{=$ctx.doI18N("reportSql")}}</label>
+		{{#if coreReport}}
+			<textarea readonly=true cols="150" rows="24">{{=reportSql}}</textarea>
+		{{#else}}
+			<textarea id="reportSql" name="reportSql" cols="150" rows="24">{{=reportSql}}</textarea>
+		{{/if}}
+	  </td>
+	 </tr>
+	</table>
+  </div>
+
+
+
+  <div id="reportMaintenanceTab-reportParameters">
 
 {{#if coreReport}}
 	<table border="1">
@@ -8374,6 +8393,9 @@ $(document).ready(function() {
 	</table>
 	<!-- reportParameters -->
 {{/if}}
+  </div>
+
+</div>
 </form>
 </script>
 

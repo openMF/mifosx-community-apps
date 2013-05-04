@@ -5298,16 +5298,7 @@ var launchReportDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
 	  			
 	  			var formHtml = $("#reportFormTemplate").render(data);
 	  			dialogDiv.html(formHtml);
-	  			/*
-	  			var loanproducttabs = $(".loanproducttabs").tabs({
-	  				"show": function(event, ui) {
-	  					var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
-	  	      			var curTabID = curTab.prop("id");
-	  				},
-	  				"select": function( event, ui ) {
-	  				}
-	  			});
-	  			*/
+	  			$( "#reportMaintenanceTabs").tabs();
   				
 				var reportParameterIndex = 0;
 				if(undefined === data.reportParameters || data.reportParameters === null) {
