@@ -2545,8 +2545,6 @@ $(document).ready(function() {
 		<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
 		<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 		<input id="name" name="name" title="" type="text" value="{{=name}}" size="25"/>
-		<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
-		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
 		<label for="currencyCode">{{=$ctx.doI18N("label.currency")}}</label>
 		<select id="currencyCode" name="currencyCode" title="" style="width: 300px;">
         	<option value="">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
@@ -2615,6 +2613,8 @@ $(document).ready(function() {
 				{{/each}}
 			{{/if}}
 		</select>
+        <label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
+        <input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
 		<label for="active">{{=$ctx.doI18N("label.active")}}</label>
 		{{#if active}}
 			<input type="checkbox" id="active" name="active" title="" style="width: 125px;" checked=checked />
@@ -6559,7 +6559,7 @@ $(document).ready(function() {
 					<legend>{{=$ctx.doI18N("legend.assets")}}</legend>	
 				<table style="width:100%">
 						<tr>
-							<td>{{=$ctx.doI18N("label.fundSource")}}</td>
+							<td title="{{=$ctx.doI18N(\"fundSourceTooltip\")}}">{{=$ctx.doI18N("label.fundSource")}}</td>
 							<td>
 								<select id="fundSourceAccountId" name="fundSourceAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6578,7 +6578,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.loanPortfolio")}}</td>
+							<td title="{{=$ctx.doI18N(\"loanPortfolioTooltip\")}}">{{=$ctx.doI18N("label.loanPortfolio")}}</td>
 							<td>
 								<select id="loanPortfolioAccountId" name="loanPortfolioAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6597,7 +6597,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr id="interestReceivableRow">
-							<td>{{=$ctx.doI18N("label.interestReceivable")}}</td>
+							<td  title="{{=$ctx.doI18N(\"interestReceivableTooltip\")}}">{{=$ctx.doI18N("label.interestReceivable")}}</td>
 							<td>
 								<select id="receivableInterestAccountId" name="receivableInterestAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6616,7 +6616,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr id="feeReceivableRow">
-							<td>{{=$ctx.doI18N("label.feeReceivable")}}</td>
+							<td  title="{{=$ctx.doI18N(\"feeReceivableTooltip\")}}">{{=$ctx.doI18N("label.feeReceivable")}}</td>
 							<td>
 								<select id="receivableFeeAccountId" name="receivableFeeAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6635,7 +6635,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr id="penaltyReceivableRow">
-							<td>{{=$ctx.doI18N("label.penaltyReceivable")}}</td>
+							<td  title="{{=$ctx.doI18N(\"penaltyReceivableTooltip\")}}">{{=$ctx.doI18N("label.penaltyReceivable")}}</td>
 							<td>
 								<select id="receivablePenaltyAccountId" name="receivablePenaltyAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6659,7 +6659,7 @@ $(document).ready(function() {
 					<legend>{{=$ctx.doI18N("legend.income")}}</legend>	
 				<table style="width:100%">
 						<tr>
-							<td>{{=$ctx.doI18N("label.incomeFromInterest")}}</td>
+							<td title="{{=$ctx.doI18N(\"incomeFromInterestTooltip\")}}">{{=$ctx.doI18N("label.incomeFromInterest")}}</td>
 							<td>
 								<select id="interestOnLoanAccountId" name="interestOnLoanAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6678,7 +6678,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.incomeFromFees")}}</td>
+							<td title="{{=$ctx.doI18N(\"incomeFromFeeTooltip\")}}">{{=$ctx.doI18N("label.incomeFromFees")}}</td>
 							<td>
 								<select id="incomeFromFeeAccountId" name="incomeFromFeeAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6697,7 +6697,7 @@ $(document).ready(function() {
 							</td>
 						</tr>
 						<tr>
-							<td>{{=$ctx.doI18N("label.incomeFromPenalties")}}</td>
+							<td title="{{=$ctx.doI18N(\"incomeFromPenaltyTooltip\")}}">{{=$ctx.doI18N("label.incomeFromPenalties")}}</td>
 							<td>
 								<select id="incomeFromPenaltyAccountId" name="incomeFromPenaltyAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -6721,7 +6721,7 @@ $(document).ready(function() {
 					<legend>{{=$ctx.doI18N("legend.expenses")}}</legend>	
 				<table style="width:100%">
 						<tr>
-							<td>{{=$ctx.doI18N("label.loanLossesWrittenOff")}}</td>
+							<td title="{{=$ctx.doI18N(\"lossesWrittenOffTooltip\")}}">{{=$ctx.doI18N("label.loanLossesWrittenOff")}}</td>
 							<td>
 								<select id="writeOffAccountId" name="writeOffAccountId" title="" >
 									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
@@ -7299,7 +7299,7 @@ $(document).ready(function() {
 
 	<table width="100%">
         <tr>
-            <td colspan="2">
+            <td colspan="3">
                 <label>{{=$ctx.doI18N("label.clienttype")}}</label>
                 <input type="radio" name="clientType" value="1" checked="true">{{=$ctx.doI18N("label.individual")}}</input>
                 <input type="radio" name="clientType" value="2">{{=$ctx.doI18N("label.corporate")}}</input>
@@ -7373,8 +7373,21 @@ $(document).ready(function() {
         {{/each}}
 	</select>
 
-	<table>
-		<tr>
+	<table width='100%'>
+        <tr>
+            <td colspan='3'>
+                <label>{{=$ctx.doI18N("label.clienttype")}}</label>
+                {{#if fullname}}
+                    <input type="radio" name="clientType" value="1">{{=$ctx.doI18N("label.individual")}}</input>
+                    <input type="radio" name="clientType" value="2" checked="true">{{=$ctx.doI18N("label.corporate")}}</input>
+                {{#else}}
+                    <input type="radio" name="clientType" value="1" checked="true">{{=$ctx.doI18N("label.individual")}}</input>
+                    <input type="radio" name="clientType" value="2">{{=$ctx.doI18N("label.corporate")}}</input>
+                {{/if}}
+
+            </td>
+        </tr>
+		<tr id="individualRow">
 			<td>
 				<label for="firstname">{{=$ctx.doI18N("label.firstname")}}</label>
 				<input id="firstname" name="firstname" title="" type="text" value="{{=firstname}}"/>
@@ -7388,7 +7401,7 @@ $(document).ready(function() {
 				<input id="lastname" name="lastname" title="" type="text" value="{{=lastname}}"/>
 			</td>
 		<tr>
-		<tr>
+		<tr id="businessRow">
 			<td colspan="2">
 				<label for="fullname">{{=$ctx.doI18N("label.fullname")}}</label>
 				<input id="fullname" name="fullname" title="" type="text" value="{{=fullname}}" style="width:100%"/>
@@ -7407,7 +7420,6 @@ $(document).ready(function() {
 			</td>
 		</tr>
 
-		{{#if active}}
 		<tr>
 			<td>
 			<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
@@ -7419,7 +7431,7 @@ $(document).ready(function() {
 			<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
 			</td>
 		</tr>
-		{{/if}}
+
 	</table>
 </form>
 </script>
