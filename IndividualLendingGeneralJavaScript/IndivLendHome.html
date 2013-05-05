@@ -3988,7 +3988,7 @@ $(document).ready(function() {
 
 <!--Journal entries table-->
 <script id="journalEntriesTableTemplate" type="text/x-jquery-tmpl">
-	<table id="journalentriestable" width="100%" >
+	<table id="journalentriestable" width="100%" class="display" >
 		<thead>
 			<tr>
 				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
@@ -4005,40 +4005,9 @@ $(document).ready(function() {
 			</tr>
 		</thead>
 		<tbody>
-			{{#each crudRows}}
 			<tr>
-				<td>{{=officeName}}</td>
-				<td>{{=$ctx.globalDate(transactionDate)}}</td>
-				<td>{{=glAccountType.value}}</td>
-				<td>{{=glAccountName}}</td>
-				<td>{{=glAccountCode}}</td>
-				<td>{{=createdByUserName}}</td>
-				<td>{{=id}}</td>
-				<td>{{=transactionId}}</td>
-				<td class="cellalignright">
-					{{#if entryType.value == "DEBIT"}}
-						{{=$ctx.decimal(amount, 2)}}
-					{{/if}}
-				</td>
-				<td class="cellalignright">
-					{{#if entryType.value == "CREDIT"}}
-						{{=$ctx.decimal(amount, 2)}}
-					{{/if}}
-				</td>
-				<td>
-					<span>
-						<button id="glentryinfo{{=id}}">View Entry Details</button>
-						{{#if manualEntry}}
-				   			{{#if reversed == false}}
-                                <button id="glentryreversal{{=id}}">Reverse this Journal Entry</button>
-                            {{/if}}
-				   		{{else}}
-							<!-- No buttons-->
-				   		{{/if}}
-					</span>
-				</td>
-			</tr>
-			{{/each}}
+                <td colspan="5" class="dataTables_empty">Loading data from server</td>
+            </tr>	
 		</tbody>
 	</table>
 </script>
