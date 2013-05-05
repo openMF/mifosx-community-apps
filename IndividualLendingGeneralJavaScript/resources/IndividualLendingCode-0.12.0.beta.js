@@ -3221,11 +3221,7 @@ function showCenter(centerId){
 		
 		var successFunction =  function(data, textStatus, jqXHR) {
 			divContainer.dialog("close");
-			if (clientId) {
-				showILClient(clientId);
-			} else if(!(group === undefined)){
-				showGroup(group.id);
-			}
+			loadILLoan(loanId, "clientdatatabs");
 		};
 		
 		executeAjaxRequest('loans/' + loanId , "PUT", newFormData, successFunction, formErrorFunction);	  
@@ -5596,11 +5592,11 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 		//manipulate serialized array for clients
 		if (postUrl.toLowerCase().indexOf("clients") >= 0) {
 			if (serializedArray["clientType"]=="1") {
-				delete serializedArray["fullname"];
+				serializedArray["fullname"] = "";
 			} else if (serializedArray["clientType"]=="2"){
-				delete serializedArray["firstname"];
-				delete serializedArray["middlename"];
-				delete serializedArray["lastname"];
+				serializedArray["firstname"] = "";
+				serializedArray["middlename"] = "";
+				serializedArray["lastname"] = "";
 			}
 			delete serializedArray["clientType"];
 		}

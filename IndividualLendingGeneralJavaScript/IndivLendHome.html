@@ -7086,7 +7086,13 @@ $(document).ready(function() {
 								<option value="{{=$ctx.number(chargeCalculationType.id)}}" selected="selected">{{=$ctx.doI18N(chargeCalculationType.code)}}</option>
 							</select>
 						</td>
-						<td><input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/></td>
+						<td>
+					{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
+						<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;"/>
+					{{#else}}
+						<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
+					{{/if}}
+						</td>
 						<td>
 							<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
 								<option value="{{=$ctx.number(chargeTimeType.id)}}" selected="selected">{{=$ctx.doI18N(chargeTimeType.code)}}</option>
@@ -7373,6 +7379,7 @@ $(document).ready(function() {
 			</td>
 		</tr>
 
+		{{#if active}}
 		<tr>
 			<td>
 			<label for="activeCheckbox">{{=$ctx.doI18N("label.active")}}</label>
@@ -7384,6 +7391,9 @@ $(document).ready(function() {
 			<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
 			</td>
 		</tr>
+		{{#else}}
+		<input type="hidden" id="active" name="active" value="false" />
+		{{/if}}
 
 	</table>
 </form>
