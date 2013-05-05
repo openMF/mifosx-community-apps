@@ -308,6 +308,14 @@ custom.datatablePresentation = {
 	}
 };
 
+
+custom.sDom = {
+	"clientstable" : '<"H"lfr<"#clientstablecustom">>t<"F"ip>',					
+	"centerstable" : '<"H"lfr<"#centerstablecustom">>t<"F"ip>',
+	"groupstable" : '<"H"lfr<"#groupstablecustom">>t<"F"ip>',
+	"journalentriestable": '<"H"lr>t<"F"ip>',		
+}
+
 //table properties
 custom.datatablePresentation2 = {
 	"clientstable":	[{
@@ -338,7 +346,7 @@ custom.datatablePresentation2 = {
 				    {
 				        "mDataProp": "name",
 				        "aTargets": [1],
-				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
+				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
 				        {
 				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showCenter('+oData.id+');">'+sData+'</a>');
 				        }
@@ -350,11 +358,117 @@ custom.datatablePresentation2 = {
 				    {
 				        "mDataProp": "name",
 				        "aTargets": [1],
-				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
+				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
 				        {
 				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showGroup('+oData.id+');">'+sData+'</a>');
 				        }
-				    }]						
+				    }],
+	"journalentriestable":	[{
+								"mDataProp": "officeName",
+								"aTargets":  [0]
+							},
+							{
+								"mDataProp": "transactionDate",
+								"aTargets": [1],
+								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
+								{
+									$(nTd).html(custom.helperFunctions.globalDate(sData));
+								}
+							},
+							{
+								"mDataProp": "glAccountType.value",
+								"aTargets": [2],
+								"bSortable": false
+							},
+							{
+								"mDataProp": "glAccountName",
+								"aTargets": [3]
+							},
+							{
+								"mDataProp": "glAccountCode",
+								"aTargets": [4]
+							},
+							{
+								"mDataProp": "createdByUserName",
+								"aTargets": [5]
+							},
+							{
+								"mDataProp": "id",
+								"aTargets": [6]
+							},
+							{
+								"mDataProp": "transactionId",
+								"aTargets": [7]
+							},
+							{
+								"mDataProp": "amount",
+								"aTargets": [8],
+								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
+								{ 
+									if (oData.entryType.value == "CREDIT")										
+										$(nTd).html(custom.helperFunctions.decimal(oData.amount, 2));
+									else
+										$(nTd).html('');
+								}
+							},
+							{
+								"mDataProp": "amount",
+								"aTargets": [9],
+								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
+								{
+									if (oData.entryType.value == "DEBIT")										
+										$(nTd).html(custom.helperFunctions.decimal(oData.amount, 2));
+									else
+										$(nTd).html('');
+								}
+							},
+							{
+								"mData": "id",
+								"aTargets": [10],
+								"bSortable": false,
+								"mRender" : function ( data, type, full ) {
+											var customhtml ='<span style="display: inline-block; width: 70px;"><button class="infobtn" id="glentryinfo'+data+'">View Entry Details</button>';
+									
+											if(full.manualEntry)
+											{
+												if(full.reversed == false)
+												{
+													customhtml += '<button class="refreshbtn" id="glentryreversal'+data+'">Reverse this Journal Entry</button>';
+												}
+											}
+											customhtml +='</span>';
+											return customhtml;
+										  },
+								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
+								{		
+									$(nTd).find('.infobtn').button({
+									icons : {
+										primary : "ui-icon-info"
+									},
+									text: false
+									}).click(function(e) { {
+											var width = 550;
+											var height = 450;
+											var templateSelector = "#journalEntryInfoFormTemplate";
+											popupDialogWithReadOnlyFormViewData(oData,"dialog.title.journalEntry.view", templateSelector, width, height);
+										}
+										e.preventDefault();
+									});
+									$(nTd).find('.refreshbtn').button({
+										icons : {
+											primary : "ui-icon-arrowrefresh-1-s"
+										},
+										text: false
+									}).click(function(e) {
+										var url = "journalentries/" + oData.transactionId + "?command=reverse";
+										var width = 400;
+										var height = 225;
+										popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, reverseJournalEntrySuccessFunction);
+										e.preventDefault();
+									});
+								}
+							}
+							]				
 }
 
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,
@@ -530,7 +644,7 @@ custom.fitPopupHeight = function() {
 
 custom.jqueryDataTableServerSide = {
 
-	paginated:function(tableId)
+	paginated:function(tableId,data)
 		{
 			return{
 			"bSort": true,
@@ -543,7 +657,7 @@ custom.jqueryDataTableServerSide = {
 			"bPaginate": true,
 			"bLengthChange": true,
 			"bFilter": true,
-			"sDom": '<"H"lfr<"#'+tableId+'custom">>t<"F"ip> ',
+			"sDom": custom.sDom[tableId],
 			"iDisplayLength" : 200,
 			"aLengthMenu" :[200, 150, 100, 50, 10],
 			"bAutoWidth": true,
@@ -551,7 +665,7 @@ custom.jqueryDataTableServerSide = {
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": tableId.replace("table",""),
-			"fnServerData": serverData(),
+			"fnServerData": serverData(data),
 			"fnDrawCallback":function()
 							{
 								$("#"+tableId+" tr").click(function() {
@@ -562,7 +676,7 @@ custom.jqueryDataTableServerSide = {
 										$('tr.row_selected').removeClass('row_selected');
 										$(this).addClass('row_selected');
 									}
-								} );								
+								} );
 							},
 			"aoColumnDefs": custom.datatablePresentation2[tableId],
 			"oLanguage": {

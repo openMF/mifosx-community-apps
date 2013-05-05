@@ -661,6 +661,11 @@ function setAccountingContent(divName) {
 	executeAjaxRequest('offices', 'GET', "", getOfficesSuccessFunction, formErrorFunction);
 }
 
+function reverseJournalEntrySuccessFunction(data, textStatus, jqXHR) {
+	$("#dialog-form").dialog("close");
+	$("#searchjournalentries").click();
+}
+
 function handleJournalEntriesTabSelection(officesObject) {
 	// get list of all offices and accounts and initialize the screen
 	var getAccountsSuccessFunction = function(data, textStatus, jqXHR) {
@@ -777,84 +782,32 @@ function handleJournalEntriesTabSelection(officesObject) {
 	}
 	executeAjaxRequest('glaccounts?manualEntriesAllowed=true&usage=1&disabled=false', 'GET', "", getAccountsSuccessFunction, formErrorFunction);
 
-	/** *function called on successfully fetching Journal Account details** */
-	var journalEntriesFetchSuccessFunction = function(data) {
-		var journalEntriesObject = new Object();
-		journalEntriesObject.crudRows = data;
-		var journalEntriesTablesHtml = $("#journalEntriesTableTemplate").render(journalEntriesObject);
-		$("#journalentriessearchresults").html(journalEntriesTablesHtml);
-		oTable = displayListTableWithExportOption("journalentriestable");
-
-		var reverseJournalEntrySuccessFunction = function(data, textStatus, jqXHR) {
-			$("#dialog-form").dialog("close");
-			searchForJournalEntries();
-		}
-		// initialize info and reversal buttons
-		$.each(journalEntriesObject.crudRows, function(i, val) {
-			$("#glentryinfo" + val.id).button({
-				icons : {
-					primary : "ui-icon-info"
-				},
-				text: false
-			}).click(function(e) { {
-					var width = 550;
-					var height = 450;
-					var templateSelector = "#journalEntryInfoFormTemplate";
-					popupDialogWithReadOnlyFormViewData(val,"dialog.title.journalEntry.view", templateSelector, width, height);
-				}
-				e.preventDefault();
-			});
-			// button for reversal may (would not exist for portfolio generate entries)
-			if($("#glentryreversal" + val.id).length){
-				$("#glentryreversal" + val.id).button({
-					icons : {
-						primary : "ui-icon-arrowrefresh-1-s"
-					},
-					text: false
-				}).click(function(e) {
-					var url = "journalentries/" + val.transactionId + "?command=reverse";
-					var width = 400;
-					var height = 225;
-
-					popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, reverseJournalEntrySuccessFunction);
-					e.preventDefault();
-				});
-			}
-		});
-
-	};
-
 	var searchForJournalEntries = function() {
-		var officeId = $("#journalEntryOfficeId").val();
-		var accountId = $("#accountId").val();
 		var fromdate = $("#fromDate").val();
 		var todate = $("#toDate").val();
 		var onlyManualEntries = $('#onlyManualEntries').is(':checked');
 
-		//populate the request substring
-		var requestString = "";
-		if (officeId != "") {
-			requestString += "officeId=" + officeId + "&";
-		}
-		if (accountId != "") {
-			requestString += "glAccountId=" + accountId + "&";
-		}
-		if (onlyManualEntries) {
-			requestString += "manualEntriesOnly=true&";
-		}
-		if (fromdate != undefined && fromdate != "") {
-			requestString += "fromDate=" + fromdate + "&";
-		}
-		if (todate != undefined && todate != "") {
-			requestString += "toDate=" + todate + "&";
-		}
-
-		if (requestString != "") {
-			requestString = requestString.slice(0, -1)
-			executeAjaxRequest('journalentries?' + requestString, 'GET', "", journalEntriesFetchSuccessFunction, formErrorFunction);
-		} else{
-			executeAjaxRequest('journalentries', 'GET', "", journalEntriesFetchSuccessFunction, formErrorFunction);
-		}
+		var data = {}
+			if ($("#journalEntryOfficeId").val() != "") {
+				data.officeId = $("#journalEntryOfficeId").val();
+			}
+			if ($("#accountId").val() != "") {
+				data.accountId = $("#accountId").val();
+			}
+			if (onlyManualEntries) {
+				data.manualEntriesOnly = true;
+			}
+			if (fromdate != undefined && fromdate != "") {
+				data.fromDate = fromdate;
+			}
+			if (todate != undefined && todate != "") {
+				data.toDate = todate;
+			}		
+		
+		var journalEntriesTablesHtml = $("#journalEntriesTableTemplate").render();
+		$("#journalentriessearchresults").html(journalEntriesTablesHtml);
+		var oTable = $("#journalentriestable").dataTable(custom.jqueryDataTableServerSide.paginated("journalentriestable",data));
+		initTableConf("journalentriestable",oTable);
 	}
 }
 
@@ -1388,7 +1341,7 @@ $.urlConstructor = function(sSource,oSettings){
 
 }
 
-$.prepareDataToSend = function(oSettings){
+$.prepareDataToSend = function(oSettings, data){
 	
 	var jsonData = {
 			offset:oSettings._iDisplayStart,
@@ -1408,10 +1361,11 @@ $.prepareDataToSend = function(oSettings){
 	{
 		jsonData.underHierarchy =  encodeURIComponent($("#officeId").val())
 	}
+	$.extend(jsonData,data);
 	return jsonData;
 }
 
-var serverData = function()
+var serverData = function(data)
 {
 	 return function (sSource, aoData, fnCallback, oSettings) {
 		 oSettings.jqXHR = $.ajax({ 
@@ -1419,7 +1373,7 @@ var serverData = function()
 							type : "GET", //POST, GET, PUT or DELETE 
 							contentType : "application/json; charset=utf-8", 
 							dataType : 'json', 
-							data : $.prepareDataToSend(oSettings), 
+							data : $.prepareDataToSend(oSettings,data), 
 							cache : false, 
 							beforeSend : function(xhr) { 
 									if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
@@ -1520,19 +1474,6 @@ function showILClientListing() {
 	    e.preventDefault();
 	});
 } // end showILClientListing
-
-//set scope for client search
-function applyClientSearchFilter(officeHierarchy) {
-	//re-render client drop down data
-	var clientSearchSuccessFunction =  function(data) {
-		var clientSearchObject = new Object();
-	    clientSearchObject.crudRows = data;
-		var tableHtml = $("#allClientsDropdownTemplate").render(clientSearchObject);
-		$("#clientsInScopeDiv").html(tableHtml);
-	};
-	var sqlSearchValue = "o.hierarchy like '"+ officeHierarchy +"%'";
-	executeAjaxRequest("clients?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", clientSearchSuccessFunction, formErrorFunction);
-}
 
 //HOME list centers functionality
 function showCenterListing(){
