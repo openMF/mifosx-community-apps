@@ -8346,6 +8346,7 @@ $(document).ready(function() {
 		<tr>
 			<td>
 				<input id="reportParameters[{{=$itemNumber}}][id]" name="reportParameters[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=$ctx.number(id)}}" />
+				<input id="reportParameters[{{=$itemNumber}}][parameterId]" name="reportParameters[{{=$itemNumber}}][parameterId]" class="id" title="" type="hidden" value="{{=$ctx.number(parameterId)}}" />
 				<input title="" disabled value="{{=$ctx.doI18N(parameterName)}}" />
 			</td>
 			<td><input id="reportParameters[{{=$itemNumber}}][reportParameterName]" name="reportParameters[{{=$itemNumber}}][reportParameterName]" title="" value="{{=reportParameterName}}" /></td>
@@ -8366,6 +8367,7 @@ $(document).ready(function() {
 <tr>
 	<td>
 		<input id="reportParameters[{{=index}}][id]" name="reportParameters[{{=index}}][id]" class="id" title="" type="hidden" value="{{=$ctx.number(id)}}" />
+		<input id="reportParameters[{{=index}}][parameterId]" name="reportParameters[{{=index}}][parameterId]" title="" type="hidden" value="{{=$ctx.number(parameterId)}}" />
 		<input title="" disabled value="{{=$ctx.doI18N(parameterName)}}" />
 	</td>
 	<td><input id="reportParameters[{{=index}}][reportParameterName]" name="reportParameters[{{=index}}][reportParameterName]" title="" value="{{=reportParameterName}}" /></td>

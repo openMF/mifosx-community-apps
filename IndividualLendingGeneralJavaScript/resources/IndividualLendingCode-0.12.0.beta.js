@@ -5120,11 +5120,6 @@ function submitTabbedReport(divContainer, id) {
 	
 	var serializedArray = {};
 	serializedArray = $('#entityform').serializeObject(serializationOptions);
-	
-	if (!serializedArray["reportParameters"]) {
-		serializedArray["reportParameters"] = new Array();
-	}
-	
 	var newFormData = JSON.stringify(serializedArray);
 	
 	var successFunction =  function(data, textStatus, jqXHR) {
@@ -5191,7 +5186,7 @@ var launchReportDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
 					
 						var newRowTemplateData = {};
 						newRowTemplateData["index"] = reportParameterIndex;
-						newRowTemplateData["id"] = parameterId;
+						newRowTemplateData["parameterId"] = parameterId;
 						newRowTemplateData["parameterName"] = parameterName;
 						var html = $("#AddReportParameterRowTemplate").render(newRowTemplateData);
 						$("#reportparameterstable tbody").append(html);
