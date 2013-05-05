@@ -342,22 +342,9 @@ $(document).ready(function() {
 		</div>
 		<div id="officesInScopeDiv">
 		</div>
-        <hr/>
-		<div style="height: 80px">
-			<div style="float: left">
-					<label for="group">{{=$ctx.doI18N("label.search.by.name")}}</label>
-					<input type="text" maxlength="30" id="searchInput"/>
-					<button id="searchGroupBtn" style="clear: both;" style="height:10px">{{=$ctx.doI18N("button.search")}}</button>
-			</div>
-			
-			<div style="float: right">
-				<div id="groupsInScopeDiv">
-				</div>
-			</div>
-		</div>
-		<div id="searchResultsTableTableDiv">
-		</div>
 	</form>	
+	<div id="groupTableDiv">
+	</div>
 </div>
 </script>
 
@@ -371,8 +358,8 @@ $(document).ready(function() {
 	</select>
 </script>
 
-<script id="groupSearchResultsTableTemplate" type="text/x-jquery-tmpl">
-	<table id='groupsearchresultstable' width='100%'>
+<script id="groupTableTemplate" type="text/x-jquery-tmpl">
+	<table id='groupstable' width='100%' class="display">
 		<thead>
 			<tr>
 				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
@@ -380,12 +367,9 @@ $(document).ready(function() {
 			</tr>
 		</thead>
 		<tbody>
-			{{#each crudRows}}
 			<tr>
-				<td>{{=officeName}}</td>
-				<td><a id='navigateToGroup{{=id}}' href='#' style='margin-right: 5px;' onclick="showGroup({{=id}});">{{=name}}</a></td>				
-			</tr>
-			{{/each}}
+                <td colspan="5" class="dataTables_empty">Loading data from server</td>
+            </tr>	
 		</tbody>
 	</table>
 </script>
@@ -8413,28 +8397,13 @@ $(document).ready(function() {
 <!-- Search screens and templates for Center -->
 <script id="centerSearchTabTemplate" type="text/x-jquery-tmpl">
 <div>   
-    <form method="post" id="viewCenter">
-        <div style="width:100%">
-            <h1 align="center">{{=$ctx.doI18N("tab.center.search.title")}}</h1>
-        </div>
-        <div id="officesInScopeDiv">
-        </div>
-        <hr/>
-        <div style="height: 80px">
-            <div style="float: left">
-                    <label for="center">{{=$ctx.doI18N("label.search.by.name")}}</label>
-                    <input type="text" maxlength="30" id="searchInput"/>
-                    <button id="searchCenterBtn" style="clear: both;" style="height:10px">{{=$ctx.doI18N("button.search")}}</button>
-            </div>
-            
-            <div style="float: right">
-                <div id="centersInScopeDiv">
-                </div>
-            </div>
-        </div>
-        <div id="searchResultsTableTableDiv">
-        </div>
-    </form> 
+	<form method="post" id="viewCenter" name="viewCenter">
+		<div id="officesInScopeDiv">
+		</div>
+		<hr/>    
+	</form>
+	<div id="centerTableDiv">
+	</div>
 </div>
 </script>
 
@@ -8448,8 +8417,8 @@ $(document).ready(function() {
     </select>
 </script>
 
-<script id="centerSearchResultsTableTemplate" type="text/x-jquery-tmpl">
-    <table id='centersearchresultstable' width='100%'>
+<script id="centerTableTemplate" type="text/x-jquery-tmpl">
+    <table id='centerstable' class="display">
         <thead>
             <tr>
                 <th>{{=$ctx.doI18N("table.heading.officename")}}</th>
@@ -8457,12 +8426,9 @@ $(document).ready(function() {
             </tr>
         </thead>
         <tbody>
-            {{#each crudRows}}
             <tr>
-                <td>{{=officeName}}</td>
-                <td><a id='navigateToGroup{{=id}}' href='#' style='margin-right: 5px;' onclick="showCenter({{=id}});">{{=name}}</a></td>             
+                <td colspan="5" class="dataTables_empty">Loading data from server</td>
             </tr>
-            {{/each}}
         </tbody>
     </table>
 </script>
