@@ -8136,13 +8136,13 @@ $(document).ready(function() {
 			<th>{{=$ctx.doI18N("reportType")}}</th>
 			<th>{{=$ctx.doI18N("reportSubType")}}</th>
 			<th>{{=$ctx.doI18N("reportCategory")}}</th>
-			<th>{{=$ctx.doI18N("description")}}</th>
 			<th>{{=$ctx.doI18N("coreReport")}}</th>
 			<th>{{=$ctx.doI18N("useReport")}}</th>
 			<th>{{=$ctx.doI18N("link.action.viewedit")}}</th>
 			{{#if $ctx.showTask("DeleteReport")}}
 				<th>{{=$ctx.doI18N("link.action.delete")}}</th>
 			{{/if}}
+			<th>{{=$ctx.doI18N("description")}}</th>
 		</tr>
 	</thead
 	<tbody>
@@ -8152,7 +8152,6 @@ $(document).ready(function() {
 	<td>{{=reportType}}</td>
 	<td>{{=reportSubType}}</td>
 	<td>{{=reportCategory}}</td>
-	<td>{{=description}}</td>
 	<td>
 		{{#if coreReport}}
 			{{=$ctx.doI18N("boolean.true")}}
@@ -8178,6 +8177,7 @@ $(document).ready(function() {
 			{{/if}}
 		</td>
 	{{/if}}
+	<td>{{=description}}</td>
 </tr>
 {{/each}}
 	</tbody>
