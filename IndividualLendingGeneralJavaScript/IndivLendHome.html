@@ -4764,7 +4764,7 @@ $(document).ready(function() {
 				{{/if}}
 
 				{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
-					<td>{{=$ctx.doI18N(chargeCalculationType.code)}} - {{=$ctx.decimal(percentage, 4)}}% of {{=$ctx.moneyFormatted(currency, amountPercentageAppliedTo)}}</td>
+					<td>{{=$ctx.doI18N(chargeCalculationType.code)}} - {{=$ctx.decimal(percentage, 6)}}% of {{=$ctx.moneyFormatted(currency, amountPercentageAppliedTo)}}</td>
 				{{#else}}
 					<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
 				{{/if}}
@@ -6466,7 +6466,7 @@ $(document).ready(function() {
 					<option value="{{=$ctx.number(chargeCalculationType.id)}}">{{=$ctx.doI18N(chargeCalculationType.code)}}</option>
 					</select>
 				</td>
-				<td><input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;" disabled="disabled"/></td>
+				<td><input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 6)}}" style="width: 125px;" disabled="disabled"/></td>
 				<td>
 					<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
 					<option value="{{=$ctx.number(chargeTimeType.id)}}">{{=$ctx.doI18N(chargeTimeType.code)}}</option>
@@ -6720,7 +6720,7 @@ $(document).ready(function() {
 	{{/each}}
 	</select>
 	</td>
-	<td><input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;" disabled="disabled"/></td>
+	<td><input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 6)}}" style="width: 125px;" disabled="disabled"/></td>
 	<td>
 		<select id="charges[{{=index}}][chargeTimeType]" name="charges[{{=index}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
 		{{#each chargeTimeTypeOptions}}
