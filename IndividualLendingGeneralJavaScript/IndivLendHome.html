@@ -81,6 +81,14 @@ JQuery plugins:
 
 <script type="text/javascript" src="resources/SetTenantLoadTenantConfig-0.12.0.beta.js"></script>
 
+<link rel="stylesheet" href="resources/libs/jqxTree/styles/jqx.base.css" type="text/css" />
+<script type="text/javascript" src="resources/libs/jqxTree/jqxcore.js"></script>
+<script type="text/javascript" src="resources/libs/jqxTree/jqxdata.js"></script>
+<script type="text/javascript" src="resources/libs/jqxTree/jqxbuttons.js"></script>
+<script type="text/javascript" src="resources/libs/jqxTree/jqxscrollbar.js"></script>
+<script type="text/javascript" src="resources/libs/jqxTree/jqxpanel.js"></script>
+<script type="text/javascript" src="resources/libs/jqxTree/jqxtree.js"></script>
+
 </head>
 
 <body>
@@ -3597,35 +3605,42 @@ $(document).ready(function() {
 
 <script id="chartOfAccountsTemplate" type="text/x-jquery-tmpl">
 	<table width="100%">
-		<td align="center">
+		<td align="right">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
 		   		<button id="addglaccount">{{=$ctx.doI18N("button.addGlAccount")}}</button>
 			</span>
 		</td>
+        <td align="right">
+            <div id="glaccountsview">
+                <input type="radio" id="listView" checked="checked" name="radio" value="listView"/><label for="listView">List View</label>
+                <input type="radio" id="treeView" name="radio" value="treeView" /><label for="treeView">Tree View</label>
+            </div>
+        </td>
 	</table>
 	<hr/>
-	<div id="coatabs-main">
-	    <ul>
-	    	<li><a href="#coatabs-all">{{=$ctx.doI18N("tabs.all")}}</a></li>
-	        <li><a href="#coatabs-asset">{{=$ctx.doI18N("tabs.assets")}}</a></li>
-	        <li><a href="#coatabs-liabilities">{{=$ctx.doI18N("tabs.liabilities")}}</a></li>
-	        <li><a href="#coatabs-equity">{{=$ctx.doI18N("tabs.equity")}}</a></li>
-	        <li><a href="#coatabs-income">{{=$ctx.doI18N("tabs.income")}}</a></li>
-	        <li><a href="#coatabs-expenses">{{=$ctx.doI18N("tabs.expenses")}}</a></li>
-	    </ul>
-	    <div id="coatabs-all">
-	    </div>
-	    <div id="coatabs-asset">
-	    </div>
-	    <div id="coatabs-liabilities">
-	    </div>
-	    <div id="coatabs-equity">
-	    </div>
-	    <div id="coatabs-income">
-	    </div>
-	    <div id="coatabs-expenses">
-	    </div>
-	</div>	
+        <div id="coatabs-main">
+            <ul>
+                <li><a href="#coatabs-all">{{=$ctx.doI18N("tabs.all")}}</a></li>
+                <li><a href="#coatabs-asset">{{=$ctx.doI18N("tabs.assets")}}</a></li>
+                <li><a href="#coatabs-liabilities">{{=$ctx.doI18N("tabs.liabilities")}}</a></li>
+                <li><a href="#coatabs-equity">{{=$ctx.doI18N("tabs.equity")}}</a></li>
+                <li><a href="#coatabs-income">{{=$ctx.doI18N("tabs.income")}}</a></li>
+                <li><a href="#coatabs-expenses">{{=$ctx.doI18N("tabs.expenses")}}</a></li>
+            </ul>
+            <div id="coatabs-all">
+            </div>
+            <div id="coatabs-asset">
+            </div>
+            <div id="coatabs-liabilities">
+            </div>
+            <div id="coatabs-equity">
+            </div>
+            <div id="coatabs-income">
+            </div>
+            <div id="coatabs-expenses">
+            </div>
+        </div>
+        <div id = "coatabs-tree" />     
 </script>
 
 <!--Accounts table results table-->
@@ -3744,6 +3759,7 @@ $(document).ready(function() {
 			<td><label for="type">{{=$ctx.doI18N("label.classification")}}</label></td>
 			<td>
 				<select name="type" id="type">
+				  <option value="" selected="selected">{{=$ctx.doI18N("option.type.first.choice")}}</option>
 				  {{#each accountTypeOptions}}
 						{{#if $parent.parent.data.type.value === value}}
 							<option value="{{=id}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -3758,6 +3774,7 @@ $(document).ready(function() {
 			<td><label for="usage">{{=$ctx.doI18N("label.accountUsage")}}</label></td>
 			<td>
 				<select name="usage" id="usage">
+				  <option value="" selected="selected">{{=$ctx.doI18N("option.usage.first.choice")}}</option>
 				  {{#each usageOptions}}
 						{{#if $parent.parent.data.usage.value === value}}
 							<option value="{{=id}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
@@ -3765,6 +3782,55 @@ $(document).ready(function() {
 							<option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
 						{{/if}}
 			      {{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="parentId">{{=$ctx.doI18N("label.parentId")}}</label></td>
+			<td>
+				<select name="parentId" id="parentId">
+				  <option value="" selected="selected">{{=$ctx.doI18N("option.parentId.first.choice")}}</option>
+				  {{#if type.value === "ASSET"}}
+    				  {{#each assetHeaderAccountOptions}}
+    						{{#if $parent.parent.parent.data.parentId === id}}
+    							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
+    						{{#else}}
+    							<option value="{{=id}}">{{=nameDecorated}}</option>
+    						{{/if}}
+    			      {{/each}}
+				  {{#else if type.value === "LIABILITY"}}
+    				  {{#each liabilityHeaderAccountOptions}}
+    						{{#if $parent.parent.parent.data.parentId === id}}
+    							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
+    						{{#else}}
+    							<option value="{{=id}}">{{=nameDecorated}}</option>
+    						{{/if}}
+    			      {{/each}}
+				  {{#else if type.value === "EQUITY"}}
+    				  {{#each equityHeaderAccountOptions}}
+    						{{#if $parent.parent.parent.data.parentId === id}}
+    							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
+    						{{#else}}
+    							<option value="{{=id}}">{{=nameDecorated}}</option>
+    						{{/if}}
+    			      {{/each}}
+				  {{#else if type.value === "INCOME"}}
+    				  {{#each incomeHeaderAccountOptions}}
+    						{{#if $parent.parent.parent.data.parentId === id}}
+    							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
+    						{{#else}}
+    							<option value="{{=id}}">{{=nameDecorated}}</option>
+    						{{/if}}
+    			      {{/each}}
+				  {{#else if type.value === "EXPENSE"}}
+    				  {{#each expenseHeaderAccountOptions}}
+    					    {{#if $parent.parent.parent.data.parentId === id}}
+    							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
+    						{{#else}}
+    							<option value="{{=id}}">{{=nameDecorated}}</option>
+    						{{/if}}
+    			      {{/each}}
+		          {{/if}}
 				</select>
 			</td>
 		</tr>
