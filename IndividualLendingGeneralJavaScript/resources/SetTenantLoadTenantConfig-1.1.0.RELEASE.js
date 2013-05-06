@@ -339,8 +339,19 @@ custom.datatablePresentation2 = {
 				        "aTargets":  [0]
 				    },
 				    {
+				    	"mDataProp": "status.code",
+				    	"aTargets": [1],
+				    	/** Display the client status traffic light */
+				    	"fnCreatedCell":function(nTd, sData, oData, iRow, iCol)
+				    	{
+				    		var src="resources/img/" + sData + ".gif";
+				    		var title=doI18N(sData);
+				    		$(nTd).html('<img src="' + src + '" title="' + title + '">' + title + '</img>');
+				    	}
+				    },
+				    {
 				        "mDataProp": "accountNo",
-				        "aTargets": [1],
+				        "aTargets": [2],
 				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
 				        {
 				        	$(nTd).html('<a id="navigateToClient'+oData.id+'" href="#" onclick="showILClient('+oData.id+');">'+sData+'</a>');
@@ -348,11 +359,11 @@ custom.datatablePresentation2 = {
 				    },
 				    {
 				        "mDataProp": "displayName",
-				        "aTargets": [2]
+				        "aTargets": [3]
 				    },
 				    {
 				        "mDataProp": "id",
-				        "aTargets": [3],
+				        "aTargets": [4],
 				        "bVisible":false
 				    }],
 	"centerstable":	[{
