@@ -5210,6 +5210,10 @@ function submitTabbedReport(divContainer, id) {
 	
 	var serializedArray = {};
 	serializedArray = $('#entityform').serializeObject(serializationOptions);
+
+	if(!("reportParameters" in serializedArray)){
+	    serializedArray["reportParameters"] = [];
+	}
 	var newFormData = JSON.stringify(serializedArray);
 	
 	var successFunction =  function(data, textStatus, jqXHR) {
