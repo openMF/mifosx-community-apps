@@ -6400,7 +6400,7 @@ function getBaseApiURL(docURL)
 	else if (l.hostname == "demo.openmf.org") {
 		baseApiUrl = "/mifosng-provider/api/v1/";
 	} else {
-		baseApiUrl = "https://ec2-46-137-62-163.eu-west-1.compute.amazonaws.com:8443/mifosng-provider/api/v1/";
+		baseApiUrl = "https://" + l.hostname + ":8443/mifosng-provider/api/v1/";
 	}
 	
 	if (QueryParameters["baseApiUrl"]) {
