@@ -738,7 +738,7 @@ custom.jqueryDataTableLayout = {
 									"sButtonText": doI18N("Save to CSV")
 								}
 								],
-						"sSwfPath": "resources/libs/DataTables-1.9.4/extras/TableTools/media/swf/copy_cvs_xls.swf"
+						"sSwfPath": "resources/libs/DataTables-1.9.4/extras/TableTools/media/swf/copy_csv_xls.swf"
 					        },
 					        
 				"sPaginationType": "full_numbers",
@@ -775,7 +775,7 @@ custom.jqueryDataTableLayout = {
 								"sButtonText": doI18N("Save to CSV")
 							}
 							],
-					"sSwfPath": "resources/libs/DataTables-1.9.4/extras/TableTools/media/swf/copy_cvs_xls.swf"
+					"sSwfPath": "resources/libs/DataTables-1.9.4/extras/TableTools/media/swf/copy_csv_xls.swf"
 			     },
 				"bJQueryUI": true,
 				"bRetrieve": false,
