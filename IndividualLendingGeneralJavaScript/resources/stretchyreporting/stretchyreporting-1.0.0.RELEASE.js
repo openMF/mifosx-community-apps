@@ -858,7 +858,7 @@ dataTableDef = {
 							"sButtonText": doI18N("Save to CSV")
 						}
 						],
-				"sSwfPath": resValue + "DataTables-1.9.4/extras/TableTools/media/swf/copy_cvs_xls.swf"
+				"sSwfPath": resValue + "DataTables-1.9.4/extras/TableTools/media/swf/copy_csv_xls.swf"
 			        },
 			        
 		"aaData": [],
