@@ -115,9 +115,9 @@ formErrorFunction = function(jqXHR, textStatus, errorThrown) {
 
 
 generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
-alert("complete after  - for when an error is got but not on a create/update form");
-				    	//handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-				};
+	alert("complete after  - for when an error is got but not on a create/update form");
+   	//handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+};
 
 
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
@@ -591,7 +591,7 @@ function setSysAdminContent(divName) {
 
 	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
 	var maintainMakerCheckerUrl = "maintainTable('permission', 'permissions?makerCheckerable=true', 'PUT');return false;";
-	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST');return false;";
+	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST'); return false;";
 	var addReportUrl = "launchReportDialog(null);return false;";
 
 	var htmlOptions = "";
@@ -2043,9 +2043,7 @@ function showILClient(clientId) {
 	
 	$newtabs = $("#clientdatatabs").tabs({
 	    	select: function(event, tab) {
-				//alert("client tab selected: " + tab.index);
 				if (tab.index == 0)
-
 				{
 					if (clientDirty == true)
 					{
@@ -2055,7 +2053,6 @@ function showILClient(clientId) {
 						clientDirty = false;
 					}
 				}
-				
 				else if (tab.index == 1)
 				{
 					refreshClientIdentifiers(clientUrl);
@@ -2953,14 +2950,12 @@ function showCenter(centerId){
 				var isjlgbulk = true;
 				var loanType = 'jlg';
 				loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, loanType, isjlgbulk);
-				//$('#selectedmembers').html('');
 				$("#selectedmembers option").remove();
 				$('#selectedmembers').empty().append(function(){
 	                var output = "";
 	                $('#loanMembers option').each(function(i) {  
 	                    output += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
 	                });
-	                //alert(output);
 	                return output;
 	            });	
 
@@ -2992,9 +2987,10 @@ function showCenter(centerId){
 	                        formErrorFunction(jqXHR, textStatus, errorThrown);
 	                        isError = true;
 	                    };
+	                    
 	            		if(isError) return false;
-	            		//alert($(this).val());
-	                    executeAjaxRequest('loans', "POST", newFormData , successFunction, customFormErrorFunction);
+
+	            		executeAjaxRequest('loans', "POST", newFormData , successFunction, customFormErrorFunction);
 	                });
 	            });		
 			});
@@ -5121,7 +5117,6 @@ function refreshLoanDocuments(loanId) {
 	
 
 	function maintainTable(tableName, resourceUrl, submitType, putPostQuery) {
-		alert(tableName + " - " + resourceUrl + " - " + submitType + " - " +  putPostQuery)
 		if (!(submitType == "PUT" || submitType == "POST"))
 		{
 			alert("System Error - Invalid submitType: " + submitType);
@@ -5144,14 +5139,14 @@ function refreshLoanDocuments(loanId) {
 		genSSF += '}';
 		eval(genSSF);
 		
-//datatable specific code
+		//datatable specific code
 		if (tableName == "datatable") 
 		{
 			dialogTitle = 'dialog.title.register.datatable';
 			popupRegisterDatatableDialog('dialog.title.register.datatable', templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
 			return false;
 		}
-//end datatable specific code
+		//end datatable specific code
 
 		if (resourceUrl.indexOf("/permissions") > -1) 
 		{
@@ -6024,7 +6019,6 @@ var buttonsOpts = {};
 
 buttonsOpts[saveButton] = function() {
 	var registerUrl = "datatables/register/" + document.registerDatatableForm.registeredTableName.value + "/" + document.registerDatatableForm.applicationTableName.value;
-	// alert(registerUrl )
 	executeAjaxRequest(registerUrl, "POST", {}, saveSuccessFunction, formErrorFunction);
 };
 buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
