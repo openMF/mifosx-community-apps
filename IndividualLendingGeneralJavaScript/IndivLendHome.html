@@ -334,13 +334,9 @@ $(document).ready(function() {
 <!-- Search screens and templates for sections of search screen -->
 <script id="groupSearchTabTemplate" type="text/x-jquery-tmpl">
 <div>	
-	<form method="post" id="viewGroup">
-		<div style="width:100%">
+	<div style="width:100%">
 			<h1 align="center">{{=$ctx.doI18N("tab.group.search.title")}}</h1>
-		</div>
-		<div id="officesInScopeDiv">
-		</div>
-	</form>	
+	</div>
 	<div id="groupTableDiv">
 	</div>
 </div>
@@ -373,11 +369,10 @@ $(document).ready(function() {
 </script>
 
 <script id="clientSearchTabTemplate" type="text/x-jquery-tmpl">
-<div>	
-	<form method="post" id="viewClient" name="viewClient" action="switchToClient">
-		<div id="officesInScopeDiv">
-		</div>
-	</form>	
+<div>
+	<div style="width:100%">
+			<h1 align="center">{{=$ctx.doI18N("tab.client.search.title")}}</h1>
+	</div>
     <div id="clientTableDiv">
     </div>
 </div>
@@ -531,21 +526,31 @@ $(document).ready(function() {
     </ul>   
 </script>
 
-<script id="groupsTableTemplate" type="text/x-jquery-tmpl">
-	<table id='groupstable' width='100%'>
+<script id="loanSearchTabTemplate" type="text/x-jquery-tmpl">
+<div>	
+	<div style="width:100%">
+			<h1 align="center">{{=$ctx.doI18N("tab.loan.search.title")}}</h1>
+	</div>
+    <div id="loanTableDiv">
+    </div>
+</div>
+</script>
+
+<script id="loansTableTemplate" type="text/x-jquery-tmpl">
+	<table id='loanstable' width='100%' class='display'>
 		<thead>
 			<tr>
-				<th>{{=$ctx.doI18N("table.heading.officename")}}</th>
-				<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loanstatus")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.loanproductname")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.principal")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.totaloutstanding")}}</th>
 			</tr>
 		</thead>
 		<tbody>
-			{{#each crudRows}}
 			<tr>
-				<td>{{=officeName}}</td>
-				<td><a id='navigateToGroup{{=id}}' href='#' style='margin-right: 5px;' onclick="showGroup({{=id}}); return false;">{{=name}}</a></td>				
-			</tr>
-			{{/each}}
+                <td colspan="5" class="dataTables_empty">Loading data from server</td>
+            </tr>
 		</tbody>
 	</table>
 </script>
@@ -8381,12 +8386,10 @@ $(document).ready(function() {
 
 <!-- Search screens and templates for Center -->
 <script id="centerSearchTabTemplate" type="text/x-jquery-tmpl">
-<div>   
-	<form method="post" id="viewCenter" name="viewCenter">
-		<div id="officesInScopeDiv">
-		</div>
-		<hr/>    
-	</form>
+<div>
+	<div style="width:100%">
+			<h1 align="center">{{=$ctx.doI18N("tab.center.search.title")}}</h1>
+	</div>
 	<div id="centerTableDiv">
 	</div>
 </div>

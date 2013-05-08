@@ -232,6 +232,9 @@ function showMainContainer(containerDivName, username) {
 	if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
 		htmlVar += '  <li><a href="unknown.html" onclick="setAccountingContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.accounting") + '</a></li>';
 
+	if (jQuery.MifosXUI.showMenu("LoansMenu") == true)
+		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';		
+
 	if (jQuery.MifosXUI.showMenu("ReportsMenu") == true)
 	{
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
@@ -396,6 +399,14 @@ function setGroupListingContent(divName) {
 	}
 		
 	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.group.manage") + '</a></li></ul><div id="searchtab"></div></div>';
+
+	$("#" + divName).html(htmlVar);
+}
+
+function setLoanListingContent(divName) {
+	var htmlVar = "";
+	
+	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
 }
@@ -1351,10 +1362,7 @@ $.prepareDataToSend = function(oSettings, data){
 	if(oSettings.oPreviousSearch.sSearch !="")
 	{
 		var searchValue = oSettings.oPreviousSearch.sSearch;
-		searchValue = searchValue.replace("'", "''");
-		//office hierarchy dropdown does not appear for branch users
-		var sqlSearchValue = "display_name like '%" + searchValue + "%'";
-		jsonData.sqlSearch = sqlSearchValue;
+		jsonData.sqlSearch = custom.searchQuery[oSettings.sInstance](searchValue);
 	}
 	//not appropriate here 
 	if($("#officeId").val()!= undefined)
@@ -1924,6 +1932,44 @@ function showGroupListing(){
 	    e.preventDefault();
 	});
 }
+
+
+function showLoansListing() {
+
+	if (jQuery.MifosXUI.showTask("loanSearch") == false)
+	{
+		alert(doI18N("loan.search.not.allowed"));
+		return;
+	}
+
+	setLoanListingContent("content");
+
+	//HOME list loans functionality
+	$("#tabs").tabs({
+	    select: function(event, ui) {
+	    },
+	    load: function(event, ui) {
+	    },
+	    show: function(event, ui) {
+
+			var initLoanSearch =  function() {  	
+			//render page markup
+			var tableHtml = $("#loanSearchTabTemplate").render();
+			$("#searchtab").html(tableHtml);
+
+			var loansTableHtml = $("#loansTableTemplate").render();
+			$("#loanTableDiv").html(loansTableHtml);
+
+			var oTable = $("#loanstable").dataTable(custom.jqueryDataTableServerSide.paginated("loanstable"));
+			initTableConf("loanstable",oTable);
+	
+	    };
+	  	  //initialize the client search tab
+		 initLoanSearch();
+	 }
+	});
+} // end showLoansListing
+
 
 //HOME list communal banks functionality
 function showCommunalBankListing(){
