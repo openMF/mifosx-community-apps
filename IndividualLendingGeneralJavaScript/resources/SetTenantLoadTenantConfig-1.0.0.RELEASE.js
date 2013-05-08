@@ -313,7 +313,23 @@ custom.sDom = {
 	"clientstable" : '<"H"lfr<"#clientstablecustom">>t<"F"ip>',					
 	"centerstable" : '<"H"lfr<"#centerstablecustom">>t<"F"ip>',
 	"groupstable" : '<"H"lfr<"#groupstablecustom">>t<"F"ip>',
+	"loanstable" : '<"H"lfr<"#clientstablecustom">>t<"F"ip>',	
 	"journalentriestable": '<"H"lr>t<"F"ip>',		
+}
+
+custom.searchQuery = {
+	"clientstable" : function(searchValue){
+						return "display_name like '%"+searchValue+"%'";
+					},
+	"centerstable" :  function(searchValue){
+						return "display_name like '%"+searchValue+"%'";
+					},
+	"groupstable" :  function(searchValue){
+						return "display_name like '%"+searchValue+"%'";
+					},
+	"loanstable" :  function(searchValue){
+						return "accountNo like'%"+searchValue+"%'";
+					}	
 }
 
 //table properties
@@ -468,7 +484,34 @@ custom.datatablePresentation2 = {
 									});
 								}
 							}
-							]				
+							],	
+	"loanstable" : [{
+				        "mDataProp": "accountNo",
+				        "aTargets":  [0]
+				    },
+				    {
+				        "mDataProp": "status.value",
+				        "aTargets": [1],
+						"bSortable": false
+				    },
+					{
+				        "mDataProp": "loanProductName",
+				        "aTargets":  [2]
+				    },
+					{
+				        "mDataProp": "principal",
+				        "aTargets":  [3]
+				    },
+					{
+				        "mDataProp": "status.id",
+				        "aTargets":  [4],
+						"bSortable": false,
+						"mRender": function ( data, type, full ) {
+										if(data>=300)
+											return full.summary.totalOutstanding;
+										else return "";
+								   }	
+				    }]
 }
 
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,
