@@ -1025,7 +1025,8 @@ function handleCOATabSelection(){
 	$("#addglaccount").button({icons: {
 	    primary: "ui-icon-circle-plus"}
 	    }).click(function(e){
-	  	var getUrl = 'glaccounts/template';
+		var selected = $("#coatabs-main").tabs('option', 'selected');
+	  	var getUrl = 'glaccounts/template?type='+selected;
 		var putUrl = "glaccounts";
 		var templateSelector = "#glAccountsFormTemplate";
 		var width = 600; 
@@ -1034,7 +1035,8 @@ function handleCOATabSelection(){
 		// update currently selected div if onclick function succeeds
 		var saveSuccessFunction = function(data, textStatus, jqXHR) {
 		  	$("#dialog-form").dialog("close");
-		  	handleCOATabSelection();
+			$(divToUpdate).html('');
+		  	fetchGLAccount(selected);
 		}
 
 		popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.glAccountsFormTemplate.add.account", templateSelector, width, height,  saveSuccessFunction);
