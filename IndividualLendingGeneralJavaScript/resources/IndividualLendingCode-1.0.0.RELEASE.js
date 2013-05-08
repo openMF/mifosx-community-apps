@@ -6515,53 +6515,46 @@ function showNotAvailableDialog(titleCode) {
 		 }).dialog('open');
 }
 	
+function showJsonRecursive(jsonObj) {
+    var html = "";
+    if (typeof jsonObj === 'object') {
+        if (jsonObj instanceof Array) {
+            for (var j = 0; j < jsonObj.length; j++) {
+                html += showJsonRecursive(jsonObj[j]);
+            }
+        } else {
+            for (var i in jsonObj) {
+                if ((i != "dateFormat") && (i != "locale"))
+                {
+                    html += '<tr><td width="100px"></td>';
+                    html += "<td>";
+                    html += "<b>" + doI18N(i) + ": </b>";
+                    html += "</td>";
+                    html += "<td>";
+                    html += showJsonRecursive(jsonObj[i]);
+                    html += "</td></tr>";
+                }
+            }
+        }
+        
+    } else {
+        html += jsonObj;
+    }
+    return html;
+}
+
 function showJson(commandAsJson) {
 
-	jsonObj = JSON.parse(commandAsJson);
-	if (jsonObj.permissions) jsonObj = jsonObj.permissions;
+    var jsonObj = JSON.parse(commandAsJson);
+    if (jsonObj.permissions) jsonObj = jsonObj.permissions;
 
-	var html = "";
+    var html = "";
 
-	//var colNo = 0;
-	for (var i in jsonObj)
-	{
+    html += showJsonRecursive(jsonObj);
 
-		if ((i != "dateFormat") && (i != "locale"))
-		{
-			
-			html += '<tr><td width="100px"></td>';
-			html += "<td>";
-			html += "<b>" + doI18N(i) + ": </b>";
-			html += "</td>";
-			html += "<td>";
-			html += jsonObj[i];
-			html += "</td></tr>";
-			/*
-			colNo += 1;
-			if (colNo == 1) html += "<tr>";
-			else html += '<td width="100px"></td>';
-
-			html += "<td>";
-			html += "<b>" + doI18N(i) + ": </b>";
-			html += "</td>";
-			html += "<td>";
-			html += jsonObj[i];
-			html += "</td>";
-
-			if (colNo == 2) 
-			{
-				colNo = 0;
-				html += "</tr>";
-			}
-			
-			*/
-		}
-	}
-	//if (colNo == 1) html += '<td></td><td></td><td></td></tr>';
-
-	if (html > "") html = '<table width="100%">' + html + "</table><br><br>";
-	
-	return html;
+    if (html > "") html = '<table width="100%">' + html + "</table><br><br>";
+    
+    return html;
 }
 
 $.fn.serializeObject = function(serializationOptions)
