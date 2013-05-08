@@ -1051,7 +1051,7 @@ function handleCOATabSelection(){
 		popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.glAccountsFormTemplate.add.account", templateSelector, width, height,  saveSuccessFunction);
 	    e.preventDefault();
 	});
-
+$( "#glaccountsview").buttonset();
 	/**
 	 * Make a call to fetch details of appropriate GL Accounts on click of
 	 * sub-tab of GL Accounts (All, ASSET, LIABILITY, EQUITY, INCOME, EXPENSES)
@@ -1065,6 +1065,109 @@ function handleCOATabSelection(){
 				$(divToUpdate).html('');
 				fetchGLAccount(tab.index);
 		 }
+	});
+
+	$("input[name='radio']").change(function() {
+		if ($("input[name='radio']:checked").val() == 'listView') {
+			$("#coatabs-tree").hide();
+			$("#coatabs-main").show();
+		} else if ($("input[name='radio']:checked").val() == 'treeView') {
+			$("#coatabs-main").hide();
+			$("#coatabs-tree").show();
+			var glAccountsFetchSuccess = function (data) {
+				var assetObject = new Object();
+				assetObject.id = -1;
+				assetObject.name = "ASSET";
+
+				var liabilitiesObject = new Object();
+				liabilitiesObject.id = -2;
+				liabilitiesObject.name = "LIABILITY";
+
+				var equitiyObject = new Object();
+				equitiyObject.id = -3;
+				equitiyObject.name = "EQUITY";
+
+				var incomeObject = new Object();
+				incomeObject.id = -4;
+				incomeObject.name = "INCOME";
+
+				var expenseObject = new Object();
+				expenseObject.id = -5;
+				expenseObject.name = "EXPENSE";
+				var finalJson = [];
+				finalJson.push(assetObject);
+				finalJson.push(liabilitiesObject);
+				finalJson.push(equitiyObject);
+				finalJson.push(incomeObject);
+				finalJson.push(expenseObject);
+				
+				for(i=0;i<data.length;i++){
+					var currentObj = data[i];
+					if (currentObj.type.value == "ASSET") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -1;
+						}
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					} else if (currentObj.type.value == "LIABILITY") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -2;
+						}
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					} else if (currentObj.type.value == "EQUITY") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -3;
+						}
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					} else if (currentObj.type.value == "INCOME") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -4;
+						}
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					} else if (currentObj.type.value == "EXPENSE") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -5;
+						}
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					}
+
+				}
+				var data = finalJson;
+                // prepare the data
+                var source =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id' },
+                        { name: 'name' },
+                        { name: 'parentId' }
+                    ],
+                    id: 'id',
+                    localdata: data
+                };
+                // create data adapter.
+                var dataAdapter = new $.jqx.dataAdapter(source);
+                // perform Data Binding.
+                dataAdapter.dataBind();
+                var records = dataAdapter.getRecordsHierarchy('id', 'parentId', 'items', [{ name: 'name', map: 'label'}]);
+                $('#coatabs-tree').jqxTree({ source: records, width: '100%' });
+			}
+			executeAjaxRequest('glaccounts', 'GET', "", glAccountsFetchSuccess, formErrorFunction);
+		};
 	});
 
 	var fetchGLAccount = function (index){
@@ -5598,8 +5701,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 				}else if(templateSelector == "#employeeFormTemplate" && submitType == "PUT") {
 					templateSelector = "#employeeFormEditTemplate";
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
-				}
-				else{
+				}else{
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 		  		}
 		  		
@@ -5923,6 +6025,28 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			} else {
 				executeAjaxRequest("centers/template?officeId=" + selectedOfficeId , "GET", "", officeIdChangeSuccess, formErrorFunction);	
 			}
+		})
+	}
+	
+	if (templateSelector === "#glAccountsFormTemplate") {
+		$("#type").change(function(e){
+			var name = $("#name").val();
+			var glCode = $("#glCode").val();
+			
+			var type = $(this).val();
+			var selectedType = new Object();
+			for(i=0;i<data.accountTypeOptions.length;i++){
+				if(type == data.accountTypeOptions[i].id){
+					selectedType.id = data.accountTypeOptions[i].id;
+					selectedType.code = data.accountTypeOptions[i].code;
+					selectedType.value = data.accountTypeOptions[i].value;
+					data.type = selectedType;
+				}
+			}
+
+			data.name = name;
+			data.glCode = glCode;
+			repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);	
 		})
 	}
 
