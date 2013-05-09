@@ -804,7 +804,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 				data.officeId = $("#journalEntryOfficeId").val();
 			}
 			if ($("#accountId").val() != "") {
-				data.accountId = $("#accountId").val();
+				data.glAccountId = $("#accountId").val();
 			}
 			if (onlyManualEntries) {
 				data.manualEntriesOnly = true;
