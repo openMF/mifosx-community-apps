@@ -208,6 +208,10 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '	</li>';
 	}
 	
+	if (jQuery.MifosXUI.showMenu("LoansMenu")) {
+		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';		
+	}
+	
 	if (jQuery.MifosXUI.showMenu("CheckerMenu")) {
 		htmlVar += '	<li><a href="unknown.html" onclick="auditSearch(' + "'makerchecker'" + ');return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
 	}
@@ -231,9 +235,6 @@ function showMainContainer(containerDivName, username) {
 	
 	if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
 		htmlVar += '  <li><a href="unknown.html" onclick="setAccountingContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.accounting") + '</a></li>';
-
-	if (jQuery.MifosXUI.showMenu("LoansMenu") == true)
-		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';		
 
 	if (jQuery.MifosXUI.showMenu("ReportsMenu") == true)
 	{
