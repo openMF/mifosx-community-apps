@@ -519,11 +519,15 @@ $(document).ready(function() {
 </script>
 <!-- All Groups List-->
 <script id="allCentersListTemplate" type="text/x-jquery-tmpl">
-   <ul>
+
+    <label for="center">{{=$ctx.doI18N("label.center.search")}}</label>
+    <select name="centerId" id="centerId">
+        <option value="0">{{=$ctx.doI18N("option.center.search.first.choice")}}</option>
         {{#each crudRows}}
-            <li><a href="#" class="group" onClick="showCenter({{=id}});">{{=name}}&nbsp;-&nbsp;({{=officeName}})</a></li>
+            <option value="{{=id}}">{{=name}}&nbsp;-&nbsp;({{=officeName}})</option>
         {{/each}}
-    </ul>   
+    </select>
+
 </script>
 
 <script id="allOfficesListTemplate" type="text/x-jquery-tmpl">
@@ -8051,6 +8055,8 @@ $(document).ready(function() {
         </div>
     <form id="entityform">
         <div id="formerrors"></div>
+        <input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+        <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
         <div style="margin-top: 5px;">
         <table>
             <tr>
@@ -8065,11 +8071,31 @@ $(document).ready(function() {
             </tr>
             <tr>
                 <td>
+                    <label for="center">{{=$ctx.doI18N("label.collection.sheet.center")}}</label>
+                </td>
+                <td>
+                    <select id="centerId" name="centerId">
+                        <option value=0>{{=$ctx.doI18N("collection.sheet.center.first.choice")}}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <label for="group">{{=$ctx.doI18N("label.collection.sheet.group")}}</label>
                 </td>
                 <td>
                     <select id="groupId" name="groupId">
                         <option value=0>{{=$ctx.doI18N("collection.sheet.group.first.choice")}}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="calendar">{{=$ctx.doI18N("label.collection.sheet.meeting")}}</label>
+                </td>
+                <td>
+                    <select id="calendarId" name="calendarId">
+                        <option value=0>{{=$ctx.doI18N("collection.sheet.meeting.first.choice")}}</option>
                     </select>
                 </td>
             </tr>  
@@ -8083,12 +8109,12 @@ $(document).ready(function() {
             </tr>    
         </table>
         </div>
+        
     </form>
-       <button id="continuebtn" >{{=$ctx.doI18N("button.continue")}}</button> 
+    <button id="continuebtn">{{=$ctx.doI18N("button.continue")}}</button> 
         <br>
         <hr>
         <div id="collectionSheetContent"> </div>
-
 </script>
 
 <script id="collectionSheetTemplate" type="text/x-jquery-tmpl">
@@ -8136,10 +8162,10 @@ $(document).ready(function() {
                     {{#each crudRows}}
                     {{#each groups}}
                     <tr>
-                        <td>
-                            {{=groupName}}
+                        <td class='cellalignleft'>
+                            <b>{{=groupName}}</b>
                         </td>
-                        <td class="lefthighlightcolheader" scope="colgroup" colspan="{{=$parent.parent.data.loanProducts.length}}">&nbsp;</td>
+                        <td class="lefthighlightcolheader cellalignright" scope="colgroup" colspan="{{=$parent.parent.data.loanProducts.length}}">&nbsp;</td>
                         <td class="righthighlightcolheader" scope="colgroup" colspan="{{=$parent.parent.data.loanProducts.length}}">&nbsp;</td>
                     </tr>
                         {{#each clients}}
@@ -8231,8 +8257,14 @@ $(document).ready(function() {
                 </tfoot>
             </table>
         </div>
-       <br>
-       <br> 
+        <br>
+        <br>
+        <div> 
+            <label for="note">{{=$ctx.doI18N("label.note")}}</label>
+            <textarea rows="5" cols="50" id="note" name="note" cssClass="text ui-widget-content ui-corner-all">{{=note}}</textarea>
+        </div>
+        <br>
+        <br>        
         <div style="text-align:right;">
             <button id="savebtn" >{{=$ctx.doI18N("button.save")}}</button>
             <button id="cancelbtn" >{{=$ctx.doI18N("button.cancel")}}</button>
