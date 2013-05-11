@@ -183,7 +183,7 @@ function showMainContainer(containerDivName, username) {
 
 	var htmlVar = '<div id="logowrapper">';
 	htmlVar += '	<span style="float: left">';
-	htmlVar += '		<img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/>';
+	htmlVar += '		<img style="float:left; border: 0;" alt="" src="resources/mifosx.jpg"/>';
 	htmlVar += '	</span>';
 	htmlVar += '</div>';
 	htmlVar += '<div id="navwrapper">';
@@ -353,11 +353,11 @@ function globalsearch(){
 }
 
 function showLogon(logonDivName) {
-	var htmlVar = '<div id=theLogonForm><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/><div id=appTitle>' + doI18N("app.name") + ' - ' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</div>';
-	htmlVar += '<form name = "logonform"><table id=logonTable><tr><td>' + doI18N("label.username") + '</td><td><input type="text" name="username"></td></tr>';
-	htmlVar += '<tr><td>' + doI18N("label.password") + '</td><td><input type="password" name="pwd" onKeyPress="return checkSubmit(event, ' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td></tr>';
-	htmlVar += '<tr><td><input type="button" value="Logon" name="Submit" ';
-	htmlVar += 'onclick= "setBasicAuthKey(' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td><td></td></tr></table></form>';
+	var htmlVar = '<div id="theLogonForm"><form name = "logonform" id="logonform"><h5><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/>' + doI18N("app.name") + ' <br><br> ' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</h5>';
+	htmlVar += '<fieldset id="inputs"><input type="text" id="username" name="username" placeholder="' + doI18N("label.username") + '" autofocus required>';
+	htmlVar += '<input type="password"  id="password" name="pwd" placeholder="' + doI18N("label.password") + '" onKeyPress="return checkSubmit(event, ' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )" required> </fieldset>';
+	htmlVar += '<fieldset id="actions"><input type="button" value="Logon" id="submit" name="Submit" ';
+	htmlVar += 'onclick= "setBasicAuthKey(' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></fieldset></form>';
 	htmlVar += '<div id=formerrors></div></div>';
 
 	$("#" + logonDivName).html(htmlVar);
