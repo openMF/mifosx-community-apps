@@ -1031,7 +1031,98 @@ function handleCOATabSelection(){
 	    });
 
 	};
+	var glAccountsFetchSuccess = function (data) {
+		var assetObject = new Object();
+		assetObject.id = -1;
+		assetObject.name = "ASSET";
 
+		var liabilitiesObject = new Object();
+		liabilitiesObject.id = -2;
+		liabilitiesObject.name = "LIABILITY";
+
+		var equitiyObject = new Object();
+		equitiyObject.id = -3;
+		equitiyObject.name = "EQUITY";
+
+		var incomeObject = new Object();
+		incomeObject.id = -4;
+		incomeObject.name = "INCOME";
+
+		var expenseObject = new Object();
+		expenseObject.id = -5;
+		expenseObject.name = "EXPENSE";
+		var finalJson = [];
+		finalJson.push(assetObject);
+		finalJson.push(liabilitiesObject);
+		finalJson.push(equitiyObject);
+		finalJson.push(incomeObject);
+		finalJson.push(expenseObject);
+		
+		for(i=0;i<data.length;i++){
+			var currentObj = data[i];
+			if (currentObj.type.value == "ASSET") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -1;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			} else if (currentObj.type.value == "LIABILITY") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -2;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			} else if (currentObj.type.value == "EQUITY") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -3;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			} else if (currentObj.type.value == "INCOME") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -4;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			} else if (currentObj.type.value == "EXPENSE") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -5;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			}
+
+		}
+		var data = finalJson;
+		// prepare the data
+		var source =
+		{
+			datatype: "json",
+			datafields: [
+				{ name: 'id' },
+				{ name: 'name' },
+				{ name: 'parentId' }
+			],
+			id: 'id',
+			localdata: data
+		};
+		// create data adapter.
+		var dataAdapter = new $.jqx.dataAdapter(source);
+		// perform Data Binding.
+		dataAdapter.dataBind();
+		var records = dataAdapter.getRecordsHierarchy('id', 'parentId', 'items', [{ name: 'name', map: 'label'}]);
+		$('#coatabs-tree').jqxTree({ source: records, width: '100%' });
+	}
 
 	/** Onclick function for adding a new GL Account */
 	$("#addglaccount").button({icons: {
@@ -1068,8 +1159,12 @@ function handleCOATabSelection(){
 		// update currently selected div if onclick function succeeds
 		var saveSuccessFunction = function(data, textStatus, jqXHR) {
 		  	$("#dialog-form").dialog("close");
-			$(divToUpdate).html('');
-		  	fetchGLAccount(selected);
+		  	if ($("input[name='radio']:checked").val() == 'listView') {
+				$(divToUpdate).html('');
+		  		fetchGLAccount(selected);
+			} else if ($("input[name='radio']:checked").val() == 'treeView') {
+				executeAjaxRequest('glaccounts', 'GET', "", glAccountsFetchSuccess, formErrorFunction);
+			}
 		}
 
 		popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.glAccountsFormTemplate.add.account", templateSelector, width, height,  saveSuccessFunction);
@@ -1098,98 +1193,6 @@ $( "#glaccountsview").buttonset();
 		} else if ($("input[name='radio']:checked").val() == 'treeView') {
 			$("#coatabs-main").hide();
 			$("#coatabs-tree").show();
-			var glAccountsFetchSuccess = function (data) {
-				var assetObject = new Object();
-				assetObject.id = -1;
-				assetObject.name = "ASSET";
-
-				var liabilitiesObject = new Object();
-				liabilitiesObject.id = -2;
-				liabilitiesObject.name = "LIABILITY";
-
-				var equitiyObject = new Object();
-				equitiyObject.id = -3;
-				equitiyObject.name = "EQUITY";
-
-				var incomeObject = new Object();
-				incomeObject.id = -4;
-				incomeObject.name = "INCOME";
-
-				var expenseObject = new Object();
-				expenseObject.id = -5;
-				expenseObject.name = "EXPENSE";
-				var finalJson = [];
-				finalJson.push(assetObject);
-				finalJson.push(liabilitiesObject);
-				finalJson.push(equitiyObject);
-				finalJson.push(incomeObject);
-				finalJson.push(expenseObject);
-				
-				for(i=0;i<data.length;i++){
-					var currentObj = data[i];
-					if (currentObj.type.value == "ASSET") {
-						if (currentObj.parentId == null) {
-							currentObj.parentId = -1;
-						}
-						if(currentObj.tagId != null) delete currentObj.tagId.id;
-						delete currentObj.type.id;
-						delete currentObj.usage.id;
-						finalJson.push(currentObj);
-					} else if (currentObj.type.value == "LIABILITY") {
-						if (currentObj.parentId == null) {
-							currentObj.parentId = -2;
-						}
-						if(currentObj.tagId != null) delete currentObj.tagId.id;
-						delete currentObj.type.id;
-						delete currentObj.usage.id;
-						finalJson.push(currentObj);
-					} else if (currentObj.type.value == "EQUITY") {
-						if (currentObj.parentId == null) {
-							currentObj.parentId = -3;
-						}
-						if(currentObj.tagId != null) delete currentObj.tagId.id;
-						delete currentObj.type.id;
-						delete currentObj.usage.id;
-						finalJson.push(currentObj);
-					} else if (currentObj.type.value == "INCOME") {
-						if (currentObj.parentId == null) {
-							currentObj.parentId = -4;
-						}
-						if(currentObj.tagId != null) delete currentObj.tagId.id;
-						delete currentObj.type.id;
-						delete currentObj.usage.id;
-						finalJson.push(currentObj);
-					} else if (currentObj.type.value == "EXPENSE") {
-						if (currentObj.parentId == null) {
-							currentObj.parentId = -5;
-						}
-						if(currentObj.tagId != null) delete currentObj.tagId.id;
-						delete currentObj.type.id;
-						delete currentObj.usage.id;
-						finalJson.push(currentObj);
-					}
-
-				}
-				var data = finalJson;
-                // prepare the data
-                var source =
-                {
-                    datatype: "json",
-                    datafields: [
-                        { name: 'id' },
-                        { name: 'name' },
-                        { name: 'parentId' }
-                    ],
-                    id: 'id',
-                    localdata: data
-                };
-                // create data adapter.
-                var dataAdapter = new $.jqx.dataAdapter(source);
-                // perform Data Binding.
-                dataAdapter.dataBind();
-                var records = dataAdapter.getRecordsHierarchy('id', 'parentId', 'items', [{ name: 'name', map: 'label'}]);
-                $('#coatabs-tree').jqxTree({ source: records, width: '100%' });
-			}
 			executeAjaxRequest('glaccounts', 'GET', "", glAccountsFetchSuccess, formErrorFunction);
 		};
 	});

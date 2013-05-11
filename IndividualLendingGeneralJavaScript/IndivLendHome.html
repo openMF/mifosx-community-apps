@@ -3780,52 +3780,62 @@ $(document).ready(function() {
                   <option value="" selected="selected">{{=$ctx.doI18N("option.tagId.first.choice")}}</option>
                   {{#if type.value === "ASSET"}}
                       {{#each allowedAssetsTagOptions}}
-                            {{#if $parent.parent.parent.data.tagId}}
+                            {{#if $parent.parent.parent.data.tagId === undefined}}
+                                <option value="{{=id}}">{{=name}}</option>
+                            {{#else}}
                                 {{#if $parent.parent.parent.data.tagId.id === id}}
                                     <option value="{{=id}}" selected="selected">{{=name}}</option>
-                                 {{/if}}   
-                            {{#else}}
-                                <option value="{{=id}}">{{=name}}</option>
+                                {{#else}}
+                                    <option value="{{=id}}">{{=name}}</option>
+                                {{/if}}    
                             {{/if}}
                       {{/each}}
                   {{#else if type.value === "LIABILITY"}}
                       {{#each allowedLiabilitiesTagOptions}}
-                            {{#if $parent.parent.parent.data.tagId}}
+                            {{#if $parent.parent.parent.data.tagId === undefined}}
+                                <option value="{{=id}}">{{=name}}</option>
+                            {{#else}}
                                 {{#if $parent.parent.parent.data.tagId.id === id}}
                                     <option value="{{=id}}" selected="selected">{{=name}}</option>
-                                 {{/if}}   
-                            {{#else}}
-                                <option value="{{=id}}">{{=name}}</option>
+                                {{#else}}
+                                    <option value="{{=id}}">{{=name}}</option>
+                                {{/if}}    
                             {{/if}}
                       {{/each}}
                   {{#else if type.value === "EQUITY"}}
                       {{#each allowedEquityTagOptions}}
-                            {{#if $parent.parent.parent.data.tagId}}
+                            {{#if $parent.parent.parent.data.tagId === undefined}}
+                                <option value="{{=id}}">{{=name}}</option>
+                            {{#else}}
                                 {{#if $parent.parent.parent.data.tagId.id === id}}
                                     <option value="{{=id}}" selected="selected">{{=name}}</option>
-                                 {{/if}}   
-                            {{#else}}
-                                <option value="{{=id}}">{{=name}}</option>
+                                {{#else}}
+                                    <option value="{{=id}}">{{=name}}</option>
+                                {{/if}}    
                             {{/if}}
                       {{/each}}
                   {{#else if type.value === "INCOME"}}
                       {{#each allowedIncomeTagOptions}}
-                            {{#if $parent.parent.parent.data.tagId}}
+                            {{#if $parent.parent.parent.data.tagId === undefined}}
+                                <option value="{{=id}}">{{=name}}</option>
+                            {{#else}}
                                 {{#if $parent.parent.parent.data.tagId.id === id}}
                                     <option value="{{=id}}" selected="selected">{{=name}}</option>
-                                 {{/if}}   
-                            {{#else}}
-                                <option value="{{=id}}">{{=name}}</option>
+                                {{#else}}
+                                    <option value="{{=id}}">{{=name}}</option>
+                                {{/if}}    
                             {{/if}}
                       {{/each}}
                   {{#else if type.value === "EXPENSE"}}
                       {{#each allowedExpensesTagOptions}}
-                            {{#if $parent.parent.parent.data.tagId}}
+                            {{#if $parent.parent.parent.data.tagId === undefined}}
+                                <option value="{{=id}}">{{=name}}</option>
+                            {{#else}}
                                 {{#if $parent.parent.parent.data.tagId.id === id}}
                                     <option value="{{=id}}" selected="selected">{{=name}}</option>
-                                 {{/if}}   
-                            {{#else}}
-                                <option value="{{=id}}">{{=name}}</option>
+                                {{#else}}
+                                    <option value="{{=id}}">{{=name}}</option>
+                                {{/if}}    
                             {{/if}}
                       {{/each}}
                   {{/if}}
