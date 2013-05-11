@@ -1667,7 +1667,7 @@ function showCenterListing(){
 
 //HOME list groups functionality
 function applyGroupSearchFilter(officeHierarchy) {
-	//re-render client drop down data
+	//re-render group drop down data
 	var searchSuccessFunction =  function(data) {
 		var searchObject = new Object();
 		searchObject.crudRows = data;
@@ -2166,6 +2166,11 @@ function applyCenterSearchFilter(officeHierarchy) {
 	    centerSearchObject.crudRows = data;
 		var tableHtml = $("#allCentersListTemplate").render(centerSearchObject);
 		$("#centersInScopeDiv").html(tableHtml);
+
+		$('#centerId').change(function() {
+			showCenter($(this).val());
+		});
+
 	};
 	var sqlSearchValue = "o.hierarchy like '"+ officeHierarchy +"%'";
 	executeAjaxRequest("centers?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", centerSearchSuccessFunction, formErrorFunction);
@@ -7607,7 +7612,9 @@ function showCollectionSheet() {
                     });
 
                     $("#officeId").change(function(){
-                        loadAssociatedGroups($(this).val());
+                    	$('#continuebtn').attr('disabled','disabled');
+                        loadCentersAssociatedToOffice($(this).val());
+                        loadGroupsAssociatedToOffice($(this).val());
                     })
                 };
                 executeAjaxRequest('offices', 'GET', "", officeSuccessFunction, formErrorFunction);
@@ -7619,8 +7626,17 @@ function showCollectionSheet() {
                         primary: "ui-icon-circle-arrow-e"
                     }
                  }).click(function(e){
-                     loadCollectionSheet($('#groupId').val());
+                 	var centerId = $('#centerId').val();
+                 	var groupId = $('#groupId').val();
+                 	if(!(centerId === undefined || centerId === "0") && (groupId === undefined || groupId === "0")){
+                 		loadCenterCollectionSheet(centerId);	
+                 	}else{
+                 		loadGroupCollectionSheet(groupId);
+                 	}
+                     e.preventDefault();
                  });
+
+                 $('#continuebtn').attr('disabled','disabled');
             }
             initCollectionSheet();
         }
@@ -7636,28 +7652,209 @@ function setCollectionSheetContent(divName) {
     $("#" + divName).html(htmlVar);
 }
 
-function loadAssociatedGroups(officeId){
+function loadCentersAssociatedToOffice(officeId){
 
-    var csGroupSearchSuccessFunction =  function(data) {
-        var groupObject = new Object();
-        groupObject.crudRows = data;
+    var centersSuccessFunction =  function(data) {
+        var centerObject = new Object();
+        centerObject.crudRows = data.pageItems;
 
-        $('#groupId').empty().append(function(){
-            var output = '<option value=0> -- Select a Branch Office -- </option>';
-            $.each(groupObject.crudRows, function(key, value){
+        $('#centerId').empty().append(function(){
+            var output = '<option value=0> -- Select a Center -- </option>';
+            $.each(centerObject.crudRows, function(key, value){
                output += '<option value=' + value.id + '>' + value.name + '</option>';
             });
             return output;
         });        
+
+        $("#centerId").change(function(){
+            loadCenterMeetingCalendarForCollectionsheet($(this).val());
+            loadGroupsAssociatedToCenter($(this).val());
+            $('#continuebtn').removeAttr('disabled');
+        })
+
+        if(centerObject.crudRows.length === 1){
+        	$('select[name=centerId] option:eq(1)').attr('selected', 'selected');
+        	$('#centerId').trigger('change');	
+        }
+        
+    };
+    clearMeetingCalendarsAndDueDate();
+    executeAjaxRequest('centers?officeId=' + officeId, 'GET', "", centersSuccessFunction, formErrorFunction);
+}
+
+function loadGroupsAssociatedToCenter(centerId){
+
+    var csGroupSearchSuccessFunction =  function(data) {
+        var groupObject = new Object();
+        groupObject.crudRows = data.pageItems;
+
+        $('#groupId').empty().append(function(){
+            var output = '<option value=0> -- Select a Group -- </option>';
+            $.each(groupObject.crudRows, function(key, value){
+               output += '<option value=' + value.id + '>' + value.name + '</option>';
+            });
+            return output;
+        });    
+
+        $("#groupId").change(function(){
+			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
+        })    
+
+        if(groupObject.crudRows.length === 1){
+        	$('select[name=groupId] option:eq(1)').attr('selected', 'selected');
+        	$('#groupId').trigger('change');	
+        }
+    };
+    clearMeetingCalendarsAndDueDate();
+    executeAjaxRequest('groups?sqlSearch=g.parent_id = ' + centerId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
+}
+
+function loadGroupsAssociatedToOffice(officeId){
+
+    var csGroupSearchSuccessFunction =  function(data) {
+        var groupObject = new Object();
+        groupObject.crudRows = data.pageItems;
+
+        $('#groupId').empty().append(function(){
+            var output = '<option value=0> -- Select a Group -- </option>';
+            $.each(groupObject.crudRows, function(key, value){
+               output += '<option value=' + value.id + '>' + value.name + '</option>';
+            });
+            return output;
+        });    
+
+        $("#groupId").change(function(){
+			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
+        })    
     };
     executeAjaxRequest('groups?officeId=' + officeId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
 }
 
-function loadCollectionSheet(groupId){
+function loadCenterMeetingCalendarForCollectionsheet(centerId){
+	var getUrl = 'centers/' + centerId + '/calendars';
+	loadMeetingCalendarForCollectionsheet(getUrl);
+}
+
+function loadGroupMeetingCalendarForCollectionsheet(groupId){
+	var getUrl = 'groups/' + groupId + '/calendars?associations=parentCalendars';
+	loadMeetingCalendarForCollectionsheet(getUrl);
+}
+
+function loadMeetingCalendarForCollectionsheet(getUrl){
+
+	var calendarSuccessFunction = function(data, textStatus, jqXHR){
+		var calendars = new Object();
+	    calendars.crudRows = data;
+	    var output = "";
+	    if(calendars.crudRows.length > 1){
+	    	output = '<option value=0> -- Select a meeting -- </option>';
+	    }
+
+	    $('#calendarId').empty().append(function(){
+	        
+	        $.each(calendars.crudRows, function(key, value){
+	            output += '<option value=' + value.id + '>' + value.title + ' - ';
+	            if(value.entityType.value === 'CLIENTS'){
+	                output += doI18N("label.select.calendar.client");
+	            } else if(value.entityType.value === 'CENTERS'){
+	                output += doI18N("label.select.calendar.center");
+	            } else if(value.entityType.value === 'GROUPS'){
+	                output += doI18N("label.select.calendar.group");
+	            } else if(value.entityType.value === 'LOANS'){
+	                output += doI18N("label.select.calendar.loan");
+	            }
+	                
+	            output += '</option>';
+	        });
+	        return output;
+	    });		
+
+	    $('#calendarId').change(function(){
+	        var calendarId = $(this).val();
+	        if(calendarId !== 0){
+	        
+	            //set first recurring date as expected disbursal date
+	            var selectedCalendars = $.grep(calendars.crudRows, function(n, i) {
+	                return n.id == calendarId;
+	            });
+	        
+	            if (selectedCalendars.length > 0) {
+	                var selectedCalendar = selectedCalendars[0];//get calendar from array
+	                var recurringDates = selectedCalendar.nextTenRecurringDates;
+	                var firstDate = recurringDates[0];//First recurring date
+	                
+	                $( '#dueDate' ).val(custom.helperFunctions.globalDate(firstDate));
+	            }
+	        }
+	    });
+
+	    var availableDate = function(date) {
+	          
+	        var recurringDates = [];
+	        var selectedcals = $.grep(calendars.crudRows, function(n, i) {
+	            return n.id == $("#calendarId").val();
+	        });
+	    	
+	        if (selectedcals.length > 0) {
+	            var selcal = selectedcals[0];
+	            var recudatearr = selcal.recurringDates;
+	            $.each(recudatearr, function(n,i){
+	                var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
+	                //alert(newdate);
+	                recurringDates[n] = newdate;
+	            });
+	        }
+	        
+	        var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
+
+	        if ($.inArray(ymd, recurringDates) < 0 ) {
+	            return [false, "","unAvailable"];
+	        } else {
+	            return [true,"","Available"];
+	        }
+	    }
+
+	    $( '#dueDate' ).datepicker( "destroy" );
+	    $('#dueDate').datepicker({ dateFormat: custom.datePickerDateFormat, maxDate: 0, beforeShowDay: availableDate});
+	    
+	 	if(calendars.crudRows.length === 1){
+	    	//if meeting is not attached then only trigger change event
+	    	$('#calendarId').trigger('change');
+	    }
+	}
+
+	executeAjaxRequest(getUrl, 'GET', "", calendarSuccessFunction, formErrorFunction);
+}
+
+function clearMeetingCalendarsAndDueDate(){
+
+	    $('#calendarId').empty().append(function(){
+			var output = '<option value=0> -- Select a meeting -- </option>';	        
+	        return output;
+	    });		
+	    $('.datepickerfieldnoconstraint').datepicker( "destroy" );
+	    $('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+	    $('.datepickerfieldnoconstraint').datepicker('setDate', null);
+}
+
+function loadCenterCollectionSheet(centerId){
+	var postUrl = 'centers/' + centerId;
+	loadCollectionSheet(postUrl);
+}
+
+function loadGroupCollectionSheet(groupId){
+	var postUrl = 'groups/' + groupId;
+	loadCollectionSheet(postUrl);
+}
+
+function loadCollectionSheet(postUrl){
 	removeErrors('#formerrors');
-    var date = $.datepicker.formatDate('yymmdd', $('#dueDate').datepicker( "getDate" ));
-    var getUrl = 'groups/' + groupId + '/collectionsheet?dueDate=' + date;
-    var postUrl = 'groups/' + groupId + '/collectionsheet';
+
+	var serializedArray = {};
+	serializedArray["locale"] = $('#locale').val();
+   	serializedArray["dateFormat"] = $('#dateFormat').val();
+    serializedArray["dueDate"] = $('#dueDate').val();
+    var newFormData = JSON.stringify(serializedArray);
     $("#collectionSheetContent").html("");
     var successFunction = function(data){
         var collections = new Object();
@@ -7707,11 +7904,12 @@ function loadCollectionSheet(groupId){
         });
 
         var saveCollectionSheetTransactions = function(postUrl){
-            serializedArray = {};
+            var serializedArray = {};
             serializedArray["locale"] = $('#locale').val();
             serializedArray["dateFormat"] = $('#dateFormat').val();
             serializedArray["transactionDate"] = $('#dueDate').val();
             serializedArray["actualDisbursementDate"] = $('#dueDate').val();
+            serializedArray["note"] = $('#note').val();
             serializedArray["bulkRepaymentTransactions"] = new Array();
             $.each($('.grouptotaldue'), function(i){
                 var transactionAmount = $(this).val();
@@ -7723,7 +7921,7 @@ function loadCollectionSheet(groupId){
             });
             
             serializedArray["bulkDisbursementTransactions"] = new Array();
-            $.each($('.grouptotaldisbursement'), function(i){
+            $.each($('.grouptotaldisbursal'), function(i){
                 var transactionAmount = $(this).val();
                 var loanId = this.id.replace("disbursement_", "");
                 var tempObject = new Object();
@@ -7737,7 +7935,7 @@ function loadCollectionSheet(groupId){
             }
             
             var newFormData = JSON.stringify(serializedArray);
-            executeAjaxRequest(postUrl, "post", newFormData, saveSuccessFunction, formErrorFunction);
+            executeAjaxRequest(postUrl + '?command=saveCollectionSheet', "post", newFormData, saveSuccessFunction, formErrorFunction);
         }
 
         $('#savebtn').button({
@@ -7761,5 +7959,6 @@ function loadCollectionSheet(groupId){
         $(".collections td:last-child").addClass('righthighlightcolheader');
         $(".collections th:last-child").addClass('righthighlightcolheader');
     }
-    executeAjaxRequest(getUrl, 'GET', "", successFunction, formErrorFunction);
+    executeAjaxRequest(postUrl + '?command=generateCollectionSheet', "post", newFormData, successFunction, formErrorFunction);
+
 }
