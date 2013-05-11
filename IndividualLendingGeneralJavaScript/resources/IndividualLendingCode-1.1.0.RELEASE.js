@@ -1037,7 +1037,28 @@ function handleCOATabSelection(){
 	$("#addglaccount").button({icons: {
 	    primary: "ui-icon-circle-plus"}
 	    }).click(function(e){
-		var selected = $("#coatabs-main").tabs('option', 'selected');
+	    var selected = 0;
+    	if ($("input[name='radio']:checked").val() == 'listView') {
+			selected = $("#coatabs-main").tabs('option', 'selected');
+		} else if ($("input[name='radio']:checked").val() == 'treeView') {
+			$('#coatabs-tree').jqxTree('collapseAll');
+			var selectedAccountHead = $("#coatabs-tree").jqxTree('selectedItem');
+			if (selectedAccountHead != null) {
+				if (selectedAccountHead.id == -1) {
+					selected = 1;
+				} else if (selectedAccountHead.id == -2) {
+					selected = 2;
+				} else if (selectedAccountHead.id == -3) {
+					selected = 3;
+				} else if (selectedAccountHead.id == -4) {
+					selected = 4;
+				} else if (selectedAccountHead.id == -5) {
+					selected = 5;
+				}
+			} else {
+				selected = 0;
+			}
+		}
 	  	var getUrl = 'glaccounts/template?type='+selected;
 		var putUrl = "glaccounts";
 		var templateSelector = "#glAccountsFormTemplate";
