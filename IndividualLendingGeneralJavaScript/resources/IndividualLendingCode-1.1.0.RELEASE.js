@@ -212,6 +212,10 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';		
 	}
 	
+	if (jQuery.MifosXUI.showMenu("SavingsMenu")) {
+		htmlVar += '  <li><a href="unknown.html" onclick="showSavingsAccountsListing();return false;">' + doI18N("link.topnav.savings") + '</a></li>';		
+	}
+	
 	if (jQuery.MifosXUI.showMenu("CheckerMenu")) {
 		htmlVar += '	<li><a href="unknown.html" onclick="auditSearch(' + "'makerchecker'" + ');return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
 	}
@@ -405,6 +409,14 @@ function setGroupListingContent(divName) {
 }
 
 function setLoanListingContent(divName) {
+	var htmlVar = "";
+	
+	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
+
+	$("#" + divName).html(htmlVar);
+}
+
+function setSavingsAccountListingContent(divName) {
 	var htmlVar = "";
 	
 	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
@@ -2039,7 +2051,6 @@ function showGroupListing(){
 	});
 }
 
-
 function showLoansListing() {
 
 	if (jQuery.MifosXUI.showTask("loanSearch") == false)
@@ -2076,6 +2087,41 @@ function showLoansListing() {
 	});
 } // end showLoansListing
 
+function showSavingsAccountsListing() {
+
+	if (jQuery.MifosXUI.showTask("savingsAccountsSearch") == false)
+	{
+		alert(doI18N("savingsaccount.search.not.allowed"));
+		return;
+	}
+
+	setSavingsAccountListingContent("content");
+
+	//HOME list loans functionality
+	$("#tabs").tabs({
+	    select: function(event, ui) {
+	    },
+	    load: function(event, ui) {
+	    },
+	    show: function(event, ui) {
+
+			var initSavingsAccountSearch =  function() {  	
+			//render page markup
+			var tableHtml = $("#savingsAccountSearchTabTemplate").render();
+			$("#searchtab").html(tableHtml);
+
+			var savingsAccountsTableHtml = $("#savingsAccountsTableTemplate").render();
+			$("#savingsAccountTableDiv").html(savingsAccountsTableHtml);
+
+			var oTable = $("#savingsaccountstable").dataTable(custom.jqueryDataTableServerSide.paginated("savingsaccountstable"));
+			initTableConf("savingsaccountstable",oTable);
+	
+	    };
+	  	  //initialize the client search tab
+		 initSavingsAccountSearch();
+	 }
+	});
+} // end showSavingsAccountsListing
 
 //HOME list communal banks functionality
 function showCommunalBankListing(){
