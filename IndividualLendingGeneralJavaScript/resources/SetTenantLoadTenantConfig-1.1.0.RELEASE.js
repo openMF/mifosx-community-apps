@@ -346,7 +346,7 @@ custom.datatablePresentation2 = {
 				    	{
 				    		var src="resources/img/" + sData + ".gif";
 				    		var title=doI18N(sData);
-				    		$(nTd).html('<img src="' + src + '" title="' + title + '">' + title + '</img>');
+				    		$(nTd).html('<img src="' + src + '" title="' + title + '"/>&nbsp;' + title);
 				    	}
 				    },
 				    {
@@ -371,8 +371,16 @@ custom.datatablePresentation2 = {
 				        "aTargets":  [0]
 				    },
 				    {
-				        "mDataProp": "name",
+				        "mDataProp": "status",
 				        "aTargets": [1],
+						"bSortable": false,
+						"mRender": function (data, type, full) {
+							return '<img src="resources/img/' + data.code + '.gif"/>&nbsp;' + data.value;
+						}
+				    },
+				    {
+				        "mDataProp": "name",
+				        "aTargets": [2],
 				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
 				        {
 				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showCenter('+oData.id+');">'+sData+'</a>');
@@ -383,8 +391,16 @@ custom.datatablePresentation2 = {
 				        "aTargets":  [0]
 				    },
 				    {
-				        "mDataProp": "name",
+				        "mDataProp": "status",
 				        "aTargets": [1],
+						"bSortable": false,
+						"mRender": function (data, type, full) {
+							return '<img src="resources/img/' + data.code + '.gif"/>&nbsp;' + data.value;
+						}
+				    },
+				    {
+				        "mDataProp": "name",
+				        "aTargets": [2],
 				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
 				        {
 				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showGroup('+oData.id+');">'+sData+'</a>');
@@ -501,9 +517,12 @@ custom.datatablePresentation2 = {
 				        "aTargets":  [0]
 				    },
 				    {
-				        "mDataProp": "status.value",
+				        "mDataProp": "status",
 				        "aTargets": [1],
-						"bSortable": false
+						"bSortable": false,
+						"mRender": function (data, type, full) {
+							return '<img src="resources/img/' + data.code + '.gif"/>&nbsp;' + data.value;
+						}
 				    },
 					{
 				        "mDataProp": "loanProductName",
