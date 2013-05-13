@@ -4938,7 +4938,7 @@ $(document).ready(function() {
 
 	<div id="schedule{{=id}}" style="margin-top: 5px;">
 		{{#each summary}}
-		<table id="summarytable{{=id}}" class="pretty displayschedule">
+		<table id="summarytable{{=$parent.data.id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("table.summary.caption")}}</caption>
 			<thead>
 				<tr>
