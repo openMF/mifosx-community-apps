@@ -134,3 +134,4 @@ fieldset{border: 0;padding: 0;margin: 0;}
 #submit:hover,#submit:focus{background-color: #fddb6f;background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb94b), to(#fddb6f));background-image: -webkit-linear-gradient(top, #ffb94b, #fddb6f);background-image: -moz-linear-gradient(top, #ffb94b, #fddb6f);background-image: -ms-linear-gradient(top, #ffb94b, #fddb6f);background-image: -o-linear-gradient(top, #ffb94b, #fddb6f);background-image: linear-gradient(top, #ffb94b, #fddb6f);}	
 #submit:active{outline: none;-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;}
 div#container{position: absolute;top:0;bottom:0;right:0;left:0;overflow:hidden;background:#eaeaea url('img/background.jpg') 50% 0 repeat-y}
+div#accountingPlaceholdersDiv fieldset td:first-child { min-width: 200px; width: 200px; max-width: 200px; }
