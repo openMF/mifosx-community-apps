@@ -4716,6 +4716,15 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.closeloan span').text(doI18N('button.loan.close'));
 					
+				$(".printSchedule").button({icons: {
+		            primary: "ui-icon-print"},
+					text: false
+		            }).click(function(e){
+					var loanId=	this.offsetParent.id.replace("loantabs","");
+					$("#repaymentschedule_todate"+loanId).printThis();
+					e.preventDefault();
+			      });	
+					
 				$('.adjustloanrepayment').button({
                     icons : {
                         primary : "ui-icon-pencil"

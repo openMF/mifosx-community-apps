@@ -89,6 +89,8 @@ JQuery plugins:
 <script type="text/javascript" src="resources/libs/jqxTree/jqxpanel.js"></script>
 <script type="text/javascript" src="resources/libs/jqxTree/jqxtree.js"></script>
 
+<script type="text/javascript"	src="resources/libs/printThis.js"></script>
+
 </head>
 
 <body>
@@ -5043,7 +5045,7 @@ $(document).ready(function() {
 		{{/each}}
 		<br/>
 		{{#each repaymentSchedule}}
-		<table id="repaymentschedule_todate{{=id}}" class="pretty displayschedule">
+		<table id="repaymentschedule_todate{{=$parent.data.id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("table.caption.repaymentSchedule")}}</caption>
 			<colgroup span="3"></colgroup>
 			<colgroup span="3">
@@ -5141,6 +5143,8 @@ $(document).ready(function() {
 			</tfoot>
 		</table>
 		{{/each}}
+		<br>
+		<span><button id="printSchedule{{=id}}" class="printSchedule">Print</button></span>
 	</div>
 
     {{#if transactions}}
