@@ -5077,42 +5077,14 @@ function loadTransactionForm(){
 	//initially hide all payment details
 	$('.paymentDetail').hide();
 
-	var showEFTPaymentDetails = function() {
-	    $('.accountDetail').show();
-	  	$('.routingCodeDetail').show();
-	};
-
-	var showReceiptPaymentDetails = function() {
-	   $('.receiptDetail').show();
-	   $('.bankDetail').show();
-	};
-
-	var showCheckPaymentDetails = function() {
-		$('.accountDetail').show();
-	  	$('.checkDetail').show();
-	  	$('.routingCodeDetail').show();
-	};
-
-	var showDetailFieldsBasedOnPaymentType = function() {
-		var selectedPaymentTypeId = $('#paymentTypeId').val();
+	$('#togglePaymentDetail').toggle(function() {
+		$('.paymentDetail').show();
+		$('#togglePaymentDetail').text(doI18N('label.hide'));
+		e.preventDefault();
+	}, function() {
 		$('.paymentDetail').hide();
-		//behavior for checks
-	  	if( selectedPaymentTypeId == 2){
-	  		showCheckPaymentDetails();
-	  	}//behavior for receipts
-	  	else if (selectedPaymentTypeId == 3){
-	  		showReceiptPaymentDetails();
-	  	}//behavior for EFT
-	  	else if (selectedPaymentTypeId == 4){
-  			showEFTPaymentDetails();
-	  	}
-	}
-
-	showDetailFieldsBasedOnPaymentType();
-
-	//on change function for payment type Id
-	$('#paymentTypeId').change(function(e) {
-	   showDetailFieldsBasedOnPaymentType();
+		$('#togglePaymentDetail').text(doI18N('label.show'));
+		e.preventDefault();
 	});
 }
 
