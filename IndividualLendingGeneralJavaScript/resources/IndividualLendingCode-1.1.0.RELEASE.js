@@ -1124,6 +1124,7 @@ function handleCOATabSelection(){
 		$('#coatabs-tree').jqxTree({ source: records, width: '100%' });
 	}
 
+	var finalObjectSentForTreeView;
 	/** Onclick function for adding a new GL Account */
 	$("#addglaccount").button({icons: {
 	    primary: "ui-icon-circle-plus"}
@@ -1132,21 +1133,25 @@ function handleCOATabSelection(){
     	if ($("input[name='radio']:checked").val() == 'listView') {
 			selected = $("#coatabs-main").tabs('option', 'selected');
 		} else if ($("input[name='radio']:checked").val() == 'treeView') {
-			$('#coatabs-tree').jqxTree('collapseAll');
 			var selectedAccountHead = $("#coatabs-tree").jqxTree('selectedItem');
 			if (selectedAccountHead != null) {
-				if (selectedAccountHead.id == -1) {
-					selected = 1;
-				} else if (selectedAccountHead.id == -2) {
-					selected = 2;
-				} else if (selectedAccountHead.id == -3) {
-					selected = 3;
-				} else if (selectedAccountHead.id == -4) {
-					selected = 4;
-				} else if (selectedAccountHead.id == -5) {
-					selected = 5;
-				}
-			} else {
+				for(i=0;i<finalObjectSentForTreeView.length;i++) {
+					var currentObj = finalObjectSentForTreeView[i];
+					if(selectedAccountHead.id == currentObj.id)	{
+						if (currentObj.parentType == "ASSET") {
+							selected = 1;
+						} else if (currentObj.parentType == "LIABILITY") {
+							selected = 2;
+						} else if (currentObj.parentType == "EQUITY") {
+							selected = 3;
+						} else if (currentObj.parentType == "INCOME") {
+							selected = 4;
+						} else if (currentObj.parentType == "EXPENSE") {
+							selected = 5;
+						}
+					}
+				} 
+			}else {
 				selected = 0;
 			}
 		}
@@ -1193,6 +1198,109 @@ $( "#glaccountsview").buttonset();
 		} else if ($("input[name='radio']:checked").val() == 'treeView') {
 			$("#coatabs-main").hide();
 			$("#coatabs-tree").show();
+			var glAccountsFetchSuccess = function (data) {
+				var assetObject = new Object();
+				assetObject.id = -1;
+				assetObject.name = "ASSET";
+				assetObject.parentType = "ASSET";
+
+				var liabilitiesObject = new Object();
+				liabilitiesObject.id = -2;
+				liabilitiesObject.name = "LIABILITY";
+				liabilitiesObject.parentType = "LIABILITY";
+
+				var equitiyObject = new Object();
+				equitiyObject.id = -3;
+				equitiyObject.name = "EQUITY";
+				equitiyObject.parentType = "EQUITY";
+
+				var incomeObject = new Object();
+				incomeObject.id = -4;
+				incomeObject.name = "INCOME";
+				incomeObject.parentType = "INCOME";
+
+				var expenseObject = new Object();
+				expenseObject.id = -5;
+				expenseObject.name = "EXPENSE";
+				expenseObject.parentType = "EXPENSE";
+				var finalJson = [];
+				finalJson.push(assetObject);
+				finalJson.push(liabilitiesObject);
+				finalJson.push(equitiyObject);
+				finalJson.push(incomeObject);
+				finalJson.push(expenseObject);
+				
+				for(i=0;i<data.length;i++){
+					var currentObj = data[i];
+					if (currentObj.type.value == "ASSET") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -1;
+						}
+						currentObj.parentType = "ASSET";
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					} else if (currentObj.type.value == "LIABILITY") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -2;
+						}
+						currentObj.parentType = "LIABILITY";
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					} else if (currentObj.type.value == "EQUITY") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -3;
+						}
+						currentObj.parentType = "EQUITY";
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					} else if (currentObj.type.value == "INCOME") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -4;
+						}
+						currentObj.parentType = "INCOME";
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					} else if (currentObj.type.value == "EXPENSE") {
+						if (currentObj.parentId == null) {
+							currentObj.parentId = -5;
+						}
+						currentObj.parentType = "EXPENSE";
+						if(currentObj.tagId != null) delete currentObj.tagId.id;
+						delete currentObj.type.id;
+						delete currentObj.usage.id;
+						finalJson.push(currentObj);
+					}
+
+				}
+				var data = finalJson;
+				finalObjectSentForTreeView = finalJson;
+                // prepare the data
+                var source =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'id' },
+                        { name: 'name' },
+                        { name: 'parentId' }
+                    ],
+                    id: 'id',
+                    localdata: data
+                };
+                // create data adapter.
+                var dataAdapter = new $.jqx.dataAdapter(source);
+                // perform Data Binding.
+                dataAdapter.dataBind();
+                var records = dataAdapter.getRecordsHierarchy('id', 'parentId', 'items', [{ name: 'name', map: 'label'}]);
+                $('#coatabs-tree').jqxTree({ source: records, width: '100%' });
+			}
 			executeAjaxRequest('glaccounts', 'GET', "", glAccountsFetchSuccess, formErrorFunction);
 		};
 	});
