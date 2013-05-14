@@ -5494,9 +5494,15 @@ $(document).ready(function() {
     <label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
     <select id="paymentTypeId" name="paymentTypeId" title="" >
         {{#each paymentTypeOptions}}
-                <option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+                <option value="{{=id}}">{{=$ctx.doI18N(name)}}</option>
         {{/each}}
     </select>
+    
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="3" cols="53" id="note" name="note"></textarea>
+
+    <label>{{=$ctx.doI18N("label.payment.details")}}[<a href="" id="togglePaymentDetail">{{=$ctx.doI18N("label.show")}}</a>]</label>
+    <span></span>
 
     <label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
     <input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail"/> 
@@ -5513,9 +5519,6 @@ $(document).ready(function() {
 
     <label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
     <input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail"/> 
-    
-	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
-	<textarea rows="3" cols="53" id="note" name="note"></textarea>
 </form>
 </script>
 
@@ -5565,17 +5568,23 @@ $(document).ready(function() {
         {{#if paymentDetailData}}
             {{#each paymentTypeOptions}}
                 {{#if $parent.parent.data.paymentDetailData.paymentType.id === id)}}
-                    <option value="{{=id}}" selected="true">{{=$ctx.doI18N(code)}}</option>
+                    <option value="{{=id}}" selected="true">{{=$ctx.doI18N(name)}}</option>
                 {{#else}}
-                     <option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+                     <option value="{{=id}}">{{=$ctx.doI18N(name)}}</option>
                 {{/if}}
             {{/each}}
         {{#else}}
             {{#each paymentTypeOptions}}
-                <option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+                <option value="{{=id}}">{{=$ctx.doI18N(name)}}</option>
             {{/each}}
         {{/if}}
     </select>
+
+    <label for="note">{{=$ctx.doI18N("label.note")}}</label>
+    <textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
+
+    <label>{{=$ctx.doI18N("label.payment.details")}}[<a href="" id="togglePaymentDetail">{{=$ctx.doI18N("label.show")}}</a>]</label>
+    <span></span>
 
     <label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
     {{#if paymentDetailData}}
@@ -5611,9 +5620,6 @@ $(document).ready(function() {
     {{#else}}
         <input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail"/> 
     {{/if}} 
-
-    <label for="note">{{=$ctx.doI18N("label.note")}}</label>
-    <textarea rows="3" cols="53" id="note" name="note" class="text ui-widget-content ui-corner-all"></textarea>
    
 </form>
 </script>
