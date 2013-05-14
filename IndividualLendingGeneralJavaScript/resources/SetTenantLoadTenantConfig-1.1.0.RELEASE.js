@@ -431,8 +431,8 @@ custom.datatablePresentation2 = {
 								"mDataProp": "amount",
 								"aTargets": [8],
 								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
-								{ 
-									if (oData.entryType.value == "CREDIT")										
+								{
+									if (oData.entryType.value == "DEBIT")										
 										$(nTd).html(custom.helperFunctions.decimal(oData.amount, 2));
 									else
 										$(nTd).html('');
@@ -442,8 +442,8 @@ custom.datatablePresentation2 = {
 								"mDataProp": "amount",
 								"aTargets": [9],
 								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
-								{
-									if (oData.entryType.value == "DEBIT")										
+								{ 
+									if (oData.entryType.value == "CREDIT")										
 										$(nTd).html(custom.helperFunctions.decimal(oData.amount, 2));
 									else
 										$(nTd).html('');
