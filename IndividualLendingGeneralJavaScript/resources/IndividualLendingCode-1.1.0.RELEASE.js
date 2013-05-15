@@ -3831,7 +3831,19 @@ function showCenter(centerId){
 				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, loanType );
 			});
 			
-			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+			//setting the minimum submission date
+			var fetchActivationDateSuccess = function (data, textStatus, jqXHR) {
+				activationDate = new Date(data.activationDate[0], data.activationDate[1]-1, data.activationDate[2]); 
+                $('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0,minDate: activationDate ,maxDate: 0, dateFormat: custom.datePickerDateFormat});							
+			}
+			
+			if(!(clientId === undefined)){
+				executeAjaxRequest('clients/' + clientId + '/?clientId=' + clientId, 'GET', "", fetchActivationDateSuccess , formErrorFunction);
+			}else if(!(group === undefined)){
+				executeAjaxRequest('groups/' + group.id + '/?groupId=' + group.id, 'GET', "", fetchActivationDateSuccess , formErrorFunction);
+ 			}else{
+ 				$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+ 			}
 			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 			
 			var chargeIndex = 0;
