@@ -4938,7 +4938,7 @@ $(document).ready(function() {
 	{{/if}}
 
 	<div id="schedule{{=id}}" style="margin-top: 5px;">
-	<span><button id="printSchedule{{=id}}" class="printSchedule" style="float:right; width:40px; height:40px;">Print</button></span>
+	<span><button id="printSchedule{{=id}}" class="printSchedule" style="float:right">Print</button></span>
 		{{#each summary}}
 		<table id="summarytable{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("table.summary.caption")}}</caption>
@@ -5047,7 +5047,7 @@ $(document).ready(function() {
 		{{/each}}
 		<br/>
 		{{#each repaymentSchedule}}
-		<table id="repaymentschedule_todate{{=$parent.data.id}}" class="pretty displayschedule">
+		<table id="repaymentschedule_todate{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("table.caption.repaymentSchedule")}}</caption>
 			<colgroup span="3"></colgroup>
 			<colgroup span="3">
