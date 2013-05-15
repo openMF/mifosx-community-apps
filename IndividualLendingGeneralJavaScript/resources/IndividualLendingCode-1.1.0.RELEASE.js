@@ -183,7 +183,7 @@ function showMainContainer(containerDivName, username) {
 
 	var htmlVar = '<div id="logowrapper">';
 	htmlVar += '	<span style="float: left">';
-	htmlVar += '		<img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/>';
+	htmlVar += '		<img style="float:left; border: 0;" alt="" src="resources/mifosx.jpg"/>';
 	htmlVar += '	</span>';
 	htmlVar += '</div>';
 	htmlVar += '<div id="navwrapper">';
@@ -353,11 +353,11 @@ function globalsearch(){
 }
 
 function showLogon(logonDivName) {
-	var htmlVar = '<div id=theLogonForm><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/><div id=appTitle>' + doI18N("app.name") + ' - ' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</div>';
-	htmlVar += '<form name = "logonform"><table id=logonTable><tr><td>' + doI18N("label.username") + '</td><td><input type="text" name="username"></td></tr>';
-	htmlVar += '<tr><td>' + doI18N("label.password") + '</td><td><input type="password" name="pwd" onKeyPress="return checkSubmit(event, ' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td></tr>';
-	htmlVar += '<tr><td><input type="button" value="Logon" name="Submit" ';
-	htmlVar += 'onclick= "setBasicAuthKey(' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></td><td></td></tr></table></form>';
+	var htmlVar = '<div id="theLogonForm"><form name = "logonform" id="logonform"><h5><img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/>' + doI18N("app.name") + ' <br><br> ' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</h5>';
+	htmlVar += '<fieldset id="inputs"><input type="text" id="username" name="username" placeholder="' + doI18N("label.username") + '" autofocus required>';
+	htmlVar += '<input type="password"  id="password" name="pwd" placeholder="' + doI18N("label.password") + '" onKeyPress="return checkSubmit(event, ' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )" required> </fieldset>';
+	htmlVar += '<fieldset id="actions"><input type="button" value="Logon" id="submit" name="Submit" ';
+	htmlVar += 'onclick= "setBasicAuthKey(' + "'" + logonDivName + "'" + ', document.logonform.username.value, document.logonform.pwd.value )"></fieldset></form>';
 	htmlVar += '<div id=formerrors></div></div>';
 
 	$("#" + logonDivName).html(htmlVar);
@@ -1031,13 +1031,130 @@ function handleCOATabSelection(){
 	    });
 
 	};
+	var glAccountsFetchSuccess = function (data) {
+		var assetObject = new Object();
+		assetObject.id = -1;
+		assetObject.name = "ASSET";
 
+		var liabilitiesObject = new Object();
+		liabilitiesObject.id = -2;
+		liabilitiesObject.name = "LIABILITY";
 
+		var equitiyObject = new Object();
+		equitiyObject.id = -3;
+		equitiyObject.name = "EQUITY";
+
+		var incomeObject = new Object();
+		incomeObject.id = -4;
+		incomeObject.name = "INCOME";
+
+		var expenseObject = new Object();
+		expenseObject.id = -5;
+		expenseObject.name = "EXPENSE";
+		var finalJson = [];
+		finalJson.push(assetObject);
+		finalJson.push(liabilitiesObject);
+		finalJson.push(equitiyObject);
+		finalJson.push(incomeObject);
+		finalJson.push(expenseObject);
+		
+		for(i=0;i<data.length;i++){
+			var currentObj = data[i];
+			if (currentObj.type.value == "ASSET") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -1;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			} else if (currentObj.type.value == "LIABILITY") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -2;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			} else if (currentObj.type.value == "EQUITY") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -3;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			} else if (currentObj.type.value == "INCOME") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -4;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			} else if (currentObj.type.value == "EXPENSE") {
+				if (currentObj.parentId == null) {
+					currentObj.parentId = -5;
+				}
+				if(currentObj.tagId != null) delete currentObj.tagId.id;
+				delete currentObj.type.id;
+				delete currentObj.usage.id;
+				finalJson.push(currentObj);
+			}
+
+		}
+		var data = finalJson;
+		// prepare the data
+		var source =
+		{
+			datatype: "json",
+			datafields: [
+				{ name: 'id' },
+				{ name: 'name' },
+				{ name: 'parentId' }
+			],
+			id: 'id',
+			localdata: data
+		};
+		// create data adapter.
+		var dataAdapter = new $.jqx.dataAdapter(source);
+		// perform Data Binding.
+		dataAdapter.dataBind();
+		var records = dataAdapter.getRecordsHierarchy('id', 'parentId', 'items', [{ name: 'name', map: 'label'}]);
+		$('#coatabs-tree').jqxTree({ source: records, width: '100%' });
+	}
+
+	var finalObjectSentForTreeView;
 	/** Onclick function for adding a new GL Account */
 	$("#addglaccount").button({icons: {
 	    primary: "ui-icon-circle-plus"}
 	    }).click(function(e){
-		var selected = $("#coatabs-main").tabs('option', 'selected');
+	    var selected = 0;
+    	if ($("input[name='radio']:checked").val() == 'listView') {
+			selected = $("#coatabs-main").tabs('option', 'selected');
+		} else if ($("input[name='radio']:checked").val() == 'treeView') {
+			var selectedAccountHead = $("#coatabs-tree").jqxTree('selectedItem');
+			if (selectedAccountHead != null) {
+				for(i=0;i<finalObjectSentForTreeView.length;i++) {
+					var currentObj = finalObjectSentForTreeView[i];
+					if(selectedAccountHead.id == currentObj.id)	{
+						if (currentObj.parentType == "ASSET") {
+							selected = 1;
+						} else if (currentObj.parentType == "LIABILITY") {
+							selected = 2;
+						} else if (currentObj.parentType == "EQUITY") {
+							selected = 3;
+						} else if (currentObj.parentType == "INCOME") {
+							selected = 4;
+						} else if (currentObj.parentType == "EXPENSE") {
+							selected = 5;
+						}
+					}
+				} 
+			}else {
+				selected = 0;
+			}
+		}
 	  	var getUrl = 'glaccounts/template?type='+selected;
 		var putUrl = "glaccounts";
 		var templateSelector = "#glAccountsFormTemplate";
@@ -1047,8 +1164,12 @@ function handleCOATabSelection(){
 		// update currently selected div if onclick function succeeds
 		var saveSuccessFunction = function(data, textStatus, jqXHR) {
 		  	$("#dialog-form").dialog("close");
-			$(divToUpdate).html('');
-		  	fetchGLAccount(selected);
+		  	if ($("input[name='radio']:checked").val() == 'listView') {
+				$(divToUpdate).html('');
+		  		fetchGLAccount(selected);
+			} else if ($("input[name='radio']:checked").val() == 'treeView') {
+				executeAjaxRequest('glaccounts', 'GET', "", glAccountsFetchSuccess, formErrorFunction);
+			}
 		}
 
 		popupDialogWithFormView(getUrl, putUrl, 'POST', "dialog.title.glAccountsFormTemplate.add.account", templateSelector, width, height,  saveSuccessFunction);
@@ -1081,22 +1202,27 @@ $( "#glaccountsview").buttonset();
 				var assetObject = new Object();
 				assetObject.id = -1;
 				assetObject.name = "ASSET";
+				assetObject.parentType = "ASSET";
 
 				var liabilitiesObject = new Object();
 				liabilitiesObject.id = -2;
 				liabilitiesObject.name = "LIABILITY";
+				liabilitiesObject.parentType = "LIABILITY";
 
 				var equitiyObject = new Object();
 				equitiyObject.id = -3;
 				equitiyObject.name = "EQUITY";
+				equitiyObject.parentType = "EQUITY";
 
 				var incomeObject = new Object();
 				incomeObject.id = -4;
 				incomeObject.name = "INCOME";
+				incomeObject.parentType = "INCOME";
 
 				var expenseObject = new Object();
 				expenseObject.id = -5;
 				expenseObject.name = "EXPENSE";
+				expenseObject.parentType = "EXPENSE";
 				var finalJson = [];
 				finalJson.push(assetObject);
 				finalJson.push(liabilitiesObject);
@@ -1110,6 +1236,7 @@ $( "#glaccountsview").buttonset();
 						if (currentObj.parentId == null) {
 							currentObj.parentId = -1;
 						}
+						currentObj.parentType = "ASSET";
 						if(currentObj.tagId != null) delete currentObj.tagId.id;
 						delete currentObj.type.id;
 						delete currentObj.usage.id;
@@ -1118,6 +1245,7 @@ $( "#glaccountsview").buttonset();
 						if (currentObj.parentId == null) {
 							currentObj.parentId = -2;
 						}
+						currentObj.parentType = "LIABILITY";
 						if(currentObj.tagId != null) delete currentObj.tagId.id;
 						delete currentObj.type.id;
 						delete currentObj.usage.id;
@@ -1126,6 +1254,7 @@ $( "#glaccountsview").buttonset();
 						if (currentObj.parentId == null) {
 							currentObj.parentId = -3;
 						}
+						currentObj.parentType = "EQUITY";
 						if(currentObj.tagId != null) delete currentObj.tagId.id;
 						delete currentObj.type.id;
 						delete currentObj.usage.id;
@@ -1134,6 +1263,7 @@ $( "#glaccountsview").buttonset();
 						if (currentObj.parentId == null) {
 							currentObj.parentId = -4;
 						}
+						currentObj.parentType = "INCOME";
 						if(currentObj.tagId != null) delete currentObj.tagId.id;
 						delete currentObj.type.id;
 						delete currentObj.usage.id;
@@ -1142,6 +1272,7 @@ $( "#glaccountsview").buttonset();
 						if (currentObj.parentId == null) {
 							currentObj.parentId = -5;
 						}
+						currentObj.parentType = "EXPENSE";
 						if(currentObj.tagId != null) delete currentObj.tagId.id;
 						delete currentObj.type.id;
 						delete currentObj.usage.id;
@@ -1150,6 +1281,7 @@ $( "#glaccountsview").buttonset();
 
 				}
 				var data = finalJson;
+				finalObjectSentForTreeView = finalJson;
                 // prepare the data
                 var source =
                 {
@@ -1667,7 +1799,7 @@ function showCenterListing(){
 
 //HOME list groups functionality
 function applyGroupSearchFilter(officeHierarchy) {
-	//re-render client drop down data
+	//re-render group drop down data
 	var searchSuccessFunction =  function(data) {
 		var searchObject = new Object();
 		searchObject.crudRows = data;
@@ -2166,6 +2298,11 @@ function applyCenterSearchFilter(officeHierarchy) {
 	    centerSearchObject.crudRows = data;
 		var tableHtml = $("#allCentersListTemplate").render(centerSearchObject);
 		$("#centersInScopeDiv").html(tableHtml);
+
+		$('#centerId').change(function() {
+			showCenter($(this).val());
+		});
+
 	};
 	var sqlSearchValue = "o.hierarchy like '"+ officeHierarchy +"%'";
 	executeAjaxRequest("centers?underHierarchy=" + encodeURIComponent(officeHierarchy), 'GET', "", centerSearchSuccessFunction, formErrorFunction);
@@ -3811,6 +3948,10 @@ function showCenter(centerId){
 		if (!serializedArray["charges"]) {
 			serializedArray["charges"] = new Array();
 		}
+
+		if (!serializedArray["paymentChannelToFundSourceMappings"]) {
+			serializedArray["paymentChannelToFundSourceMappings"] = new Array();
+		}
 		
 		var newFormData = JSON.stringify(serializedArray);
 		
@@ -3944,7 +4085,50 @@ function showCenter(centerId){
 	  			    }else if (data.accountingRule.value == "ACCRUAL BASED"){
 	  			    	 showAccrualFinancialPlaceholders();
 	  			    }
-		  			
+
+	  			    //hide advanced accounting div on page load (and setup toggle functionality)
+	  			    $('#advancedAccountingRulesDiv').hide();
+		            $('#toggleAdvancedAccountingOptions').toggle(function(e) {
+				    	$('#advancedAccountingRulesDiv').show();
+				    	$('#toggleAdvancedAccountingOptions').text(doI18N('label.hide'));
+				    	e.preventDefault();
+				    }, function(e) {
+					    $('#advancedAccountingRulesDiv').hide();
+					    $('#toggleAdvancedAccountingOptions').text(doI18N('label.show'));
+					    e.preventDefault();
+				  	});
+
+				  	//initialize button for adding new "payment Type to Fund source mappings"
+				  	var paymentChannelToFundSourceMappingIndex = 0;
+					if(undefined === data.paymentChannelToFundSourceMappings || data.paymentChannelToFundSourceMappings === null) {
+						paymentChannelToFundSourceMappingIndex = 0;
+					} else {
+						paymentChannelToFundSourceMappingIndex = data["paymentChannelToFundSourceMappings"].length;
+						//initialize all delete buttons for "payment Type to Fund source mappings"
+						$("#paymentChannelToFundSourceMappingTable tbody tr .removePaymentChannelToFundSourceMappings").each(function(index) {
+							 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						});
+					}
+				  	$("#addPaymentChannelToFundSourceMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+						paymentChannelToFundSourceMappingIndex++;
+						var crudObject = new Object();
+						crudObject["index"] = paymentChannelToFundSourceMappingIndex;
+						crudObject["paymentTypeOptions"] = data.paymentTypeOptions;
+						crudObject["assetAccountOptions"] = data["accountingMappingOptions"]["assetAccountOptions"];
+						var paymentChannelToFundSourceMappingHtml = $("#loanProductAddPaymentChannelToFundSourceRowTemplate").render(crudObject);
+						$("#paymentChannelToFundSourceMappingTable tbody").append(paymentChannelToFundSourceMappingHtml);
+			  		
+						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					    e.preventDefault();
+					});
+
+	  			
 		  			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 					
@@ -4687,6 +4871,15 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.closeloan span').text(doI18N('button.loan.close'));
 					
+				$(".printSchedule").button({icons: {
+		            primary: "ui-icon-print"},
+					text: false
+		            }).click(function(e){
+					var loanId=	this.offsetParent.id.replace("loantabs","");
+					$("#schedule"+loanId).printThis();
+					e.preventDefault();
+			      });	
+					
 				$('.adjustloanrepayment').button({
                     icons : {
                         primary : "ui-icon-pencil"
@@ -4940,42 +5133,14 @@ function loadTransactionForm(){
 	//initially hide all payment details
 	$('.paymentDetail').hide();
 
-	var showEFTPaymentDetails = function() {
-	    $('.accountDetail').show();
-	  	$('.routingCodeDetail').show();
-	};
-
-	var showReceiptPaymentDetails = function() {
-	   $('.receiptDetail').show();
-	   $('.bankDetail').show();
-	};
-
-	var showCheckPaymentDetails = function() {
-		$('.accountDetail').show();
-	  	$('.checkDetail').show();
-	  	$('.routingCodeDetail').show();
-	};
-
-	var showDetailFieldsBasedOnPaymentType = function() {
-		var selectedPaymentTypeId = $('#paymentTypeId').val();
+	$('#togglePaymentDetail').toggle(function(e) {
+		$('.paymentDetail').show();
+		$('#togglePaymentDetail').text(doI18N('label.hide'));
+		e.preventDefault();
+	}, function(e) {
 		$('.paymentDetail').hide();
-		//behavior for checks
-	  	if( selectedPaymentTypeId == 2){
-	  		showCheckPaymentDetails();
-	  	}//behavior for receipts
-	  	else if (selectedPaymentTypeId == 3){
-	  		showReceiptPaymentDetails();
-	  	}//behavior for EFT
-	  	else if (selectedPaymentTypeId == 4){
-  			showEFTPaymentDetails();
-	  	}
-	}
-
-	showDetailFieldsBasedOnPaymentType();
-
-	//on change function for payment type Id
-	$('#paymentTypeId').change(function(e) {
-	   showDetailFieldsBasedOnPaymentType();
+		$('#togglePaymentDetail').text(doI18N('label.show'));
+		e.preventDefault();
 	});
 }
 
@@ -7607,7 +7772,9 @@ function showCollectionSheet() {
                     });
 
                     $("#officeId").change(function(){
-                        loadAssociatedGroups($(this).val());
+                    	$('#continuebtn').attr('disabled','disabled');
+                        loadCentersAssociatedToOffice($(this).val());
+                        loadGroupsAssociatedToOffice($(this).val());
                     })
                 };
                 executeAjaxRequest('offices', 'GET', "", officeSuccessFunction, formErrorFunction);
@@ -7619,8 +7786,17 @@ function showCollectionSheet() {
                         primary: "ui-icon-circle-arrow-e"
                     }
                  }).click(function(e){
-                     loadCollectionSheet($('#groupId').val());
+                 	var centerId = $('#centerId').val();
+                 	var groupId = $('#groupId').val();
+                 	if(!(centerId === undefined || centerId === "0") && (groupId === undefined || groupId === "0")){
+                 		loadCenterCollectionSheet(centerId);	
+                 	}else{
+                 		loadGroupCollectionSheet(groupId);
+                 	}
+                     e.preventDefault();
                  });
+
+                 $('#continuebtn').attr('disabled','disabled');
             }
             initCollectionSheet();
         }
@@ -7636,28 +7812,209 @@ function setCollectionSheetContent(divName) {
     $("#" + divName).html(htmlVar);
 }
 
-function loadAssociatedGroups(officeId){
+function loadCentersAssociatedToOffice(officeId){
 
-    var csGroupSearchSuccessFunction =  function(data) {
-        var groupObject = new Object();
-        groupObject.crudRows = data;
+    var centersSuccessFunction =  function(data) {
+        var centerObject = new Object();
+        centerObject.crudRows = data.pageItems;
 
-        $('#groupId').empty().append(function(){
-            var output = '<option value=0> -- Select a Branch Office -- </option>';
-            $.each(groupObject.crudRows, function(key, value){
+        $('#centerId').empty().append(function(){
+            var output = '<option value=0> -- Select a Center -- </option>';
+            $.each(centerObject.crudRows, function(key, value){
                output += '<option value=' + value.id + '>' + value.name + '</option>';
             });
             return output;
         });        
+
+        $("#centerId").change(function(){
+            loadCenterMeetingCalendarForCollectionsheet($(this).val());
+            loadGroupsAssociatedToCenter($(this).val());
+            $('#continuebtn').removeAttr('disabled');
+        })
+
+        if(centerObject.crudRows.length === 1){
+        	$('select[name=centerId] option:eq(1)').attr('selected', 'selected');
+        	$('#centerId').trigger('change');	
+        }
+        
+    };
+    clearMeetingCalendarsAndDueDate();
+    executeAjaxRequest('centers?officeId=' + officeId, 'GET', "", centersSuccessFunction, formErrorFunction);
+}
+
+function loadGroupsAssociatedToCenter(centerId){
+
+    var csGroupSearchSuccessFunction =  function(data) {
+        var groupObject = new Object();
+        groupObject.crudRows = data.pageItems;
+
+        $('#groupId').empty().append(function(){
+            var output = '<option value=0> -- Select a Group -- </option>';
+            $.each(groupObject.crudRows, function(key, value){
+               output += '<option value=' + value.id + '>' + value.name + '</option>';
+            });
+            return output;
+        });    
+
+        $("#groupId").change(function(){
+			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
+        })    
+
+        if(groupObject.crudRows.length === 1){
+        	$('select[name=groupId] option:eq(1)').attr('selected', 'selected');
+        	$('#groupId').trigger('change');	
+        }
+    };
+    clearMeetingCalendarsAndDueDate();
+    executeAjaxRequest('groups?sqlSearch=g.parent_id = ' + centerId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
+}
+
+function loadGroupsAssociatedToOffice(officeId){
+
+    var csGroupSearchSuccessFunction =  function(data) {
+        var groupObject = new Object();
+        groupObject.crudRows = data.pageItems;
+
+        $('#groupId').empty().append(function(){
+            var output = '<option value=0> -- Select a Group -- </option>';
+            $.each(groupObject.crudRows, function(key, value){
+               output += '<option value=' + value.id + '>' + value.name + '</option>';
+            });
+            return output;
+        });    
+
+        $("#groupId").change(function(){
+			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
+        })    
     };
     executeAjaxRequest('groups?officeId=' + officeId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
 }
 
-function loadCollectionSheet(groupId){
+function loadCenterMeetingCalendarForCollectionsheet(centerId){
+	var getUrl = 'centers/' + centerId + '/calendars';
+	loadMeetingCalendarForCollectionsheet(getUrl);
+}
+
+function loadGroupMeetingCalendarForCollectionsheet(groupId){
+	var getUrl = 'groups/' + groupId + '/calendars?associations=parentCalendars';
+	loadMeetingCalendarForCollectionsheet(getUrl);
+}
+
+function loadMeetingCalendarForCollectionsheet(getUrl){
+
+	var calendarSuccessFunction = function(data, textStatus, jqXHR){
+		var calendars = new Object();
+	    calendars.crudRows = data;
+	    var output = "";
+	    if(calendars.crudRows.length > 1){
+	    	output = '<option value=0> -- Select a meeting -- </option>';
+	    }
+
+	    $('#calendarId').empty().append(function(){
+	        
+	        $.each(calendars.crudRows, function(key, value){
+	            output += '<option value=' + value.id + '>' + value.title + ' - ';
+	            if(value.entityType.value === 'CLIENTS'){
+	                output += doI18N("label.select.calendar.client");
+	            } else if(value.entityType.value === 'CENTERS'){
+	                output += doI18N("label.select.calendar.center");
+	            } else if(value.entityType.value === 'GROUPS'){
+	                output += doI18N("label.select.calendar.group");
+	            } else if(value.entityType.value === 'LOANS'){
+	                output += doI18N("label.select.calendar.loan");
+	            }
+	                
+	            output += '</option>';
+	        });
+	        return output;
+	    });		
+
+	    $('#calendarId').change(function(){
+	        var calendarId = $(this).val();
+	        if(calendarId !== 0){
+	        
+	            //set first recurring date as expected disbursal date
+	            var selectedCalendars = $.grep(calendars.crudRows, function(n, i) {
+	                return n.id == calendarId;
+	            });
+	        
+	            if (selectedCalendars.length > 0) {
+	                var selectedCalendar = selectedCalendars[0];//get calendar from array
+	                var recurringDates = selectedCalendar.nextTenRecurringDates;
+	                var firstDate = recurringDates[0];//First recurring date
+	                
+	                $( '#dueDate' ).val(custom.helperFunctions.globalDate(firstDate));
+	            }
+	        }
+	    });
+
+	    var availableDate = function(date) {
+	          
+	        var recurringDates = [];
+	        var selectedcals = $.grep(calendars.crudRows, function(n, i) {
+	            return n.id == $("#calendarId").val();
+	        });
+	    	
+	        if (selectedcals.length > 0) {
+	            var selcal = selectedcals[0];
+	            var recudatearr = selcal.recurringDates;
+	            $.each(recudatearr, function(n,i){
+	                var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
+	                //alert(newdate);
+	                recurringDates[n] = newdate;
+	            });
+	        }
+	        
+	        var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
+
+	        if ($.inArray(ymd, recurringDates) < 0 ) {
+	            return [false, "","unAvailable"];
+	        } else {
+	            return [true,"","Available"];
+	        }
+	    }
+
+	    $( '#dueDate' ).datepicker( "destroy" );
+	    $('#dueDate').datepicker({ dateFormat: custom.datePickerDateFormat, maxDate: 0, beforeShowDay: availableDate});
+	    
+	 	if(calendars.crudRows.length === 1){
+	    	//if meeting is not attached then only trigger change event
+	    	$('#calendarId').trigger('change');
+	    }
+	}
+
+	executeAjaxRequest(getUrl, 'GET', "", calendarSuccessFunction, formErrorFunction);
+}
+
+function clearMeetingCalendarsAndDueDate(){
+
+	    $('#calendarId').empty().append(function(){
+			var output = '<option value=0> -- Select a meeting -- </option>';	        
+	        return output;
+	    });		
+	    $('.datepickerfieldnoconstraint').datepicker( "destroy" );
+	    $('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+	    $('.datepickerfieldnoconstraint').datepicker('setDate', null);
+}
+
+function loadCenterCollectionSheet(centerId){
+	var postUrl = 'centers/' + centerId;
+	loadCollectionSheet(postUrl);
+}
+
+function loadGroupCollectionSheet(groupId){
+	var postUrl = 'groups/' + groupId;
+	loadCollectionSheet(postUrl);
+}
+
+function loadCollectionSheet(postUrl){
 	removeErrors('#formerrors');
-    var date = $.datepicker.formatDate('yymmdd', $('#dueDate').datepicker( "getDate" ));
-    var getUrl = 'groups/' + groupId + '/collectionsheet?dueDate=' + date;
-    var postUrl = 'groups/' + groupId + '/collectionsheet';
+
+	var serializedArray = {};
+	serializedArray["locale"] = $('#locale').val();
+   	serializedArray["dateFormat"] = $('#dateFormat').val();
+    serializedArray["dueDate"] = $('#dueDate').val();
+    var newFormData = JSON.stringify(serializedArray);
     $("#collectionSheetContent").html("");
     var successFunction = function(data){
         var collections = new Object();
@@ -7707,11 +8064,12 @@ function loadCollectionSheet(groupId){
         });
 
         var saveCollectionSheetTransactions = function(postUrl){
-            serializedArray = {};
+            var serializedArray = {};
             serializedArray["locale"] = $('#locale').val();
             serializedArray["dateFormat"] = $('#dateFormat').val();
             serializedArray["transactionDate"] = $('#dueDate').val();
             serializedArray["actualDisbursementDate"] = $('#dueDate').val();
+            serializedArray["note"] = $('#note').val();
             serializedArray["bulkRepaymentTransactions"] = new Array();
             $.each($('.grouptotaldue'), function(i){
                 var transactionAmount = $(this).val();
@@ -7723,7 +8081,7 @@ function loadCollectionSheet(groupId){
             });
             
             serializedArray["bulkDisbursementTransactions"] = new Array();
-            $.each($('.grouptotaldisbursement'), function(i){
+            $.each($('.grouptotaldisbursal'), function(i){
                 var transactionAmount = $(this).val();
                 var loanId = this.id.replace("disbursement_", "");
                 var tempObject = new Object();
@@ -7737,7 +8095,7 @@ function loadCollectionSheet(groupId){
             }
             
             var newFormData = JSON.stringify(serializedArray);
-            executeAjaxRequest(postUrl, "post", newFormData, saveSuccessFunction, formErrorFunction);
+            executeAjaxRequest(postUrl + '?command=saveCollectionSheet', "post", newFormData, saveSuccessFunction, formErrorFunction);
         }
 
         $('#savebtn').button({
@@ -7761,5 +8119,6 @@ function loadCollectionSheet(groupId){
         $(".collections td:last-child").addClass('righthighlightcolheader');
         $(".collections th:last-child").addClass('righthighlightcolheader');
     }
-    executeAjaxRequest(getUrl, 'GET', "", successFunction, formErrorFunction);
+    executeAjaxRequest(postUrl + '?command=generateCollectionSheet', "post", newFormData, successFunction, formErrorFunction);
+
 }

@@ -339,8 +339,19 @@ custom.datatablePresentation2 = {
 				        "aTargets":  [0]
 				    },
 				    {
+				    	"mDataProp": "status.code",
+				    	"aTargets": [1],
+				    	/** Display the client status traffic light */
+				    	"fnCreatedCell":function(nTd, sData, oData, iRow, iCol)
+				    	{
+				    		var src="resources/img/" + sData + ".gif";
+				    		var title=doI18N(sData);
+				    		$(nTd).html('<img src="' + src + '" title="' + title + '"/>&nbsp;' + title);
+				    	}
+				    },
+				    {
 				        "mDataProp": "accountNo",
-				        "aTargets": [1],
+				        "aTargets": [2],
 				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
 				        {
 				        	$(nTd).html('<a id="navigateToClient'+oData.id+'" href="#" onclick="showILClient('+oData.id+');">'+sData+'</a>');
@@ -348,11 +359,11 @@ custom.datatablePresentation2 = {
 				    },
 				    {
 				        "mDataProp": "displayName",
-				        "aTargets": [2]
+				        "aTargets": [3]
 				    },
 				    {
 				        "mDataProp": "id",
-				        "aTargets": [3],
+				        "aTargets": [4],
 				        "bVisible":false
 				    }],
 	"centerstable":	[{
@@ -360,8 +371,16 @@ custom.datatablePresentation2 = {
 				        "aTargets":  [0]
 				    },
 				    {
-				        "mDataProp": "name",
+				        "mDataProp": "status",
 				        "aTargets": [1],
+						"bSortable": false,
+						"mRender": function (data, type, full) {
+							return '<img src="resources/img/' + data.code + '.gif"/>&nbsp;' + data.value;
+						}
+				    },
+				    {
+				        "mDataProp": "name",
+				        "aTargets": [2],
 				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
 				        {
 				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showCenter('+oData.id+');">'+sData+'</a>');
@@ -372,8 +391,16 @@ custom.datatablePresentation2 = {
 				        "aTargets":  [0]
 				    },
 				    {
-				        "mDataProp": "name",
+				        "mDataProp": "status",
 				        "aTargets": [1],
+						"bSortable": false,
+						"mRender": function (data, type, full) {
+							return '<img src="resources/img/' + data.code + '.gif"/>&nbsp;' + data.value;
+						}
+				    },
+				    {
+				        "mDataProp": "name",
+				        "aTargets": [2],
 				        "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
 				        {
 				        	$(nTd).html('<a id="navigateToGroup'+oData.id+'" href="#" onclick="showGroup('+oData.id+');">'+sData+'</a>');
@@ -420,8 +447,8 @@ custom.datatablePresentation2 = {
 								"mDataProp": "amount",
 								"aTargets": [8],
 								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
-								{ 
-									if (oData.entryType.value == "CREDIT")										
+								{
+									if (oData.entryType.value == "DEBIT")										
 										$(nTd).html(custom.helperFunctions.decimal(oData.amount, 2));
 									else
 										$(nTd).html('');
@@ -431,8 +458,8 @@ custom.datatablePresentation2 = {
 								"mDataProp": "amount",
 								"aTargets": [9],
 								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
-								{
-									if (oData.entryType.value == "DEBIT")										
+								{ 
+									if (oData.entryType.value == "CREDIT")										
 										$(nTd).html(custom.helperFunctions.decimal(oData.amount, 2));
 									else
 										$(nTd).html('');
@@ -490,9 +517,12 @@ custom.datatablePresentation2 = {
 				        "aTargets":  [0]
 				    },
 				    {
-				        "mDataProp": "status.value",
+				        "mDataProp": "status",
 				        "aTargets": [1],
-						"bSortable": false
+						"bSortable": false,
+						"mRender": function (data, type, full) {
+							return '<img src="resources/img/' + data.code + '.gif"/>&nbsp;' + data.value;
+						}
 				    },
 					{
 				        "mDataProp": "loanProductName",
