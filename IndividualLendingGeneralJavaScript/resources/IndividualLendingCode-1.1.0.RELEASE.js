@@ -4876,7 +4876,7 @@ function loadLoan(loanId, parenttab) {
 					text: false
 		            }).click(function(e){
 					var loanId=	this.offsetParent.id.replace("loantabs","");
-					$("#repaymentschedule_todate"+loanId).printThis();
+					$("#schedule"+loanId).printThis();
 					e.preventDefault();
 			      });	
 					
