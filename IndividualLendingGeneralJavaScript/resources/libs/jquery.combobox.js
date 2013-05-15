@@ -37,7 +37,7 @@
 							// remove invalid value, as it didn't match anything
 							$(this).val("");
 							select.val("");
-							input.data("autocomplete").term = "";
+							input.data("ui-autocomplete").term = "";
 							return false;
 						}
 					}
