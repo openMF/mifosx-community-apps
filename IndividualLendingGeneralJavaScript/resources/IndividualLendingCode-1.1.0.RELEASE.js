@@ -2913,7 +2913,7 @@ function showGroup(groupId){
 						var linkId = this.id;
 						var groupId = linkId.replace("unassignstafftogroup", "");
 						var staffId = $('#staffId').val();
-						var postUrl = 'groups/'+ groupId +'/command/unassign_staff';
+						var postUrl = 'groups/'+ groupId +'?command=unassignStaff';
 						var getUrl = ""
 						
 						var templateSelector = "#loanUnassignmentFormTemplate";
