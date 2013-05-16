@@ -1621,13 +1621,13 @@ function saveGroup(divContainer, groupId) {
 	var serializationOptions = {};
 	serializationOptions["checkboxesAsBools"] = true;
 	
-	$('#notSelectedClients option').each(function(i) {
+/*	$('#notSelectedClients option').each(function(i) {
 		$(this).attr("selected", "selected");
 	});
 	$('#clientMembers option').each(function(i) {
 		$(this).attr("selected", "selected");
 	});
-	
+*/	
 	var serializedArray = {};
 	serializedArray = $('#entityform').serializeObject(serializationOptions);
 	
@@ -1748,6 +1748,63 @@ function launchGroupDialog(groupId) {
 	} else {
 		executeAjaxRequest('groups/template', 'GET', "", launchStandardGroupDialogOnSuccessFunction, formErrorFunction);		
 	}
+}
+
+function saveAssociateClientsToGroup(divContainer, groupId) {
+	var serializationOptions = {};
+	
+	$('#notSelectedClients option').each(function(i) {
+		$(this).attr("selected", "selected");
+	});
+	$('#clientMembers option').each(function(i) {
+		$(this).attr("selected", "selected");
+	});
+	
+	var serializedArray = {};
+	serializedArray = $('#entityform').serializeObject(serializationOptions);
+	
+	var newFormData = JSON.stringify(serializedArray);
+	
+	var successFunction =  function(data, textStatus, jqXHR) {
+		divContainer.dialog("close");
+		showGroup(groupId);
+	};
+	executeAjaxRequest('groups/' + groupId + '?command=associateClients', "POST", newFormData, successFunction, formErrorFunction);
+}
+
+var launchAssociateClientsToGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+
+	var groupId = data.id;
+	
+	var templateIdentifier = "#associateClientsToGroupFormTemplate";
+	
+	var openAssociateClientsToGroupDialogFunc = function (event, ui) {
+		var formHtml = $(templateIdentifier).render(data);
+		$("#dialog-form").html(formHtml);
+		
+		$('.multiadd').click(function() {  
+			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#clientMembers');  
+		});
+		
+		$('.multiremove').click(function() {  
+			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
+		});
+		
+		$("#entityform textarea").first().focus();
+		$('#entityform input').first().focus();
+	}
+	
+	var saveAssociateClientsToGroupFunc = function() {
+		saveAssociateClientsToGroup(dialogDiv, groupId);
+	};
+
+	var dialog = gernericDialog(dialogDiv, 'dialog.title.associate.clients', 900, 500, openAssociateClientsToGroupDialogFunc, saveAssociateClientsToGroupFunc);	
+}
+
+function associateClientsToGroup(groupId){
+	executeAjaxRequest('groups/' + groupId + '?template=true&associations=clientMembers', 'GET', "", launchAssociateClientsToGroupDialogOnSuccessFunction, formErrorFunction);	
 }
 
 function launchCenterGroupDialog(groupId) {
@@ -2523,6 +2580,16 @@ function showGroup(groupId){
 				e.preventDefault();
 			});
 
+			$('.associateclientbtn').button().click(function(e){
+				var linkId = this.id;
+				var groupId = linkId.replace("associateclientbtn", "");
+
+				var officeId = data.officeId;
+
+				associateClientsToGroup(groupId);
+				e.preventDefault();
+			});
+
 			$('.addclientbtn').button().click(function(e){
 				var linkId = this.id;
 				var groupId = linkId.replace("addclientbtn", "");
@@ -2635,7 +2702,13 @@ function showGroup(groupId){
             launchJLGLoanApplicationDialog(clientId, groupId);
             e.preventDefault();
 		});
-			
+		$('.disassociateClient	').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
+			var linkId = this.id;
+            var clientId = linkId.replace("disassociateClient", "");
+            var groupId = currentGroupId;
+            disassociateClientFromGroup(clientId, groupId);
+            e.preventDefault();
+		});
 	
 	}
 
@@ -2645,6 +2718,23 @@ function showGroup(groupId){
     };
     
 	executeAjaxRequest(groupUrl + '?associations=clientMembers', 'GET', "", successFunction, errorFunction);
+}
+
+function disassociateClientFromGroup(clientId, groupId){
+	var postUrl = 'groups/' + groupId + '?command=disassociateClients';
+	serializedArray = {};
+    serializedArray["clientMembers"] = [clientId];
+
+    var saveSuccessFunction = function(data){
+        showGroup(groupId);
+    }
+    
+    saveErrorFunction = function(jqXHR, textStatus, errorThrown) {
+		handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#groupclientformerrors");
+	};
+
+    var newFormData = JSON.stringify(serializedArray);
+    executeAjaxRequest(postUrl, "post", newFormData, saveSuccessFunction, saveErrorFunction);
 }
 
 function showCenter(centerId){
