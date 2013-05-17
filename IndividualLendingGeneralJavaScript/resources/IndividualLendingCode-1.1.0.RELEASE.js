@@ -420,20 +420,20 @@ function setCommunalBankListingContent(divName){
 
 function setClientContent(divName) {
 	var htmlVar = '<div  id="clienttoolbar"></div>'
-	htmlVar += '<div id="clientdatatabs">	<ul><li><a href="unknown.html"'; 
+	htmlVar += '<div id="clientdatatabs">	<ul><li><a href="#clienttab"'; 
 	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
-	htmlVar += '<li><a href="nothing" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
-	htmlVar += '<li><a href="nothing" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
+	htmlVar += '<li><a href="#clientidentifiertab" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
+	htmlVar += '<li><a href="#clientdocumenttab" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
 	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div></div></div>';
 	$("#" + divName).html(htmlVar);
 }
 
 function setGroupContent(divName) {
-	var htmlVar = '<div id="groupdetails"></div><div id="groupdatatabs">	<ul><li><a href="unknown.html"'; 
+	var htmlVar = '<div id="groupdetails"></div><div id="groupdatatabs">	<ul><li><a href="#grouptab"'; 
 	htmlVar += 	' title="grouptab" class="topleveltab"><span id="grouptabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar += 	' <li><a href="unknown.html"'; 
+	htmlVar += 	' <li><a href="#groupclientstab"'; 
 	htmlVar += 	' title="groupclientstab" class="topleveltab"><span id="groupclientstabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar += 	' <li><a href="unknown.html"'; 
+	htmlVar += 	' <li><a href="#groupsummarytab"'; 
 	htmlVar += 	' title="groupsummarytab" class="topleveltab"><span id="groupsummarytabname">' + doI18N("app.loading") + '</span></a></li>'
 	htmlVar += 	' </ul><div id="grouptab"></div></div>';
 	
@@ -441,11 +441,11 @@ function setGroupContent(divName) {
 }
 
 function setCenterContent(divName) {
-	var htmlVar = '<div id="centerDetails"></div><div id="centerdatatabs">	<ul><li><a href="unknown.html"'; 
+	var htmlVar = '<div id="centerDetails"></div><div id="centerdatatabs">	<ul><li><a href="#centertab"'; 
 	htmlVar += 	' title="centertab" class="topleveltab"><span id="centertabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar +=	' <li><a href="unknown.html"'; 
+	htmlVar +=	' <li><a href="#centertabgroups"'; 
 	htmlVar += 	' title="centertabgroups" class="topleveltab"><span id="centertabgroupsname">' + doI18N("app.loading") + '</span></a></li>';
-	htmlVar +=	' <li><a href="unknown.html"'; 
+	htmlVar +=	' <li><a href="#centertabsummary"'; 
 	htmlVar += 	' title="centertabsummary" class="topleveltab"><span id="centertabsummaryname">' + doI18N("app.loading") + '</span></a></li>';
 	htmlVar += 	'</ul><div id="centertab"></div></div>';
 	$("#" + divName).html(htmlVar);
@@ -649,8 +649,8 @@ function setAccountingContent(divName) {
 		officesObject = data;
 		$("#" + divName).html($("#accountingHomeTemplate").render());
 		$("#accountingtabs").tabs({
-			select : function(event, tab) {
-				fetchAccountingTabContent(tab.index);
+			beforeActivate : function(event, tab) {
+				fetchAccountingTabContent(tab.newTab.index());
 			}
 		});
 		var fetchAccountingTabContent = function(index) {
@@ -667,7 +667,7 @@ function setAccountingContent(divName) {
 			}
 		}
 		//determine which tab is initially selected and load data for the same
-		var selected = $("#accountingtabs").tabs('option', 'selected');
+		var selected = $("#accountingtabs").tabs('option', 'active');
 		fetchAccountingTabContent(selected);
 	}
 	executeAjaxRequest('offices', 'GET', "", getOfficesSuccessFunction, formErrorFunction);
@@ -1131,7 +1131,7 @@ function handleCOATabSelection(){
 	    }).click(function(e){
 	    var selected = 0;
     	if ($("input[name='radio']:checked").val() == 'listView') {
-			selected = $("#coatabs-main").tabs('option', 'selected');
+			selected = $("#coatabs-main").tabs('option', 'active');
 		} else if ($("input[name='radio']:checked").val() == 'treeView') {
 			var selectedAccountHead = $("#coatabs-tree").jqxTree('selectedItem');
 			if (selectedAccountHead != null) {
@@ -1181,13 +1181,13 @@ $( "#glaccountsview").buttonset();
 	 * sub-tab of GL Accounts (All, ASSET, LIABILITY, EQUITY, INCOME, EXPENSES)
 	 */
 	$("#coatabs-main").tabs({
-			select: function(event, tab) {
+			beforeActivate: function(event, tab) {
 				/**
 				 * clear previous div contents on selection change to avoid
 				 * datatable refresh issue*
 				 */
 				$(divToUpdate).html('');
-				fetchGLAccount(tab.index);
+				fetchGLAccount(tab.newTab.index());
 		 }
 	});
 
@@ -1346,7 +1346,7 @@ $( "#glaccountsview").buttonset();
 
 
 	//determine which tab is initially selected and reload data for the same
-	var selected = $("#coatabs-main").tabs('option', 'selected');
+	var selected = $("#coatabs-main").tabs('option', 'active');
 	fetchGLAccount(selected);
 }
 
@@ -1662,11 +1662,11 @@ function showILClientListing() {
 
 	//HOME list clients functionality
 	$("#tabs").tabs({
-	    select: function(event, ui) {
+	    beforeActivate: function(event, ui) {
 	    },
 	    load: function(event, ui) {
 	    },
-	    show: function(event, ui) {
+	    create: function(event, ui) {
 
 			var initClientSearch =  function() {  	
 			//render page markup
@@ -1733,11 +1733,11 @@ function showCenterListing(){
 	setCenterListingContent("content");
 
 	$("#tabs").tabs({
-	    select: function(event, ui) {
+	    beforeActivate: function(event, ui) {
 	    },
 	    load: function(event, ui) {
 	    },
-	    show: function(event, ui) {
+	    create: function(event, ui) {
 			var initSearch =  function() {
 				//render page markup
 				var tableHtml = $("#centerManageTabTemplate").render();
@@ -2075,11 +2075,11 @@ function showNewCenterListing(){
 
 	//HOME list clients functionality
 	$("#tabs").tabs({
-	    select: function(event, ui) {
+	    beforeActivate: function(event, ui) {
 	    },
 	    load: function(event, ui) {
 	    },
-	    show: function(event, ui) {
+	    create: function(event, ui) {
 
 	    var initCenterSearch =  function() {
 			//render page markup
@@ -2129,11 +2129,11 @@ function showGroupListing(){
 
 	//HOME list clients functionality
 	$("#tabs").tabs({
-	    select: function(event, ui) {
+	    beforeActivate: function(event, ui) {
 	    },
 	    load: function(event, ui) {
 	    },
-	    show: function(event, ui) {
+	    create: function(event, ui) {
 
 	    var initGroupSearch =  function() {
 			//render page markup
@@ -2184,11 +2184,11 @@ function showLoansListing() {
 
 	//HOME list loans functionality
 	$("#tabs").tabs({
-	    select: function(event, ui) {
+	    beforeActivate: function(event, ui) {
 	    },
 	    load: function(event, ui) {
 	    },
-	    show: function(event, ui) {
+	    create: function(event, ui) {
 
 			var initLoanSearch =  function() {  	
 			//render page markup
@@ -2319,7 +2319,7 @@ function showLoanFromSearch(clientId, loanId, product, loanAccountNo){
         showILLoan(loanId, product, loanAccountNo);
         var newLoanTabId='loan'+loanId+'tab';
         var index = $('#clientdatatabs a[href="#'+ newLoanTabId +'"]').parent().index(); 
-        $('#clientdatatabs').tabs('select', index);
+        $('#clientdatatabs').tabs("option", "active", index);
     }
     
     
@@ -2331,8 +2331,8 @@ function showILClient(clientId) {
 	setClientContent("content");
 	
 	$newtabs = $("#clientdatatabs").tabs({
-	    	select: function(event, tab) {
-				if (tab.index == 0)
+	    	beforeActivate: function(event, tab) {
+				if (tab.newTab.index() == 0)
 				{
 					if (clientDirty == true)
 					{
@@ -2342,18 +2342,15 @@ function showILClient(clientId) {
 						clientDirty = false;
 					}
 				}
-				else if (tab.index == 1)
+				else if (tab.newTab.index() == 1)
 				{
 					refreshClientIdentifiers(clientUrl);
 				}
-				else if (tab.index == 2){
+				else if (tab.newTab.index() == 2){
 					refreshClientDocuments(clientUrl);
 				}
 
-	    		},
-		"add": function( event, ui ) {
-				$newtabs.tabs('select', '#' + ui.panel.id);
-			}
+	    		}
 	});
 	
 	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
@@ -2372,8 +2369,8 @@ function showILClient(clientId) {
 					}
 	        		currentClientId = clientId;
 	        		clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
-	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
-	            	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+	        		var currentTabIndex = $newtabs.tabs('option', 'active');
+	            	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
 	            
 	            	//populate main content
 	            	var crudObject = new Object();
@@ -2787,8 +2784,8 @@ function showGroup(groupId){
 	setGroupContent("content");
 
 	$newtabs = $("#groupdatatabs").tabs({
-    	select: function(event, tab) {
-			if (tab.index == 0){
+    	beforeActivate: function(event, tab) {
+			if (tab.newTab.index() == 0){
 				if (groupDirty == true){
 					refreshGroupLoanSummaryInfo(groupUrl);
 					groupDirty = false;
@@ -2796,15 +2793,15 @@ function showGroup(groupId){
 			}
 		},
 		"add": function( event, ui ) {
-				$newtabs.tabs('select', '#' + ui.panel.id);
+				$newtabs.tabs("option", "active", '#' + ui.panel.id);
 			}
 	});
 
 	var successFunction = function(data, status, xhr) {
 		
 		var currentGroupId = groupId;
-		var currentTabIndex = $newtabs.tabs('option', 'selected');
-    	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+		var currentTabIndex = $newtabs.tabs('option', 'active');
+    	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
 		var tableHtml = $("#groupDataTabTemplate").render(data);
 		var groupDetails = $("#groupDetailsTemplate").render(data);
 		var groupClients = $("#groupClientsTabTemplate").render(data);
@@ -3028,8 +3025,8 @@ function showCenter(centerId){
 	setCenterContent("content");
 
 	$newtabs = $("#centerdatatabs").tabs({
-    	select: function(event, tab) {
-			if (tab.index == 0){
+    	beforeActivate: function(event, tab) {
+			if (tab.newTab.index() == 0){
 				if (centerDirty == true){
 					refreshGroupLoanSummaryInfo(centerUrl);
 					centerDirty = false;
@@ -3037,14 +3034,14 @@ function showCenter(centerId){
 			}
 		},
 		"add": function( event, ui ) {
-				$newtabs.tabs('select', '#' + ui.panel.id);
+				$newtabs.tabs("option", "active", '#' + ui.panel.id);
 			}
 	});
 
 	var successFunction = function(data, status, xhr) {
 		var currentGroupId = centerId;
-		var currentTabIndex = $newtabs.tabs('option', 'selected');
-    	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+		var currentTabIndex = $newtabs.tabs('option', 'active');
+    	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
 		var tableHtml = $("#centerDataTabTemplate").render(data);
 		var centerDetailsHtml = $("#centerDetailsTemplate").render(data);
 		var centerGroupsHtml = $("#centerGroupsTabTemplate").render(data);
@@ -3708,11 +3705,11 @@ function showCenter(centerId){
 		container.html(formHtml);
 		
 		var loanapplicationtabs = $(".loanapplicationtabs").tabs({
-			"show": function(event, ui) {
-				var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+			create: function(event, ui) {
+				var curTab = $('#newtabs .ui-tabs-panel[aria-hidde="false"]');
       			var curTabID = curTab.prop("id");
 			},
-			"select": function( event, ui ) {
+			beforeActivate: function( event, ui ) {
 				if($(ui.panel).attr('id') == ("schedule")) {
 					previewLoanApplicationSchedule();
 				}
@@ -3815,11 +3812,11 @@ function showCenter(centerId){
 			container.html(formHtml);
 			
 			var loanapplicationtabs = $(".loanapplicationtabs").tabs({
-				"show": function(event, ui) {
-					var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+				create: function(event, ui) {
+					var curTab = $('#newtabs .ui-tabs-panel[aria-hidde="false"]');
 	      			var curTabID = curTab.prop("id");
 				},
-				"select": function( event, ui ) {
+				beforeActivate: function( event, ui ) {
 					if($(ui.panel).attr('id') == ("schedule")) {
 						previewLoanApplicationSchedule();
 					}
@@ -4042,11 +4039,11 @@ function showCenter(centerId){
 		  			dialogDiv.html(formHtml);
 		  			
 		  			var loanproducttabs = $(".loanproducttabs").tabs({
-		  				"show": function(event, ui) {
-		  					var curTab = $('#newtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+		  				create: function(event, ui) {
+		  					var curTab = $('#newtabs .ui-tabs-panel:[aria-hidde="false"]');
 		  	      			var curTabID = curTab.prop("id");
 		  				},
-		  				"select": function( event, ui ) {
+		  				beforeActivate: function( event, ui ) {
 		  				}
 		  			});
 		  			
@@ -4284,11 +4281,11 @@ function showCenter(centerId){
 		  			dialogDiv.html(formHtml);
 		  			
 		  			var savingsproducttabs = $(".savingsproducttabs").tabs({
-		  				"show": function(event, ui) {
-		  					var curTab = $('.savingsproducttabs .ui-tabs-panel:not(.ui-tabs-hide)');
+		  				create: function(event, ui) {
+		  					var curTab = $('.savingsproducttabs .ui-tabs-panel[aria-hidde="false"]');
 		  	      			var curTabID = curTab.prop("id");
 		  				},
-		  				"select": function( event, ui ) {
+		  				beforeActivate: function( event, ui ) {
 		  				}
 		  			});
 		  			
@@ -4326,11 +4323,11 @@ function showCenter(centerId){
 			container.html(formHtml);
 			
 			var loanapplicationtabs = $(".savingsaccounttabs").tabs({
-				"show": function(event, ui) {
-					var curTab = $('.savingsaccounttabs .ui-tabs-panel:not(.ui-tabs-hide)');
+				create: function(event, ui) {
+					var curTab = $('.savingsaccounttabs .ui-tabs-panel[aria-hidde="false"]');
 	      			var curTabID = curTab.prop("id");
 				},
-				"select": function( event, ui ) {
+				beforeActivate: function( event, ui ) {
 				}
 			});
 			
@@ -4525,6 +4522,15 @@ function showCenter(centerId){
 
 	}
 	
+$.fn.addTab = function(panelId,title) {
+	var tabTemplate = "<li><a href='#{href}'>#{label}</a> </li>";
+
+    var li = $( tabTemplate.replace( /#\{href\}/g, "#" + panelId ).replace( /#\{label\}/g, title ) );
+ 
+    this.find( ".ui-tabs-nav" ).eq(0).append( li );
+    this.append( "<div id='" + panelId + "'></div>" );
+    this.tabs( "refresh" );
+}
 	
 function showILLoan(loanId, product, loanAccountNo) {
 	showLoan(loanId, product, loanAccountNo, 'clientdatatabs');	
@@ -4539,13 +4545,13 @@ function showLoan(loanId, product, loanAccountNo, parenttab){
 	//show existing tab if this Id is already present
 	if(tabExists(parenttab, newLoanTabId)){
 		var index = $('#'+ parenttab +' a[href="#'+ newLoanTabId +'"]').parent().index(); 
-		$('#'+ parenttab).tabs('select', index);
+		$('#'+ parenttab).tabs("option", "active", index);
 		
 		var title = product + ": #" + loanAccountNo;		
 		if (undefined === loanAccountNo || loanAccountNo == '') {
 			title = product + ": #" + loanId;
 		}
-		$('#'+ parenttab +' .ui-tabs-selected:first a').text(title);
+		$('#'+ parenttab +' .ui-tabs-active:first a').text(title);
 	}
 	//else create new tab and set identifier properties
 	else{
@@ -4553,17 +4559,17 @@ function showLoan(loanId, product, loanAccountNo, parenttab){
 		if (undefined === loanAccountNo) {
 			title = product + ": #" + loanId;
 		}
-		$newtabs.tabs( "add", "unknown.html", title);
-		loadLoan(loanId, parenttab);
+		//$newtabs.tabs( "add", "unknown.html", title);  Deprecated
+		$newtabs.addTab(newLoanTabId, title);
 		//add ids and titles to newly added div's and a'hrefs
-		var lastAHref=$('#'+ parenttab +'> ul > li:last > a');
-		var lastDiv=$('#'+ parenttab +' > div:last')
-		var lastButOneDiv=$('#'+ parenttab +' > div:last').prev();
-		lastAHref.attr('href','#loan'+loanId+'tab');
-		lastButOneDiv.attr('id',newLoanTabId);
-		//the add functionality seems to be adding a dummy div at the end 
-		//am deleting the same to make div manipulation easier
-		lastDiv.remove();
+		// var lastAHref=$('#'+ parenttab +'> ul > li:last > a');
+		// var lastDiv=$('#'+ parenttab +' > div:last');
+		// lastAHref.attr('href','#loan'+loanId+'tab');
+		// lastDiv.attr('id',newLoanTabId);
+
+		$newtabs.tabs( "option", "active", $('#'+ parenttab +'> ul > li').length-1);
+		loadLoan(loanId, parenttab);
+		
 	}
 }
 
@@ -4596,12 +4602,12 @@ function loadLoan(loanId, parenttab) {
 
 	var successFunction = function(data, status, xhr) {
 	        	
-	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
-	            	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+	        		var currentTabIndex = $newtabs.tabs('option', 'active');
+	            	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
 	            
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);
 	        		
-	        		var currentTab = $("#"+parenttab).children(".ui-tabs-panel").not(".ui-tabs-hide");
+	        		var currentTab = $("#"+parenttab).children(".ui-tabs-panel").not('[aria-hidden="true"]');
 	        		currentTab.html(tableHtml);
 
 	        		var curTabID = currentTab.prop("id")
@@ -4673,11 +4679,11 @@ function loadLoan(loanId, parenttab) {
 	        		//$( ".loantabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
 	        		//var $loantabs = $(".loantabs").tabs({
 		        	var $loantabs = $("#loantabs" + loanId).tabs({
-						"show": function(event, ui) {
-							var curTab = $('#' + parenttab + ' .ui-tabs-panel:not(.ui-tabs-hide)');
+						create: function(event, ui) {
+							var curTab = $('#' + parenttab + ' .ui-tabs-panel[aria-hidden="false"]');
 			      			var curTabID = curTab.prop("id")
 						},
-						"select": function( event, ui ) {
+						beforeActivate: function( event, ui ) {
         					if($(ui.panel).attr( 'id' ) == ( "loanDocuments"+ loanId )){
         						refreshLoanDocuments(loanId)
         					}
@@ -5701,7 +5707,7 @@ function showAccountSettings() {
 	setAccountSettingsContent("content"); 
 	$tabs = $("#tabs").tabs({
 		"add": function( event, ui ) {
-			$tabs.tabs('select', '#' + ui.panel.id);
+			$tabs.tabs("option", "active", '#' + ui.panel.id);
 		}
 
 	});
@@ -7123,22 +7129,15 @@ function showSavingAccount(accountId, accountNo, productName) {
 	//show existing tab if this Id is already present
 	if(tabExists('clientdatatabs', newSavingTabId)){
 		var index = $('#clientdatatabs a[href="#'+ newSavingTabId +'"]').parent().index(); 
-		$('#clientdatatabs').tabs('select', index);
+		$('#clientdatatabs').tabs("option", "active", index);
 	}
 	//else create new tab and set identifier properties
 	else{
 		var title = productName + ": #" + accountNo;			    
-		$newtabs.tabs( "add", "unknown.html", title);
+		// $newtabs.tabs( "add", "unknown.html", title); Deprecated
+		$newtabs.addTab(newSavingTabId, title);
+		$newtabs.tabs( "option", "active", $('#clientdatatabs > ul > li').length-1);
 		loadSavingAccount(accountId);
-		//add ids and titles to newly added div's and a'hrefs
-		var lastAHref=$('#clientdatatabs> ul > li:last > a');
-		var lastDiv=$('#clientdatatabs > div:last')
-		var lastButOneDiv=$('#clientdatatabs > div:last').prev();
-		lastAHref.attr('href','#saving'+accountId+'tab');
-		lastButOneDiv.attr('id',newSavingTabId);
-		//the add functionality seems to be adding a dummy div at the end 
-		//am deleting the same to make div manipulation easier
-		lastDiv.remove();
 		}
 }
 
@@ -7161,21 +7160,21 @@ function loadSavingAccount(accountId) {
 	};
 	
 	var successFunction = function(data, status, xhr) {
-		var currentTabIndex = $newtabs.tabs('option', 'selected');
-    	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+		var currentTabIndex = $newtabs.tabs('option', 'active');
+    	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
     	
     	var tableHtml = $("#savingAccountDataTabTemplate").render(data);
     	
     	var data = new Object();
 		
-		var currentTab = $("#clientdatatabs").children(".ui-tabs-panel").not(".ui-tabs-hide");
+		var currentTab = $("#clientdatatabs").children(".ui-tabs-panel").not('[aria-hidden="true"]');
 		currentTab.html(tableHtml);
 
 		var curTabID = currentTab.prop("id");
 		
 		var $savingtabs = $("#savingtabs" + accountId).tabs({
-			"show": function(event, ui) {
-				var curTab = $('#savingtabs .ui-tabs-panel:not(.ui-tabs-hide)');
+			create: function(event, ui) {
+				var curTab = $('#savingtabs .ui-tabs-panel[aria-hidden="false"]');
       			var curTabID = curTab.prop("id")
 			}
 		});
@@ -7760,11 +7759,11 @@ function showCollectionSheet() {
     setCollectionSheetContent("content");
     
     $("#tabs").tabs({
-        select: function(event, ui) {
+        beforeActivate: function(event, ui) {
         },
         load: function(event, ui) {
         },
-        show: function(event, ui) {
+        create: function(event, ui) {
 
             var initCollectionSheet =  function() {
             //render page markup
