@@ -8906,6 +8906,111 @@ $(document).ready(function() {
 </table>    
 </script>
 <!-- end of centers api -->
+<script id="accountingruleListTemplate" type="text/x-jquery-tmpl">
+<table id='accountingrulestable' width='100%'>
+    <thead>
+        <tr>
+            <th>{{=$ctx.doI18N("table.heading.accountingrule.name")}}</th>
+            <th>{{=$ctx.doI18N("table.heading.accountingrule.description")}}</th>
+            <th>{{=$ctx.doI18N("table.heading.accountingrule.office")}}</th>
+            <th>{{=$ctx.doI18N("table.heading.accountingrule.accountToDebitId")}}</th>
+            <th>{{=$ctx.doI18N("table.heading.accountingrule.accountToCreditId")}}</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each crudRows}}
+            <tr>
+                <td>{{=name}}</td>
+                <td>{{=description}}</td>
+                <td>{{=officeName}}</td>
+                <td>{{=debitAccountName}}({{=debitAccountGLCode}})</td>
+                <td>{{=creditAccountName}}({{=creditAccountGLCode}})</td>
+                <td>
+                    <a id='editaccountingrule{{=id}}' class='editaccountingrule' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+                    <a id='deleteaccountingrule{{=id}}' class='deleteaccountingrule' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+                </td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+</script>
+
+<script id="accountingruleFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+    <fieldset>
+        <legend>{{=$ctx.doI18N("form.legend.accountingrule.details")}}</legend>
+        <table>
+            <tr>
+                <td>
+                    <label for="name">{{=$ctx.doI18N("label.name")}}</label>            
+                </td>
+                <td>
+                    <input id="name" name="name" title="" type="text" value="{{=name}}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
+                </td>
+                <td>
+                    <select id="officeId" name="officeId" title="">
+                        <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+                        {{#each allowedOffices}}
+                            {{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+                            {{#else}}
+                                <option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+                            {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="accountToDebitId" style="display: inline">{{=$ctx.doI18N("label.debit")}}</label>
+                </td>
+                <td>
+                    <select id="accountToDebitId" name="accountToDebitId" title="">
+                        <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+                        {{#each allowedAccounts}}
+                            {{#if $ctx.number($parent.parent.data.accountToDebitId)===$ctx.number(id)}}
+                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+                            {{#else}}
+                                <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                            {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="accountToCreditId">{{=$ctx.doI18N("label.credit")}}</label>
+                </td>
+                <td>
+                    <select id="accountToCreditId" name="accountToCreditId" title="">
+                        <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+                        {{#each allowedAccounts}}
+                            {{#if $ctx.number($parent.parent.data.accountToCreditId)===$ctx.number(id)}}
+                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+                            {{#else}}
+                                <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                            {{/if}}
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="description">{{=$ctx.doI18N("label.description")}}</label>
+                </td>
+                <td>
+                    <textarea rows="2" cols="35" id="description" name="description" cssClass="text ui-widget-content ui-corner-all">{{=description}}</textarea>
+                </td>
+            </tr>
+        </table> 
+</script>
 
 </body>
 </html>
