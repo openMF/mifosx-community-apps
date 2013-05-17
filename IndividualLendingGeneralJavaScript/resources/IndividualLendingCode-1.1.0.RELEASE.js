@@ -6737,6 +6737,7 @@ function initialiseAndShowLogon() {
 	if (QueryParameters["mode"]) applicationMode = QueryParameters["mode"];
 
 	showLogon("container");
+	$( document ).tooltip();
 }
 
 function getBaseApiURL(docURL)
