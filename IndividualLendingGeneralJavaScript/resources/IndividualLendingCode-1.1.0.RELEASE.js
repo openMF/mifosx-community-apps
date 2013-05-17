@@ -435,7 +435,7 @@ function setGroupContent(divName) {
 	htmlVar += 	' title="groupclientstab" class="topleveltab"><span id="groupclientstabname">' + doI18N("app.loading") + '</span></a></li>'
 	htmlVar += 	' <li><a href="#groupsummarytab"'; 
 	htmlVar += 	' title="groupsummarytab" class="topleveltab"><span id="groupsummarytabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar += 	' </ul><div id="grouptab"></div></div>';
+	htmlVar += 	' </ul><div id="grouptab"></div><div id="groupclientstab"></div><div id="groupsummarytab"></div></div></div>';
 	
 	$("#" + divName).html(htmlVar);
 }
@@ -447,7 +447,7 @@ function setCenterContent(divName) {
 	htmlVar += 	' title="centertabgroups" class="topleveltab"><span id="centertabgroupsname">' + doI18N("app.loading") + '</span></a></li>';
 	htmlVar +=	' <li><a href="#centertabsummary"'; 
 	htmlVar += 	' title="centertabsummary" class="topleveltab"><span id="centertabsummaryname">' + doI18N("app.loading") + '</span></a></li>';
-	htmlVar += 	'</ul><div id="centertab"></div></div>';
+	htmlVar += 	'</ul><div id="centertab"></div><div id="centertabgroups"></div><div id="centertabsummary"></div></div></div>';
 	$("#" + divName).html(htmlVar);
 }
 
