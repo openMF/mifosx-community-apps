@@ -37,15 +37,15 @@
 							// remove invalid value, as it didn't match anything
 							$(this).val("");
 							select.val("");
-							input.data("autocomplete").term = "";
+							input.data("ui-autocomplete").term = "";
 							return false;
 						}
 					}
 				}
 			}).addClass("ui-widget ui-widget-content ui-corner-left");
 
-			input.data("autocomplete")._renderItem = function(ul, item) {
-				return $("<li></li>").data("item.autocomplete", item).append("<a>" + item.label + "</a>").appendTo(ul);
+			input.data("ui-autocomplete")._renderItem = function(ul, item) {
+				return $("<li></li>").data("ui-autocomplete-item", item).append("<a>" + item.label + "</a>").appendTo(ul);
 			};
 
 			this.button = $("<button type='button'>&nbsp;</button>").attr("tabIndex", -1).attr("title", "Show All Items").insertAfter(input).button({
