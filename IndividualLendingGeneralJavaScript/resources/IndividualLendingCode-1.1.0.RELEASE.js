@@ -431,9 +431,9 @@ function setClientContent(divName) {
 function setGroupContent(divName) {
 	var htmlVar = '<div id="groupdetails"></div><div id="groupdatatabs">	<ul><li><a href="#grouptab"'; 
 	htmlVar += 	' title="grouptab" class="topleveltab"><span id="grouptabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar += 	' <li><a href="groupclientstab"'; 
+	htmlVar += 	' <li><a href="#groupclientstab"'; 
 	htmlVar += 	' title="groupclientstab" class="topleveltab"><span id="groupclientstabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar += 	' <li><a href="groupsummarytab"'; 
+	htmlVar += 	' <li><a href="#groupsummarytab"'; 
 	htmlVar += 	' title="groupsummarytab" class="topleveltab"><span id="groupsummarytabname">' + doI18N("app.loading") + '</span></a></li>'
 	htmlVar += 	' </ul><div id="grouptab"></div></div>';
 	
@@ -441,11 +441,11 @@ function setGroupContent(divName) {
 }
 
 function setCenterContent(divName) {
-	var htmlVar = '<div id="centerDetails"></div><div id="centerdatatabs">	<ul><li><a href="centertab"'; 
+	var htmlVar = '<div id="centerDetails"></div><div id="centerdatatabs">	<ul><li><a href="#centertab"'; 
 	htmlVar += 	' title="centertab" class="topleveltab"><span id="centertabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar +=	' <li><a href="centertabgroups"'; 
+	htmlVar +=	' <li><a href="#centertabgroups"'; 
 	htmlVar += 	' title="centertabgroups" class="topleveltab"><span id="centertabgroupsname">' + doI18N("app.loading") + '</span></a></li>';
-	htmlVar +=	' <li><a href="centertabsummary"'; 
+	htmlVar +=	' <li><a href="#centertabsummary"'; 
 	htmlVar += 	' title="centertabsummary" class="topleveltab"><span id="centertabsummaryname">' + doI18N("app.loading") + '</span></a></li>';
 	htmlVar += 	'</ul><div id="centertab"></div></div>';
 	$("#" + divName).html(htmlVar);
