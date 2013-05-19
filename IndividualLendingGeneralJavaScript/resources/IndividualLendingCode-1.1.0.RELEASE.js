@@ -3632,9 +3632,16 @@ function showCenter(centerId){
 			  				var formHtml = $("#loanApplicationSelectProductDialogTemplate").render(data);
 			  				dialogDiv.html(formHtml);
 			  			}
+			  			if ($("#productId").val() < 0) {
+							$('.ui-dialog-buttonpane button:first').button("disable");
+						}
 						
 						$("#productId").change(function() {
+
 							var loanProductId = $("#productId").val();
+							if (loanProductId >= 0) {
+								$('.ui-dialog-buttonpane button:first').button("enable");
+							}
 							loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId , data.group, loanType);
 						});
 			  		}
