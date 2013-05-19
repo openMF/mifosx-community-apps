@@ -96,7 +96,14 @@ crudData = {
 		report: {
 			editTemplateNeeded: true,
 			refreshListNeeded: true
+			},
+		accountingrule: {
+				editTemplateNeeded: true,
+				refreshListNeeded: true,
+				dialogWidth: 600,
+				dialogHeight: 375
 			}
+
 		};
 
 saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
@@ -487,6 +494,7 @@ function setOrgAdminContent(divName) {
 	var orgCurrencyUrl = "maintainTable('orgCurrency', 'currencies', 'PUT');return false;";
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
 	var bulkLoanReassignmentUrl = "maintainTable('bulkLoanReassignment', 'loans/loanreassignment', 'POST');return false;";
+	var addAccountingRuleUrl =  "maintainTable('accountingrule', 'accountingrules', 'POST');return false;"; 
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("ViewLoanProducts"))
@@ -556,6 +564,10 @@ function setOrgAdminContent(divName) {
 
 	if (jQuery.MifosXUI.showTask("BulkLoanReassignment") == true)
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + bulkLoanReassignmentUrl + '" id="bulkLoanReassignment">' + doI18N("administration.link.bulk.loan.reassignment") + '</a>';	
+
+		htmlOptions2 += ' | <a href="unknown.html" onclick="refreshTableView(' + "'accountingrule'" + ');return false;" id="viewaccountingrule">' + doI18N("administration.link.view.accountingrule") + '</a>';
+
+		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addAccountingRuleUrl + '" id="addaccountingrule">' + doI18N("administration.link.add.accountingrule") + '</a>';
 
 	if (htmlOptions2 > "")
 	{
@@ -5364,7 +5376,7 @@ function refreshLoanDocuments(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction'|| tableName == 'report') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction'|| tableName == 'report' || tableName == 'accountingrule') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 
@@ -6190,6 +6202,13 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForLoanSuccess, formErrorFunction);    	
 		}
 	})
+
+	// for accounting rule initialize comboboxes
+	if (templateSelector === "#accountingruleFormTemplate") {
+		$("#officeId").combobox();
+		$("#accountToDebitId").combobox();
+		$("#accountToCreditId").combobox();
+	};
 
 	if (templateSelector === "#groupFormTemplate"){
 		$("#dialog-form #officeId").change(function(e){
