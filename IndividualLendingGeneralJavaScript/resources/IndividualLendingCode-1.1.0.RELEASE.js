@@ -1279,7 +1279,8 @@ function editCodeValueFunction(linkId, tableName){
                 cancel: 'Cancel',
                 submit: 'Update',
                 placeholder: '',
-                width: 150
+                width: 150,
+		height: 25
         });
 
         $(".codeValuePosition").editable(function(value, settings){
@@ -1324,7 +1325,8 @@ function editCodeValueFunction(linkId, tableName){
                 cancel: 'Cancel',
                 submit: 'Update',
                 placeholder: '',
-                width: 100
+                width: 100,
+		height: 25
         });
         
         $('.deleteCodeValue').button().click(function(e){
@@ -1362,7 +1364,7 @@ function editCodeValueFunction(linkId, tableName){
         var codeValues = new Object();
         codeValues.crudRows = data;
         codeValues.codeId = entityId;
-        popupDialogWithReadOnlyFormViewData(codeValues, dialogTitle, templateSelector, dialogWidth, dialogHeight);
+        popupDialogWithReadOnlyFormViewData(codeValues, dialogTitle, templateSelector, dialogWidth, dialogHeight, "dialog.button.close");
         refreshCodeValues(codeValues);
         $("#addCodeValue").button().click(function(e){
             clearErrorsClass();
@@ -5672,10 +5674,10 @@ function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, wi
 	}
 }
 
-function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height)  {
+function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name = "dialog.button.cancel")  {
 	
 	var dialogDiv = $("<div id='dialog-form'></div>");
-	var cancelButton = doI18N('dialog.button.cancel');
+	var cancelButton = doI18N(button_msg_name);
 
 	var buttonsOpts = {};
 	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
