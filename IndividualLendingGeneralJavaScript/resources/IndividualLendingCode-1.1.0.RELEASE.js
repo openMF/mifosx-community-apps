@@ -190,7 +190,7 @@ function showMainContainer(containerDivName, username) {
 
 	var htmlVar = '<div id="logowrapper">';
 	htmlVar += '	<span style="float: left">';
-	htmlVar += '		<img style="float:left; border: 0;" alt="" src="resources/mifosx.jpg"/>';
+	htmlVar += '		<img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/>';
 	htmlVar += '	</span>';
 	htmlVar += '</div>';
 	htmlVar += '<div id="navwrapper">';
