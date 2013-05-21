@@ -4782,10 +4782,7 @@ function loadLoan(loanId, parenttab) {
 				$('button.addloancharge span').text(doI18N('button.addLoanCharge'));
 				
 				//Guarantor for loan functionality
-				$('.setguarantor').button(
-						{icons: {
-	                	primary: "ui-icon-link"},
-	            	}).click(function(e) {
+				$('.setguarantor').button({icons: {primary: "ui-icon-link"}}).click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("setGuarantorbtn", "");
 						var getUrl = 'loans/'+loanId+'/guarantors/template';
@@ -4798,8 +4795,9 @@ function loadLoan(loanId, parenttab) {
 						
 						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 						//update hidden loan Id
-    		$("#").val(loanId);
-	            		popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.edit.client.image", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
+						
+						$("#").val(loanId);
+	            		popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.add.guarantor", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
 	            		e.preventDefault();
 	            });
 	            
@@ -5002,28 +5000,29 @@ function loadGuarantorForm(){
 	  }
 	});
 		
-    $( "#smartGuarantorSearch" ).autocomplete({
+    $("#smartGuarantorSearch" ).autocomplete({
         source: function(request, response){
         	//get selected office
 			var sqlSearchValue = "display_name like '%" + request.term + "%'"; 
 			smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
-				response( $.map( data, function( item ) {
+				response( $.map( data.pageItems, function( item ) {
                     return {
                         label: item.displayName + "(" + item.officeName + ")",
                         value: item.displayName,
-                        joinedDate: item.joinedDate,
+                        activationDate: item.activationDate,
                         id: item.id,
                         branchName:item.officeName
                     }
                 }));
 	  		};
-			executeAjaxRequest("clients?sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", smartSearchSuccessFunction, formErrorFunction);
+			executeAjaxRequest("clients?limit=15&sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", smartSearchSuccessFunction, formErrorFunction);
         },
         minLength: 3,
         select: function( event, ui ) {
+        	$("#smartGuarantorSearch" ).val(ui.item.value);
             $( "#selectedGuarantorName" ).val(ui.item.value);
             $( "#selectedGuarantorBranch" ).val(ui.item.branchName);
-            $( "#selectedGuarantorJoinedDate" ).val(custom.helperFunctions.globalDate(ui.item.joinedDate));
+            $( "#selectedGuarantorJoinedDate" ).val(custom.helperFunctions.globalDate(ui.item.activationDate));
             $( "#selectedGuarantorIdentifier" ).val(ui.item.id);
             return false;
         }
