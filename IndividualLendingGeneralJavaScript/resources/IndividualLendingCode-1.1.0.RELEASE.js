@@ -6127,7 +6127,17 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             
         }
 	
-		
+		if (templateSelector === "#accountingruleFormTemplate") {
+			if (serializedArray.name === "") {
+				delete serializedArray.name;
+			}
+			else if (serializedArray.debitAccountHead === "") {
+				delete serializedArray.debitAccountHead;
+			}
+			else if (serializedArray.creditAccountHead === "") {
+				delete serializedArray.creditAccountHead;
+			}
+		}
 		var newFormData = JSON.stringify(serializedArray);
 		if (postUrl.toLowerCase().indexOf("permissions") > -1) {
 			var permissions = {};
@@ -6208,8 +6218,8 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	// for accounting rule initialize comboboxes
 	if (templateSelector === "#accountingruleFormTemplate") {
 		$("#officeId").combobox();
-		$("#accountToDebitId").combobox();
-		$("#accountToCreditId").combobox();
+		$("#debitAccountHead").combobox();
+		$("#creditAccountHead").combobox();
 	};
 
 	if (templateSelector === "#groupFormTemplate"){

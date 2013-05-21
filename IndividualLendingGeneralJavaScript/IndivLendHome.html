@@ -8933,8 +8933,8 @@ $(document).ready(function() {
                 <td>{{=name}}</td>
                 <td>{{=description}}</td>
                 <td>{{=officeName}}</td>
-                <td>{{=debitAccountName}}({{=debitAccountGLCode}})</td>
-                <td>{{=creditAccountName}}({{=creditAccountGLCode}})</td>
+                <td>{{=debitAccountHead.name}}({{=debitAccountHead.glCode}})</td>
+                <td>{{=creditAccountHead.name}}({{=creditAccountHead.glCode}})</td>
                 <td>
                     <a id='editaccountingrule{{=id}}' class='editaccountingrule' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
                     <a id='deleteaccountingrule{{=id}}' class='deleteaccountingrule' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
@@ -8978,16 +8978,20 @@ $(document).ready(function() {
             </tr>
             <tr>
                 <td>
-                    <label for="accountToDebitId" style="display: inline">{{=$ctx.doI18N("label.debit")}}</label>
+                    <label for="debitAccountHead" style="display: inline">{{=$ctx.doI18N("label.debit")}}</label>
                 </td>
                 <td>
-                    <select id="accountToDebitId" name="accountToDebitId" title="">
+                    <select id="debitAccountHead" name="debitAccountHead" title="">
                         <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
                         {{#each allowedAccounts}}
-                            {{#if $ctx.number($parent.parent.data.accountToDebitId)===$ctx.number(id)}}
-                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
-                            {{#else}}
+                            {{#if $parent.parent.data.debitAccountHead === undefined}}
                                 <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                            {{#else}}
+                                    {{#if $ctx.number($parent.parent.parent.data.debitAccountHead.id)===$ctx.number(id)}}
+                                        <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+                                    {{#else}}
+                                        <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                    {{/if}}
                             {{/if}}
                         {{/each}}
                     </select>
@@ -8995,16 +8999,20 @@ $(document).ready(function() {
             </tr>
             <tr>
                 <td>
-                    <label for="accountToCreditId">{{=$ctx.doI18N("label.credit")}}</label>
+                    <label for="creditAccountHead">{{=$ctx.doI18N("label.credit")}}</label>
                 </td>
                 <td>
-                    <select id="accountToCreditId" name="accountToCreditId" title="">
+                    <select id="creditAccountHead" name="creditAccountHead" title="">
                         <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
                         {{#each allowedAccounts}}
-                            {{#if $ctx.number($parent.parent.data.accountToCreditId)===$ctx.number(id)}}
-                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
-                            {{#else}}
+                            {{#if $parent.parent.data.creditAccountHead === undefined}}
                                 <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                            {{#else}}
+                                    {{#if $ctx.number($parent.parent.parent.data.creditAccountHead.id)===$ctx.number(id)}}
+                                        <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+                                    {{#else}}
+                                        <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                    {{/if}}
                             {{/if}}
                         {{/each}}
                     </select>
