@@ -2806,9 +2806,9 @@ function showGroup(groupId){
 				}
 			}
 		},
-		"add": function( event, ui ) {
-				$newtabs.tabs("option", "active", '#' + ui.panel.id);
-			}
+		"active": function( event, ui ) {
+			$newtabs.tabs("option", "active", '#' + ui.newPanel.attr("id"));
+		}
 	});
 
 	var successFunction = function(data, status, xhr) {
@@ -3047,9 +3047,9 @@ function showCenter(centerId){
 				}
 			}
 		},
-		"add": function( event, ui ) {
-				$newtabs.tabs("option", "active", '#' + ui.panel.id);
-			}
+		"active": function( event, ui ) {
+			$newtabs.tabs("option", "active", '#' + ui.newPanel.attr("id"));
+		}
 	});
 
 	var successFunction = function(data, status, xhr) {
@@ -3614,8 +3614,12 @@ function showCenter(centerId){
 	}
 	
 	var launchLoanApplicationDialogOnSuccessFunction = function(loanType){
+
+		console.log("launch dialog for: " + loanType);
 		
-		return  function(data, textStatus, jqXHR) {
+		return function(data, textStatus, jqXHR) {
+			
+			console.log("success: ");
 
 			var dialogDiv = $("<div id='dialog-form'></div>");
 			var saveButton = doI18N('dialog.button.save');
@@ -3641,6 +3645,7 @@ function showCenter(centerId){
 					},
 			  		open: function (event, ui) {
 			  			if (data.loanProductId) {
+			  				console.log("loadtabbedform for: " + data.loanProductId);
 			  				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, data.loanProductId , data.group, loanType);
 			  			} else {
 			  				var formHtml = $("#loanApplicationSelectProductDialogTemplate").render(data);
@@ -3661,7 +3666,6 @@ function showCenter(centerId){
 			  		}
 			  	}).dialog('open');		
 		};
-
 	}
 	
 	function launchLoanApplicationDialog(clientId) {
@@ -3722,6 +3726,7 @@ function showCenter(centerId){
 	var renderLoanApplicationTabs = function(container, data) {
 		// show full application form with values defaulted
 		data.loanType = data.loanType.value.toLowerCase();
+		console.log(data.loanType);
 		var formHtml = $("#loanApplicationDialogTemplate").render(data);
 		container.html(formHtml);
 		
@@ -3731,6 +3736,7 @@ function showCenter(centerId){
       			var curTabID = curTab.prop("id");
 			},
 			beforeActivate: function( event, ui ) {
+				console.log("beforeActivate: " + $(ui.panel).attr('id'));
 				if($(ui.panel).attr('id') == ("schedule")) {
 					previewLoanApplicationSchedule();
 				}
@@ -3739,6 +3745,8 @@ function showCenter(centerId){
 		
 		$("#productId").change(function() {
 			var loanProductId = $("#productId").val();
+			
+			console.log(data.loanType);
 			loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, data.loanType);
 		});
 		
@@ -3818,11 +3826,11 @@ function showCenter(centerId){
 	    if(data.calendarOptions){
 	        loadAvailableCalendars(data.calendarOptions, data.meeting);   
         }
-        
-
 	};
 	
 	function loadTabbedLoanApplicationForm(container, clientId, productId , group, loanType, isjlgbulk) {
+		
+		console.log("loadtabbedform for: " + loanType + " :: isJlgBulk " + isjlgbulk);
 		
 		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
 			//set loan type
@@ -3833,12 +3841,8 @@ function showCenter(centerId){
 			container.html(formHtml);
 			
 			var loanapplicationtabs = $(".loanapplicationtabs").tabs({
-				create: function(event, ui) {
-					var curTab = $('#newtabs .ui-tabs-panel[aria-hidde="false"]');
-	      			var curTabID = curTab.prop("id");
-				},
 				beforeActivate: function( event, ui ) {
-					if($(ui.panel).attr('id') == ("schedule")) {
+					if($(ui.newPanel).attr('id') == ("schedule")) {
 						previewLoanApplicationSchedule();
 					}
 				}
@@ -5723,18 +5727,13 @@ function selectNewThousandsSep(selectedVal) {
 
 //account settings
 function showAccountSettings() {
-
+	console.log("hi");
 	setAccountSettingsContent("content"); 
-	$tabs = $("#tabs").tabs({
-		"add": function( event, ui ) {
-			$tabs.tabs("option", "active", '#' + ui.panel.id);
-		}
-
-	});
+	$tabs = $("#tabs").tabs();
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
-	            $(anchor.hash).html("error occured while ajax loading.");
-	        };
+		$(anchor.hash).html("error occured while ajax loading.");
+	};
 
 	var successFunction = function(data, status, xhr) {
 				var tableHtml = $("#userSettingsTemplate").render(data);
