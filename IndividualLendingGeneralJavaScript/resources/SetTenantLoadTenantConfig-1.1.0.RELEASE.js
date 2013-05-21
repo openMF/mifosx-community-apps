@@ -684,24 +684,31 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 				}
 			}
 			// 3. exclude any datatables defined to be excluded
-			var appTableExclude = custom.datatablePresentation[appTableName
-					.toUpperCase()].exclude;
+			var appTableExclude = custom.datatablePresentation[appTableName.toUpperCase()].exclude;
 			if (typeof appTableExclude !== "undefined") {
-				for ( var i in appTableExclude)
-					datatableExclude(appTableExclude[i]);
+				for ( var i in appTableExclude) {
+					datatableExclude(appTableExclude[i]);					
+				}
 			}
+			
 			// 4. set up a tab for each additional table
 			for ( var i in datatableArray) {
-				tabVar.append("<div id=" + datatableArray[i].itemDiv
-						+ "></div>");
-				tabVar.tabs("add", "#" + datatableArray[i].itemDiv,
-						doI18N(datatableArray[i].itemDivLabel));
-				// alert(datatableArray[i].itemDivLabel)
+				
+				var num_tabs = $("div#" + tabId + " ul li").length + 1;
+				var tabId = tabVar.attr("id");
+
+				var tabPillHtml = "<li><a id='" + datatableArray[i].itemDiv + "_" + num_tabs +"' href='#" + datatableArray[i].itemDiv + "'>" + doI18N(datatableArray[i].itemDivLabel) + "</a></li>";
+		        $("div#" + tabId + " ul").append(tabPillHtml);
+		        
+		        var tabDivHtml = "<div id=" + datatableArray[i].itemDiv + "></div>";
+		        $("div#" + tabId).append(tabDivHtml);
+		        
+		        $("div#" + tabId).tabs("refresh");
 			}
 
 			displayAdditionalInfo(getFKName(appTableName), appTablePKValue);
 
-			tabVar.tabs('select', 0); // ensure focus is back to main tab
+			tabVar.tabs("option", "active", 0); // ensure focus is back to main tab
 		}
 	};
 
