@@ -5835,11 +5835,23 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 		//manipulate serialized array for clients
 		if (postUrl.toLowerCase().indexOf("clients") >= 0) {
 			if (serializedArray["clientType"]=="1") {
-				serializedArray["fullname"] = "";
+				
+				if (submitType.toLowerCase().indexOf("post") >= 0) {
+					delete serializedArray["fullname"];	
+				} else {
+					serializedArray["fullname"] = "";
+				}
 			} else if (serializedArray["clientType"]=="2"){
-				serializedArray["firstname"] = "";
-				serializedArray["middlename"] = "";
-				serializedArray["lastname"] = "";
+				
+				if (submitType.toLowerCase().indexOf("post") >= 0) {
+					delete serializedArray["firstname"];
+					delete serializedArray["middlename"];
+					delete serializedArray["lastname"];
+				} else {
+					serializedArray["firstname"] = "";
+					serializedArray["middlename"] = "";
+					serializedArray["lastname"] = "";
+				}
 			}
 			delete serializedArray["clientType"];
 		}
