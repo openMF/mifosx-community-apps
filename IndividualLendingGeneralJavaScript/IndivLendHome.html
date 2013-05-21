@@ -4646,7 +4646,7 @@ $(document).ready(function() {
 		{{/if}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
-			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
+			<span class="rowvalue"><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</span>
 		</div>
 		{{#if timeline.actualDisbursementDate}}
 			{{#if $ctx.numberGreaterThanZero(summary.totalOverdue)}}
