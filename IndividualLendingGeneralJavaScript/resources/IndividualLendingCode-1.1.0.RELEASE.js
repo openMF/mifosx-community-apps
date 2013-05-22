@@ -5962,8 +5962,10 @@ function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, wi
 	}
 }
 
-function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name = "dialog.button.cancel")  {
+function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name)  {
 	
+    button_msg_name = button_msg_name || "dialog.button.cancel";
+
 	var dialogDiv = $("<div id='dialog-form'></div>");
 	var cancelButton = doI18N(button_msg_name);
 
