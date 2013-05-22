@@ -4158,7 +4158,7 @@ function showCenter(centerId){
 		  			
 		  			var loanproducttabs = $(".loanproducttabs").tabs({
 		  				create: function(event, ui) {
-		  					var curTab = $('#newtabs .ui-tabs-panel:[aria-hidde="false"]');
+		  					var curTab = $('#newtabs .ui-tabs-panel[aria-hidde="false"]');
 		  	      			var curTabID = curTab.prop("id");
 		  				},
 		  				beforeActivate: function( event, ui ) {
@@ -4215,15 +4215,15 @@ function showCenter(centerId){
 
 	  			    //hide advanced accounting div on page load (and setup toggle functionality)
 	  			    $('#advancedAccountingRulesDiv').hide();
-		            $('#toggleAdvancedAccountingOptions').toggle(function(e) {
-				    	$('#advancedAccountingRulesDiv').show();
-				    	$('#toggleAdvancedAccountingOptions').text(doI18N('label.hide'));
-				    	e.preventDefault();
-				    }, function(e) {
-					    $('#advancedAccountingRulesDiv').hide();
-					    $('#toggleAdvancedAccountingOptions').text(doI18N('label.show'));
-					    e.preventDefault();
-				  	});
+		            $('#toggleAdvancedAccountingOptions').on("click", function(e) {
+					  $("#advancedAccountingRulesDiv").toggle();
+					  if ($('#toggleAdvancedAccountingOptions').html() == doI18N('label.show')) {
+					  	$('#toggleAdvancedAccountingOptions').html(doI18N('label.hide'));
+					  } else{
+					  	$('#toggleAdvancedAccountingOptions').html(doI18N('label.show'));
+					  };
+					  e.preventDefault();
+					});
 
 				  	//initialize button for adding new "payment Type to Fund source mappings"
 				  	var paymentChannelToFundSourceMappingIndex = 0;
@@ -5267,13 +5267,13 @@ function loadTransactionForm(){
 	//initially hide all payment details
 	$('.paymentDetail').hide();
 
-	$('#togglePaymentDetail').toggle(function(e) {
-		$('.paymentDetail').show();
-		$('#togglePaymentDetail').text(doI18N('label.hide'));
-		e.preventDefault();
-	}, function(e) {
-		$('.paymentDetail').hide();
-		$('#togglePaymentDetail').text(doI18N('label.show'));
+	$('#togglePaymentDetail').on("click", function(e) {
+		$('.paymentDetail').toggle();
+		if ($('#togglePaymentDetail').html() == doI18N('label.show')) {
+		  	$('#togglePaymentDetail').html(doI18N('label.hide'));
+		} else{
+		  	$('#togglePaymentDetail').html(doI18N('label.show'));
+		};
 		e.preventDefault();
 	});
 }
