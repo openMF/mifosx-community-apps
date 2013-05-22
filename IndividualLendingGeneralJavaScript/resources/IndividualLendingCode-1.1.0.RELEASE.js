@@ -666,15 +666,17 @@ function setAccountingContent(divName) {
 			}
 		});
 		var fetchAccountingTabContent = function(index) {
-			//journal entries tab selected
 			if (index == 0) {
+				handlePredefinedPostingEntriesTabSelection(officesObject);
+			}//journal entries tab selected
+			if (index == 1) {
 				handleJournalEntriesTabSelection(officesObject);
 			}//accounting closures tab selecetd
-			else if (index == 1) {
+			else if (index == 2) {
 				handleGLClosuresTabSelection(officesObject);
 			}
 			//coa tab selected
-			else if (index == 2) {
+			else if (index == 3) {
 				handleCOATabSelection();
 			}
 		}
@@ -689,6 +691,106 @@ function reverseJournalEntrySuccessFunction(data, textStatus, jqXHR) {
 	$("#dialog-form").dialog("close");
 	$("#searchjournalentries").click();
 }
+
+function handlePredefinedPostingEntriesTabSelection(officesObject) {
+	var getAccountingRulesSuccessFunction = function (data, textStatus, jqXHR) {
+		var baseObject = new Object();
+		baseObject.offices = officesObject; 
+		baseObject.accountingRuleOptions = data;
+		predefinedAccountingEntriesTabHtml = $("#predefinedAccountingRuleJournalEntriesTemplate").render(baseObject);
+		$("#predefinedpostings-tab").html(predefinedAccountingEntriesTabHtml);
+
+		/***yyyy-mm-dd format for date picker feilds***/
+		$('.datepickerfieldforaccounting').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'yy-mm-dd'});
+
+		/** Onclick function for adding a new Journal Entry */
+		$("#addpredefinedjournalentries").button({
+			icons : {
+				primary : "ui-icon-circle-plus"
+			}
+		}).click(function(e) {
+			var getUrl = "";
+			var putUrl = "journalentries";
+			var templateSelector = "#predefinedPostingEntryFormTemplate";
+			var width = 600;
+			var height = 350;
+
+			var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				$("#dialog-form").dialog("close");
+				searchForJournalEntriesByTransactionId();
+			}
+			popupDialogWithFormViewData(baseObject, putUrl, 'POST', "dialog.title.journalEntry.add", templateSelector, width, height, saveSuccessFunction);
+			$("#accountingRule").combobox();
+			$("#officeId").combobox();
+			e.preventDefault();
+		});
+
+		$("#searchJournalEntriesByTransactionId").button({
+			icons : {
+				primary : "ui-icon-search"
+			}
+		}).click(function(e) {
+			searchForJournalEntriesByTransactionId();
+			e.preventDefault();
+		});
+
+		var searchForJournalEntriesByTransactionId = function() {
+			var getJournalEntriesByTransactionIdSuccessFunction = function(data, textStatus, jqXHR) {
+				var baseObject = new Object();
+				baseObject.crudRows = data.pageItems;
+				var journalEntriesTablesHtml = $("#basicJournalEntriesTableTemplate").render(baseObject);
+				$("#journalEntriesSearchResultsDiv").html(journalEntriesTablesHtml);
+				var oTable=displayListTable("basicjournalentriestable");
+
+				var reversingJournalEntrySuccessFunction = function(data, textStatus, jqXHR) {
+					$("#dialog-form").dialog("close");
+					searchForJournalEntriesByTransactionId();
+				}
+
+				// initialize info and reversal buttons
+				$.each(baseObject.crudRows, function(i, val) {
+					$("#jlentryinfo" + val.id).button({
+						icons : {
+							primary : "ui-icon-info"
+						},
+						text: false
+					}).click(function(e) { {
+							var width = 550;
+							var height = 450;
+							var templateSelector = "#journalEntryInfoFormTemplate";
+							popupDialogWithReadOnlyFormViewData(val,"dialog.title.journalEntry.view", templateSelector, width, height);
+						}
+						e.preventDefault();
+					});
+					// button for reversal may (would not exist for portfolio generate entries)
+					if($("#jlentryreversal" + val.id).length){
+						$("#jlentryreversal" + val.id).button({
+							icons : {
+								primary : "ui-icon-arrowrefresh-1-s"
+							},
+							text: false
+						}).click(function(e) {
+							var url = "journalentries/" + val.transactionId + "?command=reverse";
+							var width = 400;
+							var height = 225;
+
+							popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, reversingJournalEntrySuccessFunction);
+							e.preventDefault();
+						});
+					}
+				});
+
+			}
+			var transactionId = $("#transactionId").val();
+			if (transactionId != "") {
+				executeAjaxRequest('journalentries?transactionId='+transactionId, 'GET', "", getJournalEntriesByTransactionIdSuccessFunction, formErrorFunction);
+			} else{
+				executeAjaxRequest('journalentries', 'GET', "", getJournalEntriesByTransactionIdSuccessFunction, formErrorFunction);
+			};
+		}
+	}
+	executeAjaxRequest('accountingrules', 'GET', "", getAccountingRulesSuccessFunction, formErrorFunction);
+}	
 
 function handleJournalEntriesTabSelection(officesObject) {
 	// get list of all offices and accounts and initialize the screen
@@ -6067,35 +6169,41 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
     	}
     	
     	//manipulate serialized array for journal entries
-    	if (postUrl.toLowerCase().indexOf("journalentries") >= 0){
+    	if (postUrl.toLowerCase().indexOf("journalentries") >= 0 ){
     		serializedArray = {};
 			serializedArray["locale"] = $('#locale').val();
     	   	serializedArray["dateFormat"] = $('#dateFormat').val();
     	   	serializedArray["officeId"] = $('#officeId').val();
     	   	serializedArray["transactionDate"] = $('#transactionDate').val();
     	   	serializedArray["referenceNumber"] = $('#referenceNumber').val();	
-			serializedArray["comments"] = $('#comments').val();	
-    	   	//populate debits and credits array
-    	   	var populateCreditOrDebitArray = function(type){
-    	   		serializedArray[type] = new Array();
-    	   		$("#" + type).children('p').each(function (i) {
-    	   		// "this" is the current element in the loop
-    	   		var tempObject= new Object();
-			    $(this).children('label').each(function(j){
-			    	if(j==0){
-			    		//for property of label had Id of glAccount selectbox
-			    		tempObject.glAccountId=$("#"+$(this).attr("for")).val();
-			    	}else{
-			    		//for property of label had Id of amount input
-			    		tempObject.amount=$("#"+$(this).attr("for")).val();;
-			    	}
-			    }); 
-			    serializedArray[type][i]=tempObject;
-				});
-    	   	}
-    	   	populateCreditOrDebitArray("debits");
-			populateCreditOrDebitArray("credits");
-		}
+			serializedArray["comments"] = $('#comments').val();
+			serializedArray["isPredefinedRuleEntry"] = $('#isPredefinedRuleEntry').val();
+			if (templateSelector === "#journalEntryFormTemplate") {
+				//populate debits and credits array
+	    	   	var populateCreditOrDebitArray = function(type){
+	    	   		serializedArray[type] = new Array();
+	    	   		$("#" + type).children('p').each(function (i) {
+	    	   		// "this" is the current element in the loop
+	    	   		var tempObject= new Object();
+				    $(this).children('label').each(function(j){
+				    	if(j==0){
+				    		//for property of label had Id of glAccount selectbox
+				    		tempObject.glAccountId=$("#"+$(this).attr("for")).val();
+				    	}else{
+				    		//for property of label had Id of amount input
+				    		tempObject.amount=$("#"+$(this).attr("for")).val();;
+				    	}
+				    }); 
+				    serializedArray[type][i]=tempObject;
+					});
+	    	   	}
+	    	   	populateCreditOrDebitArray("debits");
+				populateCreditOrDebitArray("credits");
+			} else if(templateSelector === "#predefinedPostingEntryFormTemplate") {
+				serializedArray["accountingRule"] = $('#accountingRule').val();
+				serializedArray["amount"] = $('#amount').val();
+			};	
+		}	
 	
 	   //Caledar form data
         if (postUrl.toLowerCase().indexOf("calendars") > 0){
