@@ -92,6 +92,10 @@
                  //remove iframe after print
                 if (!opt.debug) {
                     setTimeout(function () {
+						var printButtons = document.getElementsByClassName('printSchedule');
+                        for(var i=0; i < printButtons.length; i++) { 
+                        printButtons[i].style.display = 'inline';
+                        }
                         $iframe.remove();
                     }, 1000);
                 }

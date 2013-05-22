@@ -54,7 +54,7 @@ select.multiselectwidget {width: 450px; height: 80px;}
 /**/
 #toolbar {padding: 9px 5px;}
 /*datatables*/
-table.pretty {width:100%;}
+table.pretty {width:100%; border:2px solid;}
 table.pretty th, table.pretty td {border: 1px gainsboro solid;padding: 0.2em;}
 table.pretty caption {margin-left: inherit;margin-right: inherit;font-style: italic;font-weight: bold;}
 table.pretty thead tr th {text-align: center;font-weight: bold;border-bottom: 2px solid;}
