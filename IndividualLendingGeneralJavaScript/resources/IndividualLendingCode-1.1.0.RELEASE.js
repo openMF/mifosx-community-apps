@@ -4721,7 +4721,11 @@ function loadLoan(loanId, parenttab) {
 					text: false
 		            }).click(function(e){
 					var loanId=	this.offsetParent.id.replace("loantabs","");
-					$("#repaymentschedule_todate"+loanId).printThis();
+					var printButtons = document.getElementsByClassName('printSchedule');
+                    for(var i=0; i < printButtons.length; i++) { 
+                      printButtons[i].style.display = 'none';
+                    }
+					$("#schedule"+loanId).printThis();
 					e.preventDefault();
 			      });	
 					
