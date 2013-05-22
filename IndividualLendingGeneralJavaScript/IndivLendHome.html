@@ -3601,10 +3601,13 @@ $(document).ready(function() {
 <script id="accountingHomeTemplate" type="text/x-jquery-tmpl">
 <div id="accountingtabs">
     <ul>
+        <li><a href="#predefinedpostings-tab">{{=$ctx.doI18N("Predefined Postings")}}</a></li>
         <li><a href="#journalentry-tab">{{=$ctx.doI18N("Journal Entries")}}</a></li>
         <li><a href="#accountingclosure-tab">{{=$ctx.doI18N("Accounting Closures")}}</a></li>
         <li><a href="#coa-tab">{{=$ctx.doI18N("Chart Of Accounts")}}</a></li>
     </ul>
+    <div id="predefinedpostings-tab">
+    </div>
     <div id="journalentry-tab">
     </div>
     <div id="accountingclosure-tab">
@@ -4216,6 +4219,7 @@ $(document).ready(function() {
 <script id="journalEntryFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform" >
 	<div id="formerrors"></div>
+    <input id="isPredefinedRuleEntry" name="isPredefinedRuleEntry" title="" type="hidden" value="false" />
 	<div>
 		<b>{{=$ctx.doI18N("label.debit")}}</b>
 		<button id="addDebit">{{=$ctx.doI18N("button.debit.add")}}</button>
@@ -9029,5 +9033,146 @@ $(document).ready(function() {
         </table> 
 </script>
 
+<!-- Predefined Journal Entries Main page template-->
+<script id="predefinedAccountingRuleJournalEntriesTemplate" type="text/x-jquery-tmpl">
+    <table width="100%">
+        <td align="center">
+            <span id="toolbar" class="ui-widget-header ui-corner-all">
+                <button id="addpredefinedjournalentries">{{=$ctx.doI18N("button.addpredefinedjournalentries")}}</button>
+            </span>
+        </td>
+    </table>
+    <hr/>
+    <div>
+        <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+        <table width="100%">
+            <tr>
+                <td>
+                    <label for="transactionId">{{=$ctx.doI18N("label.transactionId")}}
+                    <input id="transactionId" name="transactionId" type="text" /></label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" align="center">
+                    <button id="searchJournalEntriesByTransactionId">{{=$ctx.doI18N("button.journalentry.search")}}</button>
+                </td>
+            </tr>
+        </table>
+        <br/>
+        <div id="journalEntriesSearchResultsDiv">
+        </div>
+    </div>  
+</script>
+
+
+<!--Add a Predefined Posting Journal entry form-->
+<script id="predefinedPostingEntryFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+    <div id="formerrors"></div>
+    <input id="isPredefinedRuleEntry" name="isPredefinedRuleEntry" title="" type="hidden" value="true" />
+    <table width="100%">
+        <tr>
+            <td><label for="accountingRule">{{=$ctx.doI18N("label.accountingRule")}}</label></td>
+            <td>
+            <select id="accountingRule" name="accountingRule" title="">
+                <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+                {{#each accountingRuleOptions}}
+                <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                {{/each}}
+            </select></td>
+        </tr>
+        <tr>
+            <td><label for="officeId">{{=$ctx.doI18N("label.office")}}</label></td>
+            <td>
+            <select id="officeId" name="officeId" title="">
+                <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+                {{#each offices}}
+                <option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+                {{/each}}
+            </select></td>
+        </tr>
+        <tr>
+            <td><label for="amount">{{=$ctx.doI18N("label.amount")}}</label></td>
+            <td>
+            <input id="amount" name="amount" title="" type="text" value="{{=amount}}" />
+            </td>
+        </tr>
+        <tr>
+            <td><label for="referenceNumber">{{=$ctx.doI18N("label.referenceNumber")}}</label></td>
+            <td>
+            <input id="referenceNumber" name="referenceNumber" title="" type="text" value="{{=referenceNumber}}" />
+            </td>
+        </tr>
+        <tr>
+            <td><label for="transactionDate">{{=$ctx.doI18N("label.transactionDate")}}</label></td>
+            <td>
+            <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+            <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+            <input id="transactionDate" name="transactionDate" title="" type="text" class="datepickerfield" />
+            </td>
+        </tr>
+        <tr>
+            <td><label for="comments">{{=$ctx.doI18N("label.comments")}}</label></td>
+            <td><textarea id="comments" name="comments" rows="2" cols="35">{{=comments}}</textarea></td>
+        </tr>
+    </table>
+</form>
+</script>
+
+<script id="basicJournalEntriesTableTemplate" type="text/x-jquery-tmpl">
+    <table id="basicjournalentriestable" width="100%" >
+        <thead>
+            <tr>
+                <th>{{=$ctx.doI18N("table.heading.officename")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.transactionDate")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.classification")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.accountName")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.accountCode")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.createdBy")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.entryId")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.transactionId")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.debit")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.credit")}}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each crudRows}}
+                <tr>
+                    <td>{{=officeName}}</td>
+                    <td>{{=$ctx.globalDate(transactionDate)}}</td>
+                    <td>{{=glAccountType.value}}</td>
+                    <td>{{=glAccountName}}</td>
+                    <td>{{=glAccountCode}}</td>
+                    <td>{{=createdByUserName}}</td>
+                    <td>{{=id)}}</td>
+                    <td>{{=transactionId}}</td>
+                    <td>
+                        {{#if entryType.value === "DEBIT"}}
+                            {{=$ctx.decimal(amount, 2)}}
+                        {{/if}}
+                    </td>
+                    <td>
+                        {{#if entryType.value === "CREDIT"}}
+                            {{=$ctx.decimal(amount, 2)}}
+                        {{/if}}
+                    </td>
+                    <td>
+                        <span>
+                            <button id="jlentryinfo{{=id}}">View Entry Details</button>
+                            {{#if manualEntry}}
+                                {{#if reversed == false}}
+                                    <button id="jlentryreversal{{=id}}">Reverse this Journal Entry</button>
+                                {{/if}}
+                            {{else}}
+                                <!-- No buttons-->
+                            {{/if}}
+                        </span>
+                    </td>
+                </tr>
+            {{/each}}   
+        </tbody>
+    </table>
+</script>
 </body>
 </html>
