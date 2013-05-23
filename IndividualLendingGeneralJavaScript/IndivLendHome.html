@@ -7091,10 +7091,10 @@ $(document).ready(function() {
 				</td>
 			</tr>
 
-			{{#if $ctx.arrayIsNotEmpty(loanPurposeOptions)}}
 			<tr>
+				{{#if $ctx.arrayIsNotEmpty(loanPurposeOptions)}}
 				<td valign="top">{{=$ctx.doI18N("label.loanPurpose")}}</td>
-				<td valign="top" colspan="4">
+				<td valign="top">
 					<select name="loanPurposeId" id="loanPurposeId">
 						<option value="">{{=$ctx.doI18N("option.loanPurpose.first.choice")}}</option>
 					{{#each loanPurposeOptions}}
@@ -7106,8 +7106,32 @@ $(document).ready(function() {
      				{{/each}}
 					</select>
 				</td>
+				{{else}}
+				<td valign="top">&nbsp;</td>
+				<td valign="top">&nbsp;</td>
+				{{/if}}
+
+				<td valign="top">&nbsp;</td>
+
+				{{#if $ctx.showTask("VIEWFUNDS")}}
+				<td>{{=$ctx.doI18N("label.fund")}}</td>
+                <td>
+                	<select id="fundId" name="fundId" title="">
+                    <option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
+                    {{#each fundOptions}}
+                    	{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
+                        <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                        {{#else}}
+                        <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                        {{/if}}
+                   {{/each}}
+                   </select>
+                </td>
+				{{else}}
+				<td valign="top">&nbsp;</td>
+				<td valign="top">&nbsp;</td>
+               	{{/if}}
 			</tr>
-			{{/if}}
 	</table>
 
 	<div id="loanapplicationtabs{{=id}}" class="loanapplicationtabs">
