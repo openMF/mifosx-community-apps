@@ -113,7 +113,7 @@ saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
 
 saveSuccessFunctionReloadClientListing =  function(data, textStatus, jqXHR) {
 	$("#dialog-form").dialog("close");
-	showILClientListing();
+	showILClientListing("content");
 };
 
 formErrorFunction = function(jqXHR, textStatus, errorThrown) {
@@ -197,7 +197,7 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '<ul id="nav" class="floatleft">';
 
 	if (jQuery.MifosXUI.showMenu("ClientsMenu"))
-		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing();return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing(' + "'content'" + ');return false;">' + doI18N("link.topnav.clients") + '</a></li>';
 	
 	if (jQuery.MifosXUI.showMenu("GroupsMenu")) {
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.groupings") + '</a>';
@@ -1766,7 +1766,7 @@ var initTableConf = function (tableId,oTable)
 		}); 
 }
 
-function showILClientListing() {
+function showILClientListing(divName) {
 
 	if (jQuery.MifosXUI.showTask("clientSearch") == false)
 	{
@@ -1774,7 +1774,7 @@ function showILClientListing() {
 		return;
 	}
 
-	setClientListingContent("content");
+	setClientListingContent(divName);
 
 	//HOME list clients functionality
 	$("#tabs").tabs({
@@ -1820,7 +1820,7 @@ function showILClientListing() {
 		  if (data.resourceId) {
 			  showILClient(data.resourceId);
 		  } else {
-			  showILClientListing();
+			  showILClientListing("content");
 		  }
 	}
 	
@@ -5894,7 +5894,7 @@ function setBasicAuthKey(logonDivName, username, password)
 					currentUserName = data.username;
 					currentPwd = password;
 
-					jQuery.MifosXUI.initialise(data.permissions, applicationProfile, tenantIdentifier, applicationMode);
+					jQuery.MifosXUI.initialise(data.roles, data.permissions, applicationProfile, tenantIdentifier, applicationMode);
 
 					showMainContainer(logonDivName, username);
 					custom.showFirstPage();
@@ -6884,12 +6884,6 @@ function initialiseAndShowLogon() {
 	jsViewsRegisterHelpers();
 
 	baseApiUrl = getBaseApiURL(window.location.href);
-
-	applicationProfile = "ALL";
-	if (QueryParameters["applicationProfile"]) applicationProfile = QueryParameters["applicationProfile"];
-
-	applicationMode = "PROD";
-	if (QueryParameters["mode"]) applicationMode = QueryParameters["mode"];
 
 	showLogon("container");
 	$( document ).tooltip();

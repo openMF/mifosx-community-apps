@@ -132,10 +132,12 @@ tenantNameExclusions = {
 
 
 //add all application profiles here
-applicationProfiles = ["ALL", "IL"];
+applicationProfiles = ["ALL", "IL", "TEVI"];
 
 applicationProfileExclusions = {
-		IL: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"]
+		IL: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"],
+		TEVI: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"]
+
 	};
 
 applicationProfileInclusions = {
@@ -148,8 +150,9 @@ isInitialised = false;
 
 	$.MifosXUI = {};
 
-	$.MifosXUI.initialise = function(pUserPermissions, pApplicationProfile, pTenantName, pApplicationMode) {
+	$.MifosXUI.initialise = function(pUserRoles, pUserPermissions, pApplicationProfile, pTenantName, pApplicationMode) {
 
+		mUserRoles = pUserRoles;
 		mUserPermissions = pUserPermissions;
 		mApplicationProfile = pApplicationProfile.toUpperCase();
 		mApplicationMode = pApplicationMode.toUpperCase();

@@ -32,7 +32,7 @@ custom = {
 
 custom.showFirstPage = function() {
 
-	showILClientListing();
+	showILClientListing('content');
 
 }
 
@@ -884,13 +884,26 @@ custom.jqueryDataTableLayout = {
 }
 
 
+//establish the app profile and include any app specific javascript configuration
+//file
+applicationProfile = "ALL";
+if (QueryParameters["applicationProfile"]) applicationProfile = QueryParameters["applicationProfile"];
+
+var configScript = '<script type="text/javascript" src="resources/configs/app/'
+		+ applicationProfile + '.js"></script>';
+document.write(configScript);
+
+
+applicationMode = "PROD";
+if (QueryParameters["mode"]) applicationMode = QueryParameters["mode"];
+	
 // establish the tenant and include any tenant specific javascript configuration
 // file
-
 tenantIdentifier = "default";
 if (QueryParameters["tenantIdentifier"])
 	tenantIdentifier = QueryParameters["tenantIdentifier"];
 
-var tenantConfigScript = '<script type="text/javascript" src="resources/tenantconfigs/'
+var configScript = '<script type="text/javascript" src="resources/configs/tenant/'
 		+ tenantIdentifier + '.js"></script>';
-document.write(tenantConfigScript);
+document.write(configScript);
+
