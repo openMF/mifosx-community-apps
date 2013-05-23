@@ -2215,10 +2215,10 @@ function showILClient(clientId) {
 					refreshClientDocuments(clientUrl);
 				}
 
-	    		},
+	    	},
 		"add": function( event, ui ) {
 				$newtabs.tabs('select', '#' + ui.panel.id);
-			}
+		}
 	});
 	
 	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
@@ -3494,6 +3494,7 @@ function showCenter(centerId){
 			  			$(this).remove();
 					},
 			  		open: function (event, ui) {
+			  			
 			  			if (data.loanProductId) {
 			  				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, data.loanProductId , data.group, loanType);
 			  			} else {
@@ -3563,7 +3564,7 @@ function showCenter(centerId){
 					
 					$("#productId").change(function() {
 						var loanProductId = $("#productId").val();
-						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, data.loanType.value.toLowerCase());
+						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, null, data.loanType);
 					});
 		  		}
 		  	}).dialog('open');		
@@ -3593,7 +3594,7 @@ function showCenter(centerId){
 		
 		$("#productId").change(function() {
 			var loanProductId = $("#productId").val();
-			loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, data.loanType);
+			loadTabbedLoanApplicationForm(container, data.clientId, loanProductId, null, data.loanType, false);
 		});
 		
 		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -3678,6 +3679,10 @@ function showCenter(centerId){
 	
 	function loadTabbedLoanApplicationForm(container, clientId, productId , group, loanType, isjlgbulk) {
 		
+		isjlgbulk = isjlgbulk || false; 
+		group = group || undefined;
+		clientId = clientId || undefined;
+		
 		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
 			//set loan type
 			data.loanType = loanType;
@@ -3700,7 +3705,7 @@ function showCenter(centerId){
 			
 			$("#productId").change(function() {
 				var loanProductId = $("#productId").val();
-				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, loanType );
+				loadTabbedLoanApplicationForm(container, data.clientId, loanProductId, null, loanType, isjlgbulk);
 			});
 			
 			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -3767,7 +3772,6 @@ function showCenter(centerId){
 			if(data.calendarOptions){
 				loadAvailableCalendars(data.calendarOptions);   
 			}
-                
 
             if(isjlgbulk){
             	//This is for bulk JLG loans hide applicant
@@ -3775,7 +3779,6 @@ function showCenter(centerId){
 					$(this).html('');
 				});
             }
-
 		};
 		
 		
@@ -4408,9 +4411,10 @@ function loadLoan(loanId, parenttab) {
 	};
 
 	var successFunction = function(data, status, xhr) {
-	        	
-	        		var currentTabIndex = $newtabs.tabs('option', 'selected');
-	            	var currentTabAnchor = $newtabs.data('tabs').anchors[currentTabIndex];
+		
+	            	var currentTabIndex = $('#' + parenttab).tabs('option', 'active');
+
+	            	$("#" + parenttab + " li:eq(" + currentTabIndex + ") *:last").text(data.loanProductName + ": " + data.accountNo);
 	            
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);
 	        		
@@ -4481,17 +4485,9 @@ function loadLoan(loanId, parenttab) {
         				offsetToDisbursalDate = Date.daysBetween(today, offsetDate);
         			}
 	        		
-	        		//adding styles for vertical sub-tabs
-	        		//$( ".loantabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
-	        		//$( ".loantabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
-	        		//var $loantabs = $(".loantabs").tabs({
 		        	var $loantabs = $("#loantabs" + loanId).tabs({
-						"show": function(event, ui) {
-							var curTab = $('#' + parenttab + ' .ui-tabs-panel:not(.ui-tabs-hide)');
-			      			var curTabID = curTab.prop("id")
-						},
-						"select": function( event, ui ) {
-        					if($(ui.panel).attr( 'id' ) == ( "loanDocuments"+ loanId )){
+						beforeActivate: function( event, ui ) {
+        					if($(ui.newPanel).attr( 'id' ) == ( "loanDocuments"+ loanId )){
         						refreshLoanDocuments(loanId)
         					}
    						}
