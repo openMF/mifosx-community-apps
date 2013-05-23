@@ -4219,7 +4219,7 @@ $(document).ready(function() {
 <script id="journalEntryFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform" >
 	<div id="formerrors"></div>
-    <input id="isPredefinedRuleEntry" name="isPredefinedRuleEntry" title="" type="hidden" value="false" />
+    <input id="useAccountingRule" name="useAccountingRule" title="" type="hidden" value="false" />
 	<div>
 		<b>{{=$ctx.doI18N("label.debit")}}</b>
 		<button id="addDebit">{{=$ctx.doI18N("button.debit.add")}}</button>
@@ -6864,52 +6864,54 @@ $(document).ready(function() {
                 </div>
             </fieldset>
             <br/>
-            <fieldset>
-                <legend>{{=$ctx.doI18N("legend.advanced.accounting.rules")}} [<a href="" id="toggleAdvancedAccountingOptions">{{=$ctx.doI18N("label.show")}}</a>]</legend>
-                <div id="advancedAccountingRulesDiv">
-                    <h3>{{=$ctx.doI18N("label.payment.channel.specific.fund.source")}}</h3>    
-                    <button id="addPaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
-                    <table id="paymentChannelToFundSourceMappingTable" class="pretty displayschedule">
-                        <thead>
-                            <tr>
-                            <th scope="col">{{=$ctx.doI18N("label.paymentType")}}</th>
-                            <th scope="col">{{=$ctx.doI18N("label.fundSource")}}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each paymentChannelToFundSourceMappings}}
-                            <tr>
-                                <td>
-                                    <select id="paymentChannelToFundSourceMappings[{{=$itemNumber}}][paymentTypeId]" name="paymentChannelToFundSourceMappings[{{=$itemNumber}}][paymentTypeId]" title="" style="width: 180px">
-                                        {{#each $parent.parent.data.paymentTypeOptions}}
-                                            {{#if $ctx.number($parent.parent.data.paymentTypeId)===$ctx.number(id)}}
-                                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
-                                            {{#else}}
-                                                <option value="{{=$ctx.number(id)}}">{{=name}}</option>
-                                            {{/if}}
-                                        {{/each}}
+            <div id="advancedOptionContainer">
+                <fieldset>
+                    <legend>{{=$ctx.doI18N("legend.advanced.accounting.rules")}} [<a href="" id="toggleAdvancedAccountingOptions">{{=$ctx.doI18N("label.show")}}</a>]</legend>
+                    <div id="advancedAccountingRulesDiv">
+                        <h3>{{=$ctx.doI18N("label.payment.channel.specific.fund.source")}}</h3>    
+                        <button id="addPaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+                        <table id="paymentChannelToFundSourceMappingTable" class="pretty displayschedule">
+                            <thead>
+                                <tr>
+                                <th scope="col">{{=$ctx.doI18N("label.paymentType")}}</th>
+                                <th scope="col">{{=$ctx.doI18N("label.fundSource")}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each paymentChannelToFundSourceMappings}}
+                                <tr>
+                                    <td>
+                                        <select id="paymentChannelToFundSourceMappings[{{=$itemNumber}}][paymentTypeId]" name="paymentChannelToFundSourceMappings[{{=$itemNumber}}][paymentTypeId]" title="" style="width: 180px">
+                                            {{#each $parent.parent.data.paymentTypeOptions}}
+                                                {{#if $ctx.number($parent.parent.data.paymentTypeId)===$ctx.number(id)}}
+                                                    <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                                                {{#else}}
+                                                    <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                                                {{/if}}
+                                            {{/each}}
 
-                                    </select>
-                                   
-                                </td>
-                                <td>
-                                    <select id="paymentChannelToFundSourceMappings[{{=$itemNumber}}][fundSourceAccountId]" name="paymentChannelToFundSourceMappings[{{=$itemNumber}}][fundSourceAccountId]" title="" style="width: 180px">
-                                        {{#each $parent.parent.data.accountingMappingOptions.assetAccountOptions}}
-                                            {{#if $ctx.number($parent.parent.data.fundSourceAccountId)===$ctx.number(id)}}
-                                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
-                                            {{#else}}
-                                                <option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
-                                            {{/if}}
-                                        {{/each}}
-                                    </select>
-                                </td>
-                                <td><button id="removePaymentChannelToFundSourceMappings{{=$itemNumber}}" class="removePaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
-                </div>
-            </fieldset>
+                                        </select>
+                                       
+                                    </td>
+                                    <td>
+                                        <select id="paymentChannelToFundSourceMappings[{{=$itemNumber}}][fundSourceAccountId]" name="paymentChannelToFundSourceMappings[{{=$itemNumber}}][fundSourceAccountId]" title="" style="width: 180px">
+                                            {{#each $parent.parent.data.accountingMappingOptions.assetAccountOptions}}
+                                                {{#if $ctx.number($parent.parent.data.fundSourceAccountId)===$ctx.number(id)}}
+                                                    <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+                                                {{#else}}
+                                                    <option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
+                                                {{/if}}
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                    <td><button id="removePaymentChannelToFundSourceMappings{{=$itemNumber}}" class="removePaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+            </div>
 		</div>
 {{#else}}
 	<input type="hidden" name="accountingRule" value="1" /> 
@@ -9069,7 +9071,7 @@ $(document).ready(function() {
 <script id="predefinedPostingEntryFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform" >
     <div id="formerrors"></div>
-    <input id="isPredefinedRuleEntry" name="isPredefinedRuleEntry" title="" type="hidden" value="true" />
+    <input id="useAccountingRule" name="useAccountingRule" title="" type="hidden" value="true" />
     <table width="100%">
         <tr>
             <td><label for="accountingRule">{{=$ctx.doI18N("label.accountingRule")}}</label></td>
