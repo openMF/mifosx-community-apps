@@ -4197,8 +4197,10 @@ function showCenter(centerId){
 	  			        var selectedValue = $(this).val();
 	  			        if(selectedValue == "1"){
 	  			        	 $("#accountingPlaceholdersDiv").hide();
+	  			        	 $("#advancedOptionContainer").hide();
 	  			        }else if (selectedValue == "2"){
 	  			        	 showCashFinancialPlaceholders();
+	  			        	 $("#advancedOptionContainer").show();
 	  			        }else if (selectedValue == "3"){
 	  			        	 showAccrualFinancialPlaceholders();
 	  			        }
@@ -4207,8 +4209,10 @@ function showCenter(centerId){
 	  			    //hide accounting placeholders div on page load
 	  			    if(data.accountingRule.value == "NONE"){
 	  			    	$("#accountingPlaceholdersDiv").hide();
+	  			    	$("#advancedOptionContainer").hide();
 	  			    }else if (data.accountingRule.value == "CASH BASED"){
 	  			    	 showCashFinancialPlaceholders();
+	  			    	 $("#advancedOptionContainer").show();
 	  			    }else if (data.accountingRule.value == "ACCRUAL BASED"){
 	  			    	 showAccrualFinancialPlaceholders();
 	  			    }
@@ -4240,7 +4244,7 @@ function showCenter(centerId){
 						});
 					}
 				  	$("#addPaymentChannelToFundSourceMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
-						paymentChannelToFundSourceMappingIndex++;
+				  		paymentChannelToFundSourceMappingIndex++;
 						var crudObject = new Object();
 						crudObject["index"] = paymentChannelToFundSourceMappingIndex;
 						crudObject["paymentTypeOptions"] = data.paymentTypeOptions;
