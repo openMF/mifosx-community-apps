@@ -189,8 +189,8 @@ function executeMultipartUploadAjaxRequest(url, verbType, formData, successFunct
 function showMainContainer(containerDivName, username) {
 
 	var htmlVar = '<div id="logowrapper">';
-	htmlVar += '	<span style="float: left">';
-	htmlVar += '		<img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/>';
+	htmlVar += '	<span style="float: right">';
+	htmlVar += '		<img style="float:right; border: 0;" alt="" src="resources/img/mifos-icon.png"/>';
 	htmlVar += '	</span>';
 	htmlVar += '</div>';
 	htmlVar += '<div id="navwrapper">';
