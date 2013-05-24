@@ -2439,8 +2439,11 @@ function showILClient(clientId) {
 				else if (tab.newTab.index() == 2){
 					refreshClientDocuments(clientUrl);
 				}
-
 	    		}
+	    	},
+//		"add": function( event, ui ) {
+//				$newtabs.tabs('select', '#' + ui.panel.id);
+//		}
 	});
 	
 	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
@@ -4606,11 +4609,9 @@ function loadLoan(loanId, parenttab) {
 	};
 
 	var successFunction = function(data, status, xhr) {
-	        	
-	        		var currentTabIndex = $newtabs.tabs('option', 'active');
-	            	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
 
-	            	$("#clientdatatabs li:eq(" + currentTabIndex + ") *:last").text(data.loanProductName + ": " + data.accountNo);
+	            	var currentTabIndex = $('#' + parenttab).tabs('option', 'active');
+	            	$("#" + parenttab + " li:eq(" + currentTabIndex + ") *:last").text(data.loanProductName + ": " + data.accountNo);
 	            
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);
 	        		
