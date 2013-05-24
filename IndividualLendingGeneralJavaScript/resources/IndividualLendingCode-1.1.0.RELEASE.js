@@ -485,8 +485,6 @@ function setAddSavingContent(divName) {
 
 function setOrgAdminContent(divName) {
 
-//	var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
-//	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
@@ -506,22 +504,12 @@ function setOrgAdminContent(divName) {
 
 	if (jQuery.MifosXUI.showTask("ViewSavingProducts")) {
 		htmlOptions += ' | <a href="#" onclick="listSavingsProducts();return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
-//		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingsproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
 	}
 		
 	if (jQuery.MifosXUI.showTask("AddSavingProduct")) {
 		htmlOptions += ' | <a href="#" id="addsavingsproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
-//		htmlOptions += ' | <a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
 	}
 		
-	if (jQuery.MifosXUI.showTask("ViewDepositProducts")) {
-//		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
-	}
-		
-	if (jQuery.MifosXUI.showTask("AddDepositProduct")) {
-//		htmlOptions += ' | <a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';		
-	}
-
 	if (jQuery.MifosXUI.showTask("ViewFunds") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 
@@ -1495,7 +1483,7 @@ function editCodeValueFunction(linkId, tableName){
                 value = value.trim();
                 var ele = this;
                 var searializedArray= {};
-                var codeValueId = $(ele).attr("id").replace('name', "");
+                var codeValueId = $(ele).prop("id").replace('name', "");
                 searializedArray['name']= value;
 
                 var jsonString =JSON.stringify(searializedArray);
@@ -1536,7 +1524,7 @@ function editCodeValueFunction(linkId, tableName){
                 value = value.trim();
                 var ele = this;
                 var searializedArray= {};
-                var codeValueId = $(this).attr("id").replace('position', "");
+                var codeValueId = $(this).prop("id").replace('position', "");
                 searializedArray['position']= value;
 
                 var jsonString =JSON.stringify(searializedArray);
@@ -1578,7 +1566,7 @@ function editCodeValueFunction(linkId, tableName){
         $('.deleteCodeValue').button().click(function(e){
             $('#formerrors').html("");
             clearErrorsClass();
-            var codeValueId = $(this).attr("id").replace('deleteCodeValue', "");
+            var codeValueId = $(this).prop("id").replace('deleteCodeValue', "");
             var codeValuesPostUrl = getUrl + '/' + codeValueId;
             var codeValueSubmitType = "DELETE";
 
@@ -1616,7 +1604,7 @@ function editCodeValueFunction(linkId, tableName){
             clearErrorsClass();
             //clear previous error messages
             $('#formerrors').html("");
-            var codeId = $("#addCodeValue").attr("data-codeId");
+            var codeId = $("#addCodeValue").prop("data-codeId");
             var newFormData = JSON.stringify($('#entityform').serializeObject());
 
             var addsuccessFunction =  function(data, textStatus, jqXHR) {
@@ -1983,13 +1971,6 @@ function saveGroup(divContainer, groupId) {
 	var serializationOptions = {};
 	serializationOptions["checkboxesAsBools"] = true;
 	
-/*	$('#notSelectedClients option').each(function(i) {
-		$(this).attr("selected", "selected");
-	});
-	$('#clientMembers option').each(function(i) {
-		$(this).attr("selected", "selected");
-	});
-*/	
 	var serializedArray = {};
 	serializedArray = $('#entityform').serializeObject(serializationOptions);
 	
@@ -2116,10 +2097,10 @@ function saveAssociateClientsToGroup(divContainer, groupId) {
 	var serializationOptions = {};
 	
 	$('#notSelectedClients option').each(function(i) {
-		$(this).attr("selected", "selected");
+		$(this).prop("selected", "selected");
 	});
 	$('#clientMembers option').each(function(i) {
-		$(this).attr("selected", "selected");
+		$(this).prop("selected", "selected");
 	});
 	
 	var serializedArray = {};
@@ -2475,7 +2456,7 @@ function showILClient(clientId) {
 	        
 	//initialize client image related buttons
 	var imageFetchSuccessFunction = function(data, textStatus, jqXHR) {
-		$("#customerImage").attr("src",data);
+		$("#customerImage").prop("src",data);
 	};
 
 	var successFunction = function(data, status, xhr) {
@@ -2594,7 +2575,7 @@ function showILClient(clientId) {
 	            	}).click(function(e) {
 	            		var imageUploadSuccessFunction = function(data, textStatus, jqXHR) {
 	            			$("#dialog-form").dialog("close");
-							$("#customerImage").attr("src",imageCanvas.toDataURL("image/jpeg"));
+							$("#customerImage").prop("src",imageCanvas.toDataURL("image/jpeg"));
 						};
 						var templateSelector = "#clientImageWebcamFormTemplate";
 						var width = 775; 
@@ -2680,7 +2661,7 @@ function showILClient(clientId) {
 					var height = 225;
 					var saveSuccessFunction = function(data, textStatus, jqXHR) {
 							$("#dialog-form").dialog("close");
-						  	$("#customerImage").attr("src","resources/img/client-image-placeholder.png");
+						  	$("#customerImage").prop("src","resources/img/client-image-placeholder.png");
 					};
 											
 					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction);
@@ -3402,99 +3383,6 @@ function showCenter(centerId){
 		var url = 'loans/template?templateType=jlgbulk&groupId=' + groupId + '&lendingStrategy=300';
 		executeAjaxRequest(url, 'GET', "", viewMemberselection, formErrorFunction);	
 	}
-/*
-	### Not in use - delete after testing
-	function addLJGBulkMembersLoans(groupId){
-		setAddBulkLoanContent("content");
-
-		var addMemberLoanApplicationSuccess = function(data, textStatus, jqXHR) {
-			var memberHtml = $("#bulkLoanApplicationMemberPartial").render(data);
-			$("#jlgloans").append(memberHtml);
-
-			$('#productId').change(function() {
-				var productId = $('#productId').val();
-				addLJGBulkMembersLoansWithProdDetails(data.group.id , productId);
-			});
-
-		} 
-
-		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300';
-		executeAjaxRequest(url, 'GET', "", addMemberLoanApplicationSuccess, formErrorFunction);
-	}
-
-	function addLJGBulkMembersLoansWithProdDetails(groupId , productId){
-
-		setAddBulkLoanContent("content");
-
-		var addMemberLoanApplicationSuccess = function(data, textStatus, jqXHR) {
-			var memberHtml = $("#bulkLoanApplicationMemberPartial").render(data);
-			$("#jlgloans").append(memberHtml);
-
-			$('#productId').change(function() {
-				var productId = $('#productId').val();
-				addLJGBulkMembersLoansWithProdDetails(data.group.id , productId);
-			});
-
-			$('#alljlgclients:checkbox').change(function() {
-				if($(this).attr("checked")) $('input:checkbox').attr('checked','checked');
-			   else $('input:checkbox').removeAttr('checked');
-			});
-
-
-			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-
-			$('#submitjlgloanapps').button().click(function(e) {
-				$('.entityform').each(function(){
-
-		    		var serializationOptions = {};
-					serializationOptions["checkboxesAsBools"] = true;
-					
-					var memberLoanData = $(this).serializeObject(serializationOptions),
-						entityForm = $(this);
-
-	    			
-		    		if(memberLoanData.jlgclient === 'true') {
-
-		    				delete memberLoanData.jlgclient;
-
-		    				memberLoanData.submittedOnDate = $('#submittedOnDate').val();
-		    				memberLoanData.expectedDisbursementDate = $('#expectedDisbursementDate').val();
-		    				memberLoanData.interestChargedFromDate = $('#interestChargedFromDate').val();
-		    				memberLoanData.repaymentsStartingFromDate = $('#repaymentsStartingFromDate').val();
-		    				memberLoanData.productId = $('#productId').val();
-
-							var serializedCharges = $("#charges").serializeObject();	
-							memberLoanData.charges = serializedCharges.charges;	    				
-
-		    				var memberLoanDataString = JSON.stringify(memberLoanData);
-					
-							var successFunction =  function(data, textStatus, jqXHR) {
-								entityForm.closest("#client" + memberLoanData.clientId).remove();
-							if ($('.entityform').length === 0){
-								showGroup(groupId);	
-								}
-							};
-							
-							var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
-								handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#client" + memberLoanData.clientId + " .formerrors");
-							};
-					
-							executeAjaxRequest('loans', "POST", memberLoanDataString, successFunction, customFormErrorFunction);	
-
-					}
-				})
-
-	    		e.preventDefault();
-
-			});
-
-		} 
-
-		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300' + '&productId=' + productId;
-
-		executeAjaxRequest(url, 'GET', "", addMemberLoanApplicationSuccess, formErrorFunction);
-	}	
-*/
 
 	// function to retrieve and display loan summary information in it placeholder
 	function refreshLoanSummaryInfo(clientUrl) {
@@ -4683,13 +4571,7 @@ function showLoan(loanId, product, loanAccountNo, parenttab){
 		if (undefined === loanAccountNo) {
 			title = product + ": #" + loanId;
 		}
-		//$newtabs.tabs( "add", "unknown.html", title);  Deprecated
 		$newtabs.addTab(newLoanTabId, title);
-		//add ids and titles to newly added div's and a'hrefs
-		// var lastAHref=$('#'+ parenttab +'> ul > li:last > a');
-		// var lastDiv=$('#'+ parenttab +' > div:last');
-		// lastAHref.attr('href','#loan'+loanId+'tab');
-		// lastDiv.attr('id',newLoanTabId);
 
 		$newtabs.tabs( "option", "active", $('#'+ parenttab +'> ul > li').length-1);
 		loadLoan(loanId, parenttab);
@@ -5636,12 +5518,15 @@ function refreshLoanDocuments(loanId) {
 		}
 		else
 		{
-			if (crudData[tableName].editTemplateNeeded == true) getUrl = resourceUrl + '?template=true'
-			else getUrl = resourceUrl;
+			if (crudData[tableName].editTemplateNeeded == true) {
+				getUrl = resourceUrl + '?template=true'
+			}
+			else {
+				getUrl = resourceUrl;
+			}
 			
 			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction);
 		}
-		
 	}
 
 
@@ -5998,7 +5883,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 
 				if(templateSelector == "#employeeFormTemplate" && submitType!= "PUT"){
 					var officesObject = new Object();
-			    		officesObject.crudRows = data;
+			    	officesObject.crudRows = data;
 					popupDialogWithFormViewData(officesObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 				}else if(templateSelector == "#employeeFormTemplate" && submitType == "PUT") {
 					templateSelector = "#employeeFormEditTemplate";
@@ -6017,7 +5902,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 						{
 							var officeId = jQuery.parseJSON(extraParam).officeId;
 							var groupId = jQuery.parseJSON(extraParam).groupId;
-							$("#officeId option[value='"+ officeId +"']").attr("selected", "selected");
+							$("#officeId option[value='"+ officeId +"']").prop("selected", "selected");
 							$('#officeId').prop('disabled', true);
 							$('<input>').attr({type: 'hidden',id: 'officeId',name: 'officeId',value:officeId}).appendTo('#entityform');
 							$('<input>').attr({type: 'hidden',id: 'groupId',name: 'groupId',value:groupId}).appendTo('#entityform');
@@ -6046,7 +5931,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 						var action = jQuery.parseJSON(extraParam).action;
 						$('#officeId').prop('disabled', true);
 						if(!(centerId === undefined) ){
-							$("#centerId option[value='"+ centerId +"']").attr("selected", "selected");
+							$("#centerId option[value='"+ centerId +"']").prop("selected", "selected");
 							if(action == 'disable'){
 								$('#centerId').prop('disabled', true);
 								$('<input>').attr({type: 'hidden',id: 'centerId',name: 'centerId',value:centerId}).appendTo('#entityform');
@@ -6058,8 +5943,12 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 				//End group create specific code
 		  	};
 
-		if (getUrl == "") popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
-		else executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
+		if (getUrl == "") {
+			popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
+		}
+		else {
+			executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
+		}
 }
 
 function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)  {
@@ -6075,41 +5964,43 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 	buttonsOpts[saveButton] = function() {
 		
 		$('#notSelectedClients option').each(function(i) {
-			$(this).attr("selected", "selected");
+			$(this).prop("selected", "selected");
 		});
+
 		$('#clientMembers option').each(function(i) {
-			$(this).attr("selected", "selected");
+			$(this).prop("selected", "selected");
 		});
 		
 		$('#notSelectedCharges option').each(function(i) {
-			$(this).attr("selected", "selected");
+			$(this).prop("selected", "selected");
 		});
+		
 		$('#charges option').each(function(i) {
-			$(this).attr("selected", "selected");
+			$(this).prop("selected", "selected");
 		});
 		
-		$('#notSelectedRoles option').each(function(i) {  
-			$(this).attr("selected", "selected");  
+		$('#notSelectedRoles option').each(function(i) {
+			$(this).prop("selected", "selected");  
 		});
 		
-		$('#roles option').each(function(i) {  
-		   	$(this).attr("selected", "selected");  
+		$('#roles option').each(function(i) { 
+		   	$(this).prop("selected", "selected");  
 		});
 		
-		$('#notSelectedItems option').each(function(i) {  
-			   $(this).attr("selected", "selected");  
+		$('#notSelectedItems option').each(function(i) {
+			$(this).prop("selected", "selected");
 		});
 		
-		$('#selectedItems option').each(function(i) {  
-			$(this).attr("selected", "selected");  
+		$('#selectedItems option').each(function(i) { 
+			$(this).prop("selected", "selected");
 		});
 		
-		$('#notSelectedCurrencies option').each(function(i) {  
-		    	   	$(this).attr("selected", "selected");  
+		$('#notSelectedCurrencies option').each(function(i) {
+			$(this).prop("selected", "selected");
 		});
 		
-		$('#currencies option').each(function(i) {  
-		   		$(this).attr("selected", "selected");  
+		$('#currencies option').each(function(i) {
+			$(this).prop("selected", "selected");
 		});
 		
 		if (document.changeUserSettingsForm!=undefined) {
@@ -6257,7 +6148,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			permissions.permissions = serializedArray;
 			newFormData = JSON.stringify(permissions);
 		}
-	        
+		
 		//spl ajax req for webcam and doc upload
 		if( templateSelector == '#clientImageWebcamFormTemplate'){
 			var imageCanvas = $('#imageCanvas')[0];
@@ -6560,8 +6451,8 @@ var cancelButton = doI18N('dialog.button.cancel');
 var buttonsOpts = {};		
 buttonsOpts[saveButton] = function() {
 	$('.multiSelectedItems option').each(function(i) {  
-    	   		$(this).attr("selected", "selected");  
-    		});
+		$(this).prop("selected", "selected");  
+    });
 
 	if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
 
@@ -6609,7 +6500,7 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 		var buttonsOpts = {};		
 		buttonsOpts[saveButton] = function() {
 			$('.multiSelectedItems option').each(function(i) {  
-		    	   		$(this).attr("selected", "selected");  
+		    	   		$(this).prop("selected", "selected");  
 		    		});
 
 			if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
@@ -7481,8 +7372,8 @@ return 'var successFunction = function(data, textStatus, jqXHR) {   ' +
                 ' var linkId = this.id;' +
                 ' var resourceName = "' + resource + '";' +
                 ' var resourceId = ' + resourceId + ';' +
-                ' var entityType = $(this).attr("entityType");' +
-                ' var entityId = $(this).attr("entityId");' +
+                ' var entityType = $(this).prop("entityType");' +
+                ' var entityId = $(this).prop("entityId");' +
                 ' if (entityType) {' +
                 	'resourceName = entityType.toLowerCase();' +
                 	' resourceId = entityId;' +
@@ -7627,13 +7518,13 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
             var checkedValue = $("input:checked").val();
             switch (checkedValue) {
                 case "endsnever":
-                    $('.endsafter').val('').attr('readonly', true);                  
+                    $('.endsafter').val('').prop('readonly', true);                  
                 break;
                 case "endsafter":
-                    $('.endsafter').attr('readonly', false);
+                    $('.endsafter').prop('readonly', false);
                 break;
                 case "endondate":
-                    $('.endsafter').val('').attr('readonly', true);
+                    $('.endsafter').val('').prop('readonly', true);
                 break;
             }
             
@@ -7929,7 +7820,7 @@ function showCollectionSheet() {
                     });
 
                     $("#officeId").change(function(){
-                    	$('#continuebtn').attr('disabled','disabled');
+                    	$('#continuebtn').prop('disabled','disabled');
                         loadCentersAssociatedToOffice($(this).val());
                         loadGroupsAssociatedToOffice($(this).val());
                     })
@@ -7953,7 +7844,7 @@ function showCollectionSheet() {
                      e.preventDefault();
                  });
 
-                 $('#continuebtn').attr('disabled','disabled');
+                 $('#continuebtn').prop('disabled','disabled');
             }
             initCollectionSheet();
         }
@@ -7990,7 +7881,7 @@ function loadCentersAssociatedToOffice(officeId){
         })
 
         if(centerObject.crudRows.length === 1){
-        	$('select[name=centerId] option:eq(1)').attr('selected', 'selected');
+        	$('select[name=centerId] option:eq(1)').prop('selected', 'selected');
         	$('#centerId').trigger('change');	
         }
         
@@ -8018,7 +7909,7 @@ function loadGroupsAssociatedToCenter(centerId){
         })    
 
         if(groupObject.crudRows.length === 1){
-        	$('select[name=groupId] option:eq(1)').attr('selected', 'selected');
+        	$('select[name=groupId] option:eq(1)').prop('selected', 'selected');
         	$('#groupId').trigger('change');	
         }
     };
