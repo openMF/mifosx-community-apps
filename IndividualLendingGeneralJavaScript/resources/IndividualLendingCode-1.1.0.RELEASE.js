@@ -6073,7 +6073,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
     	   	serializedArray["transactionDate"] = $('#transactionDate').val();
     	   	serializedArray["referenceNumber"] = $('#referenceNumber').val();	
 			serializedArray["comments"] = $('#comments').val();
-			serializedArray["isPredefinedRuleEntry"] = $('#isPredefinedRuleEntry').val();
 			if (templateSelector === "#journalEntryFormTemplate") {
 				//populate debits and credits array
 	    	   	var populateCreditOrDebitArray = function(type){
