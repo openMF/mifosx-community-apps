@@ -804,7 +804,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 			var getUrl = "";
 			var putUrl = "journalentries";
 			var templateSelector = "#journalEntryFormTemplate";
-			var width = 600;
+			var width = 800;
 			var height = 500;
 
 			var saveSuccessFunction = function(data, textStatus, jqXHR) {
@@ -832,12 +832,9 @@ function handleJournalEntriesTabSelection(officesObject) {
 				var debitTemplateHtml = $("#singleDebitOrCreditEntryTemplate").render(baseObject);
 				$("#debits").append(debitTemplateHtml);
 				//onclick funtion for newly added delete button
-				$("#" + baseObject.deleteButtonId).button({
-				icons : {
-					primary : "ui-icon-cancel"
-				},
-				text:false
-				}).click(function(e) {
+				
+				// remove icon {icons : {primary : "ui-icon-cancel"},text:false} due to 
+				$("#" + baseObject.deleteButtonId).button().click(function(e) {
 					if( debitSize > 1 ) {
                         $(this).parents('p').remove();
                         debitSize --;
@@ -865,12 +862,8 @@ function handleJournalEntriesTabSelection(officesObject) {
 				var creditTemplateHtml = $("#singleDebitOrCreditEntryTemplate").render(baseObject);
 				$("#credits").append(creditTemplateHtml);
 				//onclick funtion for newly added delete button
-				$("#" + baseObject.deleteButtonId).button({
-				icons : {
-					primary : "ui-icon-cancel"
-				}, 
-				text:false
-				}).click(function(e) {
+				// remove icon {icons : {primary : "ui-icon-cancel"},text:false} due to 
+				$("#" + baseObject.deleteButtonId).button().click(function(e) {
 					if( creditSize > 1 ) {
                         $(this).parents('p').remove();
                         creditSize --;
@@ -4127,7 +4120,7 @@ function showCenter(centerId){
 						paymentChannelToFundSourceMappingIndex = data["paymentChannelToFundSourceMappings"].length;
 						//initialize all delete buttons for "payment Type to Fund source mappings"
 						$("#paymentChannelToFundSourceMappingTable tbody tr .removePaymentChannelToFundSourceMappings").each(function(index) {
-							 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+							 $(this).button().click(function(e) {
 								$(this).closest('tr').remove();
 				            	e.preventDefault();
 				            });
@@ -4142,7 +4135,9 @@ function showCenter(centerId){
 						var paymentChannelToFundSourceMappingHtml = $("#loanProductAddPaymentChannelToFundSourceRowTemplate").render(crudObject);
 						$("#paymentChannelToFundSourceMappingTable tbody").append(paymentChannelToFundSourceMappingHtml);
 			  		
-						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex)
+						.button()
+						.click(function(e) {
 							$(this).closest('tr').remove();
 		            		e.preventDefault();
 		            	});
@@ -4173,7 +4168,9 @@ function showCenter(centerId){
 								$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 								$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 								
-								$('#loanchargestable tbody tr:last .loanproduct-removeLoanCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+								
+								// remove icon {icons: {primary: "ui-icon-trash"},text: false} as seems is cause of bug https://mifosforge.jira.com/browse/MIFOSX-386
+								$('#loanchargestable tbody tr:last .loanproduct-removeLoanCharge').button().click(function(e) {
 									$(this).closest('tr').remove();
 				            		e.preventDefault();
 				            	});
@@ -4189,7 +4186,9 @@ function showCenter(centerId){
 						// do nothing
 					} else {
 						 $("#loanchargestable tbody tr .loanproduct-removeLoanCharge").each(function(index) {
-							 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+							 
+							// remove icon {icons: {primary: "ui-icon-trash"},text: false} as seems is cause of bug https://mifosforge.jira.com/browse/MIFOSX-386
+							 $(this).button().click(function(e) {
 								$(this).closest('tr').remove();
 				            	e.preventDefault();
 				            });
