@@ -4219,9 +4219,7 @@ $(document).ready(function() {
 <script id="journalEntryFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform" >
 	<div id="formerrors"></div>
-    <input id="useAccountingRule" name="useAccountingRule" title="" type="hidden" value="false" />
-	<div>
-		<b>{{=$ctx.doI18N("label.debit")}}</b>
+        <b>{{=$ctx.doI18N("label.debit")}}</b>
 		<button id="addDebit">{{=$ctx.doI18N("button.debit.add")}}</button>
 	</div>
 	<div id="debits">
@@ -9095,8 +9093,6 @@ $(document).ready(function() {
 <script id="predefinedPostingEntryFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform" >
     <div id="formerrors"></div>
-    <input id="useAccountingRule" name="useAccountingRule" title="" type="hidden" value="true" />
-    <table width="100%">
         <tr>
             <td><label for="accountingRule">{{=$ctx.doI18N("label.accountingRule")}}</label></td>
             <td>
