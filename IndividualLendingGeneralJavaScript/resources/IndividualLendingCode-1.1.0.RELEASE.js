@@ -2421,7 +2421,8 @@ function showILClient(clientId) {
 	setClientContent("content");
 	
 	$newtabs = $("#clientdatatabs").tabs({
-	    	beforeActivate: function(event, tab) {
+	    	beforeActivate: function(event, tab) 
+	    	{
 				if (tab.newTab.index() == 0)
 				{
 					if (clientDirty == true)
@@ -2439,7 +2440,6 @@ function showILClient(clientId) {
 				else if (tab.newTab.index() == 2){
 					refreshClientDocuments(clientUrl);
 				}
-	    		}
 	    	},
 //		"add": function( event, ui ) {
 //				$newtabs.tabs('select', '#' + ui.panel.id);

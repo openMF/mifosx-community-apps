@@ -718,14 +718,14 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 custom.fitPopupWidth = function() {
 	return $(window).width() - 20;
 }
+
 custom.fitPopupHeight = function() {
 	return $(window).height() - 20;
 }
 
 custom.jqueryDataTableServerSide = {
 
-	paginated:function(tableId,data)
-		{
+	paginated:function(tableId,data) {
 			return{
 			"bSort": true,
 			"aaSorting": [], //disable initial sort
@@ -746,18 +746,17 @@ custom.jqueryDataTableServerSide = {
 			"bServerSide": true,
 			"sAjaxSource": tableId.replace("table",""),
 			"fnServerData": serverData(data),
-			"fnDrawCallback":function()
-							{
-								$("#"+tableId+" tr").click(function() {
-									if ( $(this).hasClass('row_selected') ) {
-										$(this).removeClass('row_selected');
-									}
-									else {
-										$('tr.row_selected').removeClass('row_selected');
-										$(this).addClass('row_selected');
-									}
-								} );
-							},
+			"fnDrawCallback":function() {
+				$("#"+tableId+" tr").click(function() {
+					if ( $(this).hasClass('row_selected') ) {
+						$(this).removeClass('row_selected');
+					}
+					else {
+						$('tr.row_selected').removeClass('row_selected');
+						$(this).addClass('row_selected');
+					}
+				});
+			},
 			"aoColumnDefs": custom.datatablePresentation2[tableId],
 			"oLanguage": {
 						"sEmptyTable": doI18N("rpt.no.entries"),
@@ -772,12 +771,13 @@ custom.jqueryDataTableServerSide = {
 									},
 						"sLengthMenu": doI18N("rpt.show") + " _MENU_ " + doI18N("rpt.entries"),
 						"sSearch": doI18N("rpt.search")
-				}
 			}
 		}
+	}
 }
 
 custom.jqueryDataTableLayout = {
+		
 		basic: function() {
 			return {
 			"bSort": true,
