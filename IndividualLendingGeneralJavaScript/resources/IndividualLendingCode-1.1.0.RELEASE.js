@@ -705,7 +705,7 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 
 			var saveSuccessFunction = function(data, textStatus, jqXHR) {
 				$("#dialog-form").dialog("close");
-				searchForJournalEntriesByTransactionId();
+				searchForJournalEntriesByTransactionId(data.transactionId);
 			}
 			popupDialogWithFormViewData(baseObject, putUrl, 'POST', "dialog.title.journalEntry.add", templateSelector, width, height, saveSuccessFunction);
 			$("#accountingRule").combobox();
@@ -718,11 +718,11 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 				primary : "ui-icon-search"
 			}
 		}).click(function(e) {
-			searchForJournalEntriesByTransactionId();
+			searchForJournalEntriesByTransactionId($("#transactionId").val());
 			e.preventDefault();
 		});
-
-		var searchForJournalEntriesByTransactionId = function() {
+		//fetch journalentries whenever new predifined journalentry is created using corresponding transactionId or by entering transactionId.
+		var searchForJournalEntriesByTransactionId=function(dataTransactionId){
 			var getJournalEntriesByTransactionIdSuccessFunction = function(data, textStatus, jqXHR) {
 				var baseObject = new Object();
 				baseObject.crudRows = data.pageItems;
@@ -732,7 +732,7 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 
 				var reversingJournalEntrySuccessFunction = function(data, textStatus, jqXHR) {
 					$("#dialog-form").dialog("close");
-					searchForJournalEntriesByTransactionId();
+					searchForJournalEntriesByTransactionId(data.transactionId);
 				}
 
 				// initialize info and reversal buttons
@@ -767,15 +767,15 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 						});
 					}
 				});
-
 			}
-			var transactionId = $("#transactionId").val();
+			var transactionId = dataTransactionId;
 			if (transactionId != "") {
 				executeAjaxRequest('journalentries?transactionId='+transactionId, 'GET', "", getJournalEntriesByTransactionIdSuccessFunction, formErrorFunction);
 			} else{
 				executeAjaxRequest('journalentries', 'GET', "", getJournalEntriesByTransactionIdSuccessFunction, formErrorFunction);
-			};
+			};	
 		}
+		
 	}
 	executeAjaxRequest('accountingrules', 'GET', "", getAccountingRulesSuccessFunction, formErrorFunction);
 }	
