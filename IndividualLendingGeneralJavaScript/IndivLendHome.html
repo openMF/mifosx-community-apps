@@ -4601,6 +4601,11 @@ $(document).ready(function() {
 				<button id="closebtn{{=id}}" class="closeloan">{{=$ctx.doI18N("button.loan.close")}}</button>
 				{{/if}}
 			{{/if}}
+			{{#if status.closedWrittenOff}}
+			    {{#if $ctx.showTask("LOANRECOVERYREPAYMENT")}}
+				<button id="recoveryrepaymentbtn{{=id}}" class="recoveryrepaymentloan">{{=$ctx.doI18N("button.loan.recoveryrepayment")}}</button>
+				{{/if}}
+			{{/if}}
 			</span>
 		</td>
 	</table>

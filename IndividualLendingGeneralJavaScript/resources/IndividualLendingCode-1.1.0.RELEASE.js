@@ -4930,6 +4930,23 @@ function loadLoan(loanId, parenttab) {
 				    e.preventDefault();
 				});
 				$('button.repaymentloan span').text(doI18N('button.loan.repayment'));
+				
+				$('.recoveryrepaymentloan').button().click(function(e) {
+					var linkId = this.id;
+					var loanId = linkId.replace("recoveryrepaymentbtn", "");
+					var getUrl = 'loans/' + loanId + '/transactions/template?command=repayment';
+					var postUrl = 'loans/' + loanId + '/transactions?command=recoveryrepayment';
+					
+					var templateSelector = "#transactionLoanFormTemplate";
+					var width = 500; 
+					var height = 450;
+					var defaultOffset = offsetToApprovalDate;
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
+		
+					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.recoveryrepayment", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
+				    e.preventDefault();
+				});
+				$('button.recoveryrepaymentloan span').text(doI18N('button.loan.recoveryrepayment'));
 					
 				$('.waiveinterestloan').button().click(function(e) {
 						var linkId = this.id;
@@ -5962,8 +5979,8 @@ function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, wi
 	}
 }
 
-function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name = "dialog.button.cancel")  {
-	
+function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name )  {
+	button_msg_name= "dialog.button.cancel";
 	var dialogDiv = $("<div id='dialog-form'></div>");
 	var cancelButton = doI18N(button_msg_name);
 
