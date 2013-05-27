@@ -4083,10 +4083,10 @@ function showCenter(centerId){
 	  			        var selectedValue = $(this).val();
 	  			        if(selectedValue == "1"){
 	  			        	 $("#accountingPlaceholdersDiv").hide();
-	  			        	 $("#advancedOptionContainer").hide();
+	  			        	 $("#advancedAccountingOptionsContainer").hide();
 	  			        }else if (selectedValue == "2"){
 	  			        	 showCashFinancialPlaceholders();
-	  			        	 $("#advancedOptionContainer").show();
+	  			        	 $("#advancedAccountingOptionsContainer").show();
 	  			        }else if (selectedValue == "3"){
 	  			        	 showAccrualFinancialPlaceholders();
 	  			        }
@@ -4095,10 +4095,10 @@ function showCenter(centerId){
 	  			    //hide accounting placeholders div on page load
 	  			    if(data.accountingRule.value == "NONE"){
 	  			    	$("#accountingPlaceholdersDiv").hide();
-	  			    	$("#advancedOptionContainer").hide();
+	  			    	$("#advancedAccountingOptionsContainer").hide();
 	  			    }else if (data.accountingRule.value == "CASH BASED"){
 	  			    	 showCashFinancialPlaceholders();
-	  			    	 $("#advancedOptionContainer").show();
+	  			    	 $("#advancedAccountingOptionsContainer").show();
 	  			    }else if (data.accountingRule.value == "ACCRUAL BASED"){
 	  			    	 showAccrualFinancialPlaceholders();
 	  			    }
@@ -4106,13 +4106,13 @@ function showCenter(centerId){
 	  			    //hide advanced accounting div on page load (and setup toggle functionality)
 	  			    $('#advancedAccountingRulesDiv').hide();
 		            $('#toggleAdvancedAccountingOptions').on("click", function(e) {
-					  $("#advancedAccountingRulesDiv").toggle();
-					  if ($('#toggleAdvancedAccountingOptions').html() == doI18N('label.show')) {
-					  	$('#toggleAdvancedAccountingOptions').html(doI18N('label.hide'));
-					  } else{
-					  	$('#toggleAdvancedAccountingOptions').html(doI18N('label.show'));
-					  };
-					  e.preventDefault();
+					    $("#advancedAccountingRulesDiv").toggle();
+					    if ($('#toggleAdvancedAccountingOptions').html() == doI18N('label.show')) {
+					  		$('#toggleAdvancedAccountingOptions').html(doI18N('label.hide'));
+					    } else{
+					  		$('#toggleAdvancedAccountingOptions').html(doI18N('label.show'));
+					  	}
+					 	e.preventDefault();
 					});
 
 				  	//initialize button for adding new "payment Type to Fund source mappings"
@@ -4324,29 +4324,34 @@ function showCenter(centerId){
 	  			        var selectedValue = $(this).val();
 	  			        if(selectedValue == "1"){
 	  			        	 $("#accountingPlaceholdersDiv").hide();
+	  			        	 $("#advancedAccountingOptionsContainer").hide();
 	  			        }else if (selectedValue == "2"){
 	  			        	 showCashFinancialPlaceholders();
+	  			        	 $("#advancedAccountingOptionsContainer").show();
 	  			        }
 	  			    }); 
 	  			    
 	  			    //hide accounting placeholders div on page load
 	  			    if(data.accountingRule.value == "NONE"){
 	  			    	$("#accountingPlaceholdersDiv").hide();
+	  			    	$("#advancedAccountingOptionsContainer").hide();
 	  			    }else if (data.accountingRule.value == "CASH BASED"){
-	  			    	 showCashFinancialPlaceholders();
+	  			    	showCashFinancialPlaceholders();
+	  			    	$("#advancedAccountingOptionsContainer").show();
 	  			    }
 
 	  			    //hide advanced accounting div on page load (and setup toggle functionality)
 	  			    $('#advancedAccountingRulesDiv').hide();
-		            $('#toggleAdvancedAccountingOptions').toggle(function(e) {
-				    	$('#advancedAccountingRulesDiv').show();
-				    	$('#toggleAdvancedAccountingOptions').text(doI18N('label.hide'));
-				    	e.preventDefault();
-				    }, function(e) {
-					    $('#advancedAccountingRulesDiv').hide();
-					    $('#toggleAdvancedAccountingOptions').text(doI18N('label.show'));
-					    e.preventDefault();
-				  	});
+		            $('#toggleAdvancedAccountingOptions').on("click", function(e) {
+					    $("#advancedAccountingRulesDiv").toggle();
+					    if ($('#toggleAdvancedAccountingOptions').html() == doI18N('label.show')) {
+					  		$('#toggleAdvancedAccountingOptions').html(doI18N('label.hide'));
+					    } else{
+					  		$('#toggleAdvancedAccountingOptions').html(doI18N('label.show'));
+					  	}
+					 	e.preventDefault();
+					});
+
 
 				  	//initialize button for adding new "payment Type to Fund source mappings"
 				  	var paymentChannelToFundSourceMappingIndex = 0;
@@ -4356,7 +4361,7 @@ function showCenter(centerId){
 						paymentChannelToFundSourceMappingIndex = data["paymentChannelToFundSourceMappings"].length;
 						//initialize all delete buttons for "payment Type to Fund source mappings"
 						$("#paymentChannelToFundSourceMappingTable tbody tr .removePaymentChannelToFundSourceMappings").each(function(index) {
-							 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+							 $(this).button().click(function(e) {
 								$(this).closest('tr').remove();
 				            	e.preventDefault();
 				            });
@@ -4371,7 +4376,7 @@ function showCenter(centerId){
 						var paymentChannelToFundSourceMappingHtml = $("#loanProductAddPaymentChannelToFundSourceRowTemplate").render(crudObject);
 						$("#paymentChannelToFundSourceMappingTable tbody").append(paymentChannelToFundSourceMappingHtml);
 			  		
-						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button().click(function(e) {
 							$(this).closest('tr').remove();
 		            		e.preventDefault();
 		            	});

@@ -5943,7 +5943,7 @@ $(document).ready(function() {
                     </table>
                 </fieldset>
                 <fieldset style="width: 80%;border-top: 1px dotted">
-                    <legend>{{=$ctx.doI18N("legend.expense")}}</legend>  
+                    <legend>{{=$ctx.doI18N("legend.expenses")}}</legend>  
                     <table style="width:100%">
                         <tr>
                             <td title="{{=$ctx.doI18N(\"interestOnSavingsTooltip\")}}">{{=$ctx.doI18N("label.interestOnSavings")}}</td>
@@ -5993,6 +5993,7 @@ $(document).ready(function() {
                 </div>
             </fieldset>
             <br/>
+            <div id="advancedAccountingOptionsContainer">
             <fieldset>
                 <legend>{{=$ctx.doI18N("legend.advanced.accounting.rules")}} [<a href="" id="toggleAdvancedAccountingOptions">{{=$ctx.doI18N("label.show")}}</a>]</legend>
                 <div id="advancedAccountingRulesDiv">
@@ -6039,6 +6040,7 @@ $(document).ready(function() {
                     </table>
                 </div>
             </fieldset>
+            </div>
         </div>
         {{#else}}
             <input type="hidden" name="accountingRule" value="1" /> 
@@ -7080,7 +7082,7 @@ $(document).ready(function() {
                 </div>
             </fieldset>
             <br/>
-            <div id="advancedOptionContainer">
+            <div id="advancedAccountingOptionsContainer">
                 <fieldset>
                     <legend>{{=$ctx.doI18N("legend.advanced.accounting.rules")}} [<a href="" id="toggleAdvancedAccountingOptions">{{=$ctx.doI18N("label.show")}}</a>]</legend>
                     <div id="advancedAccountingRulesDiv">
