@@ -4219,6 +4219,10 @@ function showCenter(centerId){
 		
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
+
+		if (!serializedArray["paymentChannelToFundSourceMappings"]) {
+			serializedArray["paymentChannelToFundSourceMappings"] = new Array();
+		}
 		
 		var newFormData = JSON.stringify(serializedArray);
 		
@@ -4302,6 +4306,78 @@ function showCenter(centerId){
 		  				beforeActivate: function( event, ui ) {
 		  				}
 		  			});
+
+		  			//(initialize comboboxes)
+	  				$("#savingsReferenceAccountId").combobox();
+	  				$("#savingsControlAccountId").combobox();
+	  				$("#interestOnSavingsAccountId").combobox();
+	  				$("#incomeFromFeeAccountId").combobox();
+	  				
+	  				
+	  				var showCashFinancialPlaceholders = function() {
+	  					 $("#accountingPlaceholdersDiv").show();
+	  				};
+	  				
+	  						
+	  				//onchange events for radio buttonaccountingRule
+	  				 $("input[name=accountingRule]").change(function() {
+	  			        var selectedValue = $(this).val();
+	  			        if(selectedValue == "1"){
+	  			        	 $("#accountingPlaceholdersDiv").hide();
+	  			        }else if (selectedValue == "2"){
+	  			        	 showCashFinancialPlaceholders();
+	  			        }
+	  			    }); 
+	  			    
+	  			    //hide accounting placeholders div on page load
+	  			    if(data.accountingRule.value == "NONE"){
+	  			    	$("#accountingPlaceholdersDiv").hide();
+	  			    }else if (data.accountingRule.value == "CASH BASED"){
+	  			    	 showCashFinancialPlaceholders();
+	  			    }
+
+	  			    //hide advanced accounting div on page load (and setup toggle functionality)
+	  			    $('#advancedAccountingRulesDiv').hide();
+		            $('#toggleAdvancedAccountingOptions').toggle(function(e) {
+				    	$('#advancedAccountingRulesDiv').show();
+				    	$('#toggleAdvancedAccountingOptions').text(doI18N('label.hide'));
+				    	e.preventDefault();
+				    }, function(e) {
+					    $('#advancedAccountingRulesDiv').hide();
+					    $('#toggleAdvancedAccountingOptions').text(doI18N('label.show'));
+					    e.preventDefault();
+				  	});
+
+				  	//initialize button for adding new "payment Type to Fund source mappings"
+				  	var paymentChannelToFundSourceMappingIndex = 0;
+					if(undefined === data.paymentChannelToFundSourceMappings || data.paymentChannelToFundSourceMappings === null) {
+						paymentChannelToFundSourceMappingIndex = 0;
+					} else {
+						paymentChannelToFundSourceMappingIndex = data["paymentChannelToFundSourceMappings"].length;
+						//initialize all delete buttons for "payment Type to Fund source mappings"
+						$("#paymentChannelToFundSourceMappingTable tbody tr .removePaymentChannelToFundSourceMappings").each(function(index) {
+							 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						});
+					}
+				  	$("#addPaymentChannelToFundSourceMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+						paymentChannelToFundSourceMappingIndex++;
+						var crudObject = new Object();
+						crudObject["index"] = paymentChannelToFundSourceMappingIndex;
+						crudObject["paymentTypeOptions"] = data.paymentTypeOptions;
+						crudObject["assetAccountOptions"] = data["accountingMappingOptions"]["assetAccountOptions"];
+						var paymentChannelToFundSourceMappingHtml = $("#loanProductAddPaymentChannelToFundSourceRowTemplate").render(crudObject);
+						$("#paymentChannelToFundSourceMappingTable tbody").append(paymentChannelToFundSourceMappingHtml);
+			  		
+						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					    e.preventDefault();
+					});
+
 		  			
 		  			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -6288,6 +6364,10 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	if (templateSelector === "#loanDisbursementTemplate"){
     	loadTransactionForm();
 	}
+
+	if (templateSelector === "#savingsAccountTransactionFormTemplate") {
+		loadTransactionForm();
+	};
 
 	if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
 		$("#dialog-form #officeId").change(function(e){

@@ -5680,6 +5680,11 @@ $(document).ready(function() {
 			<li><a href="#savingsproductdetails" title="savingsproductdetails">{{=$ctx.doI18N("tab.details")}}</a></li>
 		    <li><a href="#savingsproductterms" title="savingsproductterms">{{=$ctx.doI18N("tab.terms")}}</a></li>
 			<li><a href="#savingsproductsettings" title="savingsproductsettings">{{=$ctx.doI18N("tab.settings")}}</a></li>
+            {{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
+            <li><a href="#accounting" title="accounting">{{=$ctx.doI18N("tab.accounting")}}</a></li>
+            {{#else}}
+            <li><a href="#accounting" title="accounting" style="display: none">{{=$ctx.doI18N("tab.accounting")}}</a></li>
+            {{/if}}
 	    </ul>
 	    
 		<div id="savingsproductdetails" style="margin-top: 5px;">
@@ -5865,6 +5870,180 @@ $(document).ready(function() {
 				</tr>
 			</table>
 		</div>
+
+        <!-- accounting -->
+        {{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
+        <div id="accounting" style="margin-top: 5px;">
+            <fieldset>
+                <legend>{{=$ctx.doI18N("legend.accounting.rules")}}  </legend>
+                <table style="width:100%">
+                    <tr>
+                    <td align="center">
+                        {{#if accountingRule.value == "NONE"}}
+                        <input type="radio" name="accountingRule" value="1" checked="true">{{=$ctx.doI18N("label.none")}}</input>
+                        {{#else}}
+                        <input type="radio" name="accountingRule" value="1" >{{=$ctx.doI18N("label.none")}}</input>
+                        {{/if}}
+                        {{#if accountingRule.value == "CASH BASED"}}
+                        <input type="radio" name="accountingRule" value="2" checked="true">{{=$ctx.doI18N("label.cash")}}</input>
+                        {{#else}}
+                        <input type="radio" name="accountingRule" value="2">{{=$ctx.doI18N("label.cash")}}</input>
+                        {{/if}}
+                    </td>
+                    </tr>
+                </table>
+        
+                <div style="padding-left: 20%" id="accountingPlaceholdersDiv">
+                <fieldset style="width: 80%;border-top: 1px dotted">
+                    <legend>{{=$ctx.doI18N("legend.assets")}}</legend>  
+                    <table style="width:100%">
+                        <tr>
+                            <td title="{{=$ctx.doI18N(\"savingsReferenceTooltip\")}}">{{=$ctx.doI18N("label.savingsReference")}}</td>
+                            <td>
+                                <select id="savingsReferenceAccountId" name="savingsReferenceAccountId" title="" >
+                                    <option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+                                    {{#each accountingMappingOptions.assetAccountOptions}}
+                                       {{#if $parent.parent.data.accountingMappings}}
+                                            {{#if $parent.parent.parent.data.accountingMappings.savingsReferenceAccountId === id)}}
+                                                    <option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+                                            {{#else}}
+                                                    <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                            {{/if}}
+                                        {{#else}}
+                                            <option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+                                        {{/if}}
+                                    {{/each}}
+                                </select>  
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <fieldset style="width: 80%;border-top: 1px dotted">
+                    <legend>{{=$ctx.doI18N("legend.liabilities")}}</legend>  
+                    <table style="width:100%">
+                        <tr>
+                            <td title="{{=$ctx.doI18N(\"savingsControlTooltip\")}}">{{=$ctx.doI18N("label.savingsControl")}}</td>
+                            <td>
+                                <select id="savingsControlAccountId" name="savingsControlAccountId" title="" >
+                                    <option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+                                    {{#each accountingMappingOptions.liabilityAccountOptions}}
+                                         {{#if $parent.parent.data.accountingMappings}}
+                                            {{#if $parent.parent.parent.data.accountingMappings.savingsControlAccountId === id)}}
+                                                    <option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+                                            {{#else}}
+                                                    <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                            {{/if}}
+                                        {{#else}}
+                                             <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>  
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <fieldset style="width: 80%;border-top: 1px dotted">
+                    <legend>{{=$ctx.doI18N("legend.expense")}}</legend>  
+                    <table style="width:100%">
+                        <tr>
+                            <td title="{{=$ctx.doI18N(\"interestOnSavingsTooltip\")}}">{{=$ctx.doI18N("label.interestOnSavings")}}</td>
+                            <td>
+                                <select id="interestOnSavingsAccountId" name="interestOnSavingsAccountId" title="" >
+                                    <option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+                                    {{#each accountingMappingOptions.expenseAccountOptions}}
+                                        {{#if $parent.parent.data.accountingMappings}}
+                                            {{#if $parent.parent.parent.data.accountingMappings.interestOnSavingsAccountId === id)}}
+                                                    <option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+                                            {{#else}}
+                                                    <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                            {{/if}}
+                                        {{#else}}
+                                             <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select> 
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <fieldset style="width: 80%;border-top: 1px dotted">
+                    <legend>{{=$ctx.doI18N("legend.income")}}</legend>    
+                    <table style="width:100%">
+                        <tr>
+                            <td title="{{=$ctx.doI18N(\"incomeFromFeeTooltip\")}}">{{=$ctx.doI18N("label.incomeFromFee")}}</td>
+                            <td>
+                                <select id="incomeFromFeeAccountId" name="incomeFromFeeAccountId" title="" >
+                                    <option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+                                    {{#each accountingMappingOptions.incomeAccountOptions}}
+                                        {{#if $parent.parent.data.accountingMappings}}
+                                            {{#if $parent.parent.parent.data.accountingMappings.incomeFromFeeAccountId === id)}}
+                                                    <option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+                                            {{#else}}
+                                                    <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                            {{/if}}
+                                        {{#else}}
+                                            <option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+                                        {{/if}}
+                                    {{/each}}
+                                </select> 
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                </div>
+            </fieldset>
+            <br/>
+            <fieldset>
+                <legend>{{=$ctx.doI18N("legend.advanced.accounting.rules")}} [<a href="" id="toggleAdvancedAccountingOptions">{{=$ctx.doI18N("label.show")}}</a>]</legend>
+                <div id="advancedAccountingRulesDiv">
+                    <h3>{{=$ctx.doI18N("label.payment.channel.specific.fund.source")}}</h3>    
+                    <button id="addPaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+                    <table id="paymentChannelToFundSourceMappingTable" class="pretty displayschedule">
+                        <thead>
+                            <tr>
+                            <th scope="col">{{=$ctx.doI18N("label.paymentType")}}</th>
+                            <th scope="col">{{=$ctx.doI18N("label.fundSource")}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each paymentChannelToFundSourceMappings}}
+                            <tr>
+                                <td>
+                                    <select id="paymentChannelToFundSourceMappings[{{=$itemNumber}}][paymentTypeId]" name="paymentChannelToFundSourceMappings[{{=$itemNumber}}][paymentTypeId]" title="" style="width: 180px">
+                                        {{#each $parent.parent.data.paymentTypeOptions}}
+                                            {{#if $ctx.number($parent.parent.data.paymentTypeId)===$ctx.number(id)}}
+                                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+                                            {{#else}}
+                                                <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                                            {{/if}}
+                                        {{/each}}
+
+                                    </select>
+                                   
+                                </td>
+                                <td>
+                                    <select id="paymentChannelToFundSourceMappings[{{=$itemNumber}}][fundSourceAccountId]" name="paymentChannelToFundSourceMappings[{{=$itemNumber}}][fundSourceAccountId]" title="" style="width: 180px">
+                                        {{#each $parent.parent.data.accountingMappingOptions.assetAccountOptions}}
+                                            {{#if $ctx.number($parent.parent.data.fundSourceAccountId)===$ctx.number(id)}}
+                                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+                                            {{#else}}
+                                                <option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </select>
+                                </td>
+                                <td><button id="removePaymentChannelToFundSourceMappings{{=$itemNumber}}" class="removePaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+        </div>
+        {{#else}}
+            <input type="hidden" name="accountingRule" value="1" /> 
+        {{/if}}
+    <!-- end of accounting -->
 	</div>
 	<!-- end of savings product tabs -->
 </form>
@@ -6329,6 +6508,45 @@ $(document).ready(function() {
 			<td>{{=$ctx.doI18N("label.amount")}}</td>
 			<td><input id="transactionAmount" name="transactionAmount" title="" type="text" value="{{=$ctx.moneyFormatted(currency, amount)}}" /></td>
 		</tr>
+        <tr>
+        <td><label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label></td>
+        <td><select id="paymentTypeId" name="paymentTypeId" title="" >
+            {{#each paymentTypeOptions}}
+                    <option value="{{=id}}">{{=$ctx.doI18N(name)}}</option>
+            {{/each}}
+        </select></td>
+        </tr>
+        
+        <tr>
+        <td><label>{{=$ctx.doI18N("label.payment.details")}}[<a href="" id="togglePaymentDetail">{{=$ctx.doI18N("label.show")}}</a>]</label></td>
+        <td><span></span></td>
+        </tr>
+
+        <tr>
+        <td><label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label></td>
+        <td><input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail"/></td>
+        </tr> 
+
+        <tr>
+        <td><label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label></td>
+        <td><input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail"/></td>
+        </tr> 
+
+        <tr>
+        <td><label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label></td>
+        <td><input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail"/></td>
+        </tr> 
+        
+        <tr>
+        <td><label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label></td>
+        <td><input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail"/></td>
+        </tr> 
+        
+
+        <tr>
+        <td><label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label></td>
+        <td><input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail"/></td>
+        </tr> 
 	</table>
 </form>
 </script>
