@@ -3,35 +3,29 @@
 //over-ride show first page
 custom.showFirstPage = function() {
 	
-	if (hasRole("Program Director") == true) {
-		showProgramDirectorPage("content");
-		return;
+	if (mOrganisationalRole == undefined) {
+		showILClientListing("content");
 	}
-	if (hasRole("Branch Manager") == true) {
-		showBranchManagerPage("content");
-		return;
-	}
-	if (hasRole("Coordinator") == true) {
-		showCoordinatorPage("content");
-		return;
-	}
-	if (hasRole("Field Agent") == true) {
-		showFieldAgentPage("content");
-		return;
-	}
-	
-	
-	//If the roles above are not found default to client listing
-	showILClientListing("content");
-	
-}
-
-function hasRole(roleName) {
-	for (var i in mUserRoles)
+	else 
 	{
-		if (mUserRoles[i].name == roleName) return true;
+		switch(mOrganisationalRole.id)
+		{
+		case 100:
+			showProgramDirectorPage("content");
+			break;
+		case 200:
+			showBranchManagerPage("content");
+			break;
+		case 300:
+			showCoordinatorPage("content");
+			break;
+		case 400:
+			showFieldAgentPage("content");
+			break;
+		default:
+			showILClientListing("content");
+		}
 	}
-	return false;
 }
 
 
