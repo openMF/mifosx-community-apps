@@ -313,7 +313,8 @@ custom.sDom = {
 	"clientstable" : '<"H"lfr<"#clientstablecustom">>t<"F"ip>',					
 	"centerstable" : '<"H"lfr<"#centerstablecustom">>t<"F"ip>',
 	"groupstable" : '<"H"lfr<"#groupstablecustom">>t<"F"ip>',
-	"loanstable" : '<"H"lfr<"#clientstablecustom">>t<"F"ip>',	
+	"loanstable" : '<"H"lfr<"#clientstablecustom">>t<"F"ip>',
+	"savingsaccountstable" : '<"H"lfr<"#loanstablecustom">>t<"F"ip>',	
 	"journalentriestable": '<"H"lr>t<"F"ip>',		
 }
 
@@ -329,7 +330,10 @@ custom.searchQuery = {
 					},
 	"loanstable" :  function(searchValue){
 						return "accountNo like'%"+searchValue+"%'";
-					}	
+					},
+   "savingsaccountstable" :  function(searchValue){
+ 			             return "accountNo like '%"+searchValue+"%'";	
+ 			         }
 }
 
 //table properties
@@ -541,7 +545,20 @@ custom.datatablePresentation2 = {
 											return full.summary.totalOutstanding;
 										else return "";
 								   }	
-				    }]
+				    }],
+  "savingsaccountstable" : [{
+				            "mDataProp": "accountNo",
+				            "aTargets":  [0]
+				          },
+				          {
+				            "mDataProp": "status.value",
+				            "aTargets": [1],
+				            "bSortable": false
+				          },
+				          {
+				            "mDataProp": "savingsProductName",
+				            "aTargets":  [2]
+				          }]
 }
 
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,

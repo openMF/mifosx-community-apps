@@ -214,6 +214,10 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
+
+	if (jQuery.MifosXUI.showMenu("SavingsMenu")) {
+  	 	htmlVar += '  <li><a href="unknown.html" onclick="showSavingsAccountsListing();return false;">' + doI18N("link.topnav.savings") + '</a></li>';    
+  	}
 	
 	if (jQuery.MifosXUI.showMenu("LoansMenu")) {
 		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';		
@@ -228,7 +232,7 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		<ul>';
 		
 		if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true)
-			htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
+			htmlVar += '	<li><a href="unknown.hgtml" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 		
 		if (jQuery.MifosXUI.showMenu("OrgAdminMenu") == true)
 			htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
@@ -417,6 +421,14 @@ function setLoanListingContent(divName) {
 	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
+}
+
+function setSavingsAccountListingContent(divName) {
+  var htmlVar = "";
+  
+  htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
+
+  $("#" + divName).html(htmlVar);
 }
 
 function setCommunalBankListingContent(divName){
@@ -2298,6 +2310,41 @@ function showLoansListing() {
 	});
 } // end showLoansListing
 
+function showSavingsAccountsListing() {
+
+  if (jQuery.MifosXUI.showTask("savingsAccountsSearch") == false)
+  {
+    alert(doI18N("savingsaccount.search.not.allowed"));
+    return;
+  }
+
+  setSavingsAccountListingContent("content");
+
+  //HOME list loans functionality
+  $("#tabs").tabs({
+      beforeActivate: function(event, ui) {
+      },
+      load: function(event, ui) {
+      },
+      create: function(event, ui) {
+
+      var initSavingsAccountSearch =  function() {    
+      //render page markup
+      var tableHtml = $("#savingsAccountSearchTabTemplate").render();
+      $("#searchtab").html(tableHtml);
+
+      var savingsAccountsTableHtml = $("#savingsAccountsTableTemplate").render();
+      $("#savingsAccountTableDiv").html(savingsAccountsTableHtml);
+
+      var oTable = $("#savingsaccountstable").dataTable(custom.jqueryDataTableServerSide.paginated("savingsaccountstable"));
+      initTableConf("savingsaccountstable",oTable);
+  
+      };
+        //initialize the client search tab
+     initSavingsAccountSearch();
+   }
+  });
+} // end showSavingsAccountsListing
 
 //HOME list communal banks functionality
 function showCommunalBankListing(){
