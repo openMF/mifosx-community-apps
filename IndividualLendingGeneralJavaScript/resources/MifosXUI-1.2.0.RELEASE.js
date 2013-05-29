@@ -150,9 +150,9 @@ isInitialised = false;
 
 	$.MifosXUI = {};
 
-	$.MifosXUI.initialise = function(pUserRoles, pUserPermissions, pApplicationProfile, pTenantName, pApplicationMode) {
+	$.MifosXUI.initialise = function(pOrganisationalRole, pUserPermissions, pApplicationProfile, pTenantName, pApplicationMode) {
 
-		mUserRoles = pUserRoles;
+		mOrganisationalRole = pOrganisationalRole;
 		mUserPermissions = pUserPermissions;
 		mApplicationProfile = pApplicationProfile.toUpperCase();
 		mApplicationMode = pApplicationMode.toUpperCase();
