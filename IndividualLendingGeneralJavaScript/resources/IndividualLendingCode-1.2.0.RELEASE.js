@@ -712,16 +712,116 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 			var getUrl = "";
 			var putUrl = "journalentries";
 			var templateSelector = "#predefinedPostingEntryFormTemplate";
-			var width = 600;
-			var height = 350;
+			var width = 800;
+			var height = 500;
 
 			var saveSuccessFunction = function(data, textStatus, jqXHR) {
 				$("#dialog-form").dialog("close");
 				searchForJournalEntriesByTransactionId(data.transactionId);
 			}
 			popupDialogWithFormViewData(baseObject, putUrl, 'POST', "dialog.title.journalEntry.add", templateSelector, width, height, saveSuccessFunction);
-			$("#accountingRule").combobox();
 			$("#officeId").combobox();
+			$("#accountingRule").combobox({
+				selected : function (event,ui) {
+					var accountingruleObject = new Object();
+					for( i=0; i<baseObject.accountingRuleOptions.length; i++ ) {
+						var tempObject = baseObject.accountingRuleOptions[i];
+						if( tempObject.id == ui.item.value) {
+							accountingruleObject.debitAccounts = tempObject.debitAccounts;
+							accountingruleObject.creditAccounts = tempObject.creditAccounts;
+						}
+					}
+					var debitOrCreditAccountsTabHtml = $("#creditAndDebitAccountsFormTemplate").render(accountingruleObject);
+					$("#creditanddebitsdiv").html(debitOrCreditAccountsTabHtml);
+					var creditAccountsLength = accountingruleObject.creditAccounts.length;
+					var debitAccountsLength = accountingruleObject.debitAccounts.length;
+					//Hide the credits if no options available.
+					if (creditAccountsLength == 0) {
+						$("#creditLabel").hide();
+						$("#creditaccounts").hide();
+					} else {
+						$("#creditLabel").show();
+						$("#creditaccounts").show();
+					}
+
+					//Hide the debits if no options available.
+					if (debitAccountsLength == 0) {
+						$("#debitLabel").hide();
+						$("#debitaccounts").hide();
+					} else {
+						$("#debitLabel").show();
+						$("#debitaccounts").show();
+					}
+					//hide the amount field if both credit and debit accounts are predefined i.e. debitAccounts & creditAccounts empty.
+					if( debitAccountsLength > 0 && creditAccountsLength > 0 ) {
+						$("#amountLabel").hide();
+						$("#amountDiv").hide();
+					} else {
+						$("#amountLabel").show();
+						$("#amountDiv").show();
+					}
+
+					//initialize default comboboxes in popup
+					$("#debitAccountId01").combobox();
+					$("#creditAccountId01").combobox();
+
+					//init button for adding new debits
+					var debitSize = $('#debitaccounts p').size() + 1;
+					$("#addDebitButton").button({
+					icons : {
+						primary : "ui-icon-plusthick"
+					},
+					text: false
+					}).click(function(e) {
+						debitSize = debitSize + 1;
+						accountingruleObject.accountId = "debitAccountId0" + debitSize;
+						accountingruleObject.amountId = "debitAmount0" + debitSize;
+						accountingruleObject.deleteButtonId = "removeDebitButton0" + debitSize;
+						accountingruleObject.activity = "Remove this Debit Entry";
+						var debitTemplateHtml = $("#singleDebitEntryTemplate").render(accountingruleObject);
+						$("#debitaccounts").append(debitTemplateHtml);
+						//onclick funtion for newly added delete button
+						$("#" + accountingruleObject.deleteButtonId).button().click(function(e) {
+							if( debitSize > 1 ) {
+		                        $(this).parents('p').remove();
+		                        debitSize --;
+		               		}
+		                	e.preventDefault();
+						});
+						//make newly added select a combobox
+						$("#" + accountingruleObject.accountId).combobox();
+						e.preventDefault();
+					});
+
+					//init button for adding new credits
+					var creditSize = $('#creditaccounts p').size() + 1;
+					$("#addCreditButton").button({
+					icons : {
+						primary : "ui-icon-plusthick"
+					},
+					text: false
+					}).click(function(e) {
+						creditSize = creditSize + 1;
+						accountingruleObject.accountId = "creditAccountId0" + creditSize;
+						accountingruleObject.amountId = "creditAmount0" + creditSize;
+						accountingruleObject.deleteButtonId = "removeCreditButton0" + creditSize;
+						accountingruleObject.activity = "Remove this credit Entry";
+						var creditTemplateHtml = $("#singleCreditEntryTemplate").render(accountingruleObject);
+						$("#creditaccounts").append(creditTemplateHtml);
+						//onclick funtion for newly added delete button
+						$("#" + accountingruleObject.deleteButtonId).button().click(function(e) {
+							if( creditSize > 1 ) {
+		                        $(this).parents('p').remove();
+		                        creditSize --;
+		               		}
+		                	e.preventDefault();
+						});
+						//make newly added select a combobox
+						$("#" + accountingruleObject.accountId).combobox();
+						e.preventDefault();
+					});
+				}
+			});
 			e.preventDefault();
 		});
 
@@ -6206,31 +6306,55 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
     	   	serializedArray["transactionDate"] = $('#transactionDate').val();
     	   	serializedArray["referenceNumber"] = $('#referenceNumber').val();	
 			serializedArray["comments"] = $('#comments').val();
-			if (templateSelector === "#journalEntryFormTemplate") {
-				//populate debits and credits array
-	    	   	var populateCreditOrDebitArray = function(type){
-	    	   		serializedArray[type] = new Array();
-	    	   		$("#" + type).children('p').each(function (i) {
-	    	   		// "this" is the current element in the loop
-	    	   		var tempObject= new Object();
-				    $(this).children('label').each(function(j){
-				    	if(j==0){
-				    		//for property of label had Id of glAccount selectbox
-				    		tempObject.glAccountId=$("#"+$(this).attr("for")).val();
-				    	}else{
-				    		//for property of label had Id of amount input
-				    		tempObject.amount=$("#"+$(this).attr("for")).val();;
-				    	}
-				    }); 
-				    serializedArray[type][i]=tempObject;
-					});
-	    	   	}
+			//populate debits and credits array
+    	   	var populateCreditOrDebitArray = function(type){
+    	   		serializedArray[type] = new Array();
+    	   		$("#" + type).children('p').each(function (i) {
+    	   		// "this" is the current element in the loop
+    	   		var tempObject= new Object();
+			    $(this).children('label').each(function(j){
+			    	if(j==0){
+			    		//for property of label had Id of glAccount selectbox
+			    		tempObject.glAccountId=$("#"+$(this).attr("for")).val();
+			    	}else{
+			    		//for property of label had Id of amount input
+			    		tempObject.amount=$("#"+$(this).attr("for")).val();;
+			    	}
+			    }); 
+			    serializedArray[type][i]=tempObject;
+				});
+    	   	}
+    	   	if (templateSelector === "#journalEntryFormTemplate") {
 	    	   	populateCreditOrDebitArray("debits");
 				populateCreditOrDebitArray("credits");
 			} else if(templateSelector === "#predefinedPostingEntryFormTemplate") {
+
+				//get the selected object from data object
+				var ruleObject = new Object();
+				var selectedRule = $('#accountingRule').val();
+				for(i=0; i<data.accountingRuleOptions.length; i++) {
+					var tempObject = data.accountingRuleOptions[i];
+					if (selectedRule == tempObject.id) {
+						ruleObject = tempObject;
+					}
+				}
+				
+				if (!(ruleObject.creditAccounts.length>0 && ruleObject.debitAccounts.length>0)) {
+					serializedArray["amount"] = $('#amount').val();
+				}
 				serializedArray["accountingRule"] = $('#accountingRule').val();
-				serializedArray["amount"] = $('#amount').val();
-			};	
+				
+				if (ruleObject.creditAccounts.length>0) {
+					populateCreditOrDebitArray("creditaccounts");
+					serializedArray["credits"]=serializedArray["creditaccounts"];
+					delete serializedArray["creditaccounts"];
+				}
+				if (ruleObject.debitAccounts.length>0) {
+					populateCreditOrDebitArray("debitaccounts");
+					serializedArray["debits"]=serializedArray["debitaccounts"];
+					delete serializedArray["debitaccounts"];
+				}
+			}	
 		}	
 	
 	   //Caledar form data
@@ -6267,12 +6391,35 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			if (serializedArray.name === "") {
 				delete serializedArray.name;
 			}
-			else if (serializedArray.debitAccountHead === "") {
+			if (serializedArray.debitAccountHead === "") {
 				delete serializedArray.debitAccountHead;
 			}
-			else if (serializedArray.creditAccountHead === "") {
+			if (serializedArray.creditAccountHead === "") {
 				delete serializedArray.creditAccountHead;
 			}
+			
+			//allow only one value for debits
+			if (serializedArray.debitRuleType === "Fixed") {
+				delete serializedArray.debitTags;
+			} else if (serializedArray.debitRuleType === "List") {
+				delete serializedArray.debitAccountHead;
+			} else {
+				delete serializedArray.debitTags;
+				delete serializedArray.debitAccountHead;
+			}
+
+			//allow only one value for credits
+			if (serializedArray.creditRuleType === "Fixed") {
+				delete serializedArray.creditTags;
+			} else if (serializedArray.creditRuleType === "List") {
+				delete serializedArray.creditAccountHead;
+			} else {
+				delete serializedArray.creditTags;
+				delete serializedArray.creditAccountHead;
+			}
+
+			delete serializedArray.debitRuleType;
+			delete serializedArray.creditRuleType;
 		}
 		var newFormData = JSON.stringify(serializedArray);
 		if (postUrl.toLowerCase().indexOf("permissions") > -1) {
@@ -6356,7 +6503,59 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		$("#officeId").combobox();
 		$("#debitAccountHead").combobox();
 		$("#creditAccountHead").combobox();
-	};
+
+		var debitRuleType = $('input:radio[name=debitRuleType]:checked').val();
+		var creditRuleType = $('input:radio[name=creditRuleType]:checked').val();
+
+		if (debitRuleType == "Fixed") {
+			$("#fixeddebitaccount").show();
+			$("#listdebitaccounts").hide();
+		} else if (debitRuleType == "List"){
+			$("#fixeddebitaccount").hide();
+			$("#listdebitaccounts").show();
+			$("#debitTags").multiselect();
+		} else {
+			$('input:radio[name=debitRuleType]')[0].checked=true;
+			$("#fixeddebitaccount").show();
+			$("#listdebitaccounts").hide();
+		}
+
+		if (creditRuleType == "Fixed") {
+			$("#fixedcreditaccount").show();
+			$("#listcreditaccounts").hide();
+		} else if (creditRuleType == "List"){
+			$("#fixedcreditaccount").hide();
+			$("#listcreditaccounts").show();
+			$("#creditTags").multiselect();
+		} else {
+			$('input:radio[name=creditRuleType]')[0].checked=true;
+			$("#fixedcreditaccount").show();
+			$("#listcreditaccounts").hide();
+		}
+
+		$('input:radio[name=debitRuleType]').change(function (){
+			var selectedType = $(this).val();
+			if (selectedType == "Fixed") {
+			$("#fixeddebitaccount").show();
+			$("#listdebitaccounts").hide();
+		} else if (selectedType == "List"){
+			$("#fixeddebitaccount").hide();
+			$("#listdebitaccounts").show();
+			$("#debitTags").multiselect();
+		}
+		});
+		$('input:radio[name=creditRuleType]').change(function () {
+			var selectedType = $(this).val();
+			if (selectedType == "Fixed") {
+			$("#fixedcreditaccount").show();
+			$("#listcreditaccounts").hide();
+		} else if (selectedType == "List"){
+			$("#fixedcreditaccount").hide();
+			$("#listcreditaccounts").show();
+			$("#creditTags").multiselect();
+		}
+		});
+	}
 
 	if (templateSelector === "#groupFormTemplate"){
 		$("#dialog-form #officeId").change(function(e){
