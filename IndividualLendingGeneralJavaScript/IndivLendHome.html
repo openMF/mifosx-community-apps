@@ -9444,5 +9444,134 @@ $(document).ready(function() {
         </tbody>
     </table>
 </script>
+
+
+<!--Start Quipo TEVI dashboard templates-->
+<script id="quipoExampleGeneralDashboardTemplate" type="text/x-jquery-tmpl">
+    <table id="quipoExGenDashboard" width="100%" border="1">
+		<tr>
+			<td>{{=$ctx.doI18N("Name")}}</td>
+			<td>{{=$ctx.doI18N("Stats")}}</td>
+		</tr>
+		<tr>
+			<td id=quipoExGenDashboardRole>a</td>
+			<td id=quipoExGenDashboardRoleStats>b</td>
+		</tr>
+		<tr>
+			<td height="20px"></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td id=quipoExGenDashboardList>c</td>
+			<td id=quipoExGenDashboardListDetails>d</td>
+		</tr>
+	</table>
+</script>
+
+<script id="quipoExampleRoleFieldAgentTemplate" type="text/x-jquery-tmpl">
+{{=name}}
+</script>
+
+<script id="quipoExampleRoleStatsFieldAgentTemplate" type="text/x-jquery-tmpl">
+    <table width="100%" >
+        <thead>
+            <tr>
+                <th>{{=$ctx.doI18N("activeClients")}}</th>
+                <th>{{=$ctx.doI18N("currency")}}</th>
+                <th>{{=$ctx.doI18N("disbursedAmount")}}</th>
+                <th>{{=$ctx.doI18N("loanOutstandingAmount")}}</th>
+                <th>{{=$ctx.doI18N("loanOutstandingPC")}}</th>
+                <th>{{=$ctx.doI18N("loanOverPaymentAmount")}}</th>
+                <th>{{=$ctx.doI18N("portfolioAtRisk")}}</th>
+                <th>{{=$ctx.doI18N("portfolioAtRiskPC")}}</th>
+                <th>{{=$ctx.doI18N("clientsInDefault")}}</th>
+                <th>{{=$ctx.doI18N("clientsInDefaultPC")}}</th>
+                <th>{{=$ctx.doI18N("averageLoanAmount")}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each dataRows}}
+                <tr>
+                    <td>{{=$ctx.number(activeClients)}}</td>
+                    <td>{{=currency}}</td>
+                    <td>{{=$ctx.decimal(disbursedAmount, 2)}}<//td>
+                    <td>{{=$ctx.decimal(loanOutstandingAmount, 2)}}<//td>
+                    <td>{{=$ctx.decimal(loanOutstandingPC, 2)}}<//td>
+                    <td>{{=$ctx.decimal(loanOverPaymentAmount, 2)}}<//td>
+                    <td>{{=$ctx.decimal(portfolioAtRisk, 2)}}<//td>
+                    <td>{{=$ctx.decimal(portfolioAtRiskPC, 2)}}<//td>
+                    <td>{{=clientsInDefault}}<//td>
+                    <td>{{=$ctx.decimal(clientsInDefaultPC, 2)}}<//td>
+                    <td>{{=$ctx.decimal(averageLoanAmount, 2)}}<//td>
+                </tr>
+            {{/each}}   
+        </tbody>
+    </table>
+
+</script>
+
+<script id="quipoExampleListFieldAgentTemplate" type="text/x-jquery-tmpl">
+
+    <table width="100%" >
+        <thead>
+            <tr>
+                <th>{{=$ctx.doI18N("name")}}</th>
+                <th>{{=$ctx.doI18N("status")}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each dataRows}}
+                <tr>
+                    <td><a href="unknown.html" onclick="fillListDetails_FieldAgent({{=id}});return false;">{{=name}}</a></td>
+                    <td>{{=status}}</td>
+                </tr>
+            {{/each}}   
+        </tbody>
+    </table>
+
+</script>
+
+<script id="quipoExampleListDetailsFieldAgentTemplate" type="text/x-jquery-tmpl">
+    <table width="100%" >
+        <thead>
+            <tr>
+                <th>{{=$ctx.doI18N("programName")}}</th>
+                <th>{{=$ctx.doI18N("loanCycleNo")}}</th>
+                <th>{{=$ctx.doI18N("clientDisplayName")}}</th>
+                <th>{{=$ctx.doI18N("currency")}}</th>
+                <th>{{=$ctx.doI18N("loanRepaidAmount")}}</th>
+                <th>{{=$ctx.doI18N("loanOutstandingAmount")}}</th>
+                <th>{{=$ctx.doI18N("loanInAdvanceAmount")}}</th>
+                <th>{{=$ctx.doI18N("loanInArrearsAmount")}}</th>
+                <th>{{=$ctx.doI18N("inDefault")}}</th>
+                <th>{{=$ctx.doI18N("portfolioAtRisk")}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each dataRows}}
+                <tr>
+                    <td>{{=programName}}</td>
+                    <td>{{=$ctx.number(loanCycleNo)}}</td>
+                    <td>{{=clientDisplayName}}</td>
+                    <td>{{=currency}}</td>
+                    <td>{{=$ctx.decimal(loanRepaidAmount, 2)}}<//td>
+                    <td>{{=$ctx.decimal(loanOutstandingAmount, 2)}}<//td>
+                    <td>{{=$ctx.decimal(loanInAdvanceAmount, 2)}}<//td>
+                    <td>{{=$ctx.decimal(loanInArrearsAmount, 2)}}<//td>
+                    <td>{{=$ctx.doI18N(inDefault, 2)}}<//td>
+                    <td>{{=$ctx.decimal(portfolioAtRisk, 2)}}<//td>
+                </tr>
+            {{/each}}   
+        </tbody>
+    </table>
+
+</script>
+
+
+<!--End Quipo/TEVI dashboard templates-->
+
+
+
+
 </body>
 </html>
