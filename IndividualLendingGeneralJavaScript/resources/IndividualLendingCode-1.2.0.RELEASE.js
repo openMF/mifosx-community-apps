@@ -5903,7 +5903,12 @@ function setBasicAuthKey(logonDivName, username, password)
 					currentUserName = data.username;
 					currentPwd = password;
 
-					jQuery.MifosXUI.initialise(data.organisationalRole, data.permissions, applicationProfile, tenantIdentifier, applicationMode);
+					var staffUser = {
+							staffId: data.staffId,
+							staffDisplayName: data.staffDisplayName,
+							organisationalRole: data.organisationalRole
+					}
+					jQuery.MifosXUI.initialise(staffUser, data.permissions, applicationProfile, tenantIdentifier, applicationMode);
 
 					showMainContainer(logonDivName, username);
 					custom.showFirstPage();

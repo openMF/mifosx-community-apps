@@ -3,12 +3,12 @@
 //over-ride show first page
 custom.showFirstPage = function() {
 	
-	if (mOrganisationalRole == undefined) {
+	if (mStaffUser.organisationalRole == undefined) {
 		showILClientListing("content");
 	}
 	else 
 	{
-		switch(mOrganisationalRole.id)
+		switch(mStaffUser.organisationalRole.id)
 		{
 		case 100:
 			showProgramDirectorPage("content");
@@ -48,12 +48,10 @@ function showCoordinatorPage(divName) {
 function showFieldAgentPage(divName) {
     var htmlVar = $("#quipoExampleGeneralDashboardTemplate").render();    
 	$("#" + divName).html(htmlVar);
-	
-	var staffId = 18;
-	var staffName = "Meee Atlast";
-	fillRole_FieldAgent(staffId, staffName);
-	fillRoleStats_FieldAgent(staffId);
-	fillList_FieldAgent(staffId);                   
+
+	fillRole_FieldAgent(mStaffUser.staffId, mStaffUser.staffDisplayName);
+	fillRoleStats_FieldAgent(mStaffUser.staffId);
+	fillList_FieldAgent(mStaffUser.staffId);                   
 
 }
 
