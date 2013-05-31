@@ -15,6 +15,7 @@
 <link rel="stylesheet" type="text/css"	href="resources/libs/jquery-ui-timepicker-addon.css" />
 <link rel="stylesheet" type="text/css"	href="resources/stretchyreporting/stretchyreporting-1.2.0.RELEASE.css">
 <link rel="stylesheet" type="text/css"	href="resources/IndividualLendingCode-1.2.0.RELEASE.css" />
+<link rel="stylesheet" type="text/css"  href="resources/libs/jquery.multiselect.css" />
 
 <!-- JQuery/JQuery UI is used. JQuery data tables are used to display rows of data - especially in reporting (stretchyreporting) -->
 <script type="text/javascript" src="resources/libs/jquery-1.9.1.min.js"></script>
@@ -30,6 +31,7 @@
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/i18n/jquery.ui.datepicker-fr.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/i18n/jquery.ui.datepicker-pt.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/i18n/jquery.ui.datepicker-zh.js"></script>
+<script type="text/javascript"  src="resources/libs/jquery.multiselect.js"></script>
 
 <!-- 
 JQuery plugins:
@@ -9209,8 +9211,24 @@ $(document).ready(function() {
                 <td>{{=name}}</td>
                 <td>{{=description}}</td>
                 <td>{{=officeName}}</td>
-                <td>{{=debitAccountHead.name}}({{=debitAccountHead.glCode}})</td>
-                <td>{{=creditAccountHead.name}}({{=creditAccountHead.glCode}})</td>
+                <td>
+                    {{#if debitAccountHead}}
+                        {{=debitAccountHead.name}}({{=debitAccountHead.glCode}})
+                    {{#else}}
+                        {{#each debitTags}}
+                            {{=tagId}}&nbsp;
+                        {{/each}}
+                    {{/if}}
+                </td>
+                <td>
+                    {{#if creditAccountHead}}
+                        {{=creditAccountHead.name}}({{=creditAccountHead.glCode}})
+                    {{#else}}
+                        {{#each creditTags}}
+                            {{=tagId}}&nbsp;
+                        {{/each}}
+                    {{/if}}
+                </td>
                 <td>
                     <a id='editaccountingrule{{=id}}' class='editaccountingrule' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
                     <a id='deleteaccountingrule{{=id}}' class='deleteaccountingrule' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
@@ -9254,44 +9272,238 @@ $(document).ready(function() {
             </tr>
             <tr>
                 <td>
-                    <label for="debitAccountHead" style="display: inline">{{=$ctx.doI18N("label.debit")}}</label>
+                    <label for="debitRuleType" style="display: inline">{{=$ctx.doI18N("label.rule.debitRuleType")}}</label>
                 </td>
                 <td>
-                    <select id="debitAccountHead" name="debitAccountHead" title="">
-                        <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-                        {{#each allowedAccounts}}
-                            {{#if $parent.parent.data.debitAccountHead === undefined}}
-                                <option value="{{=id}}">{{=name}}({{=glCode}})</option>
-                            {{#else}}
+                    {{#if debitAccountHead}}
+                        <input type="radio" name="debitRuleType" id="debitRuleType" value="Fixed" checked="true"/> Fixed
+                        <input type="radio" name="debitRuleType" id="debitRuleType" value="List" /> List
+                    {{#else if debitTags}}
+                        <input type="radio" name="debitRuleType" id="debitRuleType" value="Fixed" /> Fixed
+                        <input type="radio" name="debitRuleType" id="debitRuleType" value="List" checked="true"/> List
+                    {{#else}}
+                        <input type="radio" name="debitRuleType" id="debitRuleType" value="Fixed" /> Fixed
+                        <input type="radio" name="debitRuleType" id="debitRuleType" value="List" /> List    
+                    {{/if}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="debitAccountHead" style="display: inline">{{=$ctx.doI18N("label.rule.select.debitAccount")}}</label>
+                </td>
+                <td>
+                    <div id = "fixeddebitaccount">
+                        <select id="debitAccountHead" name="debitAccountHead" title="">
+                            {{#each allowedAccounts}}
+                                {{#if $parent.parent.data.debitAccountHead === undefined}}
+                                    <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                {{#else}}
                                     {{#if $ctx.number($parent.parent.parent.data.debitAccountHead.id)===$ctx.number(id)}}
                                         <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
                                     {{#else}}
                                         <option value="{{=id}}">{{=name}}({{=glCode}})</option>
                                     {{/if}}
-                            {{/if}}
-                        {{/each}}
-                    </select>
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div id = "listdebitaccounts">
+                        <select id="debitTags" name="debitTags" title="" multiple="multiple">
+                            {{#if debitTags}}
+                                {{#each debitTags}}
+                                    <optgroup label = "ASSETS">
+                                        {{#each $parent.parent.data.allowedAssetsTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                    <optgroup label = "LIABILITIES">
+                                        {{#each $parent.parent.data.allowedLiabilitiesTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                    <optgroup label = "EQUITY">
+                                        {{#each $parent.parent.data.allowedEquityTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                    <optgroup label = "INCOME">
+                                        {{#each $parent.parent.data.allowedIncomeTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                    <optgroup label = "EXPENSES">
+                                        {{#each $parent.parent.data.allowedExpensesTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                {{/each}}
+                            {{#else}}
+                                <optgroup label = "ASSETS">
+                                    {{#each allowedAssetsTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                                <optgroup label = "LIABILITIES">
+                                    {{#each allowedLiabilitiesTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                                <optgroup label = "EQUITY">
+                                    {{#each allowedEquityTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                                <optgroup label = "INCOME">
+                                    {{#each allowedIncomeTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                                <optgroup label = "EXPENSES">
+                                    {{#each allowedExpensesTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                            {{/if}}    
+                        </select>
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label for="creditAccountHead">{{=$ctx.doI18N("label.credit")}}</label>
+                    <label for="creditRuleType" style="display: inline">{{=$ctx.doI18N("label.rule.creditRuleType")}}</label>
                 </td>
                 <td>
-                    <select id="creditAccountHead" name="creditAccountHead" title="">
-                        <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-                        {{#each allowedAccounts}}
-                            {{#if $parent.parent.data.creditAccountHead === undefined}}
-                                <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                    {{#if creditAccountHead}}
+                        <input type="radio" name="creditRuleType" id="creditRuleType" value="Fixed" checked="true"/> Fixed
+                        <input type="radio" name="creditRuleType" id="creditRuleType" value="List" /> List
+                    {{#else if creditTags}}
+                        <input type="radio" name="creditRuleType" id="creditRuleType" value="Fixed" /> Fixed
+                        <input type="radio" name="creditRuleType" id="creditRuleType" value="List" checked="true"/> List
+                    {{#else}}
+                        <input type="radio" name="creditRuleType" id="creditRuleType" value="Fixed" /> Fixed
+                        <input type="radio" name="creditRuleType" id="creditRuleType" value="List" /> List    
+                    {{/if}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="creditAccountHead">{{=$ctx.doI18N("label.rule.select.creditAccount")}}</label>
+                </td>
+                <td>
+                    <div id = "fixedcreditaccount">
+                        <select id="creditAccountHead" name="creditAccountHead" title="">
+                            {{#each allowedAccounts}}
+                                {{#if $parent.parent.data.creditAccountHead === undefined}}
+                                    <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                {{#else}}
+                                        {{#if $ctx.number($parent.parent.parent.data.creditAccountHead.id)===$ctx.number(id)}}
+                                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+                                        {{#else}}
+                                            <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                                        {{/if}}
+                                {{/if}}
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div id = "listcreditaccounts">
+                        <select id="creditTags" name="creditTags" title="" multiple="multiple">
+                            {{#if creditTags}}
+                                {{#each creditTags}}
+                                    <optgroup label = "ASSETS">
+                                        {{#each $parent.parent.data.allowedAssetsTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                    <optgroup label = "LIABILITIES">
+                                        {{#each $parent.parent.data.allowedLiabilitiesTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                    <optgroup label = "EQUITY">
+                                        {{#each $parent.parent.data.allowedEquityTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                    <optgroup label = "INCOME">
+                                        {{#each $parent.parent.data.allowedIncomeTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                    <optgroup label = "EXPENSES">
+                                        {{#each $parent.parent.data.allowedExpensesTagOptions}}
+                                            {{#if $ctx.number($parent.parent.data.tagId)===$ctx.number(id)}}
+                                                <option value = "{{=id}}"  selected="selected"> {{=name}} </option>
+                                            {{#else}}
+                                                <option value = "{{=id}}"> {{=name}} </option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </optgroup>
+                                {{/each}}
                             {{#else}}
-                                    {{#if $ctx.number($parent.parent.parent.data.creditAccountHead.id)===$ctx.number(id)}}
-                                        <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
-                                    {{#else}}
-                                        <option value="{{=id}}">{{=name}}({{=glCode}})</option>
-                                    {{/if}}
-                            {{/if}}
-                        {{/each}}
-                    </select>
+                                <optgroup label = "ASSETS">
+                                    {{#each allowedAssetsTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                                <optgroup label = "LIABILITIES">
+                                    {{#each allowedLiabilitiesTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                                <optgroup label = "EQUITY">
+                                    {{#each allowedEquityTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                                <optgroup label = "INCOME">
+                                    {{#each allowedIncomeTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                                <optgroup label = "EXPENSES">
+                                    {{#each allowedExpensesTagOptions}}
+                                        <option value = "{{=id}}"> {{=name}} </option>
+                                    {{/each}}
+                                </optgroup>
+                            {{/if}}    
+                        </select>
+                    </div>    
                 </td>
             </tr>
             <tr>
@@ -9341,16 +9553,21 @@ $(document).ready(function() {
 <script id="predefinedPostingEntryFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform" >
     <div id="formerrors"></div>
+    <table>
         <tr>
             <td><label for="accountingRule">{{=$ctx.doI18N("label.accountingRule")}}</label></td>
             <td>
-            <select id="accountingRule" name="accountingRule" title="">
-                <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-                {{#each accountingRuleOptions}}
-                <option value="{{=$ctx.number(id)}}">{{=name}}</option>
-                {{/each}}
-            </select></td>
+                <select id="accountingRule" name="accountingRule" title="">
+                    <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+                    {{#each accountingRuleOptions}}
+                        <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+                    {{/each}}
+                </select>
+            </td>
         </tr>
+    </table>
+    <div id="creditanddebitsdiv"></div>
+    <table>
         <tr>
             <td><label for="officeId">{{=$ctx.doI18N("label.office")}}</label></td>
             <td>
@@ -9362,11 +9579,17 @@ $(document).ready(function() {
             </select></td>
         </tr>
         <tr>
-            <td><label for="amount">{{=$ctx.doI18N("label.amount")}}</label></td>
             <td>
-            <input id="amount" name="amount" title="" type="text" value="{{=amount}}" />
+                <div id="amountLabel">
+                    <label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
+                </div>
             </td>
-        </tr>
+            <td>
+                <div id="amountDiv">
+                    <input id="amount" name="amount" title="" type="text" value="{{=amount}}" />
+                </div>
+            </td>
+        </tr> 
         <tr>
             <td><label for="referenceNumber">{{=$ctx.doI18N("label.referenceNumber")}}</label></td>
             <td>
@@ -9387,6 +9610,81 @@ $(document).ready(function() {
         </tr>
     </table>
 </form>
+</script>
+
+<script id="creditAndDebitAccountsFormTemplate" type="text/x-jquery-tmpl">
+    <div id="debitLabel">
+        <b>{{=$ctx.doI18N("label.debit")}}</b>
+        {{#if debitAccounts.length>1 }}
+            <button id="addDebitButton">{{=$ctx.doI18N("button.debit.add")}}</button>
+        {{/if}}
+    </div>
+    <div id="debitaccounts">
+        <p>
+            <label for="debitAccountId01" style="display: inline">
+                <select id="debitAccountId01"  title="">
+                    <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+                    {{#each debitAccounts}}
+                    <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                    {{/each}}
+                </select> </label>
+            <label for="debitAmount01" style="display: inline">
+                <input type="number" id="debitAmount01" size="20" value="" placeholder="Input Amount" />
+            </label>
+        </p>
+    </div>
+    <div id="creditLabel">
+        <b>{{=$ctx.doI18N("label.credit")}}</b>
+        {{#if creditAccounts.length>1 }}
+            <button id="addCreditButton">{{=$ctx.doI18N("button.credit.add")}}</button>
+        {{/if}}
+    </div>
+    <div id="creditaccounts">
+        <p>
+            <label for="creditAccountId01" style="display: inline">
+                <select id="creditAccountId01"  title="">
+                    <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+                    {{#each creditAccounts}}
+                    <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+                    {{/each}}
+                </select> </label>
+            <label for="creditAmount01" style="display: inline">
+                <input type="number" id="creditAmount01" size="20" value="" placeholder="Input Amount" />
+            </label>
+        </p>
+    </div>
+</script>
+
+<script id="singleDebitEntryTemplate" type="text/x-jquery-tmpl">
+<p>
+    <label for="{{=accountId}}" style="display: inline">
+        <select id="{{=accountId}}"  title="">
+            <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+            {{#each debitAccounts}}
+            <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+            {{/each}}
+        </select> </label>
+    <label for="{{=amountId}}" style="display: inline">
+        <input type="number" id="{{=amountId}}" size="20" value="" placeholder="Input Amount" />
+    </label>
+    <button id="{{=deleteButtonId}}"> {{=activity}} </button>
+</p>
+</script>
+
+<script id="singleCreditEntryTemplate" type="text/x-jquery-tmpl">
+<p>
+    <label for="{{=accountId}}" style="display: inline">
+        <select id="{{=accountId}}"  title="">
+            <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+            {{#each creditAccounts}}
+            <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+            {{/each}}
+        </select> </label>
+    <label for="{{=amountId}}" style="display: inline">
+        <input type="number" id="{{=amountId}}" size="20" value="" placeholder="Input Amount" />
+    </label>
+    <button id="{{=deleteButtonId}}"> {{=activity}} </button>
+</p>
 </script>
 
 <script id="basicJournalEntriesTableTemplate" type="text/x-jquery-tmpl">
