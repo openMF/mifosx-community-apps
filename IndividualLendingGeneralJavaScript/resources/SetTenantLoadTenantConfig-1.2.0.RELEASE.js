@@ -920,6 +920,26 @@ tenantIdentifier = "default";
 if (QueryParameters["tenantIdentifier"])
 	tenantIdentifier = QueryParameters["tenantIdentifier"];
 
+function setTenantIdentifierForProductionServer()
+{
+	var l = document.createElement("a");
+    l.href = window.location.href;
+	if (l.hostname == "demo.openmf.org") {
+		tenantIdentifier = "default";
+	} else if (l.hostname.toLowerCase().indexOf("openmf.org") >= 0) {
+		var input = 'l.hostname';
+		var lines = input.split('.');
+		var output = '';
+		$.each(lines, function(key, line) {
+		   output=line;
+		   return false;
+		});
+		tenantIdentifier = output.replace('https://',"");
+	}
+}
+
+setTenantIdentifierForProductionServer();
+
 var configScript = '<script type="text/javascript" src="resources/configs/tenant/'
 		+ tenantIdentifier + '.js"></script>';
 document.write(configScript);
