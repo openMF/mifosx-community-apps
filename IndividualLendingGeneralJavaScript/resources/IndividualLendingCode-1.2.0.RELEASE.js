@@ -128,8 +128,8 @@ crudData = {
 		accountingrule: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
-				dialogWidth: 600,
-				dialogHeight: 375
+				dialogWidth: 1200,
+				dialogHeight: 550
 			}
 
 		};
@@ -921,7 +921,7 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 		}
 		
 	}
-	executeAjaxRequest('accountingrules', 'GET', "", getAccountingRulesSuccessFunction, formErrorFunction);
+	executeAjaxRequest('accountingrules?associations=all', 'GET', "", getAccountingRulesSuccessFunction, formErrorFunction);
 }	
 
 function handleJournalEntriesTabSelection(officesObject) {
@@ -6316,6 +6316,22 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 		$('#currencies option').each(function(i) {
 			$(this).prop("selected", "selected");
 		});
+
+		$('#notSelectedcreditTags option').each(function(i) {
+			$(this).prop("selected", "selected");
+		});
+		
+		$('#creditTags option').each(function(i) {
+			$(this).prop("selected", "selected");
+		});
+
+		$('#notSelecteddebitTags option').each(function(i) {
+			$(this).prop("selected", "selected");
+		});
+		
+		$('#debitTags option').each(function(i) {
+			$(this).prop("selected", "selected");
+		});
 		
 		if (document.changeUserSettingsForm!=undefined) {
 			newUserName = document.changeUserSettingsForm.username.value;
@@ -6482,21 +6498,37 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			//allow only one value for debits
 			if (serializedArray.debitRuleType === "Fixed") {
 				delete serializedArray.debitTags;
+				delete serializedArray.allowMultipleDebitEntries;
 			} else if (serializedArray.debitRuleType === "List") {
 				delete serializedArray.debitAccountHead;
+				if (typeof serializedArray.debitTags === 'string') {
+					var debits = [];
+					debits.push(serializedArray.debitTags);
+					delete serializedArray.debitTags;
+					serializedArray["debitTags"] = debits;
+				}
 			} else {
 				delete serializedArray.debitTags;
 				delete serializedArray.debitAccountHead;
+				delete serializedArray.allowMultipleDebitEntries;
 			}
 
 			//allow only one value for credits
 			if (serializedArray.creditRuleType === "Fixed") {
 				delete serializedArray.creditTags;
+				delete serializedArray.allowMultipleCreditEntries;
 			} else if (serializedArray.creditRuleType === "List") {
 				delete serializedArray.creditAccountHead;
+				if (typeof serializedArray.creditTags === 'string') {
+					var credits = [];
+					credits.push(serializedArray.creditTags);
+					delete serializedArray.creditTags;
+					serializedArray["creditTags"] = credits;
+				}
 			} else {
 				delete serializedArray.creditTags;
 				delete serializedArray.creditAccountHead;
+				delete serializedArray.allowMultipleCreditEntries;
 			}
 
 			delete serializedArray.debitRuleType;
@@ -6590,51 +6622,117 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 
 		if (debitRuleType == "Fixed") {
 			$("#fixeddebitaccount").show();
-			$("#listdebitaccounts").hide();
+			$("#fixeddebitaccountlabel").show();
+			$("#availabledebittags").hide();
+			$("#selecteddebittags").hide();
+			$("#allowmultipledebitentrieslabel").hide();
+			$("#allowmultipledebitentries").hide();
 		} else if (debitRuleType == "List"){
 			$("#fixeddebitaccount").hide();
-			$("#listdebitaccounts").show();
-			$("#debitTags").multiselect();
+			$("#fixeddebitaccountlabel").hide();
+			$("#availabledebittags").show();
+			$("#selecteddebittags").show();
+			$("#allowmultipledebitentrieslabel").show();
+			$("#allowmultipledebitentries").show();
+			// enable the buttons for add and remove
+			$('.addmultipledebits').click(function() {  
+  			     return !$('.multiNotSelectedDebits option:selected').remove().appendTo('#debitTags');  
+  			});
+  			$('.removemultipledebits').click(function() {  
+  				return !$('.multiSelectedDebits option:selected').remove().appendTo('#notSelecteddebitTags');  
+  			});
 		} else {
 			$('input:radio[name=debitRuleType]')[0].checked=true;
 			$("#fixeddebitaccount").show();
-			$("#listdebitaccounts").hide();
+			$("#fixeddebitaccountlabel").show();
+			$("#availabledebittags").hide();
+			$("#selecteddebittags").hide();
+			$("#allowmultipledebitentrieslabel").hide();
+			$("#allowmultipledebitentries").hide();
 		}
 
 		if (creditRuleType == "Fixed") {
 			$("#fixedcreditaccount").show();
-			$("#listcreditaccounts").hide();
+			$("#fixedcreditaccountlabel").show();
+			$("#availablecredittags").hide();
+			$("#selectedcredittags").hide();
+			$("#allowmultiplecreditentrieslabel").hide();
+			$("#allowmultiplecreditentries").hide();
 		} else if (creditRuleType == "List"){
 			$("#fixedcreditaccount").hide();
-			$("#listcreditaccounts").show();
-			$("#creditTags").multiselect();
+			$("#fixedcreditaccountlabel").hide();
+			$("#availablecredittags").show();
+			$("#selectedcredittags").show();
+			$("#allowmultiplecreditentrieslabel").show();
+			$("#allowmultiplecreditentries").show();
+			// enable the buttons for add and remove
+			$('.addmultiplecredits').click(function() {  
+  			     return !$('.multiNotSelectedCredits option:selected').remove().appendTo('#creditTags');  
+  			});
+  			$('.removemultiplecredits').click(function() {  
+  				return !$('.multiSelectedCredits option:selected').remove().appendTo('#notSelectedcreditTags');  
+  			});
 		} else {
 			$('input:radio[name=creditRuleType]')[0].checked=true;
 			$("#fixedcreditaccount").show();
-			$("#listcreditaccounts").hide();
+			$("#fixedcreditaccountlabel").show();
+			$("#availablecredittags").hide();
+			$("#selectedcredittags").hide();
+			$("#allowmultiplecreditentrieslabel").hide();
+			$("#allowmultiplecreditentries").hide();
 		}
 
 		$('input:radio[name=debitRuleType]').change(function (){
 			var selectedType = $(this).val();
 			if (selectedType == "Fixed") {
-			$("#fixeddebitaccount").show();
-			$("#listdebitaccounts").hide();
-		} else if (selectedType == "List"){
-			$("#fixeddebitaccount").hide();
-			$("#listdebitaccounts").show();
-			$("#debitTags").multiselect();
-		}
+				$("#fixeddebitaccount").show();
+	            $("#fixeddebitaccountlabel").show();
+	            $("#availabledebittags").hide();
+	            $("#selecteddebittags").hide();
+	            $("#allowmultipledebitentrieslabel").hide();
+	            $("#allowmultipledebitentries").hide();
+			} else if (selectedType == "List"){
+				$("#fixeddebitaccount").hide();
+	            $("#fixeddebitaccountlabel").hide();
+	            $("#availabledebittags").show();
+	            $("#selecteddebittags").show();
+	            $("#allowmultipledebitentrieslabel").show();
+	            $("#allowmultipledebitentries").show();
+	            // enable the buttons for add and remove
+	            $('.addmultipledebits').click(function() {  
+  			     return !$('.multiNotSelectedDebits option:selected').remove().appendTo('#debitTags');  
+	  			});
+	  			$('.removemultipledebits').click(function() {  
+	  				return !$('.multiSelectedDebits option:selected').remove().appendTo('#notSelecteddebitTags');  
+	  			});
+
+			}
 		});
+
 		$('input:radio[name=creditRuleType]').change(function () {
 			var selectedType = $(this).val();
 			if (selectedType == "Fixed") {
-			$("#fixedcreditaccount").show();
-			$("#listcreditaccounts").hide();
-		} else if (selectedType == "List"){
-			$("#fixedcreditaccount").hide();
-			$("#listcreditaccounts").show();
-			$("#creditTags").multiselect();
-		}
+				$("#fixedcreditaccount").show();
+	            $("#fixedcreditaccountlabel").show();
+	            $("#availablecredittags").hide();
+	            $("#selectedcredittags").hide();
+	            $("#allowmultiplecreditentrieslabel").hide();
+	            $("#allowmultiplecreditentries").hide();
+			} else if (selectedType == "List"){
+				$("#fixedcreditaccount").hide();
+	            $("#fixedcreditaccountlabel").hide();
+	            $("#availablecredittags").show();
+	            $("#selectedcredittags").show();
+	            $("#allowmultiplecreditentrieslabel").show();
+	            $("#allowmultiplecreditentries").show();
+	            // enable the buttons for add and remove
+	            $('.addmultiplecredits').click(function() {  
+	  			     return !$('.multiNotSelectedCredits option:selected').remove().appendTo('#creditTags');  
+	  			});
+	  			$('.removemultiplecredits').click(function() {  
+	  				return !$('.multiSelectedCredits option:selected').remove().appendTo('#notSelectedcreditTags');  
+	  			});
+			}
 		});
 	}
 
@@ -6811,6 +6909,22 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	});
 	$('#removecurrencies').click(function() {  
 		return !$('#currencies option:selected').remove().appendTo('#notSelectedCurrencies');  
+	});
+
+	('#adddebitTags').click(function() {  
+		return !$('#notSelecteddebitTags option:selected').remove().appendTo('#debitTags');  
+	});
+
+	$('#removedebitTags').click(function() {  
+		return !$('#debitTags option:selected').remove().appendTo('#notSelecteddebitTags');  
+	});
+
+	('#addcreditTags').click(function() {  
+		return !$('#notSelectedcreditTags option:selected').remove().appendTo('#creditTags');  
+	});
+
+	$('#removecreditTags').click(function() {  
+		return !$('#creditTags option:selected').remove().appendTo('#notSelectedcreditTags');  
 	});
 
 	$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -7384,7 +7498,8 @@ $.fn.serializeObject = function(serializationOptions)
 	$.each(a, function() {
 		
 		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedRoles' 
-	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges') {
+	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges'
+	    		|| this.name === 'notSelecteddebitTags' || this.name === 'notSelectedcreditTags') {
 			// do not serialize
 		} else if (this.name.indexOf('[') !== -1) { //serialize as separate object
 			arrayName = this.name.substring(0, this.name.indexOf("["));
@@ -7409,7 +7524,7 @@ $.fn.serializeObject = function(serializationOptions)
 		    } else {
 		    	
 		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies'  
-	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges' || this.name === 'loans') {
+	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges' || this.name === 'loans' || this.name === 'creditTags' || this.name === 'debitTags') {
 		    		o[this.name] = new Array();
 		    		o[this.name].push(this.value || '');
 		    	} else {
