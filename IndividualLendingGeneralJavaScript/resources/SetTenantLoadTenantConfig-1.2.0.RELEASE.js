@@ -927,7 +927,7 @@ function setTenantIdentifierForProductionServer()
 	if (l.hostname == "demo.openmf.org") {
 		tenantIdentifier = "default";
 	} else if (l.hostname.toLowerCase().indexOf("openmf.org") >= 0) {
-		var input = 'l.hostname';
+		var input = l.hostname;
 		var lines = input.split('.');
 		var output = '';
 		$.each(lines, function(key, line) {
