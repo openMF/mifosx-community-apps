@@ -6870,6 +6870,9 @@ function getBaseApiURL(docURL)
 	}
 	else if (l.hostname == "demo.openmf.org") {
 		baseApiUrl = "/mifosng-provider/api/v1/";
+	}
+	else if (l.hostname.toLowerCase().indexOf("openmf.org") >= 0) {
+		baseApiUrl = "https://" + l.hostname + "/mifosng-provider/api/v1/";
 	} else {
 		baseApiUrl = "https://" + l.hostname + ":8443/mifosng-provider/api/v1/";
 	}
