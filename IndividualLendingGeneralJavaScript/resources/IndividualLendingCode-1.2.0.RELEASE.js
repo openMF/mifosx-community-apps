@@ -4771,7 +4771,7 @@ function loadLoan(loanId, parenttab) {
    						}
 					});
 		        	
-	        	$('.modifyloanapp').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
+	        	$('.modifyloanapp'+loanId).button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("modifyloanappbtn", "");
 					launchModifyLoanApplicationDialog(loanId);
@@ -4780,7 +4780,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.modifyloanapp span').text(doI18N('button.application.modify'));
 	        		
-	        	$('.rejectloan').button().click(function(e) {
+	        	$('.rejectloan'+loanId).button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("rejectbtn", "");
 					var postUrl = 'loans/' + loanId + '?command=reject';
@@ -4794,7 +4794,7 @@ function loadLoan(loanId, parenttab) {
 				});
 	        	$('button.rejectloan span').text(doI18N('button.application.reject'));
 					
-				$('.withdrawnbyapplicantloan').button().click(function(e) {
+				$('.withdrawnbyapplicantloan'+loanId).button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("withdrawnbyapplicantloanbtn", "");
 						var postUrl = 'loans/' + loanId + '?command=withdrawnByApplicant';
@@ -4807,7 +4807,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.withdrawnbyapplicantloan span').text(doI18N('button.application.withdrawnByApplicant'));
 				
-				$('.approveloan').button().click(function(e) {
+				$('.approveloan'+loanId).button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("approvebtn", "");
 						var postUrl = 'loans/' + loanId + '?command=approve';
@@ -4821,7 +4821,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.approveloan span').text(doI18N('button.application.approve'));
 					
-				$('.undoapproveloan').button().click(function(e) {
+				$('.undoapproveloan'+loanId).button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("undoapprovebtn", "");
 						var postUrl = 'loans/' + loanId + '?command=undoapproval';
@@ -4835,7 +4835,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.undoapproveloan span').text(doI18N('button.application.undoApproval'));
 					
-				$('.deleteloan').button().click(function(e) {
+				$('.deleteloan'+loanId).button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("deletebtn", "");
 					var url = 'loans/' + loanId;
@@ -4847,7 +4847,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.deleteloan span').text(doI18N('button.application.delete'));
 					
-				$('.disburseloan').button().click(function(e) {
+				$('.disburseloan'+loanId).button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("disbursebtn", "");
 					var getUrl = 'loans/' + loanId + '/transactions/template?command=disburse';
@@ -4863,7 +4863,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.disburseloan span').text(doI18N('button.loan.disburse'));
 					
-				$('.undodisbursalloan').button().click(function(e) {
+				$('.undodisbursalloan'+loanId).button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("undodisbursalbtn", "");
 					var postUrl = 'loans/' + loanId + '?command=undodisbursal';
@@ -4877,7 +4877,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.undodisbursalloan span').text(doI18N('button.loan.undoDisbursal'));
 					
-				$('.repaymentloan').button().click(function(e) {
+				$('.repaymentloan'+loanId).button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("repaymentbtn", "");
 					var getUrl = 'loans/' + loanId + '/transactions/template?command=repayment';
@@ -4894,7 +4894,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.repaymentloan span').text(doI18N('button.loan.repayment'));
 					
-				$('.waiveinterestloan').button().click(function(e) {
+				$('.waiveinterestloan'+loanId).button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("waiveinterestbtn", "");
 						
@@ -4913,7 +4913,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.waiveloan span').text(doI18N('button.loan.waiveInterest'));
 				
-				$('.writeoffloan').button().click(function(e) {
+				$('.writeoffloan'+loanId).button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("writeoffbtn", "");
 					
@@ -4932,7 +4932,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.writeoffloan span').text(doI18N('button.loan.writeOff'));
 				
-				$('.closeasrescheduledloan').button().click(function(e) {
+				$('.closeasrescheduledloan'+loanId).button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("closeasrescheduledbtn", "");
 					
@@ -4951,7 +4951,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.closeasrescheduledloan span').text(doI18N('button.loan.closeAsRescheduled'));
 				
-				$('.closeloan').button().click(function(e) {
+				$('.closeloan'+loanId).button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("closebtn", "");
 					
@@ -4970,7 +4970,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.closeloan span').text(doI18N('button.loan.close'));
 					
-				$(".printSchedule").button({icons: {primary: "ui-icon-print"},text: false}).click(function(e){
+				$(".printSchedule"+loanId).button({icons: {primary: "ui-icon-print"},text: false}).click(function(e){
 					var loanId=	this.offsetParent.id.replace("loantabs","");
 
 					var printButtons = document.getElementsByClassName('printSchedule');
@@ -4982,7 +4982,7 @@ function loadLoan(loanId, parenttab) {
 					e.preventDefault();
 				});	
 					
-				$('.adjustloanrepayment').button({
+				$('.adjustloanrepayment'+loanId).button({
                     icons : {
                         primary : "ui-icon-pencil"
                     },
@@ -5007,7 +5007,7 @@ function loadLoan(loanId, parenttab) {
 				
 				//$('button.adjustloanrepayment span').text(doI18N('button.loanTransaction.adjust'));
 				
-				$('.undoloanrepayment').button({
+				$('.undoloanrepayment'+loanId).button({
                     icons : {
                         primary : "ui-icon-trash"
                     },
@@ -5036,7 +5036,7 @@ function loadLoan(loanId, parenttab) {
                     e.preventDefault();
                 }); 
                 
-				$('.addloancharge').button().click(function(e){
+				$('.addloancharge'+loanId).button().click(function(e){
 						var linkId = this.id;
 						var loanId = linkId.replace("addloanchargebtn", "");
 						var postUrl = 'loans/' + loanId + '/charges';
@@ -5050,8 +5050,9 @@ function loadLoan(loanId, parenttab) {
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addLoanCharge", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
+				$('button.addloancharge span').text(doI18N('button.addLoanCharge'));
 				
-				$('.addloancollateral').button().click(function(e){
+				$('.addloancollateral'+loanId).button().click(function(e){
                         var linkId = this.id;
                         var loanId = linkId.replace("addloancollateralbtn", "");
                         var postUrl = 'loans/' + loanId + '/collaterals';
@@ -5065,10 +5066,10 @@ function loadLoan(loanId, parenttab) {
                         popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addCollateral", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
                         e.preventDefault();
                 });
-				$('button.addloancharge span').text(doI18N('button.addLoanCharge'));
+				$('button.addloancollateral span').text(doI18N('button.addLoanCharge'));
 				
 				//Guarantor for loan functionality
-				$('.setguarantor').button({icons: {primary: "ui-icon-link"}}).click(function(e) {
+				$('.setguarantor'+loanId).button({icons: {primary: "ui-icon-link"}}).click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("setGuarantorbtn", "");
 						var getUrl = 'loans/'+loanId+'/guarantors/template';
@@ -5105,7 +5106,7 @@ function loadLoan(loanId, parenttab) {
 				    });
 			    }
 	            
-				$('.assignloanofficer').button().click(function(e){
+				$('.assignloanofficer'+loanId).button().click(function(e){
 
 						var linkId = this.id;
 						var loanId = linkId.replace("assignloanofficerbtn", "");
@@ -5122,7 +5123,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.assignloanofficer span').text(doI18N('button.assignLoanOfficer'));
 
-				$('.unassignloanofficer').button({icons: {primary: "ui-icon-circle-close"}}).click(function(e){
+				$('.unassignloanofficer'+loanId).button({icons: {primary: "ui-icon-circle-close"}}).click(function(e){
 
 						var linkId = this.id;
 						var loanId = linkId.replace("unassignloanofficerbtn", "");
@@ -5138,7 +5139,7 @@ function loadLoan(loanId, parenttab) {
 						e.preventDefault();
 				});
 
-				$('.editaccountnobtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
+				$('.editaccountnobtn'+loanId).button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
 
 					var linkId = this.id;
 					var loanId = linkId.replace("editaccountnobtn", "");
@@ -7300,7 +7301,7 @@ function loadSavingAccount(accountId) {
 			}
 		});
 		
-		$('.savingsaccountdeposit').button({icons: {primary: "ui-icon-arrowthick-1-e"}}).click(function(e) {
+		$('.savingsaccountdeposit'+accountId).button({icons: {primary: "ui-icon-arrowthick-1-e"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountdepositbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=deposit';
@@ -7316,7 +7317,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountdeposit span').text(doI18N('button.deposit'));
 		
-		$('.savingsaccountwithdrawal').button({icons: {primary: "ui-icon-arrowthick-1-w"}}).click(function(e) {
+		$('.savingsaccountwithdrawal'+accountId).button({icons: {primary: "ui-icon-arrowthick-1-w"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountwithdrawalbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=withdrawal';
@@ -7332,7 +7333,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountwithdrawal span').text(doI18N('button.withdrawal'));
 		
-		$('.savingsaccountinterestcalc').button({icons: {primary: "ui-icon-calculator"}}).click(function(e) {
+		$('.savingsaccountinterestcalc'+accountId).button({icons: {primary: "ui-icon-calculator"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountinterestcalcbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=calculateInterest';
@@ -7345,7 +7346,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountinterestcalc span').text(doI18N('button.calculateInterest'));
 		
-		$('.savingsaccountinterestpost').button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
+		$('.savingsaccountinterestpost'+accountId).button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountinterestpostbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=postInterest';
@@ -7358,7 +7359,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountinterestpost span').text(doI18N('button.postInterest'));
 		
-		$('.savingsaccountactivate').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
+		$('.savingsaccountactivate'+accountId).button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountactivatebtn", "");
 			var getUrl = 'savingsaccounts/' + savingAccountId + '?command=activate&template=true';
@@ -7373,7 +7374,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountactivate span').text(doI18N('button.activate'));
 		
-		$('.savingsaccountdelete').button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
+		$('.savingsaccountdelete'+accountId).button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountdeletebtn", "");
 			var url = 'savingsaccounts/' + savingAccountId;
@@ -7385,7 +7386,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountdelete span').text(doI18N('button.delete'));
 		
-		$('.editsavingsaccountnobtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
+		$('.editsavingsaccountnobtn'+accountId).button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
 
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("editsavingsaccountnobtn", "");
