@@ -90,7 +90,17 @@ taskPermissionsMatrix = {
 		
 		ADDSAVINGACCOUNT: ["CREATE_SAVINGACCOUNT"],
 		
-		VIEWJOURNALENTRIES: ["READ_JOURNALENTRIES"]
+		VIEWJOURNALENTRIES: ["READ_JOURNALENTRIES"],
+
+		ADDGROUP: ["CREATE_GROUP"],
+		VIEWGROUP: ["READ_GROUP"],
+		ADDJLGLOAN: ["CREATE_JLG_LOAN"],//not mapped to platform permission
+		ADDJLGBULKLOAN: ["CREATE_JLGBULK_LOAN"],//not mapped to platform permission
+		VIEWACCOUNTSDETAILS: ["READ_LOANDETAILS"],//not mapped to platform permission
+		VIEWMEETING: ["READ_MEETING"],//not mapped to platform permission
+		ATTACHMEETING: ["ATTACH_MEETING"],//not mapped to platform permission
+		ADDGROUPLOAN: ["CREATE_GROUPLOAN"]//not mapped to platform permission
+
 	};
 
 
@@ -136,7 +146,8 @@ applicationProfiles = ["ALL", "IL", "TEVI"];
 
 applicationProfileExclusions = {
 		IL: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"],
-		TEVI: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"]
+		TEVI: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN", "ADDJLGBULKLOAN", "ADDGROUPLOAN", "ATTACHMEETING", 
+				"VIEWMEETING", "VIEWACCOUNTSDETAILS"]
 
 	};
 
