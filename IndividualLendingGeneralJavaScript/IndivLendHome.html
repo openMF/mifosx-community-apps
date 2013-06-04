@@ -8088,10 +8088,10 @@ $(document).ready(function() {
 <p><b>{{=$ctx.doI18N("heading.savingaccount.overview")}}</b></p>
 {{#if $ctx.numberGreaterThanZero(pendingApprovalSavingAccountsCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalSavingAccountsCount)}}):</span>
+	<span class="longrowlabel"><img src="resources/img/loanStatusType.submitted.and.pending.approval.gif"/>&nbsp;{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalSavingAccountsCount)}}):</span>
 	<span class="rowvalue">
 	{{#each pendingApprovalSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -8099,10 +8099,10 @@ $(document).ready(function() {
 
 {{#if $ctx.numberGreaterThanZero(approvedSavingAccountsCount)}}
 <div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedSavingAccountsCount)}}):</span>
+	<span class="longrowlabel"><img src="resources/img/loanStatusType.active.gif"/>&nbsp;{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedSavingAccountsCount)}}):</span>
 	<span class="rowvalue">
 	{{#each approvedSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
@@ -8113,7 +8113,7 @@ $(document).ready(function() {
 	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedSavingAccountsCount)}}):</span>
 	<span class="rowvalue">
 	{{#each closedSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
 	{{/each}}
 	</span>
 </div>
