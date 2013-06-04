@@ -4528,76 +4528,76 @@ $(document).ready(function() {
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
 			{{#if status.pendingApproval}}
 				{{#if $ctx.showTask("AddLoanCharge")}}
-				<button id="addloanchargebtn{{=id}}" class="addloancharge">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
+				<button id="addloanchargebtn{{=id}}" class="addloancharge{{=id}}">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("AddLoanCollateral")}}
-                <button id="addloancollateralbtn{{=id}}" class="addloancollateral">{{=$ctx.doI18N("button.addLoanCollateral")}}</button>
+                <button id="addloancollateralbtn{{=id}}" class="addloancollateral{{=id}}">{{=$ctx.doI18N("button.addLoanCollateral")}}</button>
                 {{/if}}
 				{{#if $ctx.showTask("ASSIGNLOANOFFICER")}}
-				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
+				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer{{=id}}">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("MODIFYLOAN")}}
-				<button id="modifyloanappbtn{{=id}}" class="modifyloanapp">{{=$ctx.doI18N("button.application.modify")}}</button>
+				<button id="modifyloanappbtn{{=id}}" class="modifyloanapp{{=id}}">{{=$ctx.doI18N("button.application.modify")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("APPROVELOAN")}}
-				<button id="approvebtn{{=id}}" class="approveloan">{{=$ctx.doI18N("button.application.approve")}}</button>
+				<button id="approvebtn{{=id}}" class="approveloan{{=id}}">{{=$ctx.doI18N("button.application.approve")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("RejectLoanApplication")}}
-				<button id="rejectbtn{{=id}}" class="rejectloan">{{=$ctx.doI18N("button.application.reject")}}</button>
+				<button id="rejectbtn{{=id}}" class="rejectloan{{=id}}">{{=$ctx.doI18N("button.application.reject")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("LoanApplicationWithdrawn")}}
-				<button id="withdrawnbyapplicantloanbtn{{=id}}" class="withdrawnbyapplicantloan">{{=$ctx.doI18N("button.application.withdrawnByApplicant")}}</button>
+				<button id="withdrawnbyapplicantloanbtn{{=id}}" class="withdrawnbyapplicantloan{{=id}}">{{=$ctx.doI18N("button.application.withdrawnByApplicant")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("DELETELOAN")}}
-				<button id="deletebtn{{=id}}" class="deleteloan">{{=$ctx.doI18N("button.application.delete")}}</button>
+				<button id="deletebtn{{=id}}" class="deleteloan{{=id}}">{{=$ctx.doI18N("button.application.delete")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("ADDLOANGUARANTOR")}}
-				<button id="setGuarantorbtn{{=id}}" class="setguarantor">{{=$ctx.doI18N("button.guarantor")}}</button>
+				<button id="setGuarantorbtn{{=id}}" class="setguarantor{{=id}}">{{=$ctx.doI18N("button.guarantor")}}</button>
 				{{/if}}
 			{{/if}}
 
 			{{#if status.waitingForDisbursal}}
 				{{#if $ctx.showTask("AddLoanCharge")}}
-				<button id="addloanchargebtn{{=id}}" class="addloancharge">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
+				<button id="addloanchargebtn{{=id}}" class="addloancharge{{=id}}">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("ASSIGNLOANOFFICER")}}
-				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
+				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer{{=id}}">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("UNDOLOANAPPROVAL")}}
-				<button id="undoapprovebtn{{=id}}" class="undoapproveloan">{{=$ctx.doI18N("button.application.undoApproval")}}</button>
+				<button id="undoapprovebtn{{=id}}" class="undoapproveloan{{=id}}">{{=$ctx.doI18N("button.application.undoApproval")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("DISBURSELOAN")}}
-				<button id="disbursebtn{{=id}}" class="disburseloan">{{=$ctx.doI18N("button.loan.disburse")}}</button>
+				<button id="disbursebtn{{=id}}" class="disburseloan{{=id}}">{{=$ctx.doI18N("button.loan.disburse")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("ADDLOANGUARANTOR")}}
-				<button id="setGuarantorbtn{{=id}}" class="setguarantor">{{=$ctx.doI18N("button.guarantor")}}</button>
+				<button id="setGuarantorbtn{{=id}}" class="setguarantor{{=id}}">{{=$ctx.doI18N("button.guarantor")}}</button>
 				{{/if}}
 			{{/if}}
 
 			{{#if status.active}}
 				{{#if $ctx.showTask("AddLoanCharge")}}
-				<button id="addloanchargebtn{{=id}}" class="addloancharge">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
+				<button id="addloanchargebtn{{=id}}" class="addloancharge{{=id}}">{{=$ctx.doI18N("button.addLoanCharge")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("ASSIGNLOANOFFICER")}}
-				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
+				<button id="assignloanofficerbtn{{=id}}" class="assignloanofficer{{=id}}">{{=$ctx.doI18N("button.assignLoanOfficer")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("UNDOLOANDISBURSAL")}}
-				<button id="undodisbursalbtn{{=id}}" class="undodisbursalloan">{{=$ctx.doI18N("button.loan.undoDisbursal")}}</button>
+				<button id="undodisbursalbtn{{=id}}" class="undodisbursalloan{{=id}}">{{=$ctx.doI18N("button.loan.undoDisbursal")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("LOANREPAYMENT")}}
-				<button id="repaymentbtn{{=id}}" class="repaymentloan">{{=$ctx.doI18N("button.loan.repayment")}}</button>
+				<button id="repaymentbtn{{=id}}" class="repaymentloan{{=id}}">{{=$ctx.doI18N("button.loan.repayment")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("WAIVEINTERESTPORTIONOFLOAN")}}
-				<button id="waiveinterestbtn{{=id}}" class="waiveinterestloan">{{=$ctx.doI18N("button.loan.waiveInterest")}}</button>
+				<button id="waiveinterestbtn{{=id}}" class="waiveinterestloan{{=id}}">{{=$ctx.doI18N("button.loan.waiveInterest")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("WRITEOFFLOAN")}}
-				<button id="writeoffbtn{{=id}}" class="writeoffloan">{{=$ctx.doI18N("button.loan.writeOff")}}</button>
+				<button id="writeoffbtn{{=id}}" class="writeoffloan{{=id}}">{{=$ctx.doI18N("button.loan.writeOff")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("CLOSEASRESCHEDULEDLOAN")}}
-				<button id="closeasrescheduledbtn{{=id}}" class="closeasrescheduledloan">{{=$ctx.doI18N("button.loan.closeAsRescheduled")}}</button>
+				<button id="closeasrescheduledbtn{{=id}}" class="closeasrescheduledloan{{=id}}">{{=$ctx.doI18N("button.loan.closeAsRescheduled")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("CLOSELOAN")}}
-				<button id="closebtn{{=id}}" class="closeloan">{{=$ctx.doI18N("button.loan.close")}}</button>
+				<button id="closebtn{{=id}}" class="closeloan{{=id}}">{{=$ctx.doI18N("button.loan.close")}}</button>
 				{{/if}}
 			{{/if}}
 			</span>
@@ -4631,7 +4631,8 @@ $(document).ready(function() {
 			<span class="rowvalue">
 			{{=accountNo}}
 			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn"><span>Edit</span></button>
+            <!-- TODO Duplicate id for accountno and externalId update appropriate -->
+			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn{{=id}}"><span>Edit</span></button>
 			{{/if}}
 			</span>
 		</div>
@@ -4642,7 +4643,8 @@ $(document).ready(function() {
 			<span class="rowvalue">
 			{{=externalId}}
 			{{#if $ctx.showTask("MODIFYLOAN")}}
-			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn"><span>Edit</span></button>
+            <!-- TODO Duplicate id for accountno and externalId update appropriate -->
+			<button id="editaccountnobtn{{=id}}" class="editaccountnobtn{{=id}}"><span>Edit</span></button>
 			{{/if}}
 			</span>
 		</div>
@@ -4670,7 +4672,7 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.loanOfficer")}}</span>
 			<span class="rowvalue">{{=loanOfficerName}}</span>
 			{{#if $ctx.showTask("UNASSIGNLOANOFFICER")}}
-				<button id="unassignloanofficerbtn{{=id}}" class="unassignloanofficer">{{=$ctx.doI18N("label.unassignloanOfficer")}}</button>
+				<button id="unassignloanofficerbtn{{=id}}" class="unassignloanofficer{{=id}}">{{=$ctx.doI18N("label.unassignloanOfficer")}}</button>
 			{{/if}}
 		</div>
 		{{/if}}
@@ -4941,7 +4943,7 @@ $(document).ready(function() {
 	{{/if}}
 
 	<div id="schedule{{=id}}" style="margin-top: 5px;">
-	<span><button id="printSchedule{{=id}}" class="printSchedule" style="float:right">Print</button></span>
+	<span><button id="printSchedule{{=id}}" class="printSchedule{{=id}}" style="float:right">Print</button></span>
 		{{#each summary}}
 		<table id="summarytable{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("table.summary.caption")}}</caption>
@@ -5180,8 +5182,8 @@ $(document).ready(function() {
 				</td>
 				{{#if $ctx.isAdjustableTransaction(type.id)}}
 				<td>
-				    <button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button>
-				    <button id="undorepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="undoloanrepayment">{{=$ctx.doI18N("button.loanTransaction.undo")}}</button>
+				    <button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment{{=$parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button>
+				    <button id="undorepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="undoloanrepayment{{=$parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.undo")}}</button>
 				</td>
 				{{#else}}
 				<td>&nbsp;</td>
@@ -6335,14 +6337,14 @@ $(document).ready(function() {
 		<tr><td align="center">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
 			{{#if status.active}}
-			<button id="savingsaccountdepositbtn{{=id}}" class="savingsaccountdeposit">{{=$ctx.doI18N("button.deposit")}}</button>
-			<button id="savingsaccountwithdrawalbtn{{=id}}" class="savingsaccountwithdrawal">{{=$ctx.doI18N("button.withdrawal")}}</button>
-			<button id="savingsaccountinterestcalcbtn{{=id}}" class="savingsaccountinterestcalc">{{=$ctx.doI18N("button.calculateInterest")}}</button>
-			<button id="savingsaccountinterestpostbtn{{=id}}" class="savingsaccountinterestpost">{{=$ctx.doI18N("button.postInterest")}}</button>
+			<button id="savingsaccountdepositbtn{{=id}}" class="savingsaccountdeposit{{=id}}">{{=$ctx.doI18N("button.deposit")}}</button>
+			<button id="savingsaccountwithdrawalbtn{{=id}}" class="savingsaccountwithdrawal{{=id}}">{{=$ctx.doI18N("button.withdrawal")}}</button>
+			<button id="savingsaccountinterestcalcbtn{{=id}}" class="savingsaccountinterestcalc{{=id}}">{{=$ctx.doI18N("button.calculateInterest")}}</button>
+			<button id="savingsaccountinterestpostbtn{{=id}}" class="savingsaccountinterestpost{{=id}}">{{=$ctx.doI18N("button.postInterest")}}</button>
 			{{/if}}
 			{{#if status.unactivated}}
-			<button id="savingsaccountactivatebtn{{=id}}" class="savingsaccountactivate">{{=$ctx.doI18N("button.activate")}}</button>
-			<button id="savingsaccountdeletebtn{{=id}}" class="savingsaccountdelete">{{=$ctx.doI18N("button.delete")}}</button>
+			<button id="savingsaccountactivatebtn{{=id}}" class="savingsaccountactivate{{=id}}">{{=$ctx.doI18N("button.activate")}}</button>
+			<button id="savingsaccountdeletebtn{{=id}}" class="savingsaccountdelete{{=id}}">{{=$ctx.doI18N("button.delete")}}</button>
 			{{/if}}
 			</span>
 		</td></tr>
