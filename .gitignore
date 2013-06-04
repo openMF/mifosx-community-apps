@@ -1,5 +1,5 @@
 .project
 .idea
 .DS_Store
-.class
-.cache
+*.class
+*.cache
