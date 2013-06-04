@@ -3063,6 +3063,9 @@ function showGroup(groupId){
 
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'groups', 'centerCalendarContent');
+
+        custom.showRelatedDataTableInfo($newtabs, "m_group", groupId);
+
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 			
@@ -3326,6 +3329,7 @@ function showCenter(centerId){
 
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'centers', 'centerCalendarContent');
+        custom.showRelatedDataTableInfo($newtabs, "m_group", currentGroupId);
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
