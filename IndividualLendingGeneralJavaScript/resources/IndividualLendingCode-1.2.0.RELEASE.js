@@ -3045,7 +3045,7 @@ function showGroup(groupId){
 		var tableHtml = $("#groupDataTabTemplate").render(data);
 		var groupDetails = $("#groupDetailsTemplate").render(data);
 		var groupClients = $("#groupClientsTabTemplate").render(data);
-		var groupSummary = $("#groupSummaryTabTemplate").render(data);
+		var groupSummary = $("#groupSummaryTabTemplate").render();//group summary data should be fetched in another ajax call
 
 		groupDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
 
@@ -3058,6 +3058,8 @@ function showGroup(groupId){
 		$("#groupsummarytabname").html("Summary");
 
 		refreshGroupLoanSummaryInfo(groupUrl);
+
+		refreshGroupSummaryInfo(groupId);
 
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'groups', 'centerCalendarContent');
@@ -3241,6 +3243,27 @@ function showGroup(groupId){
     };
     
 	executeAjaxRequest(groupUrl + '?associations=clientMembers', 'GET', "", successFunction, errorFunction);
+}
+
+function refreshGroupSummaryInfo(groupId){
+	var groupSummaryCountsUrl = 'runreports/GroupSummaryCounts?genericResultSet=false&R_groupId=' + groupId;
+
+	var groupSummaryCountSuccessFunction = function(data, status, xhr){
+		var groupSummaryCount = $("#groupSummaryCountContentTemplate").render(data);
+		$("#groupsummaryleftcontent").html(groupSummaryCount);
+	}
+	executeAjaxRequest(groupSummaryCountsUrl, 'GET', "", groupSummaryCountSuccessFunction, formErrorFunction);
+
+	var groupSummaryAmountsUrl = 'runreports/GroupSummaryAmounts?genericResultSet=false&R_groupId=' + groupId;
+
+	var groupSummaryAmountSuccessFunction = function(data, status, xhr){
+		var crudObject = new Object();
+		crudObject.crudRows = data;
+		var groupSummaryAmount = $("#groupSummaryAmountContentTemplate").render(crudObject);
+		$("#groupsummaryrightcontent").html(groupSummaryAmount);
+	}
+	executeAjaxRequest(groupSummaryAmountsUrl, 'GET', "", groupSummaryAmountSuccessFunction, formErrorFunction);
+
 }
 
 function disassociateClientFromGroup(clientId, groupId){
