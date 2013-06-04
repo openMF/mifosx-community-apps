@@ -30,10 +30,8 @@ custom = {
 	jqueryDataTableLayout : ""
 };
 
-custom.showFirstPage = function() {
-
-	showILClientListing('content');
-
+custom.showFirstPage = function(userId) {
+	showILClientListing("content");
 }
 
 Date.daysBetween = function(date1, date2) {
@@ -315,7 +313,8 @@ custom.sDom = {
 	"groupstable" : '<"H"lfr<"#groupstablecustom">>t<"F"ip>',
 	"loanstable" : '<"H"lfr<"#clientstablecustom">>t<"F"ip>',
 	"savingsaccountstable" : '<"H"lfr<"#loanstablecustom">>t<"F"ip>',	
-	"journalentriestable": '<"H"lr>t<"F"ip>',		
+	"journalentriestable": '<"H"lr>t<"F"ip>',
+	"groupsstatstable" : '<"H"lfr<"#groupsstatstablecustom">>t<"F"ip>'
 }
 
 custom.searchQuery = {
@@ -333,7 +332,11 @@ custom.searchQuery = {
 					},
    "savingsaccountstable" :  function(searchValue){
  			             return "accountNo like '%"+searchValue+"%'";	
+ 			         },
+	"groupsstatstable" : function(searchValue){
+						 return "display_name like '%"+searchValue+"%'";
  			         }
+
 }
 
 //table properties
@@ -544,9 +547,9 @@ custom.datatablePresentation2 = {
 										if(data>=300)
 											return full.summary.totalOutstanding;
 										else return "";
-								   }	
+								   }
 				    }],
-  "savingsaccountstable" : [{
+	"savingsaccountstable" : [{
 				            "mDataProp": "accountNo",
 				            "aTargets":  [0]
 				          },
@@ -558,7 +561,51 @@ custom.datatablePresentation2 = {
 				          {
 				            "mDataProp": "savingsProductName",
 				            "aTargets":  [2]
-				          }]
+				          }],
+    "groupsstatstable" : [{
+    					"mDataProp": "loanId",
+    					"aTargets": [0]
+					    },
+					    {
+    					"mDataProp": "programName",
+    					"aTargets": [1]
+					    },
+					    {
+    					"mDataProp": "loanCycleNo",
+    					"aTargets": [2]
+					    },
+					    {
+    					"mDataProp": "clientDisplayName",
+    					"aTargets": [3]
+					    },
+					    {
+    					"mDataProp": "currency",
+    					"aTargets": [4]
+					    },
+					    {
+    					"mDataProp": "loanRepaidAmount",
+    					"aTargets": [5]
+					    },
+					    {
+    					"mDataProp": "loanOutstandingAmount",
+    					"aTargets": [6]
+					    },
+					    {
+    					"mDataProp": "loanInAdvanceAmount",
+    					"aTargets": [7]
+					    },
+					    {
+    					"mDataProp": "loanInArrearsAmount",
+    					"aTargets": [8]
+					    },
+					    {
+    					"mDataProp": "inDefault",
+    					"aTargets": [9]
+					    },
+					    {
+    					"mDataProp": "portfolioAtRisk",
+    					"aTargets": [10]
+					    }]
 }
 
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,

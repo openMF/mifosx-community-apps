@@ -1,3 +1,31 @@
+tevi = {
+	root:{
+		programDir:{
+			fullName:'',
+			id: 0,
+			organisational_role_enum:0,
+			top: false
+		},
+		branchDir:{
+			fullName:'',
+			id: 0,
+			organisational_role_enum:0,
+			top: false
+		},
+		coordinator:{
+			fullName:'',
+			id: 0,
+			organisational_role_enum:0,
+			top: false
+		},
+		fieldAgent:{
+			fullName:'',
+			id: 0,
+			organisational_role_enum:0,
+			top: false
+		}
+	}
+}
 crudData = {
 		loanproduct: {
 				editTemplateNeeded: true,
@@ -107,9 +135,9 @@ crudData = {
 		};
 
 saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
-						  	$("#dialog-form").dialog("close");
-		  					showILClient(currentClientId );
-				  		};
+  	$("#dialog-form").dialog("close");
+	showILClient(currentClientId );
+};
 
 saveSuccessFunctionReloadClientListing =  function(data, textStatus, jqXHR) {
 	$("#dialog-form").dialog("close");
@@ -196,6 +224,8 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
 
+	htmlVar += '  <li><a href="unknown.html" onclick="custom.showFirstPage();return false;">'+doI18N("link.topnav.dashboard")+'</a></li>';
+
 	if (jQuery.MifosXUI.showMenu("ClientsMenu"))
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing(' + "'content'" + ');return false;">' + doI18N("link.topnav.clients") + '</a></li>';
 	
@@ -210,7 +240,7 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '	<li><a href="unknown.html" onclick="showNewCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
 		htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 		htmlVar += '	<li><a href="unknown.html" onclick="showCommunalBankListing();return false;">' + doI18N("link.topnav.communalbanks") + '</a></li>';
-		
+
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
@@ -220,7 +250,7 @@ function showMainContainer(containerDivName, username) {
   	}
 	
 	if (jQuery.MifosXUI.showMenu("LoansMenu")) {
-		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';		
+		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';
 	}
 	
 	if (jQuery.MifosXUI.showMenu("CheckerMenu")) {
@@ -6036,7 +6066,9 @@ function setBasicAuthKey(logonDivName, username, password)
 							staffDisplayName: data.staffDisplayName,
 							organisationalRole: data.organisationalRole
 					}
-					jQuery.MifosXUI.initialise(staffUser, data.permissions, applicationProfile, tenantIdentifier, applicationMode);
+					jQuery.MifosXUI.initialise(staffUser, data.permissions, applicationProfile, tenantIdentifier, applicationMode, currentUser);
+
+					//jQuery.MifosXUI.initialise(data.organisationalRole, data.permissions, applicationProfile, tenantIdentifier, applicationMode, currentUser);
 
 					showMainContainer(logonDivName, username);
 					custom.showFirstPage();
@@ -6108,10 +6140,8 @@ function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, wi
 	}
 }
 
-function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name)  {
-	
-    button_msg_name = button_msg_name || "dialog.button.cancel";
-
+function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name )  {
+	button_msg_name = button_msg_name || "dialog.button.cancel";
 	var dialogDiv = $("<div id='dialog-form'></div>");
 	var cancelButton = doI18N(button_msg_name);
 
@@ -8534,5 +8564,35 @@ function loadCollectionSheet(postUrl){
         $(".collections th:last-child").addClass('righthighlightcolheader');
     }
     executeAjaxRequest(postUrl + '?command=generateCollectionSheet', "post", newFormData, successFunction, formErrorFunction);
+
+}
+
+var simulationAPIUser = {
+	staffByParentId: function(parentId){
+		var response = new Array();
+		for (var i in tevi.staff) {
+			var item = tevi.staff[i];
+			if(item.parentId == parentId){
+				response.push(item);
+			}
+		}
+		return response;
+	},
+	usersByRoleOfficeId: function(roleId, officeId){
+		var response = new Array();
+		for (var i in tevi.users) {
+			var item = tevi.users[i];
+			if(item.officeId === officeId){
+				for(var j in item.selectedRoles){
+					var jtem = item.selectedRoles[j]
+					if(jtem.id === roleId){
+						response.push(item);
+						break;
+					}
+				}
+			}
+		}
+		return response;
+	}
 
 }
