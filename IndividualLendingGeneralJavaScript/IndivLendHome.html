@@ -1442,9 +1442,13 @@ $(document).ready(function() {
 			<button id="editstandardgroupbtn{{=id}}" class="editstandardgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
 		{{/if}}
 
+        {{#if $ctx.showTask("AddGroupLoan")}}
  		<button id="newgrouploanbtn{{=id}}" class="newgrouploanbtn">{{=$ctx.doI18N("label.group.new.loan.account")}}</button>
+        {{/if}}
         <!--<button class="groupsavingsbtn">{{=$ctx.doI18N("label.group.new.saving.account")}}</button>-->
+        {{#if $ctx.showTask("AddJLGBulkLoan")}}
 		<button id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">{{=$ctx.doI18N("label.group.new.bulk.loan.account")}}</button>
+        {{/if}}
 	{{#else}}
 		{{#if $ctx.showTask("ActivateGroup")}}
 		<button id="activategroup{{=id}}" class="activategroup">Activate</button>
@@ -1461,7 +1465,9 @@ $(document).ready(function() {
         {{#if centerId}}
         
         {{#else}}
+            {{#if $ctx.showTask("AttachMeeting")}}
             <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>   
+            {{/if}}
         {{/if}}
 
         {{#if $ctx.showTask("AddGroupNote")}}
@@ -1505,10 +1511,10 @@ $(document).ready(function() {
 <script id="groupSummaryTabTemplate" type="text/x-jquery-tmpl">
     <div class="groupsummarycontainer">
         <div id="groupsummaryrightcontent" class="right clearright" style="width:50%">
-            Right content
+            &nbsp;
         </div>
         <div id="groupsummaryleftcontent" class="left" style="width:45%">
-        Left content
+        &nbsp;
         </div>
     </div>
 </script>
@@ -1609,6 +1615,7 @@ $(document).ready(function() {
     <div class="right clearright marginB20" id="groupnotescontainer">
         <div id="groupnotes">
         </div>
+        {{#if $ctx.showTask("ViewMeeting")}}
         <div>
             <br>
             <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
@@ -1628,6 +1635,7 @@ $(document).ready(function() {
                 </tbody>
             </table>
         </div>
+        {{/if}}
     </div>
     <div class="left">
     	<div id="grouptabcontent">
@@ -1665,12 +1673,14 @@ $(document).ready(function() {
 				</div>
                 {{/if}}
 				<br>
+                {{#if $ctx.showTask("VIEWACCOUNTSDETAILS")}}
 				<div class="row">
 					<span class="rowvalue heading">{{=$ctx.doI18N("label.group.account.information")}}</span>
 				</div>
 				<br/>
 				<div id="groupaccountssummary"></div>
                 <br/>
+                {{/if}}
             </div>
 			<!-- end of left pane content -->
 		</div>
@@ -9029,6 +9039,7 @@ $(document).ready(function() {
         <div id="groupnotes">
         </div>
         <br>
+        {{#if $ctx.showTask("ViewMeeting")}}
         <div>
             <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
                 <tbody>
@@ -9047,6 +9058,7 @@ $(document).ready(function() {
                 </tbody>
             </table>
         </div>
+        {{/if}}
     </div>
     <div class="left">
 		<div id="grouptabcontent">
@@ -9083,9 +9095,11 @@ $(document).ready(function() {
 				</div>
                 {{/if}}
 				<br>
+                {{#if $ctx.showTask("VIEWACCOUNTSDETAILS")}}
 				<div class="row">
 					<span class="rowvalue heading">{{=$ctx.doI18N("label.group.account.information")}}</span>
 				</div>
+                {{/if}}
 				<br/>
 
             <div id="grouptableftpane" style="float:left;width:100%">
@@ -9113,7 +9127,9 @@ $(document).ready(function() {
 						{{#if activationDate}}
 							<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
 	                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
+                            {{#if $ctx.showTask("AttachMeeting")}}
     	                    <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>
+                            {{/if}}
 	                        {{#if $ctx.showTask("AddGroupNote")}}
     	                    <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
         	                {{/if}}
@@ -9124,7 +9140,9 @@ $(document).ready(function() {
 							<button id="deletecenterbtn{{=id}}" class="deletecenterbtn">{{=$ctx.doI18N("label.center.delete")}}</button>
 							<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
 	                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
+                            {{#if $ctx.showTask("AttachMeeting")}}
     	                    <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>
+                            {{/if}}
 	                        {{#if $ctx.showTask("AddGroupNote")}}
     	                    <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
         	                {{/if}}
