@@ -8159,7 +8159,10 @@ $(document).ready(function() {
 	<span class="longrowlabel"><img src="resources/img/loanStatusType.submitted.and.pending.approval.gif"/>&nbsp;{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each pendingApprovalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}'); return false;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}'); return false;" >{{=productName}}: &#35;{{=accountNo}}
+		({{=$ctx.doI18N(loanType.code)}})
+		</a>
+		</span>
 	{{/each}}
 	</span>
 </div>
@@ -8170,7 +8173,10 @@ $(document).ready(function() {
 	<span class="longrowlabel"><img src="resources/img/loanStatusType.approved.gif"/>&nbsp;{{=$ctx.doI18N("label.pending.disbursal")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each awaitingDisbursalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}
+			({{=$ctx.doI18N(loanType.code)}})
+			</a>
+		</span>
 	{{/each}}
 	</span>
 </div>
@@ -8181,7 +8187,10 @@ $(document).ready(function() {
 	<span class="longrowlabel"><img src="resources/img/loanStatusType.active.gif"/>&nbsp;{{=$ctx.doI18N("label.active")}} ({{=$ctx.number(activeLoanCount)}}):</span>
 	<span class="rowvalue">
 	{{#each openLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}
+			({{=$ctx.doI18N(loanType.code)}})
+			</a>
+		</span>
 	{{/each}}
 	</span>
 </div>
@@ -8192,7 +8201,10 @@ $(document).ready(function() {
 	<div class="longrowlabel"><img src="resources/img/loanStatusType.closed.obligations.met.gif"/>&nbsp;{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedLoanCount)}}):</div>
 	<div class="rowvalue">
 	{{#each closedLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
+		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}
+			({{=$ctx.doI18N(loanType.code)}})
+			</a>
+		</span>
 	{{/each}}
 	</div>
 </div>
