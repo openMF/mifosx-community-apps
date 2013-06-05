@@ -5186,7 +5186,7 @@ $(document).ready(function() {
 		{{#each repaymentSchedule}}
 		<table id="repaymentschedule_todate{{=id}}" class="pretty displayschedule">
 			<caption>{{=$ctx.doI18N("table.caption.repaymentSchedule")}}</caption>
-			<colgroup span="3"></colgroup>
+			<colgroup span="5"></colgroup>
 			<colgroup span="3">
 				<col class="lefthighlightcol">
 				<col>
@@ -5205,7 +5205,7 @@ $(document).ready(function() {
 
 			<thead>
 				<tr>
-					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+					<th colspan="5" scope="colgroup" class="empty">&nbsp;</th>
 					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("table.heading.loanAmountAndBalance")}}</th>
 					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("table.heading.totalCostOfLoan")}}</th>
 					{{#if totalWaived}}
@@ -5216,8 +5216,10 @@ $(document).ready(function() {
 				</tr>
 				<tr>
 					<th scope="col">#</th>
-					<th scope="col">{{=$ctx.doI18N("table.heading.date")}}</th>
 					<th scope="col">{{=$ctx.doI18N("table.heading.days")}}</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.date")}}</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.paidBy")}}</th>
+					<th scope="col">&nbsp;</th>
 					
 					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("table.heading.disbursement")}}</th>
 					<th scope="col">Principal Repayment</th>
@@ -5239,8 +5241,14 @@ $(document).ready(function() {
 			{{#each periods}}
 			<tr>
 				<td scope="row">{{=$ctx.number(period)}}</td>
-				<td>{{=$ctx.globalDate(dueDate)}}</td>
 				<td>{{=$ctx.number(daysInPeriod)}}</td>
+				<td>{{=$ctx.globalDate(dueDate)}}</td>
+				<td>{{=$ctx.globalDate(obligationsMetOnDate)}}</td>
+				{{#if complete}}
+				<td><span class="ui-icon ui-icon-circle-check" style="display:inline-block"></span></td>
+				{{#else}}
+				<td>&nbsp;</td>
+				{{/if}}
 
 				<td class="lefthighlightcolheader">{{=$ctx.monetaryValue($parent.parent.data.currency, principalDisbursed)}}</td>
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, principalDue)}}</td>
@@ -5261,8 +5269,9 @@ $(document).ready(function() {
 			</tbody>
 			<tfoot class="ui-widget-header">
 				<tr>
-					<th colspan="2">{{=$ctx.doI18N("table.heading.total")}}</th>
+					<th>&nbsp;</th>
 					<th>{{=$ctx.number(loanTermInDays)}}</th>
+					<th colspan="3">{{=$ctx.doI18N("table.heading.total")}}</th>
 
 					<th class="lefthighlightcolheader">{{=$ctx.monetaryValue(currency, totalPrincipalDisbursed)}}</th>
 					<th>{{=$ctx.monetaryValue(currency, totalPrincipalExpected)}}</th>
