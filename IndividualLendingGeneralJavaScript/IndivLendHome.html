@@ -4818,7 +4818,27 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.interest")}}</span>
 			<span class="rowvalue">{{=$ctx.decimal(annualInterestRate, 4)}}% per annum ({{=$ctx.decimal(interestRatePerPeriod, 4)}}%&nbsp; {{=interestRateFrequencyType.value}}) - {{=interestType.value}}</span>
 		</div>
+		{{#if graceOnPrincipalPayment}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.graceOnRepaymentPeriod")}} {{=$ctx.doI18N("label.principalPayment")}}</span>
+			<span class="rowvalue">{{=$ctx.number(graceOnPrincipalPayment)}}</span>
+		</div>
+		{{/if}}
 		
+		{{#if graceOnInterestPayment}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.graceOnRepaymentPeriod")}} {{=$ctx.doI18N("label.interestPayment")}} </span>
+			<span class="rowvalue">{{=$ctx.number(graceOnInterestPayment)}}</span>
+		</div>
+		{{/if}}
+
+		{{#if graceOnInterestCharged}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.interestFree")}}: </span>
+			<span class="rowvalue">{{=$ctx.number(graceOnInterestCharged)}}</span>
+		</div>
+		{{/if}}
+
 		<br/>
 		<table id="timelinetable" class="pretty displayschedule">
 			<thead>
@@ -6924,6 +6944,28 @@ $(document).ready(function() {
 						</select>
 					</td>
 				</tr>
+
+				 <tr>
+                    <td class="withsubdesc">{{=$ctx.doI18N("label.graceOnRepaymentPeriod")}}</td>
+                    <td class="withsubdesc">
+                        <input type="text" name="graceOnPrincipalPayment" id="graceOnPrincipalPayment" value="{{=$ctx.number(graceOnPrincipalPayment)}}" title="Enter an integer value to represent number of repayment periods or leave as blank or zero" type="text" value="{{=graceOnInterestPayment}}" style="width: 100px;" />
+                    </td>
+                    <td class="withsubdesc">
+                        <input type="text" name="graceOnInterestPayment" id="graceOnInterestPayment" value="{{=$ctx.number(graceOnInterestPayment)}}" title="Enter an integer value to represent number of repayment periods or leave as blank or zero" type="text" value="{{=graceOnInterestPayment}}" style="width: 100px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="labelrow"></td>
+                    <td class="labelrow" style="padding: 5px; margin-right: 5px;">{{=$ctx.doI18N("label.principalPayment")}}</td>
+                    <td class="labelrow" style="padding: 5px; margin-right: 5px;">{{=$ctx.doI18N("label.interestPayment")}}</td>
+                </tr>
+
+                <tr>
+                    <td>{{=$ctx.doI18N("label.interestFree")}}</td>
+                    <td>
+                        <input type="text" name="graceOnInterestCharged" id="graceOnInterestCharged" value="{{=$ctx.number(graceOnInterestCharged)}}" title="Integer value. Represents the repayment period after which interest is to be charged. So in effect results in interest free periods at start of loan based on integer entered." type="text" value="{{=graceOnInterestPayment}}" style="width: 100px;" />
+                    </td>
+                </tr>
 			</table>
 		</div>
 
@@ -7565,7 +7607,7 @@ $(document).ready(function() {
 			<table>
 				<tr>
 					<td>{{=$ctx.doI18N("label.amortization")}}</td>
-					<td>
+					<td colspan="2">
 						<select name="amortizationType" id="amortizationType"  title="" style="width: 221px;">
 					{{#each amortizationTypeOptions}}
 						{{#if $ctx.number($parent.parent.data.amortizationType.id)===$ctx.number(id)}}
@@ -7579,7 +7621,7 @@ $(document).ready(function() {
 				</tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.interest.method")}}</td>
-					<td>
+					<td colspan="2">
 						<select name="interestType" id="interestType"  title="" style="width: 221px;">
 						{{#each interestTypeOptions}}
 						{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
@@ -7594,7 +7636,7 @@ $(document).ready(function() {
 
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestRate.calculatedInPeriod")}}</td>
-					<td>
+					<td colspan="2">
 						<select id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" style="width: 221px;">
 					{{#each interestCalculationPeriodTypeOptions}}
 						{{#if $ctx.number($parent.parent.data.interestCalculationPeriodType.id)===$ctx.number(id)}}
@@ -7609,7 +7651,7 @@ $(document).ready(function() {
 
 				<tr>
 					<td>{{=$ctx.doI18N("label.arrears.tolerance")}}</td>
-					<td>
+					<td colspan="2">
 						<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="text" value="{{=$ctx.monetaryValue(currency, inArrearsTolerance)}}" style="width: 125px;" />
 						<input id="inArrearsCurrencyCode" name="inArrearsCurrencyCode" title="" type="text" value="{{=currency.displaySymbol}}" style="width: 40px;" disabled="disabled" />
 					</td>
@@ -7617,7 +7659,7 @@ $(document).ready(function() {
 
 				<tr>
 					<td>{{=$ctx.doI18N("label.repaymentStrategy")}}</td>
-					<td>
+					<td colspan="2">
 						<select id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="" style="width: 221px;">
 							<option value="">{{=$ctx.doI18N("option.repaymentStrategy.first.choice")}}</option>
 						{{#each transactionProcessingStrategyOptions}}
@@ -7630,16 +7672,42 @@ $(document).ready(function() {
 						</select>
 					</td>
 				</tr>
+
+				<tr>
+                    <td class="withsubdesc">{{=$ctx.doI18N("label.graceOnRepaymentPeriod")}}</td>
+                    <td class="withsubdesc">
+                        <input type="text" name="graceOnPrincipalPayment" id="graceOnPrincipalPayment" value="{{=$ctx.number(graceOnPrincipalPayment)}}" title="Enter an integer value to represent number of repayment periods or leave as blank or zero" type="text" value="{{=graceOnInterestPayment}}" style="width: 100px;" />
+                    </td>
+                    <td class="withsubdesc">
+                        <input type="text" name="graceOnInterestPayment" id="graceOnInterestPayment" value="{{=$ctx.number(graceOnInterestPayment)}}" title="Enter an integer value to represent number of repayment periods or leave as blank or zero" type="text" value="{{=graceOnInterestPayment}}" style="width: 100px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="labelrow"></td>
+                    <td class="labelrow" style="padding: 5px; margin-right: 5px;">{{=$ctx.doI18N("label.principalPayment")}}</td>
+                    <td class="labelrow" style="padding: 5px; margin-right: 5px;">{{=$ctx.doI18N("label.interestPayment")}}</td>
+                </tr>
+
+                <tr>
+                    <td>{{=$ctx.doI18N("label.interestFree")}}</td>
+                    <td>
+                        <input type="text" name="graceOnInterestCharged" id="graceOnInterestCharged" value="{{=$ctx.number(graceOnInterestCharged)}}" title="Integer value. Represents the repayment period after which interest is to be charged. So in effect results in interest free periods at start of loan based on integer entered." type="text" value="{{=graceOnInterestPayment}}" style="width: 100px;" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>{{=$ctx.doI18N("label.interestChargedFrom")}}</td>
+                    <td>
+                        <input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" 
+                            title="Optional: Interest is charged from the disbursement date by default: If you wish interest to started being charged from a later date, enter the date here."
+                            style="width:215px;"/>
+                    </td>
+                </tr>
+
 				<tr>
 					<td>{{=$ctx.doI18N("label.firstRepaymentOn")}}</td>
-					<td>
+					<td colspan="2">
 					<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:215px;"/>
-					</td>
-				</tr>
-				<tr>
-					<td>{{=$ctx.doI18N("label.interestChargedFrom")}}</td>
-					<td>
-					<input id="interestChargedFromDate" name="interestChargedFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(interestChargedFromDate)}}" style="width:215px;"/>
 					</td>
 				</tr>
 			</table>
