@@ -3301,6 +3301,27 @@ function refreshGroupSummaryInfo(groupId){
 
 }
 
+function refreshCenterSummaryInfo(centerId){
+	var centerSummaryCountsUrl = 'runreports/GroupSummaryCounts?genericResultSet=false&R_groupId=' + centerId;
+
+	var centerSummaryCountSuccessFunction = function(data, status, xhr){
+		var centerSummaryCount = $("#centerSummaryCountContentTemplate").render(data);
+		$("#centersummaryleftcontent").html(centerSummaryCount);
+	}
+	executeAjaxRequest(centerSummaryCountsUrl, 'GET', "", centerSummaryCountSuccessFunction, formErrorFunction);
+
+	var centerSummaryAmountsUrl = 'runreports/GroupSummaryAmounts?genericResultSet=false&R_groupId=' + centerId;
+
+	var centerSummaryAmountSuccessFunction = function(data, status, xhr){
+		var crudObject = new Object();
+		crudObject.crudRows = data;
+		var centerSummaryAmount = $("#centerSummaryAmountContentTemplate").render(crudObject);
+		$("#centersummaryrightcontent").html(centerSummaryAmount);
+	}
+	executeAjaxRequest(centerSummaryAmountsUrl, 'GET', "", centerSummaryAmountSuccessFunction, formErrorFunction);
+
+}
+
 function disassociateClientFromGroup(clientId, groupId){
 	var postUrl = 'groups/' + groupId + '?command=disassociateClients';
 	serializedArray = {};
@@ -3343,7 +3364,7 @@ function showCenter(centerId){
 		var tableHtml = $("#centerDataTabTemplate").render(data);
 		var centerDetailsHtml = $("#centerDetailsTemplate").render(data);
 		var centerGroupsHtml = $("#centerGroupsTabTemplate").render(data);
-		var centerSummaryHtml = $("#centerSummaryTabTemplate").render(data);
+		var centerSummaryHtml = $("#centerSummaryTabTemplate").render();//fetch summary details in another ajax call
 
 
 		centerDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
@@ -3358,7 +3379,7 @@ function showCenter(centerId){
 		$("#centertabgroupsname").html("Groups");
 
 		refreshGroupLoanSummaryInfo(centerUrl);
-
+		refreshCenterSummaryInfo(currentGroupId);
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'centers', 'centerCalendarContent');
         custom.showRelatedDataTableInfo($newtabs, "m_group", currentGroupId);
