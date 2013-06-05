@@ -237,7 +237,10 @@ function showMainContainer(containerDivName, username) {
 			htmlVar += '  <li><a href="unknown.html" onclick="showCollectionSheet();return false;">' + doI18N("link.topnav.collection.sheet") + '</a></li>';
 		}
 		
-		htmlVar += '	<li><a href="unknown.html" onclick="showNewCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
+		if (jQuery.MifosXUI.showMenu("CentersMenu")) {
+			htmlVar += '	<li><a href="unknown.html" onclick="showNewCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
+		}
+
 		htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
 		htmlVar += '	<li><a href="unknown.html" onclick="showCommunalBankListing();return false;">' + doI18N("link.topnav.communalbanks") + '</a></li>';
 
@@ -423,8 +426,7 @@ function setCenterListingContent(divName) {
 
 function setNewCenterListingContent(divName) {
 	var htmlVar = "";
-	//Add ADDGROUP in MifosXUI
-	if (jQuery.MifosXUI.showTask("ADDCLIENT")) {
+	if (jQuery.MifosXUI.showTask("ADDCENTER")) {
 		htmlVar = '<button id="addCenter" style="clear: both;">' + doI18N("link.add.new.center") + '</button>';
 	}
 		
@@ -436,7 +438,7 @@ function setNewCenterListingContent(divName) {
 function setGroupListingContent(divName) {
 	var htmlVar = "";
 	
-	if (jQuery.MifosXUI.showTask("ADDCLIENT")) {
+	if (jQuery.MifosXUI.showTask("ADDGROUP")) {
 		htmlVar = '<button id="addstandardgroup" style="clear: both;">' + doI18N("link.add.new.group") + '</button>';
 	}
 		
@@ -2297,7 +2299,7 @@ function launchCenterGroupDialog(groupId) {
 function showNewCenterListing(){
 
 	//Add centerSearch to MifosXUI
-	if (jQuery.MifosXUI.showTask("groupSearch") == false)
+	if (jQuery.MifosXUI.showTask("CenterSearch") == false)
 	{
 		alert(doI18N("center.search.not.allowed"));
 		return;
@@ -8302,6 +8304,7 @@ function loadGroupsAssociatedToCenter(centerId){
 
         $("#groupId").change(function(){
 			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
+			$('#continuebtn').removeAttr('disabled');
         })    
 
         if(groupObject.crudRows.length === 1){
@@ -8329,6 +8332,7 @@ function loadGroupsAssociatedToOffice(officeId){
 
         $("#groupId").change(function(){
 			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
+			$('#continuebtn').removeAttr('disabled');
         })    
     };
     executeAjaxRequest('groups?officeId=' + officeId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);

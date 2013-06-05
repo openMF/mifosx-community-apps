@@ -8609,6 +8609,7 @@ $(document).ready(function() {
 					</select>
 				</td>
 			</tr>
+			{{#if $ctx.showTask("ViewCenter")}}
 			<tr>
 				<td>
 					<label for="center">{{=$ctx.doI18N("label.collection.sheet.center")}}</label>
@@ -8619,6 +8620,7 @@ $(document).ready(function() {
 					</select>
 				</td>
 			</tr>
+			{{/if}}
 			<tr>
 				<td>
 					<label for="group">{{=$ctx.doI18N("label.collection.sheet.group")}}</label>
@@ -9206,7 +9208,9 @@ $(document).ready(function() {
 					<span id="toolbar" class="ui-widget-header ui-corner-all">
 
 						{{#if activationDate}}
-							<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
+							{{#if $ctx.showTask("EditCenter")}}
+								<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
+							{{/if}}
 	                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
                             {{#if $ctx.showTask("AttachMeeting")}}
     	                    <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>
@@ -9218,9 +9222,15 @@ $(document).ready(function() {
 							{{#if $ctx.showTask("ActivateCenter")}}
 							<button id="activatecenter{{=id}}" class="activatecenter">Activate</button>
 							{{/if}}
-							<button id="deletecenterbtn{{=id}}" class="deletecenterbtn">{{=$ctx.doI18N("label.center.delete")}}</button>
-							<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
-	                        <button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
+							{{#if $ctx.showTask("DeleteCenter")}}
+								<button id="deletecenterbtn{{=id}}" class="deletecenterbtn">{{=$ctx.doI18N("label.center.delete")}}</button>
+							{{/if}}
+							{{#if $ctx.showTask("EditCenter")}}
+								<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
+							{{/if}}
+							{{#if $ctx.showTask("AddGroup")}}
+	                        	<button id="addgroupbtn{{=id}}" class="addgroupbtn">Add a group</button>
+	                        {{/if}}
                             {{#if $ctx.showTask("AttachMeeting")}}
     	                    <button id="addcalendarbtn{{=id}}" class="addcalendarbtn">{{=$ctx.doI18N("label.group.attach.meeting")}}</button>
                             {{/if}}
