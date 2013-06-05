@@ -93,6 +93,7 @@ taskPermissionsMatrix = {
 		VIEWJOURNALENTRIES: ["READ_JOURNALENTRIES"],
 
 		ADDGROUP: ["CREATE_GROUP"],
+		ADDTEVIGROUP: ["CREATE_GROUP"],
 		VIEWGROUP: ["READ_GROUP"],
 		ADDJLGLOAN: ["CREATE_JLG_LOAN"],//not mapped to platform permission
 		ADDJLGBULKLOAN: ["CREATE_JLGBULK_LOAN"],//not mapped to platform permission
@@ -153,11 +154,12 @@ applicationProfiles = ["ALL", "IL", "TEVI"];
 applicationProfileExclusions = {
 		IL: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"],
 		TEVI: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN", "ADDJLGBULKLOAN", "ADDGROUPLOAN", "ATTACHMEETING", 
-				"VIEWMEETING", "VIEWACCOUNTSDETAILS"]
+				"VIEWMEETING", "VIEWACCOUNTSDETAILS", "ADDGROUP"]
 
 	};
 
 applicationProfileInclusions = {
+		TEVI: ["ADDTEVIGROUP"]
 	};//probably not needed as only useful to exclude at this point (tenantName inclusions/exclusions processed first)
 
 

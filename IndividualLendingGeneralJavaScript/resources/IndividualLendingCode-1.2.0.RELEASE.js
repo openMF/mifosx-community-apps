@@ -2077,7 +2077,9 @@ function gernericDialog(dialogDiv, dialogTitleCode, width, height, onOpenFunc, o
 
 // standard group form (group + clients, no parents)
 function loadGroupForm(container, officeId, templateIdentifier) {
-	
+	if(mApplicationProfile!=="TEVI")
+		url='groups/template?officeId=' + officeId;
+	else url = ''+officeId;
 	var renderOnSuccessFunction = function(data, textStatus, jqXHR) {
 		var formHtml = $(templateIdentifier).render(data);
 		container.html(formHtml);
@@ -2101,7 +2103,7 @@ function loadGroupForm(container, officeId, templateIdentifier) {
 		$('#entityform input').first().focus();
 	};
 	
-	executeAjaxRequest('groups/template?officeId=' + officeId, 'GET', "", renderOnSuccessFunction, formErrorFunction);
+	executeAjaxRequest(url, 'GET', "", renderOnSuccessFunction, formErrorFunction);
 }
 
 function saveGroup(divContainer, groupId) {
