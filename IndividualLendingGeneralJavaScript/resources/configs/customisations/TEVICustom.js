@@ -227,13 +227,14 @@ function fillList_FieldAgent(id) {
 	}
     executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
 }
-function fillListDetails_FieldAgent(id) {
+function fillListDetails_FieldAgent(id, groupName) {
 
     var url = "runreports/FieldAgentProgramsDetails?R_programId=" + id + "&genericResultSet=false";
 
 	var successFunction = function(data, textStatus, jqXHR) {
 	    var obj = new Object();
-	    obj.dataRows = data;	    
+	    obj.dataRows = data;
+	    obj.groupName =   groupName;
 	    var htmlVar = $("#quipuExampleListDetailsFieldAgentTemplate").render(obj);  
 		$("#quipuExGenDashboardListDetails").html(htmlVar);
 		$("#quipuExGenDashboardListDetails #groupsstatstable").dataTable(custom.jqueryDataTableLayout.basic());
