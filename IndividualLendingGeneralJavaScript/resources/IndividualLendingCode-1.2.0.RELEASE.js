@@ -441,7 +441,9 @@ function setGroupListingContent(divName) {
 	if (jQuery.MifosXUI.showTask("ADDGROUP")) {
 		htmlVar = '<button id="addstandardgroup" style="clear: both;">' + doI18N("link.add.new.group") + '</button>';
 	}
-		
+	if (jQuery.MifosXUI.showTask("ADDTEVIGROUP")) {
+		htmlVar = '<button id="addtevidgroup" style="clear: both;">' + doI18N("link.add.new.group") + '</button>';
+	}	
 	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.group.manage") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
@@ -2053,7 +2055,7 @@ function applyGroupSearchFilter(officeHierarchy) {
 
 
 //generic UI/dialog components 
-function gernericDialog(dialogDiv, dialogTitleCode, width, height, onOpenFunc, onSaveFunc) {
+function genericDialog(dialogDiv, dialogTitleCode, width, height, onOpenFunc, onSaveFunc) {
 	var saveButton = doI18N('dialog.button.save');
 	var cancelButton = doI18N('dialog.button.cancel');
 	
@@ -2077,9 +2079,9 @@ function gernericDialog(dialogDiv, dialogTitleCode, width, height, onOpenFunc, o
 
 // standard group form (group + clients, no parents)
 function loadGroupForm(container, officeId, templateIdentifier) {
-	if(mApplicationProfile!=="TEVI")
-		url='groups/template?officeId=' + officeId;
-	else url = ''+officeId;
+	
+	var url='groups/template?officeId=' + officeId;
+	
 	var renderOnSuccessFunction = function(data, textStatus, jqXHR) {
 		var formHtml = $(templateIdentifier).render(data);
 		container.html(formHtml);
@@ -2171,9 +2173,9 @@ var launchStandardGroupDialogOnSuccessFunction = function(data, textStatus, jqXH
 	
 	var dialog = null;
 	if (groupId) {
-		dialog = gernericDialog(dialogDiv, 'dialog.title.edit.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);	
+		dialog = genericDialog(dialogDiv, 'dialog.title.edit.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);	
 	} else {
-		dialog = gernericDialog(dialogDiv, 'dialog.title.add.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);
+		dialog = genericDialog(dialogDiv, 'dialog.title.add.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);
 	}
 };
 
@@ -2217,9 +2219,9 @@ var launchCenterGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR)
 
 	var dialog = null;
 	if (groupId) {
-		dialog = gernericDialog(dialogDiv, 'dialog.title.edit.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);	
+		dialog = genericDialog(dialogDiv, 'dialog.title.edit.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);	
 	} else {
-		dialog = gernericDialog(dialogDiv, 'dialog.title.add.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);
+		dialog = genericDialog(dialogDiv, 'dialog.title.add.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);
 	}
 };
 
@@ -2282,7 +2284,7 @@ var launchAssociateClientsToGroupDialogOnSuccessFunction = function(data, textSt
 		saveAssociateClientsToGroup(dialogDiv, groupId);
 	};
 
-	var dialog = gernericDialog(dialogDiv, 'dialog.title.associate.clients', 900, 500, openAssociateClientsToGroupDialogFunc, saveAssociateClientsToGroupFunc);	
+	var dialog = genericDialog(dialogDiv, 'dialog.title.associate.clients', 900, 500, openAssociateClientsToGroupDialogFunc, saveAssociateClientsToGroupFunc);	
 }
 
 function associateClientsToGroup(groupId){
@@ -2405,6 +2407,10 @@ function showGroupListing(){
 		launchGroupDialog();
 	    e.preventDefault();
 	});
+	$("#addtevidgroup").button().click(function(e){
+		launchTeviGroupDialog();
+		e.preventDefault();
+	})
 }
 
 
@@ -3141,16 +3147,28 @@ function showGroup(groupId){
 				
 				e.preventDefault();
 			});
+			if (jQuery.MifosXUI.showTask("ASSOCIATECLIENT")) {
+				$('.associateclientbtn').button().click(function(e){
+					var linkId = this.id;
+					var groupId = linkId.replace("associateclientbtn", "");
 
-			$('.associateclientbtn').button().click(function(e){
-				var linkId = this.id;
-				var groupId = linkId.replace("associateclientbtn", "");
+					var officeId = data.officeId;
 
-				var officeId = data.officeId;
+					associateClientsToGroup(groupId);
+					e.preventDefault();
+				});
+			}
+			if (jQuery.MifosXUI.showTask("ASSOCIATETEVICLIENT")) {
+				$('.associateteviclientbtn').button().click(function(e){
+					var linkId = this.id;
+					var groupId = linkId.replace("associateteviclientbtn", "");
 
-				associateClientsToGroup(groupId);
-				e.preventDefault();
-			});
+					var officeId = data.officeId;
+
+					associateClientsToGroup(groupId);
+					e.preventDefault();
+				});
+			}
 
 			$('.addclientbtn').button().click(function(e){
 				var linkId = this.id;
@@ -3163,21 +3181,29 @@ function showGroup(groupId){
 			});
 
 			// bind click listeners to buttons.
-			$('.editstandardgroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
-				var linkId = this.id;
-				var groupId = linkId.replace("editstandardgroupbtn", "");
-				launchGroupDialog(groupId);
-			    e.preventDefault();
-			});
-			
+			if (jQuery.MifosXUI.showTask("ADDGROUP")) {
+				$('.editstandardgroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
+					var linkId = this.id;
+					var groupId = linkId.replace("editstandardgroupbtn", "");
+					launchGroupDialog(groupId);
+					e.preventDefault();
+				});
+			}
+			if (jQuery.MifosXUI.showTask("ADDTEVIGROUP")) {
+				$('.edittevigroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
+					var linkId = this.id;
+					var groupId = linkId.replace("edittevigroupbtn", "");
+					launchTeviGroupDialog(groupId);
+					e.preventDefault();
+				});				
+			}
 			$('.editcentergroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
 				var linkId = this.id;
 				var groupId = linkId.replace("editcentergroupbtn", "");
 				
 				launchCenterGroupDialog(groupId);
-			    e.preventDefault();
-			});
-
+				e.preventDefault();
+			});	
 			$('.newbulkloanbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
 				//addLJGBulkMembersLoans(groupId);
 				jlgBulkMembersLoanWizard(groupId);
@@ -8591,35 +8617,5 @@ function loadCollectionSheet(postUrl){
         $(".collections th:last-child").addClass('righthighlightcolheader');
     }
     executeAjaxRequest(postUrl + '?command=generateCollectionSheet', "post", newFormData, successFunction, formErrorFunction);
-
-}
-
-var simulationAPIUser = {
-	staffByParentId: function(parentId){
-		var response = new Array();
-		for (var i in tevi.staff) {
-			var item = tevi.staff[i];
-			if(item.parentId == parentId){
-				response.push(item);
-			}
-		}
-		return response;
-	},
-	usersByRoleOfficeId: function(roleId, officeId){
-		var response = new Array();
-		for (var i in tevi.users) {
-			var item = tevi.users[i];
-			if(item.officeId === officeId){
-				for(var j in item.selectedRoles){
-					var jtem = item.selectedRoles[j]
-					if(jtem.id === roleId){
-						response.push(item);
-						break;
-					}
-				}
-			}
-		}
-		return response;
-	}
 
 }
