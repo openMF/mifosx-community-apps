@@ -6,7 +6,7 @@
 inDevelopmentTasks = ["GROUPSMENU", "COLLECTIONSHEETMENU", "CHECKERMENU", "SAVINGSMENU",
                       "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", 
                       "VIEWCONFIGURATION", "MANAGEPERMISSIONS", "CLOSEASRESCHEDULEDLOAN",
-                      "ADDSAVINGACCOUNT"];
+                      "ADDSAVINGACCOUNT","ADDGROUP"];
 
 //This does know about Mifos X Permission checking - each piece of functionality needs to be linked to a Mifos X permission
 taskPermissionsMatrix = {
@@ -161,7 +161,7 @@ tenantNameExclusions = {
 applicationProfiles = ["ALL", "IL", "TEVI"];
 
 applicationProfileExclusions = {
-		ALL: ["DASHBOARDMENU"],
+		ALL: ["DASHBOARDMENU", "ADDTEVIGROUP", "EDITTEVIGROUP", "ASSOCIATETEVICLIENT"],
 		IL: ["DASHBOARDMENU", "GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"],
 		TEVI: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN", "ADDJLGBULKLOAN", "ADDGROUPLOAN", "ATTACHMEETING", 
 				"VIEWMEETING", "VIEWACCOUNTSDETAILS", "ADDGROUP", "EDITGROUP", "ASSOCIATECLIENT"]

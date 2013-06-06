@@ -1439,10 +1439,10 @@ $(document).ready(function() {
 		{{#if centerId}}
 			<button id="editcentergroupbtn{{=id}}" class="editcentergroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
 		{{#else}}
-			{{#if $ctx.showTask("AddGroup")}}
+			{{#if $ctx.showTask("EditGroup")}}
 				<button id="editstandardgroupbtn{{=id}}" class="editstandardgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
 			{{/if}}
-			{{#if $ctx.showTask("AddTeviGroup")}}
+			{{#if $ctx.showTask("EditTeviGroup")}}
 				<button id="edittevigroupbtn{{=id}}" class="edittevigroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
 			{{/if}}
 		{{/if}}
