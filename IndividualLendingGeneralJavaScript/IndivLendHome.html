@@ -5209,9 +5209,9 @@ $(document).ready(function() {
 					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("table.heading.loanAmountAndBalance")}}</th>
 					<th colspan="3" scope="colgroup" class="highlightcol">{{=$ctx.doI18N("table.heading.totalCostOfLoan")}}</th>
 					{{#if totalWaived}}
-					<th colspan="4" scope="colgroup" class="empty">&nbsp;</th>
+					<th colspan="4" scope="colgroup" class="empty">{{=$ctx.doI18N("table.heading.installmentTotals")}}</th>
 					{{#else}}
-					<th colspan="3" scope="colgroup" class="empty">&nbsp;</th>
+					<th colspan="5" scope="colgroup" class="empty">{{=$ctx.doI18N("table.heading.installmentTotals")}}</th>
 					{{/if}}
 				</tr>
 				<tr>
@@ -5222,7 +5222,7 @@ $(document).ready(function() {
 					<th scope="col">&nbsp;</th>
 					
 					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("table.heading.disbursement")}}</th>
-					<th scope="col">Principal Repayment</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.principalDue")}}</th>
 					<th scope="col" class="righthighlightcolheader">{{=$ctx.doI18N("table.heading.balanceOfLoan")}}</th>
 
 					<th scope="col" class="lefthighlightcolheader">{{=$ctx.doI18N("table.heading.interest")}}</th>
@@ -5231,6 +5231,8 @@ $(document).ready(function() {
 
 					<th scope="col">{{=$ctx.doI18N("table.heading.totalDue")}}</th>
 					<th scope="col">{{=$ctx.doI18N("table.heading.totalPaid")}}</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.totalPaidInAdvance")}}</th>
+					<th scope="col">{{=$ctx.doI18N("table.heading.totalPaidLate")}}</th>
 					{{#if totalWaived}}
 					<th scope="col">{{=$ctx.doI18N("table.heading.totalWaived")}}</th>
 					{{/if}}
@@ -5260,6 +5262,8 @@ $(document).ready(function() {
 
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalOriginalDueForPeriod)}}</td>
 				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidInAdvanceForPeriod)}}</td>
+				<td>{{=$ctx.monetaryValue($parent.parent.data.currency, totalPaidLateForPeriod)}}</td>
 				{{#if $parent.parent.data.totalWaived}}
 				<td>{{=$ctx.monetaryValue($parent.parent.parent.data.currency, totalWaivedForPeriod)}}</td>
 				{{/if}}
@@ -5282,6 +5286,8 @@ $(document).ready(function() {
 					<th class="righthighlightcolheader">{{=$ctx.monetaryValue(currency, totalPenaltyChargesCharged)}}</th>
 
 					<th>{{=$ctx.monetaryValue(currency, totalRepaymentExpected)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalRepayment)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalRepayment)}}</th>
 					<th>{{=$ctx.monetaryValue(currency, totalRepayment)}}</th>
 					{{#if totalWaived}}
 					<th>{{=$ctx.monetaryValue(currency, totalWaived)}}</th>

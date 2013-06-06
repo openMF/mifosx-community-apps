@@ -224,7 +224,9 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
 
-	htmlVar += '  <li><a href="unknown.html" onclick="custom.showFirstPage();return false;">'+doI18N("link.topnav.dashboard")+'</a></li>';
+	if (jQuery.MifosXUI.showMenu("DashboardMenu")) {
+		htmlVar += '  <li><a href="unknown.html" onclick="custom.showFirstPage();return false;">'+doI18N("link.topnav.dashboard")+'</a></li>';		
+	}
 
 	if (jQuery.MifosXUI.showMenu("ClientsMenu"))
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing(' + "'content'" + ');return false;">' + doI18N("link.topnav.clients") + '</a></li>';

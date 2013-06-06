@@ -3,13 +3,14 @@
 //It won't be shown unless you pass the query parameter 'mode=dev'
 //You can then use showMenu or showTask as normal to check if it should be displayed
 //Once you are finished development, you can remove from this array and put in taskPermissionsMatrix or menuTasksMatrix 
-inDevelopmentTasks = ["GROUPSMENU", "COLLECTIONSHEETMENU", "CHECKERMENU",
+inDevelopmentTasks = ["GROUPSMENU", "COLLECTIONSHEETMENU", "CHECKERMENU", "SAVINGSMENU",
                       "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", 
                       "VIEWCONFIGURATION", "MANAGEPERMISSIONS", "CLOSEASRESCHEDULEDLOAN",
                       "ADDSAVINGACCOUNT"];
 
 //This does know about Mifos X Permission checking - each piece of functionality needs to be linked to a Mifos X permission
 taskPermissionsMatrix = {
+		DASHBOARDSEARCH: ["DASHBOARDSEARCH"],
 		CLIENTSEARCH: ["READ_CLIENT"],
 
 		GROUPSEARCH: ["READ_GROUP"],
@@ -23,6 +24,8 @@ taskPermissionsMatrix = {
 		ADDLOANPRODUCT: ["CREATE_LOANPRODUCT"],
 		VIEWSAVINGPRODUCTS: ["READ_SAVINGPRODUCT"],
 		ADDSAVINGPRODUCT: ["CREATE_SAVINGPRODUCT"],
+		VIEWSAVINGACCOUNTS: ["READ_SAVINGSACCOUNT"],
+		
 		VIEWFUNDS: ["READ_FUND"],
 		ADDFUND: ["CREATE_FUND"],
 		VIEWEMPLOYEES: ["READ_STAFF"],
@@ -110,10 +113,12 @@ taskPermissionsMatrix = {
 
 
 menuTasksMatrix = {
+		DASHBOARDMENU: ["DASHBOARDSEARCH"],
 		CLIENTSMENU: ["CLIENTSEARCH"],
 		CHECKERMENU: ["CHECKERINBOX"],
 		COLLECTIONSHEETMENU: ["GROUPSEARCH"],
 		GROUPSMENU: ["GROUPSEARCH"],
+		SAVINGSMENU: ["VIEWSAVINGACCOUNTS"],
 		USERADMINMENU: ["VIEWUSERS", "ADDUSER", "VIEWROLES", "ADDROLE"],
 		ORGADMINMENU: ["VIEWLOANPRODUCTS", "ADDLOANPRODUCT",  "VIEWFUNDS", "ADDFUND",
 				"VIEWEMPLOYEES", "ADDEMPLOYEE", "VIEWCHARGES", "ADDCHARGE", "CURRENCYCONFIGURATION",
@@ -151,19 +156,17 @@ tenantNameExclusions = {
 applicationProfiles = ["ALL", "IL", "TEVI"];
 
 applicationProfileExclusions = {
-		IL: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"],
+		ALL: ["DASHBOARDMENU"],
+		IL: ["DASHBOARDMENU", "GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"],
 		TEVI: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN", "ADDJLGBULKLOAN", "ADDGROUPLOAN", "ATTACHMEETING", 
 				"VIEWMEETING", "VIEWACCOUNTSDETAILS"]
-
-	};
+};
 
 applicationProfileInclusions = {
-	};//probably not needed as only useful to exclude at this point (tenantName inclusions/exclusions processed first)
-
-
+		TEVI: ["DASHBOARDMENU"]
+};//probably not needed as only useful to exclude at this point (tenantName inclusions/exclusions processed first)
 
 isInitialised = false;
-
 
 	$.MifosXUI = {};
 
@@ -214,7 +217,8 @@ isInitialised = false;
 
 
 	function showMenu(menuName) {
-
+//		console.log("showMenu: " + menuName);
+		
 		if (excludeBasedOnQueryParams(menuName) == true) return false;
 
 		if (menuName == "CHECKERMENU") return hasCheckerPermissions();
@@ -319,7 +323,8 @@ isInitialised = false;
 	}
 
 	function excludeBasedOnQueryParams(itemName) {
-
+//		console.log("excludeBasedOnQueryParams: " + itemName);
+		
 		if (isDevTask(itemName) == true)
 		{
 			if (mApplicationMode == "DEV") return false;
@@ -327,6 +332,9 @@ isInitialised = false;
 		}
 
 		var tenantNameCheckResult = tenantNameCheck(itemName);
+		
+//		console.log("tenantNameCheckResult: " + tenantNameCheckResult);
+		
 		switch (tenantNameCheckResult) {
 		case "EXCLUDE":
 //			alert(itemName + ": " + tenantNameCheckResult);
@@ -335,6 +343,8 @@ isInitialised = false;
 			return false;
 		case "CONTINUE":
 			var applicationProfileCheckResult = applicationProfileCheck(itemName);
+//			console.log("applicationProfileCheckResult: " + applicationProfileCheckResult);
+			
 			switch (applicationProfileCheckResult) {
 			case "EXCLUDE":
 				return true;
@@ -364,12 +374,14 @@ isInitialised = false;
 	}
 
 	function includeExcludeCONTINUE(taskName, name, inclusions, exclusions) {
+//		console.log("taskName: " + taskName + " <<>> name: " + name);
 //If name found and the taskName is included - INCLUDE
 //If name found and the taskName is excluded - EXCLUDE
 //Otherwise (CONTINUE)
 
 		for (var i in inclusions) 
 		{
+//			console.log("inclusions: " + i);
 			if (i == name)
 			{
 				for (var j in inclusions[i])
@@ -381,6 +393,7 @@ isInitialised = false;
 
 		for (var i in exclusions) 
 		{
+//			console.log("exclusions: " + i);
 			if (i == name)
 			{
 				for (var j in exclusions[i])
@@ -412,6 +425,4 @@ isInitialised = false;
 		alert("Invalid Application Profile: " + mApplicationProfile);
 		return false;
 	}
-
-
 })(jQuery);
