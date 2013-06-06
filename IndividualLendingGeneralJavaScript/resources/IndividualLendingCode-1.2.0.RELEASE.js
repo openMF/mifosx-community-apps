@@ -6881,6 +6881,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#addclientmembers').click(function() {  
 		return !$('#notSelectedClients option:selected').remove().appendTo('#clientMembers');  
 	});
+
 	$('#removeclientmembers').click(function() {  
 		return !$('#clientMembers option:selected').remove().appendTo('#notSelectedClients');  
 	});
@@ -6902,6 +6903,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#add').click(function() {  
 	     return !$('#notSelectedItems option:selected').remove().appendTo('#selectedItems');  
 	});
+	
 	$('#remove').click(function() {  
 		return !$('#selectedItems option:selected').remove().appendTo('#notSelectedItems');  
 	});
@@ -6909,11 +6911,12 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#addcurrencies').click(function() {  
 		return !$('#notSelectedCurrencies option:selected').remove().appendTo('#currencies');  
 	});
+	
 	$('#removecurrencies').click(function() {  
 		return !$('#currencies option:selected').remove().appendTo('#notSelectedCurrencies');  
 	});
 
-	('#adddebitTags').click(function() {  
+	$('#adddebitTags').click(function() {  
 		return !$('#notSelecteddebitTags option:selected').remove().appendTo('#debitTags');  
 	});
 
@@ -6921,14 +6924,14 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		return !$('#debitTags option:selected').remove().appendTo('#notSelecteddebitTags');  
 	});
 
-	('#addcreditTags').click(function() {  
+	$('#addcreditTags').click(function() {  
 		return !$('#notSelectedcreditTags option:selected').remove().appendTo('#creditTags');  
 	});
 
 	$('#removecreditTags').click(function() {  
 		return !$('#creditTags option:selected').remove().appendTo('#notSelectedcreditTags');  
 	});
-
+	
 	$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 	$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 	

@@ -5287,8 +5287,8 @@ $(document).ready(function() {
 
 					<th>{{=$ctx.monetaryValue(currency, totalRepaymentExpected)}}</th>
 					<th>{{=$ctx.monetaryValue(currency, totalRepayment)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalRepayment)}}</th>
-					<th>{{=$ctx.monetaryValue(currency, totalRepayment)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPaidInAdvance)}}</th>
+					<th>{{=$ctx.monetaryValue(currency, totalPaidLate)}}</th>
 					{{#if totalWaived}}
 					<th>{{=$ctx.monetaryValue(currency, totalWaived)}}</th>
 					{{/if}}
