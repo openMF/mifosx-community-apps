@@ -397,6 +397,7 @@ var launchAssociateClientsToGroupDialogOnSuccessFunction = function(data, textSt
 
 function associateClientsToGroup(groupId){
 	executeAjaxRequest('groups/' + groupId + '?template=true&associations=clientMembers', 'GET', "", launchAssociateClientsToGroupDialogOnSuccessFunction, formErrorFunction);	
+<<<<<<< HEAD
 }
 
 function justNumbers(e)
@@ -406,4 +407,6 @@ function justNumbers(e)
 	return true;
 	 
 	return /\d/.test(String.fromCharCode(keynum));
+=======
+>>>>>>> 20540cc954f014a33af9bce2d6639dfab3375c29
 }
