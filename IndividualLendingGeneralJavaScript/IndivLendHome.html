@@ -10072,7 +10072,7 @@ $(document).ready(function() {
 
 
 <script id="quipuExampleRoleFieldAgentTemplate" type="text/x-jquery-tmpl">
-    Empolyee: {{=name}}
+    {{=$ctx.doI18N("label.employee")}}: {{=name}}
 </script>
 
 <script id="quipuExampleRoleStatsFieldAgentTemplate" type="text/x-jquery-tmpl">
@@ -10153,9 +10153,9 @@ $(document).ready(function() {
 	</div>
 </div>
 </script>
-<script id="addrestelephoneTemplate" type="text/x-jquery-tmpl">
+<script id="addresstelephoneTemplate" type="text/x-jquery-tmpl">
+
 	{{#if displayMode === "view"}}
-		{{#each data.data}}
 		<table width="100%">
 			<tr>
 				<td valign="top">
@@ -10164,7 +10164,11 @@ $(document).ready(function() {
 					</span>
 				</td>
 				<td valign="top">
-					<span >{{=$ctx.arrayElement(row,1)}}</span>
+					{{#if $ctx.arrayElement(data.data,0)}}
+					<span >{{=$ctx.arrayElement($ctx.arrayElement(data.data,0,'row'),1)}}</span>
+					{{#else}}
+					<span></span>
+					{{/if}}
 				</td>
 				<td valign="top">
 					<span >
@@ -10172,7 +10176,11 @@ $(document).ready(function() {
 					</span>
 				</td>
 				<td valign="top">
-					<span >{{=$ctx.arrayElement(row,2)}}</span>
+					{{#if $ctx.arrayElement(data.data,0)}}
+					<span >{{=$ctx.arrayElement($ctx.arrayElement(data.data,0,'row'),2)}}</span>
+					{{#else}}
+					<span></span>
+					{{/if}}
 				</td>
 			</tr>
 			<tr>
@@ -10182,7 +10190,11 @@ $(document).ready(function() {
 					</span>
 				</td>
 				<td valign="top">
-					<span >{{=$ctx.arrayElement(row,3)}}</span>
+					{{#if $ctx.arrayElement(data.data,0)}}
+					<span >{{=$ctx.arrayElement($ctx.arrayElement(data.data,0,'row'),3)}}</span>
+					{{#else}}
+					<span></span>
+					{{/if}}
 				</td>
 				<td valign="top">
 					<span >
@@ -10190,27 +10202,52 @@ $(document).ready(function() {
 					</span>
 				</td>
 				<td valign="top">
-					<span >{{=$ctx.arrayElement(row,4)}}</span>
+					{{#if $ctx.arrayElement(data.data,0)}}
+					<span >{{=$ctx.arrayElement($ctx.arrayElement(data.data,0,'row'),4)}}</span>
+					{{#else}}
+					<span></span>
+					{{/if}}
 				</td>
 			</tr>
 		</table>
-		{{/each}}
 	{{/if}}
 	{{#if displayMode === "update"}}
-		{{#each data.data}}
 		<table width="100%">
 			<tr>
 				<td valign="top"><span ><b>Dirección de Hogar:</b></span></td>
-				<td valign="top"><span ><input id="Dirección_de_Hogar" name="Dirección_de_Hogar" size="40"  type="text" value="{{=$ctx.arrayElement(row,1)}}"/></span></td>
+				<td valign="top"><span >
+					{{#if $ctx.arrayElement(data.data,0)}}
+					<input id="Dirección_de_Hogar" name="Dirección_de_Hogar" size="40"  type="text" maxlength="180" value="{{=$ctx.arrayElement($ctx.arrayElement(data.data,0,'row'),1)}}"/>
+					{{#else}}
+					<input id="Dirección_de_Hogar" name="Dirección_de_Hogar" size="40"  type="text" maxlength="180"/>
+					{{/if}}
+				</span></td>
 				<td valign="top"><span ><b>Dirección de Emprendimiento:</b></span></td>
-				<td valign="top"><span ><input id="Dirección_de_Emprendimiento" name="Dirección_de_Emprendimiento" size="40"  type="text" value="{{=$ctx.arrayElement(row,2)}}"/></span></td>
+				<td valign="top"><span >
+					{{#if $ctx.arrayElement(data.data,0)}}
+					<input id="Dirección_de_Emprendimiento" name="Dirección_de_Emprendimiento" size="40"  type="text" maxlength="180" value="{{=$ctx.arrayElement($ctx.arrayElement(data.data,0,'row'),2)}}"/>
+					{{#else}}
+					<input id="Dirección_de_Emprendimiento" name="Dirección_de_Emprendimiento" size="40"  type="text" maxlength="180"/></span></td>
+					{{/if}}
+					</span></td>
 			</tr>
 			<tr>
-				<td valign="top"><span ><b>Teléfono fijo:</b></span></td><td valign="top"><span ><input id="Teléfono_fijo" name="Teléfono_fijo" size="20"  type="text" value="{{=$ctx.arrayElement(row,3)}}"/></span></td>
-				<td valign="top"><span ><b>Teléfono móvil:</b></span></td><td valign="top"><span ><input id="Teléfono_móvil" name="Teléfono_móvil" size="20"  type="text" value="{{=$ctx.arrayElement(row,4)}}"/></span></td>
+				<td valign="top"><span ><b>Teléfono fijo:</b></span></td><td valign="top"><span >
+					{{#if $ctx.arrayElement(data.data,0)}}
+					<input id="Teléfono_fijo" name="Teléfono_fijo" size="20"  type="text" maxlength="15" onkeypress="return justNumbers(event);" value="{{=$ctx.arrayElement($ctx.arrayElement(data.data,0,'row'),3)}}"/>
+					{{#else}}
+					<input id="Teléfono_fijo" name="Teléfono_fijo" size="20"  type="text" maxlength="15" onkeypress="return justNumbers(event);"/>
+					{{/if}}
+					</span></td>
+				<td valign="top"><span ><b>Teléfono móvil:</b></span></td><td valign="top"><span >
+					{{#if $ctx.arrayElement(data.data,0)}}
+					<input id="Teléfono_móvil" name="Teléfono_móvil" size="20"  type="text" maxlength="15" onkeypress="return justNumbers(event);" value="{{=$ctx.arrayElement($ctx.arrayElement(data.data,0,'row'),4)}}"/>
+					{{#else}}
+					<input id="Teléfono_móvil" name="Teléfono_móvil" size="20"  type="text" maxlength="15" onkeypress="return justNumbers(event);"/>
+					{{/if}}
+					</span></td>
 			</tr>
 		</table>
-		{{/each}}
 	{{/if}}
 </script>
 <script id="teviGroupFormTemplate" type="text/x-jquery-tmpl">
@@ -10305,13 +10342,7 @@ $(document).ready(function() {
 	</table>
 </form>
 </script>
-<script id="teviClientOptions" type="text/x-jquery-tmpl">
-	
-	{{#each clientOptions}}
-		<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
-	{{/each}}
-	
-</script>
+
 <script id="teviGroupEditFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>
@@ -10372,34 +10403,15 @@ $(document).ready(function() {
 			</td>
 		</tr>
 		{{/if}}
-
-		<tr>
-			<td>
-				<div class="multiselectwidget">
-					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
-					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:400px;height:125px;">
-					</select>
-					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
-				</div>
-			</td>
-			<td>
-				<div class="multiselectwidget">
-					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
-					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:400px;height:125px;">
-					{{#each clientMembers}}
-						{{#if officeName}}
-							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
-						{{else}}
-							<option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
-						{{/if}}
-					{{/each}}
-					</select>
-					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
-				</div>
-			</td>
-		</tr>
 	</table>
 </form>
+</script>
+<script id="teviClientOptions" type="text/x-jquery-tmpl">
+	
+	{{#each clientOptions}}
+		<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+	{{/each}}
+	
 </script>
 </body>
 </html>
