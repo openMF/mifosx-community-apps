@@ -171,6 +171,7 @@ applicationProfileInclusions = {
 		TEVI: ["DASHBOARDMENU", "ADDTEVIGROUP", "EDITTEVIGROUP", "ASSOCIATETEVICLIENT"]
 };//probably not needed as only useful to exclude at this point (tenantName inclusions/exclusions processed first)
 
+
 isInitialised = false;
 
 	$.MifosXUI = {};

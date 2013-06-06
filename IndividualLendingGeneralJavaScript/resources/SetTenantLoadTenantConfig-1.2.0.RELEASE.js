@@ -275,13 +275,9 @@ custom.helperFunctions = {
 		return jQuery.stretchyDataTables
 				.getDataTableEndFormIfNecessary(displayMode);
 	},
-<<<<<<< HEAD
 	arrayElement: function(array, i, attr){
 		if(attr)
 			return eval('array[i].'+attr);
-=======
-	arrayElement: function(array, i){
->>>>>>> 20540cc954f014a33af9bce2d6639dfab3375c29
 		return array[i];
 	}
 };
@@ -753,11 +749,7 @@ custom.showRelatedDataTableInfo = function(tabVar, appTableName,
 					tmpObj.itemDivLabel = data[i].registeredTableName;
 					if(tmpObj.registeredTableName === "address and telephone"){
 						tmpObj.itemDivLabel = "Dirección y teléfono";
-<<<<<<< HEAD
 						tmpObj.templateName = "addresstelephoneTemplate";
-=======
-						tmpObj.templateName = "addrestelephoneTemplate";
->>>>>>> 20540cc954f014a33af9bce2d6639dfab3375c29
 						tmpObj.type = "template";
 					}
 					datatableArray.push(tmpObj);
