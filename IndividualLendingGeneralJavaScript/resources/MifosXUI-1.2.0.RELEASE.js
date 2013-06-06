@@ -165,22 +165,11 @@ applicationProfileExclusions = {
 		IL: ["DASHBOARDMENU", "GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"],
 		TEVI: ["GROUPSMENU", "VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN", "ADDJLGBULKLOAN", "ADDGROUPLOAN", "ATTACHMEETING", 
 				"VIEWMEETING", "VIEWACCOUNTSDETAILS", "ADDGROUP", "EDITGROUP", "ASSOCIATECLIENT"]
-<<<<<<< HEAD
 };
 
 applicationProfileInclusions = {
 		TEVI: ["DASHBOARDMENU", "ADDTEVIGROUP", "EDITTEVIGROUP", "ASSOCIATETEVICLIENT"]
 };//probably not needed as only useful to exclude at this point (tenantName inclusions/exclusions processed first)
-=======
-
-	};
-
-applicationProfileInclusions = {
-		TEVI: ["ADDTEVIGROUP", "EDITTEVIGROUP", "ASSOCIATETEVICLIENT"]
-	};//probably not needed as only useful to exclude at this point (tenantName inclusions/exclusions processed first)
-
-
->>>>>>> 20540cc954f014a33af9bce2d6639dfab3375c29
 
 isInitialised = false;
 
