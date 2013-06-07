@@ -8520,13 +8520,13 @@ $(document).ready(function() {
 		<legend>{{=$ctx.doI18N("form.legend.calendar.details")}}</legend>
 		<div>
 		<table>
-			<tr>
+			<tr class="calendarhide">
 				<td colspan="2">
 					<label for="title">{{=$ctx.doI18N("label.calendar.title")}}</label>
 					<input id="title" name="title" title="" type="text" value="{{=title}}" size="75"/>
 				</td>
 			</tr>
-			<tr>
+			<tr class="calendarhide">
 				<td>
 					<label for="description">{{=$ctx.doI18N("label.calendar.description")}}</label>
 					<input id="description" name="description" title="" type="text" value="{{=description}}" size="30"/>
@@ -8536,7 +8536,7 @@ $(document).ready(function() {
 					<input class='location' id="location" name="location" title="" type="text" value="{{=location}}" size="30"/>
 				</td>
 			</tr>
-			<tr>
+			<tr class="calendarhide">
 				<td>
 					<label for="type">{{=$ctx.doI18N("label.calendar.type")}}</label>
 					<select id="meetingTypeId" name="meetingTypeId" title="" value="{{=type.id}}">
@@ -8560,12 +8560,14 @@ $(document).ready(function() {
 						{{/each}}
 					</select>
 				</td>
-
+				<td>
+				</td>
+			</tr>
+			<tr>
 				<td>
 					<label for="startDate">{{=$ctx.doI18N("label.calendar.start.date")}}</label>
 					<input id="startDate" name="startDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(startDate)}}" />
 				</td>
-				
 			</tr>
 			<tr class='duration'>
 				<td>
@@ -8683,28 +8685,13 @@ $(document).ready(function() {
 	{{#each crudRows}}
 		<div class="notespacer">
 			<span class="ui-icon ui-icon-calendar" style="float: left; margin-right: 5px;"></span>
-			<span>Name: {{=title}}</span>
 			{{#if $parent.parent.data.resource === entityType.value}}
-			&nbsp;&nbsp;&nbsp;:
-				<span>
 					<a href="#" class="editcalendar" entityType="{{=entityType.value}}" entityId="{{=entityId}}" id="editcalendarlink{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</a>
 				</span>
 			{{/if}}
 		</div>
 		<div class="notespacer">
-			<span>Meeting type: 
-				{{#if type.value === 'COLLECTION'}}
-					{{=$ctx.doI18N("lable.meeting.type.option.collection")}}
-				{{#else type.value === 'TRAINING'}}
-					{{=$ctx.doI18N("lable.meeting.type.option.training")}}
-				{{#else type.value === 'AUDIT'}}
-					{{=$ctx.doI18N("lable.meeting.type.option.audit")}}
-				{{#else type.value === 'GENERAL'}}
-					{{=$ctx.doI18N("lable.meeting.type.option.general")}}
-				{{#else}}
-					{{=type.value}}
-				{{/if}}   
-			</span>
+
 		</div>
 		<div class="notespacer">
 			<span>Start Date: {{=$ctx.globalDate(startDate)}}</span>
@@ -8961,7 +8948,7 @@ $(document).ready(function() {
 <script id="meetingCalendarTemplate" type="text/x-jquery-tmpl">
 		<div id="meetingCalendarContent">
 		<!-- MIFOSX-278 -->
-
+			<!--
 			<table>
 				<tr class="calendarrow">
 					<td>{{=$ctx.doI18N("label.meeting.calendar")}}</td>
@@ -8971,8 +8958,27 @@ $(document).ready(function() {
 					</td>
 				</tr>
 			</table>
-			<hr>
+			-->
+
+	{{#each crudRows}}
+		<div class="notespacer">
+			<span class="ui-icon ui-icon-calendar" style="float: left; margin-right: 5px;"></span>
+			{{=$ctx.doI18N("label.meeting.calendar.details")}}
 		</div>
+		<div class="notespacer">
+			<span>Start Date: {{=$ctx.globalDate(startDate)}}</span>
+		</div>
+		{{#if repeating == true}}
+		<div class="notespacer">
+			<span>Repeats on : {{=humanReadable}}</span>
+		</div>
+		<div>
+			<input type="checkbox" id="synchmeeting" value="{{=id}}"/>
+			<input type="hidden" id="calendarId" name="calendarId"/>
+			<label for="synchmeeting" style="display: inline">{{=$ctx.doI18N("label.meeting.calendar.synchmeeting")}}</label>
+		</div>
+		<hr>
+	{{/each}}
 </script>
 
 <script id="reportListTemplate" type="text/x-jquery-tmpl">
