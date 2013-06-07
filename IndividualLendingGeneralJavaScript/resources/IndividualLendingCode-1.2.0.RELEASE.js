@@ -4032,7 +4032,7 @@ function showCenter(centerId){
 	    }
 	    
 	    if(data.calendarOptions){
-	        loadAvailableCalendars(data.calendarOptions, data.meeting);   
+	        loadAvailableCalendars(data.calendarOptions, data.meeting, data.id);   
         }
 	};
 	
@@ -4999,7 +4999,8 @@ function loadLoan(loanId, parenttab) {
         					}
    						}
 					});
-		        	
+		        
+		        $('.modifyloanapp'+loanId).unbind('click');	
 	        	$('.modifyloanapp'+loanId).button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("modifyloanappbtn", "");
@@ -6463,9 +6464,14 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             serializedArray = {};
             serializedArray["locale"] = $('#locale').val();
             serializedArray["dateFormat"] = $('#dateFormat').val();
-            serializedArray["title"] = $('#title').val();
+            //serializedArray["title"] = $('#title').val();
+            //Provide default title value
+            var urlSplit = postUrl.split('/');
+            serializedArray["title"] = urlSplit[0] + '_' + urlSplit[1] + '_CollectionMeeting';
+            //e.g. : group_1_CollectionMeeting
             serializedArray["description"] = $('#description').val();
-            serializedArray["typeId"] = $('#meetingTypeId').val();
+            //serializedArray["typeId"] = $('#meetingTypeId').val();
+            serializedArray["typeId"] = 1;
             serializedArray["startDate"] = $('#startDate').val();
             serializedArray["repeating"] = $('#repeating').val()==="on"?true:false;
             serializedArray["recurrence"] = rrule;
@@ -6476,6 +6482,8 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
                 }
             }
 
+            //In first release no other meeting types are supported
+            /*
             if($('#meetingTypeId').val() != "1"){
             	serializedArray["location"] = $('#location').val();
             	serializedArray["duration"] = $('#duration').val();
@@ -6483,6 +6491,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 	            serializedArray["firstReminder"] = $('#firstReminder').val();
 	            serializedArray["secondReminder"] = $('#secondReminder').val();
             }
+            */
             
         }
 	
@@ -6913,17 +6922,17 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		return !$('#currencies option:selected').remove().appendTo('#notSelectedCurrencies');  
 	});
 
-	('#adddebitTags').click(function() {  
-		return !$('#notSelecteddebitTags option:selected').remove().appendTo('#debitTags');  
-	});
+	//('#adddebitTags').click(function() {  
+	//	return !$('#notSelecteddebitTags option:selected').remove().appendTo('#debitTags');  
+	//});
 
 	$('#removedebitTags').click(function() {  
 		return !$('#debitTags option:selected').remove().appendTo('#notSelecteddebitTags');  
 	});
 
-	('#addcreditTags').click(function() {  
-		return !$('#notSelectedcreditTags option:selected').remove().appendTo('#creditTags');  
-	});
+	//('#addcreditTags').click(function() {  
+	//	return !$('#notSelectedcreditTags option:selected').remove().appendTo('#creditTags');  
+	//});
 
 	$('#removecreditTags').click(function() {  
 		return !$('#creditTags option:selected').remove().appendTo('#notSelectedcreditTags');  
@@ -8134,7 +8143,8 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         if(data.remindBy){
         	$('#remindById').val(data.remindBy.id);	
         }
-        
+		
+		$('.calendarhide').hide();        
                                        
     }
 
@@ -8193,127 +8203,124 @@ function convertToRfc5545(){
     return rrule;
 }
 
-function loadAvailableCalendars(data, meeting){
-    var tableHtml = $('#meetingCalendarTemplate').render();
-    $('#meetingCalendarPlaceholder').html(tableHtml);
+function loadAvailableCalendars(data, meeting, loanId){
     var calendars = new Object();
     calendars.crudRows = data;
-    var output = "";
-    if(calendars.crudRows.length > 1){
-    	output = '<option value=0> -- Select a meeting -- </option>';
-    }
+    var tableHtml = $('#meetingCalendarTemplate').render(calendars);
+    $('#meetingCalendarPlaceholder').html(tableHtml);
+    if(meeting && loanId){
+    	$('input:checkbox[id=synchmeeting]').prop('checked', true);
+	}else if(!meeting && !loanId){
+		$('input:checkbox[id=synchmeeting]').prop('checked', true);
+	}
+    //$('#calendarId').change(function(){
+    $('input:checkbox[id=synchmeeting]').change(function(){	
+        //var calendarId = $(this).val();
+        var checked = this.checked;
+        //if(calendarId !== 0){
+        if(checked){
+        	var calendarId = $(this).val();
+        	$("#calendarId").val(calendarId);
+			if(!meeting) {        
+	            //set first recurring date as expected disbursal date
+	            var selectedCalendars = $.grep(calendars.crudRows, function(n, i) {
+	                return n.id;
+	            });
+	        
+	            if (selectedCalendars.length > 0) {
+	                var selectedCalendar = selectedCalendars[0];//get calendar from array
+	                var recurringDates = selectedCalendar.nextTenRecurringDates;
+	                var firstDate = recurringDates[0];//First recurring date
+	                //var secondDate = recurringDates[1];//Second recurring date
+	               	$( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(firstDate));
+	                //$( '#repaymentsStartingFromDate' ).val(custom.helperFunctions.globalDate(secondDate));
+	                
+	                //Set loan term
+	                
+	                var matches = /FREQ=([^;]+);?/.exec(selectedCalendar.recurrence);
+	                if (matches) {
+	                    var freq = matches[1];
+	                    var loantermoptionvalue;
+	                    if(freq === 'DAILY'){
+	                        loantermoptionvalue = 0;
+	                    }else if(freq === 'WEEKLY'){
+	                        loantermoptionvalue = 1;
+	                    }else if(freq === 'MONTHLY'){
+	                        loantermoptionvalue = 2;
+	                    }else if(freq === 'YEARLY'){
+	                        loantermoptionvalue = 3;
+	                    }
+	                    
+	                    $('#loanTermFrequencyType').val(loantermoptionvalue);
+	                    $('#repaymentFrequencyType').val(loantermoptionvalue);
+	                }
+	                
+	                //Set repaymentEvery 
+	                matches = /INTERVAL=([0-9]+);?/.exec(data.recurrence);
+	                if (matches) {
+	                    interval = matches[1];
+	                } else {
+	                    interval = '1';
+	                }
+	                
+	                $('#repaymentEvery').val(interval);        
+	            }
+	        }
 
-    $('#calendarId').empty().append(function(){
-        
-        $.each(calendars.crudRows, function(key, value){
-            output += '<option value=' + value.id + '>' + value.title + ' - ';
-            if(value.entityType.value === 'CLIENTS'){
-                output += doI18N("label.select.calendar.client");
-            } else if(value.entityType.value === 'CENTERS'){
-                output += doI18N("label.select.calendar.center");
-            } else if(value.entityType.value === 'GROUPS'){
-                output += doI18N("label.select.calendar.group");
-            } else if(value.entityType.value === 'LOANS'){
-                output += doI18N("label.select.calendar.loan");
-            }
-                
-            output += '</option>';
-        });
-        return output;
-    });
-
-    $('#calendarId').change(function(){
-        var calendarId = $(this).val();
-        if(calendarId !== 0){
-        
-            //set first recurring date as expected disbursal date
-            var selectedCalendars = $.grep(calendars.crudRows, function(n, i) {
-                return n.id == calendarId;
-            });
-        
-            if (selectedCalendars.length > 0) {
-                var selectedCalendar = selectedCalendars[0];//get calendar from array
-                var recurringDates = selectedCalendar.nextTenRecurringDates;
-                var firstDate = recurringDates[0];//First recurring date
-                //var secondDate = recurringDates[1];//Second recurring date
-                
-                $( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(firstDate));
-                //$( '#repaymentsStartingFromDate' ).val(custom.helperFunctions.globalDate(secondDate));
-                
-                //Set loan term
-                
-                var matches = /FREQ=([^;]+);?/.exec(selectedCalendar.recurrence);
-                if (matches) {
-                    var freq = matches[1];
-                    var loantermoptionvalue;
-                    if(freq === 'DAILY'){
-                        loantermoptionvalue = 0;
-                    }else if(freq === 'WEEKLY'){
-                        loantermoptionvalue = 1;
-                    }else if(freq === 'MONTHLY'){
-                        loantermoptionvalue = 2;
-                    }else if(freq === 'YEARLY'){
-                        loantermoptionvalue = 3;
-                    }
-                    
-                    $('#loanTermFrequencyType').val(loantermoptionvalue);
-                    $('#repaymentFrequencyType').val(loantermoptionvalue);
-                }
-                
-                //Set repaymentEvery 
-                matches = /INTERVAL=([0-9]+);?/.exec(data.recurrence);
-                if (matches) {
-                    interval = matches[1];
-                } else {
-                    interval = '1';
-                }
-                
-                $('#repaymentEvery').val(interval);        
-            }
-
-        }
-    });
-
-    var availableDate = function(date) {
+            var availableDate = function(date) {
           
-        var recurringDates = [];
-        var selectedcals = $.grep(calendars.crudRows, function(n, i) {
-            return n.id == $("#calendarId").val();
-        });
-    
-        if (selectedcals.length > 0) {
-            var selcal = selectedcals[0];
-            var recudatearr = selcal.recurringDates;
-            $.each(recudatearr, function(n,i){
-                var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
-                //alert(newdate);
-                recurringDates[n] = newdate;
-            });
-        }
-        
-        var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
+		        var recurringDates = [];
+		        var selectedcals = $.grep(calendars.crudRows, function(n, i) {
+		            return n.id;// == $("#calendarId").val();
+		        });
+		    
+		        if (selectedcals.length > 0) {
+		            var selcal = selectedcals[0];
+		            var recudatearr = selcal.recurringDates;
+		            $.each(recudatearr, function(n,i){
+		                var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
+		                //alert(newdate);
+		                recurringDates[n] = newdate;
+		            });
+		        }
+		        
+		        var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
 
-        if ($.inArray(ymd, recurringDates) < 0 ) {
-            return [false, "","unAvailable"];
-        } else {
-            return [true,"","Available"];
-        }
-    }
-    $( '#expectedDisbursementDate' ).datepicker( "destroy" );
-    $('#expectedDisbursementDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
+		        if ($.inArray(ymd, recurringDates) < 0 ) {
+		            return [false, "","unAvailable"];
+		        } else {
+		            return [true,"","Available"];
+		        }
+		    }
+		    $('#expectedDisbursementDate').datepicker( "destroy" );
+		    $('#expectedDisbursementDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
 
-    $( '#repaymentsStartingFromDate' ).datepicker( "destroy" );
-    $('#repaymentsStartingFromDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
+		    $( '#repaymentsStartingFromDate' ).datepicker( "destroy" );
+		    $('#repaymentsStartingFromDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
+
+        }else{
+        	$("#calendarId").val("");//set calendarId to empty
+        	$('#expectedDisbursementDate').datepicker( "destroy" );
+		    $('#expectedDisbursementDate').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+
+		    $('#repaymentsStartingFromDate').datepicker( "destroy" );
+		    $('#repaymentsStartingFromDate').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+        }
+    });
+
     
-    if(meeting) {
-        $("#calendarId").val(meeting.id);
+    
+    //if(meeting) {
+        //$("#calendarId").val(meeting.id);
         //if(expectedDisbursementDate){
         //	$( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(expectedDisbursementDate));	
         //}        
-    }else if(calendars.crudRows.length === 1){
+    //}else if(calendars.crudRows.length === 1){
     	//if meeting is not attached then only trigger change event
-    	$('#calendarId').trigger('change');
-    }
+    //	$('#calendarId').trigger('change');
+    	$('#synchmeeting').trigger('change');
+    //}
+    
 }
 function loadAttachedCalendarToLoan(loanId){
     var successFunction = function(data, textStatus, jqXHR) {
