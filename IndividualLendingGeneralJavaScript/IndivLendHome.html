@@ -6147,6 +6147,7 @@ $(document).ready(function() {
 			<fieldset>
 				<legend>{{=$ctx.doI18N("legend.advanced.accounting.rules")}} [<a href="" id="toggleAdvancedAccountingOptions">{{=$ctx.doI18N("label.show")}}</a>]</legend>
 				<div id="advancedAccountingRulesDiv">
+				<!---Payment Channel to Fund source mappings -->
 					<h3>{{=$ctx.doI18N("label.payment.channel.specific.fund.source")}}</h3>    
 					<button id="addPaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
 					<table id="paymentChannelToFundSourceMappingTable" class="pretty displayschedule">
@@ -7299,6 +7300,94 @@ $(document).ready(function() {
 								{{/each}}
 							</tbody>
 						</table>
+						<br/>
+						<!--Fees to Income Account Mappings -->
+						<h3>{{=$ctx.doI18N("label.fee.specific.income.account")}}</h3>    
+						<button id="addFeeToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+						<table id="feeToIncomeAccountMappingTable" class="pretty displayschedule">
+							<thead>
+								<tr>
+								<th scope="col">{{=$ctx.doI18N("label.fee")}}</th>
+								<th scope="col">{{=$ctx.doI18N("label.incomeAccountForCharge")}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{#each feeToIncomeAccountMappings}}
+								<tr>
+									<td>
+										<select id="feeToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" name="feeToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" title="" style="width: 180px">
+											{{#each $parent.parent.data.chargeOptions}}
+												{{#if $ctx.number($parent.parent.data.chargeId)===$ctx.number(id)}}
+													<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+												{{#else}}
+													<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+												{{/if}}
+											{{/each}}
+
+										</select>
+									   
+									</td>
+									<td>
+										<select id="feeToIncomeAccountMappings[{{=$itemNumber}}][incomeAccountId]" name="feeToIncomeAccountMappings[{{=$itemNumber}}][incomeAccountId]" title="" style="width: 180px">
+											{{#each $parent.parent.data.accountingMappingOptions.incomeAccountOptions}}
+												{{#if $ctx.number($parent.parent.data.incomeAccountId)===$ctx.number(id)}}
+													<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+												{{#else}}
+													<option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
+												{{/if}}
+											{{/each}}
+										</select>
+									</td>
+									<td><button id="removeFeeToIncomeAccountMappings{{=$itemNumber}}" class="removeFeeToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+								</tr>
+								{{/each}}
+							</tbody>
+						</table>
+						<br/>
+						<!--Penalty to Income Account Mappings -->
+						<h3>{{=$ctx.doI18N("label.penalty.specific.income.account")}}</h3>    
+						<button id="addPenaltyToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+						<table id="penaltyToIncomeAccountMappingTable" class="pretty displayschedule">
+							<thead>
+								<tr>
+								<th scope="col">{{=$ctx.doI18N("label.penalty")}}</th>
+								<th scope="col">{{=$ctx.doI18N("label.incomeAccountForCharge")}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{#each penaltyToIncomeAccountMappings}}
+								<tr>
+									<td>
+										<select id="penaltyToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" name="penaltyToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" title="" style="width: 180px">
+											{{#each $parent.parent.data.penaltyOptions}}
+												{{#if penalty === true}}
+												{{#if $ctx.number($parent.parent.data.chargeId)===$ctx.number(id)}}
+													<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+												{{#else}}
+													<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+												{{/if}}
+												{{/if}}
+											{{/each}}
+
+										</select>
+									   
+									</td>
+									<td>
+										<select id="penaltyToIncomeAccountMappings[{{=$itemNumber}}][incomeAccountId]" name="penaltyToIncomeAccountMappings[{{=$itemNumber}}][incomeAccountId]" title="" style="width: 180px">
+											{{#each $parent.parent.data.accountingMappingOptions.incomeAccountOptions}}
+												{{#if $ctx.number($parent.parent.data.incomeAccountId)===$ctx.number(id)}}
+													<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+												{{#else}}
+													<option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
+												{{/if}}
+											{{/each}}
+										</select>
+									</td>
+									<td><button id="removePenaltyToIncomeAccountMappings{{=$itemNumber}}" class="removePenaltyToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+								</tr>
+								{{/each}}
+							</tbody>
+						</table>
 					</div>
 				</fieldset>
 			</div>
@@ -7359,6 +7448,46 @@ $(document).ready(function() {
 	</select>
 	</td>
 	<td><button id="removePaymentChannelToFundSourceMappings{{=index}}" class="removePaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+</tr>
+</script>
+
+<script id="loanProductAddFeeToIncomeAccountRowTemplate" type="text/x-jquery-tmpl">
+<tr>
+	<td>
+	<select id="feeToIncomeAccountMappings[{{=index}}][chargeId]" name="feeToIncomeAccountMappings[{{=index}}][chargeId]" title="" style="width: 180px">
+		{{#each chargeOptions}}
+			<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+		{{/each}}
+	</select>
+	</td>
+	<td>
+	<select id="feeToIncomeAccountMappings[{{=index}}][incomeAccountId]" name="feeToIncomeAccountMappings[{{=index}}][incomeAccountId]" title="" style="width: 180px">
+		{{#each incomeAccountOptions}}
+			<option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
+		{{/each}}
+	</select>
+	</td>
+	<td><button id="removeFeeToIncomeAccountMappings{{=index}}" class="removeFeeToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+</tr>
+</script>
+
+<script id="loanProductAddPenaltyToIncomeAccountRowTemplate" type="text/x-jquery-tmpl">
+<tr>
+	<td>
+	<select id="penaltyToIncomeAccountMappings[{{=index}}][chargeId]" name="penaltyToIncomeAccountMappings[{{=index}}][chargeId]" title="" style="width: 180px">
+		{{#each penaltyOptions}}
+			<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+		{{/each}}
+	</select>
+	</td>
+	<td>
+	<select id="penaltyToIncomeAccountMappings[{{=index}}][incomeAccountId]" name="penaltyToIncomeAccountMappings[{{=index}}][incomeAccountId]" title="" style="width: 180px">
+		{{#each incomeAccountOptions}}
+			<option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
+		{{/each}}
+	</select>
+	</td>
+	<td><button id="removePenaltyToIncomeAccountMappings{{=index}}" class="removePenaltyToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 </tr>
 </script>
 <!-- end of new loan product templates -->
