@@ -4194,6 +4194,10 @@ function showCenter(centerId){
 		if (!serializedArray["paymentChannelToFundSourceMappings"]) {
 			serializedArray["paymentChannelToFundSourceMappings"] = new Array();
 		}
+
+		if (!serializedArray["feeToIncomeAccountMappings"]) {
+			serializedArray["feeToIncomeAccountMappings"] = new Array();
+		}
 		
 		var newFormData = JSON.stringify(serializedArray);
 		
@@ -4375,6 +4379,71 @@ function showCenter(centerId){
 		            	});
 					    e.preventDefault();
 					});
+
+					//initialize button for adding new "charge to income account mappings"
+				  	var chargeToIncomeAccountMappingIndex = 0;
+					if(undefined === data.feeToIncomeAccountMappings || data.feeToIncomeAccountMappings === null) {
+						chargeToIncomeAccountMappingIndex = 0;
+					} else {
+						chargeToIncomeAccountMappingIndex = data["feeToIncomeAccountMappings"].length;
+						//initialize all delete buttons for "charge to income account mappings"
+						$("#feeToIncomeAccountMappingTable tbody tr .removeFeeToIncomeAccountMappings").each(function(index) {
+							 $(this).button().click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						});
+					}
+				  	$("#addFeeToIncomeAccountMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+				  		chargeToIncomeAccountMappingIndex++;
+						var crudObject = new Object();
+						crudObject["index"] = chargeToIncomeAccountMappingIndex;
+						crudObject["chargeOptions"] = data.chargeOptions;
+						crudObject["incomeAccountOptions"] = data["accountingMappingOptions"]["incomeAccountOptions"];
+						var chargeToIncomeAccountMappingHtml = $("#loanProductAddFeeToIncomeAccountRowTemplate").render(crudObject);
+						$("#feeToIncomeAccountMappingTable tbody").append(chargeToIncomeAccountMappingHtml);
+			  		
+						$('#removeFeeToIncomeAccountMappings'+chargeToIncomeAccountMappingIndex)
+						.button()
+						.click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					    e.preventDefault();
+					});
+
+					//initialize button for adding new "penalty to income account mappings"
+				  	var penaltyToIncomeAccountMappingIndex = 0;
+					if(undefined === data.penaltyToIncomeAccountMappings || data.penaltyToIncomeAccountMappings === null) {
+						penaltyToIncomeAccountMappingIndex = 0;
+					} else {
+						penaltyToIncomeAccountMappingIndex = data["penaltyToIncomeAccountMappings"].length;
+						//initialize all delete buttons for "charge to income account mappings"
+						$("#penaltyToIncomeAccountMappingTable tbody tr .removePenaltyToIncomeAccountMappings").each(function(index) {
+							 $(this).button().click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						});
+					}
+				  	$("#addPenaltyToIncomeAccountMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+				  		penaltyToIncomeAccountMappingIndex++;
+						var crudObject = new Object();
+						crudObject["index"] = penaltyToIncomeAccountMappingIndex;
+						crudObject["penaltyOptions"] = data.penaltyOptions;
+						crudObject["incomeAccountOptions"] = data["accountingMappingOptions"]["incomeAccountOptions"];
+						var chargeToIncomeAccountMappingHtml = $("#loanProductAddPenaltyToIncomeAccountRowTemplate").render(crudObject);
+						$("#penaltyToIncomeAccountMappingTable tbody").append(chargeToIncomeAccountMappingHtml);
+			  		
+						$('#removePenaltyToIncomeAccountMappings'+ penaltyToIncomeAccountMappingIndex)
+						.button()
+						.click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					    e.preventDefault();
+					});
+
 
 	  			
 		  			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
