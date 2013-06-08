@@ -9698,9 +9698,9 @@ $(document).ready(function() {
     <br>
     <table>
         <tr>
-            <td>
+            <td class="rightVline alignCenter">
                 <fieldset>
-                    <legend>{{=$ctx.doI18N("form.legend.accountingrule.debit.details")}}</legend>
+                    <p style="text-align: center"><b>{{=$ctx.doI18N("form.legend.accountingrule.debit.details")}}</b></p>
                     <table>
                         <tr>
                             <td>
@@ -9741,6 +9741,7 @@ $(document).ready(function() {
                             <td>
                                 <div id = "fixeddebitaccount">
                                     <select id="debitAccountHead" name="debitAccountHead" title="">
+                                    	<option value="">{{=$ctx.doI18N("option.account.first.choice")}}</option>
                                         {{#each allowedAccounts}}
                                             {{#if $parent.parent.data.debitAccountHead === undefined}}
                                                 <option value="{{=id}}">{{=name}}({{=glCode}})</option>
@@ -9790,9 +9791,9 @@ $(document).ready(function() {
                     </table>
                 </fieldset>
             </td>
-            <td>
+            <td class="alignCenter">
                 <fieldset>
-                    <legend>{{=$ctx.doI18N("form.legend.accountingrule.credit.details")}}</legend>
+                    <p style="text-align: center"><b>{{=$ctx.doI18N("form.legend.accountingrule.credit.details")}}</b></p>
                     <table>
                         <tr>
                             <td>
@@ -9833,6 +9834,7 @@ $(document).ready(function() {
                             <td>
                                 <div id = "fixedcreditaccount">
                                     <select id="creditAccountHead" name="creditAccountHead" title="">
+                                    	<option value="">{{=$ctx.doI18N("option.account.first.choice")}}</option>
                                         {{#each allowedAccounts}}
                                             {{#if $parent.parent.data.creditAccountHead === undefined}}
                                                 <option value="{{=id}}">{{=name}}({{=glCode}})</option>
@@ -9907,7 +9909,7 @@ $(document).ready(function() {
 			</tr>
 			<tr>
 				<td colspan="5" align="center">
-					<button id="searchJournalEntriesByTransactionId">{{=$ctx.doI18N("button.journalentry.search")}}</button>
+					<button id="searchJournalEntriesByTransactionId">{{=$ctx.doI18N("button.journalentry.search.by.transactionId")}}</button>
 				</td>
 			</tr>
 		</table>
@@ -9925,7 +9927,7 @@ $(document).ready(function() {
     <table>
         <tr>
             <td><label for="accountingRule">{{=$ctx.doI18N("label.accountingRule")}}</label></td>
-            <td>
+            <td class="alignCenter">
                 <select id="accountingRule" name="accountingRule" title="">
                     <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
                     {{#each accountingRuleOptions}}
@@ -9975,7 +9977,7 @@ $(document).ready(function() {
         </tr>
         <tr>
             <td><label for="comments">{{=$ctx.doI18N("label.comments")}}</label></td>
-            <td><textarea id="comments" name="comments" rows="2" cols="35">{{=comments}}</textarea></td>
+            <td><textarea id="comments" name="comments" rows="5" cols="35">{{=comments}}</textarea></td>
         </tr>
     </table>
 </form>

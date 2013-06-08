@@ -129,7 +129,7 @@ crudData = {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
 				dialogWidth: 1200,
-				dialogHeight: 550
+				dialogHeight: 565
 			}
 
 		};
@@ -763,31 +763,33 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 						if( tempObject.id == ui.item.value) {
 							accountingruleObject.debitAccounts = tempObject.debitAccounts;
 							accountingruleObject.creditAccounts = tempObject.creditAccounts;
+							accountingruleObject.allowMultipleDebitEntries = tempObject.allowMultipleDebitEntries;
+							accountingruleObject.allowMultipleCreditEntries = tempObject.allowMultipleCreditEntries;
 						}
 					}
 					var debitOrCreditAccountsTabHtml = $("#creditAndDebitAccountsFormTemplate").render(accountingruleObject);
 					$("#creditanddebitsdiv").html(debitOrCreditAccountsTabHtml);
+
 					var creditAccountsLength = accountingruleObject.creditAccounts.length;
 					var debitAccountsLength = accountingruleObject.debitAccounts.length;
-					//Hide the credits if no options available.
-					if (creditAccountsLength == 0) {
-						$("#creditLabel").hide();
-						$("#creditaccounts").hide();
-					} else {
+
+					if (creditAccountsLength > 0) {
 						$("#creditLabel").show();
 						$("#creditaccounts").show();
+					} else {
+						$("#creditLabel").hide();
+						$("#creditaccounts").hide();
 					}
 
-					//Hide the debits if no options available.
-					if (debitAccountsLength == 0) {
-						$("#debitLabel").hide();
-						$("#debitaccounts").hide();
-					} else {
+					if (debitAccountsLength > 0) {
 						$("#debitLabel").show();
 						$("#debitaccounts").show();
+					} else {
+						$("#debitLabel").hide();
+						$("#debitaccounts").hide();
 					}
 					//hide the amount field if both credit and debit accounts are predefined i.e. debitAccounts & creditAccounts empty.
-					if( debitAccountsLength > 0 && creditAccountsLength > 0 ) {
+					if(creditAccountsLength > 0  && debitAccountsLength > 0) {
 						$("#amountLabel").hide();
 						$("#amountDiv").hide();
 					} else {
@@ -864,7 +866,12 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 				primary : "ui-icon-search"
 			}
 		}).click(function(e) {
-			searchForJournalEntriesByTransactionId($("#transactionId").val());
+			var trxnId = $("#transactionId").val();
+			if (trxnId=="" || trxnId==undefined) {
+				alert("  Please Enter TransactionId  ");
+			} else{
+				searchForJournalEntriesByTransactionId($("#transactionId").val());
+			}
 			e.preventDefault();
 		});
 		//fetch journalentries whenever new predifined journalentry is created using corresponding transactionId or by entering transactionId.
@@ -6507,21 +6514,26 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 						ruleObject = tempObject;
 					}
 				}
-				
-				if (!(ruleObject.creditAccounts.length>0 && ruleObject.debitAccounts.length>0)) {
-					serializedArray["amount"] = $('#amount').val();
-				}
+				if (ruleObject.creditAccounts != undefined && ruleObject.debitAccounts != undefined) {
+					if (!(ruleObject.creditAccounts.length>0 && ruleObject.debitAccounts.length>0)) {
+						serializedArray["amount"] = $('#amount').val();
+					}
+				} 
 				serializedArray["accountingRule"] = $('#accountingRule').val();
 				
-				if (ruleObject.creditAccounts.length>0) {
-					populateCreditOrDebitArray("creditaccounts");
-					serializedArray["credits"]=serializedArray["creditaccounts"];
-					delete serializedArray["creditaccounts"];
+				if (ruleObject.creditAccounts != undefined) {
+					if (ruleObject.creditAccounts.length>0) {
+						populateCreditOrDebitArray("creditaccounts");
+						serializedArray["credits"]=serializedArray["creditaccounts"];
+						delete serializedArray["creditaccounts"];
+					}
 				}
-				if (ruleObject.debitAccounts.length>0) {
-					populateCreditOrDebitArray("debitaccounts");
-					serializedArray["debits"]=serializedArray["debitaccounts"];
-					delete serializedArray["debitaccounts"];
+				if (ruleObject.debitAccounts != undefined) {
+					if (ruleObject.debitAccounts.length>0) {
+						populateCreditOrDebitArray("debitaccounts");
+						serializedArray["debits"]=serializedArray["debitaccounts"];
+						delete serializedArray["debitaccounts"];
+					}
 				}
 			}	
 		}	
@@ -6694,8 +6706,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	// for accounting rule initialize comboboxes
 	if (templateSelector === "#accountingruleFormTemplate") {
 		$("#officeId").combobox();
-		$("#debitAccountHead").combobox();
-		$("#creditAccountHead").combobox();
 
 		var debitRuleType = $('input:radio[name=debitRuleType]:checked').val();
 		var creditRuleType = $('input:radio[name=creditRuleType]:checked').val();
@@ -6707,6 +6717,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			$("#selecteddebittags").hide();
 			$("#allowmultipledebitentrieslabel").hide();
 			$("#allowmultipledebitentries").hide();
+			$("#debitAccountHead").combobox();
 		} else if (debitRuleType == "List"){
 			$("#fixeddebitaccount").hide();
 			$("#fixeddebitaccountlabel").hide();
@@ -6729,6 +6740,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			$("#selecteddebittags").hide();
 			$("#allowmultipledebitentrieslabel").hide();
 			$("#allowmultipledebitentries").hide();
+			$("#debitAccountHead").combobox();
 		}
 
 		if (creditRuleType == "Fixed") {
@@ -6738,6 +6750,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			$("#selectedcredittags").hide();
 			$("#allowmultiplecreditentrieslabel").hide();
 			$("#allowmultiplecreditentries").hide();
+			$("#creditAccountHead").combobox();
 		} else if (creditRuleType == "List"){
 			$("#fixedcreditaccount").hide();
 			$("#fixedcreditaccountlabel").hide();
@@ -6760,6 +6773,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			$("#selectedcredittags").hide();
 			$("#allowmultiplecreditentrieslabel").hide();
 			$("#allowmultiplecreditentries").hide();
+			$("#creditAccountHead").combobox();
 		}
 
 		$('input:radio[name=debitRuleType]').change(function (){
@@ -6771,6 +6785,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	            $("#selecteddebittags").hide();
 	            $("#allowmultipledebitentrieslabel").hide();
 	            $("#allowmultipledebitentries").hide();
+	            $("#debitAccountHead").combobox();
 			} else if (selectedType == "List"){
 				$("#fixeddebitaccount").hide();
 	            $("#fixeddebitaccountlabel").hide();
@@ -6798,6 +6813,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	            $("#selectedcredittags").hide();
 	            $("#allowmultiplecreditentrieslabel").hide();
 	            $("#allowmultiplecreditentries").hide();
+	            $("#creditAccountHead").combobox();
 			} else if (selectedType == "List"){
 				$("#fixedcreditaccount").hide();
 	            $("#fixedcreditaccountlabel").hide();
