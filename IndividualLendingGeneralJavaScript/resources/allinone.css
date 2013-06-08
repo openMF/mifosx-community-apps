@@ -4,6 +4,8 @@ strong{font-weight: bolder;}
 /*General*/
 div#container {margin-top:0px;}
 div#content {margin-left:5px; margin-right:5px;}
+.rightVline{border-right:1px solid;}
+.alignCenter{padding-left:12px;padding-right:15px;}
 /*top navigation*/
 #nav, #nav ul {padding:0;margin:0;list-style:none;}  
 #nav a {display:block;padding:7px 7px 7px 7px;color:#ccc;text-decoration:none;}  
