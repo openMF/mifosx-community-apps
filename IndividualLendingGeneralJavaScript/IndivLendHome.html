@@ -7360,12 +7360,10 @@ $(document).ready(function() {
 									<td>
 										<select id="penaltyToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" name="penaltyToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" title="" style="width: 180px">
 											{{#each $parent.parent.data.penaltyOptions}}
-												{{#if penalty === true}}
 												{{#if $ctx.number($parent.parent.data.chargeId)===$ctx.number(id)}}
 													<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
 												{{#else}}
 													<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-												{{/if}}
 												{{/if}}
 											{{/each}}
 
