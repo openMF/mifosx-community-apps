@@ -4765,6 +4765,12 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
 			<span class="rowvalue"><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</span>
 		</div>
+		{{#if status.overpaid}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.overpaidBy")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, totalOverpaid)}}</span>
+		</div>
+		{{/if}}
 		{{#if timeline.actualDisbursementDate}}
 			{{#if $ctx.numberGreaterThanZero(summary.totalOverdue)}}
 		<div class="row">
