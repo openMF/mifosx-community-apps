@@ -1760,11 +1760,10 @@ function editCodeValueFunction(linkId, tableName){
         codeValues.codeId = entityId;
         popupDialogWithReadOnlyFormViewData(codeValues, dialogTitle, templateSelector, dialogWidth, dialogHeight, "dialog.button.close");
         refreshCodeValues(codeValues);
-        $("#addCodeValue").button().click(function(e){
+        $("#addCodeValue"+entityId).button().click(function(e){
             clearErrorsClass();
             //clear previous error messages
             $('#formerrors').html("");
-            var codeId = $("#addCodeValue").prop("data-codeId");
             var newFormData = JSON.stringify($('#entityform').serializeObject());
 
             var addsuccessFunction =  function(data, textStatus, jqXHR) {
@@ -1774,11 +1773,11 @@ function editCodeValueFunction(linkId, tableName){
                     codeValues.crudRows = data;
                     refreshCodeValues(codeValues);
                 }
-                executeAjaxRequest('codes/' + codeId + '/codevalues', "GET", "", codeValuesuccessFunction, formErrorFunction);
+                executeAjaxRequest('codes/' + entityId + '/codevalues', "GET", "", codeValuesuccessFunction, formErrorFunction);
 
             };
 
-            executeAjaxRequest('codes/' + codeId + '/codevalues', "POST", newFormData, addsuccessFunction, formErrorFunction);
+            executeAjaxRequest('codes/' + entityId + '/codevalues', "POST", newFormData, addsuccessFunction, formErrorFunction);
 
            e.preventDefault();
         });
