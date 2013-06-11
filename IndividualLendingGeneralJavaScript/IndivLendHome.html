@@ -5995,7 +5995,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.currency")}}</td>
 					<td>
-							<select id="currencyCode" name="currencyCode" title="" style="width: 181px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
+							<select id="currencyCode" name="currencyCode" title="" style="width: 280px;" onChange="$('#digitsAfterDecimal').val($('#currencyCode option:selected').attr('digitsad'));">
 								<option value="" digitsad="0">{{=$ctx.doI18N("option.currency.first.choice")}}</option>
 							{{#each currencyOptions}}
 								{{#if $parent.parent.data.currency.code===code}}
@@ -6009,7 +6009,7 @@ $(document).ready(function() {
 				</tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.decimalplaces")}}</td>
-					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 175px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
+					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 50px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
 				</tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.nominalAnnualInterestRate")}}</td>
@@ -6021,7 +6021,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestCompoundingPeriodType")}}</td>
 					<td>
-						<select name="interestCompoundingPeriodType" id="interestCompoundingPeriodType"  title="" style="width: 181px;">
+						<select name="interestCompoundingPeriodType" id="interestCompoundingPeriodType" title="" style="width: 280px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each interestCompoundingPeriodTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestCompoundingPeriodType.id)===$ctx.number(id)}}
@@ -6036,7 +6036,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestPostingPeriodType")}}</td>
 					<td>
-						<select name="interestPostingPeriodType" id="interestPostingPeriodType"  title="" style="width: 181px;">
+						<select name="interestPostingPeriodType" id="interestPostingPeriodType"  title="" style="width: 280px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each interestPostingPeriodTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestPostingPeriodType.id)===$ctx.number(id)}}
@@ -6051,7 +6051,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestCalculationType")}}</td>
 					<td>
-						<select name="interestCalculationType" id="interestCalculationType"  title="" style="width: 181px;">
+						<select name="interestCalculationType" id="interestCalculationType"  title="" style="width: 280px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each interestCalculationTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestCalculationType.id)===$ctx.number(id)}}
@@ -6066,7 +6066,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestCalculationDaysInYearType")}}</td>
 					<td>
-						<select name="interestCalculationDaysInYearType" id="interestCalculationDaysInYearType"  title="" style="width: 181px;">
+						<select name="interestCalculationDaysInYearType" id="interestCalculationDaysInYearType"  title="" style="width: 280px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each interestCalculationDaysInYearTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestCalculationDaysInYearType.id)===$ctx.number(id)}}
@@ -6464,7 +6464,7 @@ $(document).ready(function() {
 				</tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.decimalplaces")}}</td>
-					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 175px;" value="{{=$ctx.number(currency.decimalPlaces)}}" disabled="disabled"/></td>
+					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 50px;" value="{{=$ctx.number(currency.decimalPlaces)}}" disabled="disabled"/></td>
 				</tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.nominalAnnualInterestRate")}}</td>
@@ -6475,7 +6475,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestCompoundingPeriodType")}}</td>
 					<td>
-						<select name="interestCompoundingPeriodType" id="interestCompoundingPeriodType"  title="" style="width: 181px;">
+						<select name="interestCompoundingPeriodType" id="interestCompoundingPeriodType"  title="" style="width: 280px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each interestCompoundingPeriodTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestCompoundingPeriodType.id)===$ctx.number(id)}}
@@ -6490,7 +6490,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestPostingPeriodType")}}</td>
 					<td>
-						<select name="interestPostingPeriodType" id="interestPostingPeriodType"  title="" style="width: 181px;">
+						<select name="interestPostingPeriodType" id="interestPostingPeriodType"  title="" style="width: 280px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each interestPostingPeriodTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestPostingPeriodType.id)===$ctx.number(id)}}
@@ -6505,7 +6505,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestCalculationType")}}</td>
 					<td>
-						<select name="interestCalculationType" id="interestCalculationType"  title="" style="width: 181px;">
+						<select name="interestCalculationType" id="interestCalculationType"  title="" style="width: 280px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each interestCalculationTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestCalculationType.id)===$ctx.number(id)}}
@@ -6520,7 +6520,7 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.interestCalculationDaysInYearType")}}</td>
 					<td>
-						<select name="interestCalculationDaysInYearType" id="interestCalculationDaysInYearType"  title="" style="width: 181px;">
+						<select name="interestCalculationDaysInYearType" id="interestCalculationDaysInYearType"  title="" style="width: 280px;">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each interestCalculationDaysInYearTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestCalculationDaysInYearType.id)===$ctx.number(id)}}
