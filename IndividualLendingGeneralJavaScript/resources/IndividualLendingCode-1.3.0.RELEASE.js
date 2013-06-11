@@ -121,6 +121,16 @@ crudData = {
 				editTemplateNeeded: false,
 				refreshListNeeded: true
 			},
+		datatableCreate: {
+				editTemplateNeeded: false,
+				refreshListNeeded: false,
+                dialogWidth: 1200
+			},
+		datatableUpdate: {
+				editTemplateNeeded: false,
+				refreshListNeeded: false,
+                dialogWidth: 1200
+			},
 		report: {
 			editTemplateNeeded: true,
 			refreshListNeeded: true
@@ -649,12 +659,16 @@ function setSysAdminContent(divName) {
 
 	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
 	var maintainMakerCheckerUrl = "maintainTable('permission', 'permissions?makerCheckerable=true', 'PUT');return false;";
+	var createDatatableUrl = "maintainTable('datatableCreate', 'datatables', 'POST'); return false;";
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST'); return false;";
 	var addReportUrl = "launchReportDialog(null);return false;";
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("VIEWDATATABLES") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listdatatables">' + doI18N("administration.link.view.datatables") + '</a>';
+
+	if (jQuery.MifosXUI.showTask("CREATEDATATABLE") == true)
+		htmlOptions += ' | <a href="unknown.html" onclick="' + createDatatableUrl + '" id="createdatatable">' + doI18N("administration.link.create.datatable") + '</a>';
 
 	if (jQuery.MifosXUI.showTask("REGISTERDATATABLE") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + registerDatatableUrl + '" id="registerdatatable">' + doI18N("administration.link.register.datatable") + '</a>';
@@ -5747,7 +5761,7 @@ function refreshLoanDocuments(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction'|| tableName == 'report' || tableName == 'accountingrule') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction'|| tableName == 'report' || tableName == 'accountingrule' || tableName == 'datatable') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 
@@ -5789,6 +5803,15 @@ function refreshLoanDocuments(loanId) {
 						popupDialogWithPostOnlyFormView(putUrl, 'PUT', 'dialog.title.update.password', templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
 					}
 					e.preventDefault();
+				});
+
+				$("a.updatedatatable").click( function(e) {
+					
+						var linkId = this.id;
+						var entityId = linkId.replace("updatedatatable", "");
+                        maintainTable("datatableUpdate", entityId, "PUT");
+					
+						e.preventDefault();
 				});
 
 				$("a.deregister" + tableName).click( function(e) {
@@ -5865,12 +5888,20 @@ function refreshLoanDocuments(loanId) {
 		eval(genSSF);
 		
 		//datatable specific code
-		if (tableName == "datatable") 
-		{
+		if (tableName == "datatable") {
 			dialogTitle = 'dialog.title.register.datatable';
 			popupRegisterDatatableDialog('dialog.title.register.datatable', templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
 			return false;
-		}
+		} else if (tableName == "datatableCreate") {
+			dialogTitle = 'dialog.title.create.datatable';
+			popupCreateDatatableDialog(dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
+			return false;
+		} else if (tableName == "datatableUpdate") {
+            dialogTitle = 'dialog.title.update.datatable';
+            popupUpdateDatatableDialog(dialogTitle, resourceUrl, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
+
+			return false;
+        }
 		//end datatable specific code
 
 		if (resourceUrl.indexOf("/permissions") > -1) 
@@ -7033,6 +7064,459 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#entityform input').first().focus();	
 }
 
+function popupCreateDatatableDialog(titleCode, templateSelector, width, height, saveSuccessFunction) {
+
+var dialogDiv = $("<div id='dialog-form'></div>");
+var data = new Object();
+var formHtml = $(templateSelector).render(data);
+dialogDiv.append(formHtml);
+
+var saveButton = doI18N('dialog.button.save');
+var cancelButton = doI18N('dialog.button.cancel');
+var buttonsOpts = {};
+
+buttonsOpts[saveButton] = function() {
+    var datatableObject = new Object();
+    datatableObject.datatableName = $("#registeredTableName").val();
+    datatableObject.apptableName = $("#applicationTableName").val();
+    datatableObject.multiRow = $("#multiRow").prop("checked");
+    datatableObject.columns = new Array();
+    $("#createDatatableColumns tbody tr").each(function() {
+        var column = new Object();
+        column.name = $(this).find("input[name=columnName]").val();
+        column.type = $(this).find("select[name=columnType]").val();
+        column.mandatory = $(this).find("input[name=columnMandatory]").prop("checked");
+        if (column.type == "String") {
+            column.length = $(this).find("input[name=columnLength]").val();
+        }
+        if (column.type == "Dropdown") {
+            column.code = $(this).find("input[name=columnCode]").val();
+        }
+
+        datatableObject.columns.push(column);
+    });
+
+	executeAjaxRequest("datatables", "POST", JSON.stringify(datatableObject), saveSuccessFunction, formErrorFunction);
+};
+buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+
+dialogDiv.dialog({
+  		title: doI18N(titleCode), 
+  		width: width, 
+  		height: height, 
+  		modal: true,
+  		buttons: buttonsOpts,
+  		close: function() {
+  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+  			$(this).remove();
+		},
+  		open: function (event, ui) {  			
+  			$("#entityform textarea").first().focus();
+  			$('#entityform input').first().focus();
+  		}
+  }).dialog('open');
+
+var templateTableRow = $("table#createDatatableColumns tbody tr").first().clone();
+var rowDeleteFunction = function(e) {
+    e.preventDefault();
+    $(this).parent().parent().remove();
+    return false;
+};
+var changeTypeFunction = function(e) {
+    e.preventDefault();
+
+    var value = $(this).val();
+    if (value == "String") {
+        $(this).parent().parent().find("input[name=columnLength]").removeAttr("disabled").val("");
+    } else {
+        $(this).parent().parent().find("input[name=columnLength]").attr("disabled", "disabled").val("");
+    }
+    if (value =="Dropdown") {
+        $(this).parent().parent().find("input[name=columnCode]").removeAttr("disabled").val("");
+    } else {
+        $(this).parent().parent().find("input[name=columnCode]").attr("disabled", "disabled").val("");
+    }
+
+    return false;
+}
+
+$("table#createDatatableColumns tbody button").click(rowDeleteFunction);
+$("table#createDatatableColumns tbody select").change(changeTypeFunction);
+
+$("table#createDatatableColumns tfoot button").click(function(e) {
+    e.preventDefault();
+    var newRow = $(templateTableRow).clone().appendTo("table#createDatatableColumns tbody");
+    $(newRow).find("button").click(rowDeleteFunction);
+    $(newRow).find("select").change(changeTypeFunction);
+
+    return false;
+});
+
+var fixHelper = function(e, ui) {
+    ui.children().each(function() {
+        $(this).width($(this).width());
+    });
+    return ui;
+};
+
+$("table#createDatatableColumns tbody").sortable({ helper: fixHelper,
+    handle: "div[data-handle=handle]" });
+
+}
+
+function getDatatableColumnRealName(datatableRowObject) {
+
+    var name = $(datatableRowObject).find("input[name=columnName]").val();
+    var type = $(datatableRowObject).find("select[name=columnType]").val();
+
+    if (type == "Dropdown") {
+        var code =  $(datatableRowObject).find("input[name=columnCode]").val();
+
+        name = code + "_cd_" + name;
+    }
+
+    return name;
+}
+
+function getDatatableColumnNewName(datatableRowObject) {
+
+    var newName = $(datatableRowObject).find("input[name=columnNewName]").val();
+    var name = (newName.length > 0) ? newName : $(datatableRowObject).find("input[name=columnName]").val();
+    var type = $(datatableRowObject).find("select[name=columnType]").val();
+
+    if (type == "Dropdown") {
+        var newCode =  $(datatableRowObject).find("input[name=columnNewCode]").val();
+        var code = (newCode.length > 0) ? newCode : $(datatableRowObject).find("input[name=columnCode]").val();
+
+        name = code + "_cd_" + name;
+    }
+
+    return name;
+}
+
+function insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns) {
+    var newRow = $(templateTableRow).clone().appendTo("table#updateDatatableColumns tbody");
+    $(newRow).find("button").click({ array: dropColumns }, rowDeleteFunction);
+    $(newRow).find("select").change(changeTypeFunction);
+
+    $(newRow).find("input[name=columnName]").val(columnData.name).prop("disabled", (columnData.action == "change"));
+    $(newRow).find("input[name=columnNewName]").val(columnData.newName).prop("disabled", (columnData.action == "add"));
+    $(newRow).find("select[name=columnType]").prop("disabled", (columnData.action == "change"));
+    $(newRow).find("select[name=columnType] option[value=" + columnData.type + "]").attr("selected", "selected");
+    $(newRow).find("input[name=columnMandatory]").prop("checked", columnData.mandatory);
+    $(newRow).find("input[name=columnLength]").val(columnData["length"]).prop("disabled", (columnData.type != "String"));
+    $(newRow).find("input[name=columnCode]").val(columnData.code).prop("disabled", (columnData.type != "Dropdown" || columnData.action == "change"));
+    $(newRow).find("input[name=columnNewCode]").val(columnData.newCode).prop("disabled", (columnData.type != "Dropdown" || columnData.action == "add"));
+
+    if (columnData.action == "change") {
+        $(newRow).find("input[name=columnName]").attr("data-original-name", getDatatableColumnRealName($(newRow)));
+        $(newRow).attr("data-original-index", columnData.index);
+    }
+}
+
+function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData) {
+    $("#updateDatatableColumns tbody").empty();
+
+    var populateSuccessFunction = function(data) {
+        var datatableData = JSON.parse(JSON.stringify(data));
+        var typeMap = {};
+        typeMap["varchar"] = "String";
+        typeMap["decimal"] = "Decimal";
+        typeMap["int"] = "Number";
+        typeMap["date"] = "Date";
+        typeMap["text"] = "Text";
+
+        $("#registeredTableName").text(datatableName);
+        $("#applicationTableName option[value=" + datatableData.applicationTableName + "]").attr("selected", "selected");
+
+        if (datatableData.columnHeaderData) {
+            $.each(datatableData.columnHeaderData, function(index, column) {
+                var fkFieldName = datatableData.applicationTableName.substring(2, datatableData.applicationTableName.length) + "_id";
+                if (column.columnName == fkFieldName || column.columnName == "id") {
+                    return true;
+                }
+
+                var name = "";
+                var newName = "";
+                var type = "";
+                var mandatory = false;
+                var length = "";
+                var code = "";
+                var newCode = "";
+                var action = "change";
+
+                if (enteredFormData && enteredFormData[column.columnName]) {
+                    var data = enteredFormData[column.columnName];
+
+                    name = data.name;
+                    newName = (data.newName) ? data.newName : "";
+                    type = data.type;
+                    mandatory = data.mandatory;
+                    length = (data["length"]) ? data["length"] : "";
+                    code = (data.code) ? data.code : "";
+                    newCode = (data.newCode) ? data.newCode : "";
+                    action = data.action;
+
+                    delete enteredFormData[column.columnName];
+                } else {
+                    var indexOfCD = column.columnName.indexOf("_cd_");
+                    name = (indexOfCD > -1) ? column.columnName.substring(indexOfCD + 4, column.columnName.length) : column.columnName;
+                    type = (indexOfCD > -1) ? "Dropdown" : typeMap[column.columnType.toLowerCase()];
+                    mandatory = !column.isNullable;
+                    length = (type == "String") ? column.columnLength : "";
+                    code = (indexOfCD > -1) ? column.columnName.substring(0, indexOfCD) : "";
+                }
+
+                var columnData = {
+                    name: name,
+                    newName: newName,
+                    type: type,
+                    mandatory: mandatory,
+                    length: length,
+                    code: code,
+                    newCode: newCode,
+                    action: action,
+                    index: index
+                };
+                insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns);
+            });
+        }
+        $.each(enteredFormData, function(index, item) {
+            if (item.action != "add") {
+                return true;
+            }
+
+            var columnData = {
+                name: (item.name) ? item.name : "",
+                newName: "",
+                type: item.type,
+                mandatory: item.mandatory,
+                length: (item["length"]) ? item["length"] : "",
+                code: (item.code) ? item.code : "",
+                newCode: "",
+                action: item.action,
+                after: item.after
+            };
+            insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns);
+        });
+    };
+
+    executeAjaxRequest("datatables/" + datatableName, "GET", {}, populateSuccessFunction);
+}
+
+function popupUpdateDatatableDialog(titleCode, datatableName, templateSelector, width, height, saveSuccessFunction) {
+
+var dropColumns = new Array();
+var dialogDiv = $("<div id='dialog-form'></div>");
+var data = new Object();
+var formHtml = $(templateSelector).render(data);
+dialogDiv.append(formHtml);
+
+var saveButton = doI18N('dialog.button.save');
+var cancelButton = doI18N('dialog.button.cancel');
+var buttonsOpts = {};
+
+buttonsOpts[saveButton] = function () { };
+buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+
+dialogDiv.dialog({
+  		title: doI18N(titleCode), 
+  		width: width, 
+  		height: height, 
+  		modal: true,
+  		buttons: buttonsOpts,
+  		close: function() {
+  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+  			$(this).remove();
+		},
+  		open: function (event, ui) {  			
+  			$("#entityform textarea").first().focus();
+  			$('#entityform input').first().focus();
+  		}
+  }).dialog('open');
+
+var enteredFormData = new Object();
+var templateTableRow = $("table#updateDatatableColumns tbody tr").first().clone();
+var rowDeleteFunction = function(e) {
+    e.preventDefault();
+
+    var originalName = $(this).parent().parent().find("input[name=columnName]").attr("data-original-name");
+    if (originalName) {
+        var columnObject = new Object();
+        columnObject.name = originalName;
+        e.data.array.push(columnObject);
+    }
+
+    $(this).parent().parent().remove();
+
+    return false;
+};
+var changeTypeFunction = function(e) {
+    e.preventDefault();
+
+    var attr = $(this).parent().parent().find("input[name=columnName]").attr("data-original-name");
+    var indexOfCD = (attr) ? attr.indexOf("_cd_") : -1;
+    var value = $(this).val();
+
+    if (value == "String") {
+        $(this).parent().parent().find("input[name=columnLength]").removeAttr("disabled").val("");
+    } else {
+        $(this).parent().parent().find("input[name=columnLength]").attr("disabled", "disabled").val("");
+    }
+
+    if (indexOfCD > -1) {
+        if (value == "Dropdown") {
+            $(this).parent().parent().find("input[name=columnNewCode]").removeAttr("disabled").val("");
+        } else {
+            $(this).parent().parent().find("input[name=columnNewCode]").attr("disabled", "disabled").val("");
+        }
+    } else {
+        if (value == "Dropdown") {
+            $(this).parent().parent().find("input[name=columnCode]").removeAttr("disabled").val("");
+        } else {
+            $(this).parent().parent().find("input[name=columnCode]").attr("disabled", "disabled").val("");
+        }
+    }
+
+    return false;
+}
+
+// Populate Data Table
+populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData);
+
+// Handle Events
+$("table#updateDatatableColumns tbody tr").first().remove();
+
+$("table#updateDatatableColumns tfoot button").click(function(e) {
+    e.preventDefault();
+    var newRow = $(templateTableRow).clone().appendTo("table#updateDatatableColumns tbody");
+    $(newRow).find("button").click({ array: dropColumns }, rowDeleteFunction);
+    $(newRow).find("select").change(changeTypeFunction);
+
+    return false;
+});
+
+var fixHelper = function(e, ui) {
+    ui.children().each(function() {
+        $(this).width($(this).width());
+    });
+    return ui;
+};
+
+$("table#updateDatatableColumns tbody").sortable({ 
+    helper: fixHelper,
+    handle: "div[data-handle=handle]",
+    change: function(e, ui) {
+        $(ui.item).attr("data-order-changed", "true");
+    }
+});
+
+$("div[class=ui-dialog-buttonset]").children().first().click({ array: dropColumns }, function(e) {
+    enteredFormData = new Object();
+    var datatableObject = new Object();
+    datatableObject.apptableName = $("#applicationTableName").val();
+    var fkFieldName = datatableObject.apptableName.substring(2, datatableObject.apptableName.length) + "_id";
+
+    var dropColumns = e.data.array;
+    if (dropColumns && dropColumns.length > 0) {
+        datatableObject.dropColumns = new Array();
+    }
+    // Drop Columns
+    $.each(dropColumns, function(index, column) {
+        var dropObject = new Object();
+        dropObject.name = column.name;
+        datatableObject.dropColumns.push(dropObject);
+    });
+    // Add Columns
+    $("table#updateDatatableColumns tbody tr").not("[data-original-index]").each(function() {
+        if (datatableObject.addColumns == null) {
+            datatableObject.addColumns = new Array();
+        }
+
+        var addObject = new Object();
+        addObject.name = $(this).find("input[name=columnName]").val();
+        addObject.type = $(this).find("select[name=columnType]").val();
+        addObject.mandatory = $(this).find("input[name=columnMandatory]").prop("checked");
+        if (addObject.type == "String") {
+            addObject.length = $(this).find("input[name=columnLength]").val();
+        }
+        if (addObject.type == "Dropdown") {
+            addObject.code = $(this).find("input[name=columnCode]").val();
+        }
+
+        var prev = $(this).prevAll("tr[data-original-index]");
+        if (prev.length > 0) {
+            prev = prev.first();
+        }
+
+        prev = (prev.length) ? getDatatableColumnRealName($(prev)) : fkFieldName;
+        addObject.after = prev;
+
+        var fullName = (addObject.code) ? addObject.code + "_cd_" + addObject.name : addObject.name;
+        enteredFormData[fullName] = new Object();
+        enteredFormData[fullName].name = addObject.name;
+        enteredFormData[fullName].type = addObject.type;
+        enteredFormData[fullName].mandatory = addObject.mandatory;
+        enteredFormData[fullName].length = addObject.length;
+        enteredFormData[fullName].code = addObject.code;
+        enteredFormData[fullName].after = addObject.after;
+        enteredFormData[fullName].action = "add";
+
+        datatableObject.addColumns.unshift(addObject);
+    });
+    // Change Columns
+    $("table#updateDatatableColumns tbody tr[data-original-index]").each(function() {
+        if (datatableObject.changeColumns == null) {
+            datatableObject.changeColumns = new Array();
+        }
+
+        var type = $(this).find("select[name=columnType]").val();
+        var newName = $(this).find("input[name=columnNewName]").val();
+        var changeObject = new Object();
+
+        changeObject.name = $(this).find("input[name=columnName]").val();
+        if (newName.length > 0) {
+            changeObject.newName = newName;
+        }
+        changeObject.mandatory = $(this).find("input[name=columnMandatory]").prop("checked");
+        if (type == "String") {
+            changeObject.length = $(this).find("input[name=columnLength]").val();
+        }
+        if (type == "Dropdown") {
+            changeObject.code = $(this).find("input[name=columnCode]").val();
+            changeObject.newCode = $(this).find("input[name=columnNewCode]").val();
+        }
+
+        var prev = $(this).prev();
+        prev = (prev.length) ? getDatatableColumnNewName($(prev)) : fkFieldName;
+        changeObject.after = prev;
+
+        var fullName = (changeObject.code) ? changeObject.code + "_cd_" + changeObject.name : changeObject.name;
+        enteredFormData[fullName] = new Object();
+        enteredFormData[fullName].name = changeObject.name;
+        enteredFormData[fullName].newName = changeObject.newName;
+        enteredFormData[fullName].type = type;
+        enteredFormData[fullName].mandatory = changeObject.mandatory;
+        enteredFormData[fullName].length = changeObject.length;
+        enteredFormData[fullName].code = changeObject.code;
+        enteredFormData[fullName].newCode = changeObject.newCode;
+        enteredFormData[fullName].after = changeObject.after;
+        enteredFormData[fullName].action = "change";
+
+        datatableObject.changeColumns.push(changeObject);
+    });
+
+    var errorFunction = function(jqXHR, textStatus, errorThrown) {
+        dropColumns = new Array();
+        populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData);
+        formErrorFunction(jqXHR, textStatus, errorThrown);
+    };
+
+	executeAjaxRequest("datatables/" + datatableName, "PUT", JSON.stringify(datatableObject), saveSuccessFunction, errorFunction);
+});
+
+}
+
 function popupRegisterDatatableDialog(titleCode, templateSelector, width, height, saveSuccessFunction) {
 
 var dialogDiv = $("<div id='dialog-form'></div>");
@@ -7066,7 +7550,6 @@ dialogDiv.dialog({
   		}
   }).dialog('open');
 }
-
 
 // used by deposit account functionality
 function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {

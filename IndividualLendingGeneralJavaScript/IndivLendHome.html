@@ -3028,6 +3028,8 @@ $(document).ready(function() {
 		<th>{{=$ctx.doI18N("table.heading.application.table")}}</th>
 		<th>{{=$ctx.doI18N("table.heading.registered.datatable")}}</th>
 		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
 	</tr>
 </thead>
 <tbody>
@@ -3036,8 +3038,22 @@ $(document).ready(function() {
 	<td>{{=applicationTableName}}</td>
 	<td>{{=registeredTableName}}</td>
 	<td>
+		{{#if $ctx.showTask("UPDATEDATATABLE")}}
+		<a id='updatedatatable{{=registeredTableName}}' class='updatedatatable' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.update.datatable")}}</a>
+		{{#else}}
+		&nbsp;
+		{{/if}}
+	</td>
+	<td>
 		{{#if $ctx.showTask("DEREGISTERDATATABLE")}}
 		<a id='deregisterdatatable{{=registeredTableName}}' class='deregisterdatatable' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.deregister")}}</a>
+		{{#else}}
+		&nbsp;
+		{{/if}}
+	</td>
+	<td>
+		{{#if $ctx.showTask("DELETEDATATABLE")}}
+		<a id='deletedatatable{{=registeredTableName}}' class='deletedatatable' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete.datatable")}}</a>
 		{{#else}}
 		&nbsp;
 		{{/if}}
@@ -3048,6 +3064,124 @@ $(document).ready(function() {
 </table>
 </script>
 
+<script id="datatableCreateFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" name="createDatatableForm">
+    <div id="formerrors"></div>
+	<label for="registeredTableName">{{=$ctx.doI18N("form.label.registeredTableName")}}</label>
+    <input id="registeredTableName" name="registeredTableName" title="" type="text" value="{{=registeredTableName}}" size="75"/>
+    <label for="multiRow">{{=$ctx.doI18N("form.label.datatable.multiRow")}}</label>
+    <input id="multiRow" name="multiRow" type="checkbox" />
+
+    <label for="applicationTableName">{{=$ctx.doI18N("form.label.applicationTableName")}}</label>
+    <select id="applicationTableName" name="applicationTableName">
+        <option value="">---</option>
+        <option value="m_client">{{=$ctx.doI18N("apptable.m.client")}}</option>
+        <option value="m_group">{{=$ctx.doI18N("apptable.m.group")}}</option>
+        <option value="m_loan">{{=$ctx.doI18N("apptable.m.loan")}}</option>
+        <option value="m_office">{{=$ctx.doI18N("apptable.m.office")}}</option>
+        <option value="m_savings_account">{{=$ctx.doI18N("apptable.m.savings.account")}}</option>
+    </select>
+
+    <table id="createDatatableColumns" class="createDatatable">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.name")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.type")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.mandatory")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.length")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.code")}}</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><div class="ui-state-default ui-corner-all" data-handle="handle"><span class="ui-icon ui-icon-triangle-2-n-s"</span></div></td>
+                <td><input type="text" name="columnName" /></td>
+                <td>
+                    <select name="columnType">
+                        <option value="String">{{=$ctx.doI18N("column.type.string")}}</option>
+                        <option value="Number">{{=$ctx.doI18N("column.type.number")}}</option>
+                        <option value="Decimal">{{=$ctx.doI18N("column.type.decimal")}}</option>
+                        <option value="Date">{{=$ctx.doI18N("column.type.date")}}</option>
+                        <option value="Text">{{=$ctx.doI18N("column.type.text")}}</option>
+                        <option value="Dropdown">{{=$ctx.doI18N("column.type.dropdown")}}</option>
+                    </select>
+                </td>
+                <td><input type="checkbox" name="columnMandatory" /></td>
+                <td><input type="text" name="columnLength" /></td>
+                <td><input type="text" name="columnCode" disabled="disabled" /></td>
+                <td><button>{{=$ctx.doI18N("form.button.datatable.column.delete")}}</button></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7"><button>{{=$ctx.doI18N("form.button.datatable.column.add")}}</button></td>
+            </tr>
+        </tfoot>
+    </table>
+</form>
+</script>
+
+<script id="datatableUpdateFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" name="updateDatatableForm">
+    <div id="formerrors"></div>
+	<label for="registeredTableName">{{=$ctx.doI18N("form.label.registeredTableName")}}</label>
+    <span id="registeredTableName" name="registeredTableName">{{=registeredTableName}}</span>
+
+    <label for="applicationTableName">{{=$ctx.doI18N("form.label.applicationTableName")}}</label>
+    <select id="applicationTableName" name="applicationTableName">
+        <option value="m_client">{{=$ctx.doI18N("apptable.m.client")}}</option>
+        <option value="m_group">{{=$ctx.doI18N("apptable.m.group")}}</option>
+        <option value="m_loan">{{=$ctx.doI18N("apptable.m.loan")}}</option>
+        <option value="m_office">{{=$ctx.doI18N("apptable.m.office")}}</option>
+        <option value="m_savings_account">{{=$ctx.doI18N("apptable.m.savings.account")}}</option>
+    </select>
+
+    <table id="updateDatatableColumns" class="updateDatatable">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.name")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.newName")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.type")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.mandatory")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.length")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.code")}}</th>
+                <th>{{=$ctx.doI18N("table.heading.datatable.column.newCode")}}</th>
+                <th>&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><div class="ui-state-default ui-corner-all" data-handle="handle"><span class="ui-icon ui-icon-triangle-2-n-s"</span></div></td>
+                <td><input type="text" name="columnName" /></td>
+                <td><input type="text" name="columnNewName" disabled="disabled" /></td>
+                <td>
+                    <select name="columnType">
+                        <option value="String">{{=$ctx.doI18N("column.type.string")}}</option>
+                        <option value="Number">{{=$ctx.doI18N("column.type.number")}}</option>
+                        <option value="Decimal">{{=$ctx.doI18N("column.type.decimal")}}</option>
+                        <option value="Date">{{=$ctx.doI18N("column.type.date")}}</option>
+                        <option value="Text">{{=$ctx.doI18N("column.type.text")}}</option>
+                        <option value="Dropdown">{{=$ctx.doI18N("column.type.dropdown")}}</option>
+                    </select>
+                </td>
+                <td><input type="checkbox" name="columnMandatory" /></td>
+                <td><input type="text" name="columnLength" /></td>
+                <td><input type="text" name="columnCode" disabled="disabled" /></td>
+                <td><input type="text" name="columnNewCode" disabled="disabled" /></td>
+                <td><button>{{=$ctx.doI18N("form.button.datatable.column.delete")}}</button></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7"><button>{{=$ctx.doI18N("form.button.datatable.column.add")}}</button></td>
+            </tr>
+        </tfoot>
+    </table>
+</form>
+</script>
 
 <script id="datatableFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform" name="registerDatatableForm">

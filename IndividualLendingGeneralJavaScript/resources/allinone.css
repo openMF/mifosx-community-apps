@@ -138,3 +138,44 @@ fieldset{border: 0;padding: 0;margin: 0;}
 #submit:active{outline: none;-moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;}
 div#container{position: absolute;top:0;bottom:0;right:0;left:0;}
 div#accountingPlaceholdersDiv fieldset td:first-child { min-width: 200px; width: 200px; max-width: 200px; }
+form[name=createDatatableForm] label { font-weight: bold; }
+form[name=createDatatableForm] #registeredTableName { width: 40%; margin: 10px 5px; }
+form[name=createDatatableForm] label[for=multiRow] { margin: 10px 5px; display: inline-block; }
+form[name=createDatatableForm] #multiRow { margin: 10px 5px; }
+form[name=createDatatableForm] #applicationTableName { width: 200px; margin: 10px 5px; padding: 2px; font-weight: bold; }
+table.createDatatable { min-width: 100%; width: 100%; max-width: 100%; margin: 25px auto 25px auto; }
+table.createDatatable thead th:nth-child(1) { min-width: 45px; width: 45px; max-width: 45px; }
+table.createDatatable thead th:nth-child(2) { width: 40%; }
+table.createDatatable thead th:nth-child(3) { width: 20%; }
+table.createDatatable thead th:nth-child(4) { min-width: 70px; width: 5%; }
+table.createDatatable thead th:nth-child(5) { width: 10%; }
+table.createDatatable thead th:nth-child(7) { min-width: 70px; width: 5%; }
+table.createDatatable thead th { text-align: center; font-weight: bold; padding: 15px 0px 15px 0px; }
+table.createDatatable tbody td { text-align: center; font-weight: bold; padding: 5px 10px 5px 5px; border: 1px dashed lightgray; }
+table.createDatatable tfoot td { text-align: left; font-weight: bold; padding: 15px; }
+table.createDatatable input, table.createDatatable select { max-width: 100%; width: 100%; padding: 2px 0px; }
+table.createDatatable a, table.createDatatable a:visited { font-weight: normal; color: blue; text-decoration: none; }
+table.createDatatable a:hover { font-weight: normal; color: blue; text-decoration: underline; }
+table.createDatatable button { padding: 5px; font-weight: bold; }
+table.createDatatable tbody div[data-handle=handle] { padding: 5px; margin-left: 4px; cursor: move; }
+form[name=updateDatatableForm] label { font-weight: bold; }
+form[name=updateDatatableForm] #registeredTableName { display: block; width: 40%; margin: 10px 5px; }
+form[name=updateDatatableForm] #applicationTableName { width: 200px; margin: 10px 5px; padding: 2px; font-weight: bold; }
+table.updateDatatable { min-width: 100%; width: 100%; max-width: 100%; margin: 25px auto 25px auto; }
+table.updateDatatable thead th:nth-child(1) { min-width: 45px; width: 45px; max-width: 45px; }
+table.updateDatatable thead th:nth-child(2) { width: 20%; }
+table.updateDatatable thead th:nth-child(3) { width: 20%; }
+table.updateDatatable thead th:nth-child(4) { width: 20%; }
+table.updateDatatable thead th:nth-child(5) { min-width: 70px; width: 5%; }
+table.updateDatatable thead th:nth-child(6) { width: 10%; }
+table.updateDatatable thead th:nth-child(7) { width: 10%; }
+table.updateDatatable thead th:nth-child(8) { width: 10%; }
+table.updateDatatable thead th:nth-child(9) { min-width: 70px; width: 5%; }
+table.updateDatatable thead th { text-align: center; font-weight: bold; padding: 15px 0px 15px 0px; }
+table.updateDatatable tbody td { text-align: center; font-weight: bold; padding: 5px 10px 5px 5px; border: 1px dashed lightgray; }
+table.updateDatatable tfoot td { text-align: left; font-weight: bold; padding: 15px; }
+table.updateDatatable input, table.updateDatatable select { max-width: 100%; width: 100%; padding: 2px 0px; }
+table.updateDatatable a, table.updateDatatable a:visited { font-weight: normal; color: blue; text-decoration: none; }
+table.updateDatatable a:hover { font-weight: normal; color: blue; text-decoration: underline; }
+table.updateDatatable button { padding: 5px; font-weight: bold; }
+table.updateDatatable tbody div[data-handle=handle] { padding: 5px; margin-left: 4px; cursor: move; }
