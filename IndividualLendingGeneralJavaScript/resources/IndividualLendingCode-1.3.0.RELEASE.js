@@ -7063,8 +7063,64 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#entityform input').first().focus();	
 }
 
+function validateCreateDatatableRow(row, index, validationErrors) {
+    var name = $(row).find("input[name=columnName]").val();
+    var type = $(row).find("select[name=columnType]").val();
+    var length = $(row).find("input[name=columnLength]").val();
+    var code = $(row).find("input[name=columnCode]").val();
+
+    validationErrors[index] = new Object();
+    if (name.length <= 0 || !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,}[a-zA-Z0-9]$/.test(name))) {
+        validationErrors[index].name = true;
+    }
+    if (type == "String") {
+        if (isNaN(parseInt(length)) || !isFinite(length) || length <= 0) {
+            validationErrors[index].length = true;
+        }
+    }
+    if (type == "Dropdown")
+    {
+        if (!(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,48}[a-zA-Z0-9]$/.test(code))) {
+            validationErrors[index].code = true;
+        }
+    }
+}
+
+function validateUpdateDatatableRow(row, validationErrors) {
+    var id = $(row).attr("id");
+    var name = $(row).find("input[name=columnName]").val();
+    var newName = $(row).find("input[name=columnNewName]").val();
+    var type = $(row).find("select[name=columnType]").val();
+    var length = $(row).find("input[name=columnLength]").val();
+    var code = $(row).find("input[name=columnCode]").val();
+    var newCode = $(row).find("input[name=columnNewCode]").val();
+
+    validationErrors[id] = new Object();
+    if (name.length <= 0 || !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,}[a-zA-Z0-9]$/.test(name))) {
+        validationErrors[id].name = true;
+    }
+    if (newName.length > 0 && !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,}[a-zA-Z0-9]$/.test(newName))) {
+        validationErrors[id].newName = true;
+    }
+    if (type == "String") {
+        if (isNaN(parseInt(length)) || !isFinite(length) || length <= 0) {
+            validationErrors[id].length = true;
+        }
+    }
+    if (type == "Dropdown")
+    {
+        if (!(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,48}[a-zA-Z0-9]$/.test(code))) {
+            validationErrors[id].code = true;
+        }
+        if (newCode.length > 0 && !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,48}[a-zA-Z0-9]$/.test(newCode))) {
+            validationErrors[id].newCode = true;
+        }
+    }
+}
+
 function popupCreateDatatableDialog(titleCode, templateSelector, width, height, saveSuccessFunction) {
 
+var validationErrors = null;
 var dialogDiv = $("<div id='dialog-form'></div>");
 var data = new Object();
 var formHtml = $(templateSelector).render(data);
@@ -7075,12 +7131,13 @@ var cancelButton = doI18N('dialog.button.cancel');
 var buttonsOpts = {};
 
 buttonsOpts[saveButton] = function() {
+    validationErrors = new Object();
     var datatableObject = new Object();
     datatableObject.datatableName = $("#registeredTableName").val();
     datatableObject.apptableName = $("#applicationTableName").val();
     datatableObject.multiRow = $("#multiRow").prop("checked");
     datatableObject.columns = new Array();
-    $("#createDatatableColumns tbody tr").each(function() {
+    $("#createDatatableColumns tbody tr").each(function(index) {
         var column = new Object();
         column.name = $(this).find("input[name=columnName]").val();
         column.type = $(this).find("select[name=columnType]").val();
@@ -7092,10 +7149,37 @@ buttonsOpts[saveButton] = function() {
             column.code = $(this).find("input[name=columnCode]").val();
         }
 
+        validateCreateDatatableRow($(this), index, validationErrors);
+
         datatableObject.columns.push(column);
     });
 
-	executeAjaxRequest("datatables", "POST", JSON.stringify(datatableObject), saveSuccessFunction, formErrorFunction);
+    var errorFunction = function(jqXHR, textStatus, errorThrown) {
+        handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
+
+        if (!(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,48}[a-zA-Z0-9]$/.test(datatableObject.datatableName))) {
+            $("#registeredTableName").addClass("ui-state-error");
+        }
+        if (datatableObject.apptableName.length <= 0) {
+            $("#applicationTableName").addClass("ui-state-error");
+        }
+
+        $.each(validationErrors, function(index, item) {
+            var row = $("table#createDatatableColumns tbody").children().eq(index);
+
+            if (item.name) {
+                $(row).find("input[name=columnName]").addClass("ui-state-error");
+            }
+            if (item.length) {
+                $(row).find("input[name=columnLength]").addClass("ui-state-error");
+            }
+            if (item.code) {
+                $(row).find("input[name=columnCode]").addClass("ui-state-error");
+            }
+        });
+    };
+
+	executeAjaxRequest("datatables", "POST", JSON.stringify(datatableObject), saveSuccessFunction, errorFunction);
 };
 buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
 
@@ -7124,17 +7208,9 @@ var rowDeleteFunction = function(e) {
 var changeTypeFunction = function(e) {
     e.preventDefault();
 
-    var value = $(this).val();
-    if (value == "String") {
-        $(this).parent().parent().find("input[name=columnLength]").removeAttr("disabled").val("");
-    } else {
-        $(this).parent().parent().find("input[name=columnLength]").attr("disabled", "disabled").val("");
-    }
-    if (value =="Dropdown") {
-        $(this).parent().parent().find("input[name=columnCode]").removeAttr("disabled").val("");
-    } else {
-        $(this).parent().parent().find("input[name=columnCode]").attr("disabled", "disabled").val("");
-    }
+    var type = $(this).val();
+    $(this).parent().parent().find("input[name=columnLength]").prop("disabled", (type != "String")).removeClass("ui-state-error");
+    $(this).parent().parent().find("input[name=columnCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
 
     return false;
 }
@@ -7211,9 +7287,11 @@ function insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, c
         $(newRow).find("input[name=columnName]").attr("data-original-name", getDatatableColumnRealName($(newRow)));
         $(newRow).attr("data-original-index", columnData.index);
     }
+
+    $(newRow).attr("id", columnData.id);
 }
 
-function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData) {
+function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData, validationErrors) {
     $("#updateDatatableColumns tbody").empty();
 
     var populateSuccessFunction = function(data) {
@@ -7243,6 +7321,7 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
                 var code = "";
                 var newCode = "";
                 var action = "change";
+                var id = "";
 
                 if (enteredFormData && enteredFormData[column.columnName]) {
                     var data = enteredFormData[column.columnName];
@@ -7255,15 +7334,17 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
                     code = (data.code) ? data.code : "";
                     newCode = (data.newCode) ? data.newCode : "";
                     action = data.action;
+                    id = data.id;
 
                     delete enteredFormData[column.columnName];
                 } else {
                     var indexOfCD = column.columnName.indexOf("_cd_");
                     name = (indexOfCD > -1) ? column.columnName.substring(indexOfCD + 4, column.columnName.length) : column.columnName;
                     type = (indexOfCD > -1) ? "Dropdown" : typeMap[column.columnType.toLowerCase()];
-                    mandatory = !column.isNullable;
+                    mandatory = !column.isColumnNullable;
                     length = (type == "String") ? column.columnLength : "";
                     code = (indexOfCD > -1) ? column.columnName.substring(0, indexOfCD) : "";
+                    id = new Date().getTime();
                 }
 
                 var columnData = {
@@ -7275,7 +7356,8 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
                     code: code,
                     newCode: newCode,
                     action: action,
-                    index: index
+                    index: index,
+                    id: id
                 };
                 insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns);
             });
@@ -7294,10 +7376,33 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
                 code: (item.code) ? item.code : "",
                 newCode: "",
                 action: item.action,
-                after: item.after
+                after: item.after,
+                id: item.id
             };
             insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns);
         });
+
+        if (validationErrors) {
+            $.each(validationErrors, function(index, item) {
+                var row = $("table#updateDatatableColumns tbody tr[id='" + index + "']");
+
+                if (item.name) {
+                    $(row).find("input[name=columnName]").addClass("ui-state-error");
+                }
+                if (item.newName) {
+                    $(row).find("input[name=columnNewName]").addClass("ui-state-error");
+                }
+                if (item.length) {
+                    $(row).find("input[name=columnLength]").addClass("ui-state-error");
+                }
+                if (item.code) {
+                    $(row).find("input[name=columnCode]").addClass("ui-state-error");
+                }
+                if (item.newCode) {
+                    $(row).find("input[name=columnNewCode]").addClass("ui-state-error");
+                }
+            });
+        }
     };
 
     executeAjaxRequest("datatables/" + datatableName, "GET", {}, populateSuccessFunction);
@@ -7305,6 +7410,7 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
 
 function popupUpdateDatatableDialog(titleCode, datatableName, templateSelector, width, height, saveSuccessFunction) {
 
+var validationErrors = null;
 var dropColumns = new Array();
 var dialogDiv = $("<div id='dialog-form'></div>");
 var data = new Object();
@@ -7355,26 +7461,14 @@ var changeTypeFunction = function(e) {
 
     var attr = $(this).parent().parent().find("input[name=columnName]").attr("data-original-name");
     var indexOfCD = (attr) ? attr.indexOf("_cd_") : -1;
-    var value = $(this).val();
+    var type = $(this).val();
 
-    if (value == "String") {
-        $(this).parent().parent().find("input[name=columnLength]").removeAttr("disabled").val("");
-    } else {
-        $(this).parent().parent().find("input[name=columnLength]").attr("disabled", "disabled").val("");
-    }
+    $(this).parent().parent().find("input[name=columnLength]").prop("disabled", (type != "String")).removeClass("ui-state-error");
 
     if (indexOfCD > -1) {
-        if (value == "Dropdown") {
-            $(this).parent().parent().find("input[name=columnNewCode]").removeAttr("disabled").val("");
-        } else {
-            $(this).parent().parent().find("input[name=columnNewCode]").attr("disabled", "disabled").val("");
-        }
+        $(this).parent().parent().find("input[name=columnNewCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
     } else {
-        if (value == "Dropdown") {
-            $(this).parent().parent().find("input[name=columnCode]").removeAttr("disabled").val("");
-        } else {
-            $(this).parent().parent().find("input[name=columnCode]").attr("disabled", "disabled").val("");
-        }
+        $(this).parent().parent().find("input[name=columnCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
     }
 
     return false;
@@ -7389,8 +7483,10 @@ $("table#updateDatatableColumns tbody tr").first().remove();
 $("table#updateDatatableColumns tfoot button").click(function(e) {
     e.preventDefault();
     var newRow = $(templateTableRow).clone().appendTo("table#updateDatatableColumns tbody");
+    var id = new Date().getTime();
     $(newRow).find("button").click({ array: dropColumns }, rowDeleteFunction);
     $(newRow).find("select").change(changeTypeFunction);
+    $(newRow).attr("id", id);
 
     return false;
 });
@@ -7460,6 +7556,7 @@ $("div[class=ui-dialog-buttonset]").children().first().click({ array: dropColumn
         enteredFormData[fullName].code = addObject.code;
         enteredFormData[fullName].after = addObject.after;
         enteredFormData[fullName].action = "add";
+        enteredFormData[fullName].id = $(this).attr("id");
 
         datatableObject.addColumns.unshift(addObject);
     });
@@ -7501,13 +7598,19 @@ $("div[class=ui-dialog-buttonset]").children().first().click({ array: dropColumn
         enteredFormData[fullName].newCode = changeObject.newCode;
         enteredFormData[fullName].after = changeObject.after;
         enteredFormData[fullName].action = "change";
+        enteredFormData[fullName].id = $(this).attr("id");
 
         datatableObject.changeColumns.push(changeObject);
     });
 
+    validationErrors = new Object();
+    $("table#updateDatatableColumns tbody tr").each(function(index) {
+        validateUpdateDatatableRow($(this), validationErrors);
+    });
+
     var errorFunction = function(jqXHR, textStatus, errorThrown) {
         dropColumns = new Array();
-        populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData);
+        populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData, validationErrors);
         formErrorFunction(jqXHR, textStatus, errorThrown);
     };
 
