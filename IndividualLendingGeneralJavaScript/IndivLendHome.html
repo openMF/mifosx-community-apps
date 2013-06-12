@@ -69,6 +69,7 @@ JQuery plugins:
 <script type="text/javascript" src="resources/libs/jqxTree/jqxscrollbar.js"></script>
 <script type="text/javascript" src="resources/libs/jqxTree/jqxpanel.js"></script>
 <script type="text/javascript" src="resources/libs/jqxTree/jqxtree.js"></script>
+<script type="text/javascript" src="resources/libs/jqxTree/jqxcheckbox.js"></script>
 
 <!-- JQuery print plugin -->
 <script type="text/javascript"	src="resources/libs/printThis.js"></script>
@@ -10252,6 +10253,7 @@ $(document).ready(function() {
     </table>
 </script>
 
+<<<<<<< HEAD
 <!--Start Quipo TEVI dashboard templates-->
 <script id="quipoExampleGeneralDashboardTemplate" type="text/x-jquery-tmpl">
     <table id="quipoExGenDashboard" width="100%" border="1">
@@ -10416,6 +10418,56 @@ $(document).ready(function() {
 		</div>
 	</div>
 </div>
+
+<script id="holidayFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+    <div id="formerrors"></div>
+    
+    <fieldset>
+        <legend>{{=$ctx.doI18N("form.legend.holiday.details")}}</legend>
+        <table>
+            <tr>
+                <td>
+                    <label for="name">{{=$ctx.doI18N("form.label.holidayName")}}</label>
+                </td>
+                <td>
+                    <input id="name" name="name" title="" type="text"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+                    <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+                    <label for="fromDate">{{=$ctx.doI18N("form.label.fromDate")}}</label>
+                </td>
+                <td>
+                    <input id="fromDate" name="fromDate" title="" type="text" value="{{=$ctx.globalDate(fromDate)}}" class="datepickerfieldnoconstraint" />&nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="toDate">{{=$ctx.doI18N("form.label.toDate")}}</label>
+                </td>
+                <td>
+                    <input id="toDate" name="toDate" title="" type="text" value="{{=$ctx.globalDate(toDate)}}" class="datepickerfieldnoconstraint" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="description">{{=$ctx.doI18N("form.label.holiday.description")}}</label>
+                </td>
+                <td>
+                    <textarea cols="40" rows="3" id="description" name="description" title="">{{=description}}</textarea>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <div id='jqxWidget'>
+        <div style='float: left;'>
+            <div id='offices' style='float: left; margin-left: 4px;'></div>
+        </div>
+    </div>
+</form>
 </script>
 </body>
 </html>
