@@ -1442,7 +1442,7 @@ $(document).ready(function() {
 		{{#else}}
 			<button id="editstandardgroupbtn{{=id}}" class="editstandardgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
 		{{/if}}
-
+		<button id="addgrouprole{{=id}}" class="addgrouprole">{{=$ctx.doI18N("label.group.add.group.role")}}
         {{#if $ctx.showTask("AddGroupLoan")}}
  		<button id="newgrouploanbtn{{=id}}" class="newgrouploanbtn">{{=$ctx.doI18N("label.group.new.loan.account")}}</button>
         {{/if}}
@@ -1519,8 +1519,76 @@ $(document).ready(function() {
         </div>
     </div>
 </script>
-<script id="groupSummaryCountContentTemplate" type="text/x-jquery-tmpl">
 
+<script id="addGroupRuleFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform" >
+	<div id="formerrors"></div>
+	<table>
+		<tr>
+			<td>
+				<label for="clientId">{{=$ctx.doI18N("label.select.client")}}</label>
+				<select name="clientId" id="clientId"  title="">
+					<option value="">{{=$ctx.doI18N("option.client.search.first.choice")}}</option>
+					{{#each clientMembers}}
+						{{#if $parent.parent.data.selectedRole}}
+							{{#if $parent.parent.parent.data.selectedRole.clientId === id}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							{{/if}}
+						{{#else}}		
+							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+						{{/if}}	
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="role">{{=$ctx.doI18N("label.select.role")}}</label>
+				<select name="role" id="role"  title="">
+					<option value="">{{=$ctx.doI18N("option.role.first.choice")}}</option>
+					{{#each availableRoles}}
+						{{#if $parent.parent.data.selectedRole}}
+							{{#if $parent.parent.parent.data.selectedRole.role.id === id}}
+								<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							{{#else}}
+								<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							{{/if}}
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+			</td>
+		<tr>
+	</table>	
+ </form>
+</script>
+
+<script id="groupRolesTabTemplate" type="text/x-jquery-tmpl">
+	<table id="groupRolesTable" width="100%">
+		<thead>
+			<th>{{=$ctx.doI18N("table.heading.role.client.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.role.name")}}</th>
+			<th>&nbsp;</th>
+		</thead>
+		<tbody>
+			{{#each groupRoles}}
+				<tr>
+					<td>{{=clientName}}</td>
+					<td>{{=role.name}}</td>
+					<td>
+	                    <a id='editgrouprole{{=id}}' class='editgrouprole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+	                    <a id='unassignrole{{=id}}' class='unassignrole' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.unassignrole")}}</a>
+	                </td>
+				</tr>
+			{{/each}}
+		</tbody>
+	</table>
+</script>
+
+<script id="groupSummaryCountContentTemplate" type="text/x-jquery-tmpl">
 <table id="groupsummarycounttable" class="pretty displayschedule">
     <thead>
         <tr>
