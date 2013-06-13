@@ -1,3 +1,32 @@
+tevi = {
+	root:{
+		programDir:{
+			fullName:'',
+			id: 0,
+			organisational_role_enum:0,
+			top: false
+		},
+		branchDir:{
+			fullName:'',
+			id: 0,
+			organisational_role_enum:0,
+			top: false
+		},
+		coordinator:{
+			fullName:'',
+			id: 0,
+			organisational_role_enum:0,
+			top: false
+		},
+		fieldAgent:{
+			fullName:'',
+			id: 0,
+			organisational_role_enum:0,
+			top: false
+		}
+	}
+}
+
 //over-ride show first page
 custom.showFirstPage = function() {
 	if (mStaffUser.organisationalRole == undefined) {
@@ -46,6 +75,7 @@ function cleanRoot(){
 	
 }
 function viewBelow(roleId, parent_id, parent_fullName, staffId, display_name){
+	//alert("viewAbove: " + roleId + "   staff id: " + staffId + "  parent: " + parent_fullName + "   name: " + display_name)
 	var staff = new Object();
 	staff.staffId = staffId;
 	staff.display_name = display_name;
@@ -74,7 +104,7 @@ function viewBelow(roleId, parent_id, parent_fullName, staffId, display_name){
 }
 function viewAbove(roleId, staffId){
 	var url = "staff/"+staffId;
-	
+	//alert("viewAbove: " + roleId + "   staff id: " + staffId)
 	executeAjaxRequest(url, 'GET', "",function(data){
 		var staff = new Object();
 		staff.staffId = data.id;
@@ -129,6 +159,8 @@ function showProgramDirectorPage(divName) {
 		staff.staffId = mStaffUser.staffId;
 		staff.display_name = mStaffUser.staffDisplayName;
 	}
+	
+	
 	fillRole_FieldAgent(staff.staffId, staff.display_name);
 	fillRoleStats_FieldAgent(staff.staffId);
 	fillStaffList(staff.staffId);
@@ -192,7 +224,7 @@ function showFieldAgentPage(divName, staff) {
 }
 
 function fillRole_FieldAgent(id, name) {
-	
+	//alert("fillRole_FieldAgent: " + id + "   name: " + name)
 	var data = {
 					id: id,
 					name: name
@@ -203,7 +235,8 @@ function fillRole_FieldAgent(id, name) {
 }
 
 function fillRoleStats_FieldAgent(id) {
-	
+
+	//alert("fillRoleStats_FieldAgent: " + id)
     var url = "runreports/FieldAgentStats?R_staffId=" + id + "&genericResultSet=false";
     
 	var successFunction = function(data, textStatus, jqXHR) {
@@ -216,6 +249,7 @@ function fillRoleStats_FieldAgent(id) {
 }
 function fillList_FieldAgent(id) {
 
+	//alert("fillList_FieldAgent: " + id)
     var url = "runreports/FieldAgentPrograms?R_staffId=" + id + "&genericResultSet=false";
     
 	var successFunction = function(data, textStatus, jqXHR) {
