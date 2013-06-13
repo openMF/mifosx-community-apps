@@ -1,31 +1,3 @@
-tevi = {
-	root:{
-		programDir:{
-			fullName:'',
-			id: 0,
-			organisational_role_enum:0,
-			top: false
-		},
-		branchDir:{
-			fullName:'',
-			id: 0,
-			organisational_role_enum:0,
-			top: false
-		},
-		coordinator:{
-			fullName:'',
-			id: 0,
-			organisational_role_enum:0,
-			top: false
-		},
-		fieldAgent:{
-			fullName:'',
-			id: 0,
-			organisational_role_enum:0,
-			top: false
-		}
-	}
-}
 crudData = {
 		loanproduct: {
 				editTemplateNeeded: true,
@@ -9403,7 +9375,7 @@ function loadCollectionSheet(postUrl){
     executeAjaxRequest(postUrl + '?command=generateCollectionSheet', "post", newFormData, successFunction, formErrorFunction);
 
 }
-
+/*
 var simulationAPIUser = {
 	staffByParentId: function(parentId){
 		var response = new Array();
@@ -9433,7 +9405,7 @@ var simulationAPIUser = {
 	}
 
 }
-
+*/
 function addHoliday() {
 
 	var officeSearchSuccessFunction =  function(data) {
