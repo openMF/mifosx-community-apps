@@ -549,6 +549,7 @@ function setOrgAdminContent(divName) {
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
 	var bulkLoanReassignmentUrl = "maintainTable('bulkLoanReassignment', 'loans/loanreassignment', 'POST');return false;";
 	var addAccountingRuleUrl =  "maintainTable('accountingrule', 'accountingrules', 'POST');return false;"; 
+	var addHolidayUrl = "addHoliday();return false;";
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("ViewLoanProducts"))
@@ -612,6 +613,8 @@ function setOrgAdminContent(divName) {
 		htmlOptions2 += ' | <a href="unknown.html" onclick="refreshTableView(' + "'accountingrule'" + ');return false;" id="viewaccountingrule">' + doI18N("administration.link.view.accountingrule") + '</a>';
 
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addAccountingRuleUrl + '" id="addaccountingrule">' + doI18N("administration.link.add.accountingrule") + '</a>';
+
+		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addHolidayUrl + '" id="addHoliday">' + doI18N("administration.link.add.Holiday") + '</a>';
 
 	if (htmlOptions2 > "")
 	{
@@ -7719,7 +7722,19 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 
 			if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
 
-			var newFormData = JSON.stringify($('#entityform').serializeObject());
+			var serializedArray = {};
+			serializedArray = $('#entityform').serializeObject();
+			if(templateSelector==="#holidayFormTemplate") {
+				serializedArray["offices"] = new Array();
+
+				var items = $('#offices').jqxTree('getCheckedItems');
+				$(items).each(function(i){
+					var tempObject = new Object();
+					tempObject.officeId = this.id;
+					serializedArray["offices"][i] = tempObject;
+				});
+			}
+			var newFormData = JSON.stringify(serializedArray);
 			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 		};
 		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
@@ -7744,7 +7759,7 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 		  			});
 		  			
 		  			$('.datepickerfield').datepicker({constrainInput: true, minDate: minOffset, defaultDate: defaultOffset, maxDate: maxOffset, dateFormat: custom.datePickerDateFormat});
-		  			
+		  			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, minDate: minOffset, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 		  			$("#entityform textarea").first().focus();
 		  			$('#entityform input').first().focus();
 		  		}
@@ -9418,3 +9433,56 @@ var simulationAPIUser = {
 	}
 
 }
+
+function addHoliday() {
+
+	var officeSearchSuccessFunction =  function(data) {
+		var finalJson = [];
+		
+		for(i=0;i<data.length;i++){
+			var currentObj = data[i];
+			delete currentObj.nameDecorated;
+			delete currentObj.openingDate;
+			delete currentObj.hierarchy;
+			delete currentObj.parentName;
+			finalJson.push(currentObj);
+		}
+		
+		var data = finalJson;
+		// prepare the data
+        var source =
+        {
+            datatype: "json",
+            datafields: [
+                { name: 'id' },
+                { name: 'name' },
+                { name: 'parentId' }
+            ],
+            id: 'id',
+            localdata: data
+        };
+		 // create data adapter.
+        var dataAdapter = new $.jqx.dataAdapter(source);
+        // perform Data Binding.
+        dataAdapter.dataBind();
+        var records = dataAdapter.getRecordsHierarchy('id', 'parentId', 'items', [{ name: 'name', map: 'label'}]);
+
+        var addHolidaySuccessFunction = function(data, textStatus, jqXHR) {
+		$('#dialog-form').dialog("close");
+		}
+	
+		var submitType = 'POST';
+		var postUrl = 'holidays';
+		var templateSelector = "#holidayFormTemplate";
+		var dialogWidth = 650; 
+		var dialogHeight = 500;
+		var dialogTitle = 'dialog.title.add.holiday';
+		
+		popupDialogWithPostOnlyFormView(postUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, addHolidaySuccessFunction, 0, 0, 0);	  	
+
+	    $('#offices').jqxTree({ source: records, checkboxes: true, width: '100%' });   
+	    $('#offices').jqxTree({ height: '400px', hasThreeStates: true,checkboxes: true, width: '440px'});   
+   	}
+  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
+}
+
