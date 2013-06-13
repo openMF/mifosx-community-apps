@@ -9863,7 +9863,7 @@ $(document).ready(function() {
                         <tr>
                             <td>
                                 <div id="fixeddebitaccountlabel">
-                                    <label for="debitAccountHead" style="display: inline">{{=$ctx.doI18N("label.rule.select.debitAccount")}}</label>
+                                    <label for="accountToDebit" style="display: inline">{{=$ctx.doI18N("label.rule.select.debitAccount")}}</label>
                                 </div>
                                 <div id="availabledebittags">
                                     <div class="multiselectwidget">
@@ -9879,7 +9879,7 @@ $(document).ready(function() {
                             </td>
                             <td>
                                 <div id = "fixeddebitaccount">
-                                    <select id="debitAccountHead" name="debitAccountHead" title="">
+                                    <select id="accountToDebit" name="accountToDebit" title="">
                                     	<option value="">{{=$ctx.doI18N("option.account.first.choice")}}</option>
                                         {{#each allowedAccounts}}
                                             {{#if $parent.parent.data.debitAccountHead === undefined}}
@@ -9956,7 +9956,7 @@ $(document).ready(function() {
                         <tr>
                             <td>
                                 <div id="fixedcreditaccountlabel">
-                                    <label for="creditAccountHead">{{=$ctx.doI18N("label.rule.select.creditAccount")}}</label>
+                                    <label for="accountToCredit">{{=$ctx.doI18N("label.rule.select.creditAccount")}}</label>
                                 </div>
                                 <div id="availablecredittags">
                                     <div class="multiselectwidget">
@@ -9972,7 +9972,7 @@ $(document).ready(function() {
                             </td>
                             <td>
                                 <div id = "fixedcreditaccount">
-                                    <select id="creditAccountHead" name="creditAccountHead" title="">
+                                    <select id="accountToCredit" name="accountToCredit" title="">
                                     	<option value="">{{=$ctx.doI18N("option.account.first.choice")}}</option>
                                         {{#each allowedAccounts}}
                                             {{#if $parent.parent.data.creditAccountHead === undefined}}

@@ -6585,11 +6585,11 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			if (serializedArray.name === "") {
 				delete serializedArray.name;
 			}
-			if (serializedArray.debitAccountHead === "") {
-				delete serializedArray.debitAccountHead;
+			if (serializedArray.accountToDebit === "") {
+				delete serializedArray.accountToDebit;
 			}
-			if (serializedArray.creditAccountHead === "") {
-				delete serializedArray.creditAccountHead;
+			if (serializedArray.accountToCredit === "") {
+				delete serializedArray.accountToCredit;
 			}
 			
 			//allow only one value for debits
@@ -6597,7 +6597,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				delete serializedArray.debitTags;
 				delete serializedArray.allowMultipleDebitEntries;
 			} else if (serializedArray.debitRuleType === "List") {
-				delete serializedArray.debitAccountHead;
+				delete serializedArray.accountToDebit;
 				if (typeof serializedArray.debitTags === 'string') {
 					var debits = [];
 					debits.push(serializedArray.debitTags);
@@ -6606,7 +6606,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				}
 			} else {
 				delete serializedArray.debitTags;
-				delete serializedArray.debitAccountHead;
+				delete serializedArray.accountToDebit;
 				delete serializedArray.allowMultipleDebitEntries;
 			}
 
@@ -6615,7 +6615,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				delete serializedArray.creditTags;
 				delete serializedArray.allowMultipleCreditEntries;
 			} else if (serializedArray.creditRuleType === "List") {
-				delete serializedArray.creditAccountHead;
+				delete serializedArray.accountToCredit;
 				if (typeof serializedArray.creditTags === 'string') {
 					var credits = [];
 					credits.push(serializedArray.creditTags);
@@ -6624,7 +6624,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 				}
 			} else {
 				delete serializedArray.creditTags;
-				delete serializedArray.creditAccountHead;
+				delete serializedArray.accountToCredit;
 				delete serializedArray.allowMultipleCreditEntries;
 			}
 
@@ -6722,7 +6722,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			$("#selecteddebittags").hide();
 			$("#allowmultipledebitentrieslabel").hide();
 			$("#allowmultipledebitentries").hide();
-			$("#debitAccountHead").combobox();
+			$("#accountToDebit").combobox();
 		} else if (debitRuleType == "List"){
 			$("#fixeddebitaccount").hide();
 			$("#fixeddebitaccountlabel").hide();
@@ -6745,7 +6745,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			$("#selecteddebittags").hide();
 			$("#allowmultipledebitentrieslabel").hide();
 			$("#allowmultipledebitentries").hide();
-			$("#debitAccountHead").combobox();
+			$("#accountToDebit").combobox();
 		}
 
 		if (creditRuleType == "Fixed") {
@@ -6755,7 +6755,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			$("#selectedcredittags").hide();
 			$("#allowmultiplecreditentrieslabel").hide();
 			$("#allowmultiplecreditentries").hide();
-			$("#creditAccountHead").combobox();
+			$("#accountToCredit").combobox();
 		} else if (creditRuleType == "List"){
 			$("#fixedcreditaccount").hide();
 			$("#fixedcreditaccountlabel").hide();
@@ -6778,7 +6778,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			$("#selectedcredittags").hide();
 			$("#allowmultiplecreditentrieslabel").hide();
 			$("#allowmultiplecreditentries").hide();
-			$("#creditAccountHead").combobox();
+			$("#accountToCredit").combobox();
 		}
 
 		$('input:radio[name=debitRuleType]').change(function (){
@@ -6790,7 +6790,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	            $("#selecteddebittags").hide();
 	            $("#allowmultipledebitentrieslabel").hide();
 	            $("#allowmultipledebitentries").hide();
-	            $("#debitAccountHead").combobox();
+	            $("#accountToDebit").combobox();
 			} else if (selectedType == "List"){
 				$("#fixeddebitaccount").hide();
 	            $("#fixeddebitaccountlabel").hide();
@@ -6818,7 +6818,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	            $("#selectedcredittags").hide();
 	            $("#allowmultiplecreditentrieslabel").hide();
 	            $("#allowmultiplecreditentries").hide();
-	            $("#creditAccountHead").combobox();
+	            $("#accountToCredit").combobox();
 			} else if (selectedType == "List"){
 				$("#fixedcreditaccount").hide();
 	            $("#fixedcreditaccountlabel").hide();
