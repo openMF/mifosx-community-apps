@@ -470,7 +470,9 @@ function setGroupContent(divName) {
 	htmlVar += 	' title="groupclientstab" class="topleveltab"><span id="groupclientstabname">' + doI18N("app.loading") + '</span></a></li>'
 	htmlVar += 	' <li><a href="#groupsummarytab"'; 
 	htmlVar += 	' title="groupsummarytab" class="topleveltab"><span id="groupsummarytabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar += 	' </ul><div id="grouptab"></div><div id="groupclientstab"></div><div id="groupsummarytab"></div></div></div>';
+	htmlVar += 	' <li><a href="#grouprolestab"'; 
+	htmlVar += 	' title="grouprolestab" class="topleveltab"><span id="grouprolestabname">' + doI18N("app.loading") + '</span></a></li>'
+	htmlVar += 	' </ul><div id="grouptab"></div><div id="groupclientstab"></div><div id="groupsummarytab"></div><div id="grouprolestab"></div></div></div>';
 	
 	$("#" + divName).html(htmlVar);
 }
@@ -3075,6 +3077,7 @@ function showGroup(groupId){
 		var groupDetails = $("#groupDetailsTemplate").render(data);
 		var groupClients = $("#groupClientsTabTemplate").render(data);
 		var groupSummary = $("#groupSummaryTabTemplate").render();//group summary data should be fetched in another ajax call
+		var groupRoles = $("#groupRolesTabTemplate").render(data);
 
 		groupDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
 
@@ -3085,6 +3088,10 @@ function showGroup(groupId){
 		$("#groupclientstabname").html("Clients");
 		$("#groupsummarytab").html(groupSummary);
 		$("#groupsummarytabname").html("Summary");
+		$("#grouprolestab").html(groupRoles);
+		$("#grouprolestabname").html("Roles");
+
+		oTable = displayListTable("groupRolesTable");
 
 		refreshGroupLoanSummaryInfo(groupUrl);
 
@@ -3266,6 +3273,57 @@ function showGroup(groupId){
             disassociateClientFromGroup(clientId, groupId);
             e.preventDefault();
 		});
+
+		$('#addgrouprole'+currentGroupId).button({icons: {
+	                 primary: "ui-icon-plus"}
+	            }).click(function(e) {
+	        var postUrl = 'groups/' + currentGroupId + '?command=assignRole';
+	        var templateSelector = "#addGroupRuleFormTemplate";
+	        var width = 600;
+	        var height = 400;
+
+	        var saveSuccessFunction = function(data, textStatus, jqXHR) {
+	            $("#dialog-form").dialog("close");
+	            showGroup(currentGroupId);
+	        }
+
+	        popupDialogWithFormView(groupUrl + '?associations=all&template=true', postUrl, 'POST', "dialog.button.add.group.role", templateSelector, width, height,  saveSuccessFunction);
+	        e.preventDefault();
+	    });
+	    $('button.addgrouprole span').text(doI18N('form.button.add.group.role'));
+
+	    $("a.editgrouprole").click( function(e) {
+			var linkId = this.id;
+			var entityId = linkId.replace("editgrouprole", "");
+			var templateSelector = "#addGroupRuleFormTemplate";
+	        var width = 600;
+	        var height = 400;
+			var getUrl = 'groups/' + currentGroupId + '?template=true&associations=clientMembers&roleId='+entityId;
+			var postUrl = 'groups/' + currentGroupId + '?command=updateRole&roleId='+entityId;
+
+			var saveSuccessFunction = function(data, textStatus, jqXHR) {
+	            $("#dialog-form").dialog("close");
+	            showGroup(currentGroupId);
+	        }
+
+			popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.button.update.group.role", templateSelector, width, height,  saveSuccessFunction);
+			e.preventDefault();
+		});
+
+		$("a.unassignrole").click( function(e) {
+			var linkId = this.id;
+			var entityId = linkId.replace("unassignrole", "");
+			var width = 400; 
+			var height = 150;
+			var resourceUrl = 'groups/' + currentGroupId + '?command=unassignRole&roleId='+entityId;
+
+			var saveSuccessFunction = function(data, textStatus, jqXHR) {
+			  	$("#dialog-form").dialog("close");
+			  	showGroup(currentGroupId);
+			}
+			popupConfirmationDialogAndPost(resourceUrl, 'POST', 'dialog.title.confirmation.required', width, height, entityId, saveSuccessFunction);
+			e.preventDefault();
+		});
 	
 	}
 
@@ -3274,7 +3332,7 @@ function showGroup(groupId){
         $(anchor.hash).html("error occured while ajax loading.");
     };
     
-	executeAjaxRequest(groupUrl + '?associations=clientMembers', 'GET', "", successFunction, errorFunction);
+	executeAjaxRequest(groupUrl + '?associations=all', 'GET', "", successFunction, errorFunction);
 }
 
 function refreshGroupSummaryInfo(groupId){
