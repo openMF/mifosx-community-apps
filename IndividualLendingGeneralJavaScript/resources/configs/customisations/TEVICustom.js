@@ -162,7 +162,7 @@ function showProgramDirectorPage(divName) {
 	
 	
 	fillRole_FieldAgent(staff.staffId, staff.display_name);
-	fillRoleStats_FieldAgent(staff.staffId);
+	fillRoleStats(staff.staffId, "ProgramDirector");
 	fillStaffList(staff.staffId);
 }
 function showBranchManagerPage(divName, staff) {
@@ -181,7 +181,7 @@ function showBranchManagerPage(divName, staff) {
 		staff.display_name = mStaffUser.staffDisplayName;
 	}
 	fillRole_FieldAgent(staff.staffId, staff.display_name);
-	fillRoleStats_FieldAgent(staff.staffId);
+	fillRoleStats(staff.staffId, "BranchManager");
 	fillStaffList(staff.staffId);
 }
 function showCoordinatorPage(divName, staff) {
@@ -200,7 +200,7 @@ function showCoordinatorPage(divName, staff) {
 		staff.display_name = mStaffUser.staffDisplayName;
 	}
 	fillRole_FieldAgent(staff.staffId, staff.display_name);
-	fillRoleStats_FieldAgent(staff.staffId);
+	fillRoleStats(staff.staffId, "Coordinator");
 	fillStaffList(staff.staffId);
 }
 function showFieldAgentPage(divName, staff) {
@@ -219,7 +219,7 @@ function showFieldAgentPage(divName, staff) {
 		staff.display_name = mStaffUser.staffDisplayName;
 	}
 	fillRole_FieldAgent(staff.staffId, staff.display_name);
-	fillRoleStats_FieldAgent(staff.staffId);
+	fillRoleStats(staff.staffId, "FieldAgent");
 	fillList_FieldAgent(staff.staffId);
 }
 
@@ -234,15 +234,14 @@ function fillRole_FieldAgent(id, name) {
 	$("#quipuExGenDashboardRole").html(htmlVar);
 }
 
-function fillRoleStats_FieldAgent(id) {
+function fillRoleStats(id, roleName) {
 
-	//alert("fillRoleStats_FieldAgent: " + id)
-    var url = "runreports/FieldAgentStats?R_staffId=" + id + "&genericResultSet=false";
+    var url = "runreports/" + roleName + "Stats?R_staffId=" + id + "&genericResultSet=false";
     
 	var successFunction = function(data, textStatus, jqXHR) {
 	    var obj = new Object();
 	    obj.dataRows = data;	    
-	    var htmlVar = $("#quipuExampleRoleStatsFieldAgentTemplate").render(obj);  
+	    var htmlVar = $("#quipuExampleRoleStatsTemplate").render(obj);  
 		$("#quipuExGenDashboardRoleStats").html(htmlVar);
 	}
     executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);

@@ -10404,17 +10404,18 @@ $(document).ready(function() {
     Empolyee: {{=name}}
 </script>
 
-<script id="quipuExampleRoleStatsFieldAgentTemplate" type="text/x-jquery-tmpl">
+<script id="quipuExampleRoleStatsTemplate" type="text/x-jquery-tmpl">
     {{#each dataRows}}
     <div class="column">
+        <div><label>{{=$ctx.doI18N("Currency")}}</label><span>{{=Currency}}</span></div>
         <div><label>{{=$ctx.doI18N("activeClients")}}</label><span>{{=$ctx.number(activeClients)}}</span></div>
-        <div><label>{{=$ctx.doI18N("currency")}}</label><span>{{=currency}}</span></div>
+        <div><label>{{=$ctx.doI18N("activeLoans")}}</label><span>{{=$ctx.number(activeLoans)}}</span></div>
         <div><label>{{=$ctx.doI18N("disbursedAmount")}}</label><span>{{=$ctx.decimal(disbursedAmount, 2)}}</span></div>
         <div><label>{{=$ctx.doI18N("loanOutstandingAmount")}}</label><span>{{=$ctx.decimal(loanOutstandingAmount, 2)}}</span></div>
         <div><label>{{=$ctx.doI18N("loanOutstandingPC")}}</label><span>{{=$ctx.decimal(loanOutstandingPC, 2)}}</span></div>
-        <div><label>{{=$ctx.doI18N("loanOverPaymentAmount")}}</label><span>{{=$ctx.decimal(loanOverPaymentAmount, 2)}}</span></div>
     </div>
     <div class="column">
+        <div><label>{{=$ctx.doI18N("loanOverPaymentAmount")}}</label><span>{{=$ctx.decimal(loanOverPaymentAmount, 2)}}</span></div>
         <div><label>{{=$ctx.doI18N("portfolioAtRisk")}}</label><span>{{=$ctx.decimal(portfolioAtRisk, 2)}}</span></div>
         <div><label>{{=$ctx.doI18N("portfolioAtRiskPC")}}</label><span>{{=$ctx.decimal(portfolioAtRiskPC, 2)}}</span></div>
         <div><label>{{=$ctx.doI18N("clientsInDefault")}}</label><span>{{=clientsInDefault}}</span></div>
