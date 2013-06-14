@@ -9433,37 +9433,7 @@ function loadCollectionSheet(postUrl){
     executeAjaxRequest(postUrl + '?command=generateCollectionSheet', "post", newFormData, successFunction, formErrorFunction);
 
 }
-/*
-var simulationAPIUser = {
-	staffByParentId: function(parentId){
-		var response = new Array();
-		for (var i in tevi.staff) {
-			var item = tevi.staff[i];
-			if(item.parentId == parentId){
-				response.push(item);
-			}
-		}
-		return response;
-	},
-	usersByRoleOfficeId: function(roleId, officeId){
-		var response = new Array();
-		for (var i in tevi.users) {
-			var item = tevi.users[i];
-			if(item.officeId === officeId){
-				for(var j in item.selectedRoles){
-					var jtem = item.selectedRoles[j]
-					if(jtem.id === roleId){
-						response.push(item);
-						break;
-					}
-				}
-			}
-		}
-		return response;
-	}
 
-}
-*/
 function addHoliday() {
 
 	var officeSearchSuccessFunction =  function(data) {
