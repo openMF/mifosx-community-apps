@@ -210,10 +210,19 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '  <li><a href="unknown.html" onclick="custom.showFirstPage();return false;">'+doI18N("link.topnav.dashboard")+'</a></li>';		
 	}
 
-	if (jQuery.MifosXUI.showMenu("ClientsMenu"))
+	if (jQuery.MifosXUI.showMenu("ClientsMenu") && jQuery.MifosXUI.showMenu("GroupsMenu")) {
+		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a>';
+		htmlVar += '		<ul>';
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing(' + "'content'" + ');return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+		htmlVar += '		</ul>';
+		htmlVar += '	</li>';
+	} else if (jQuery.MifosXUI.showMenu("ClientsMenu")) {
+		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing(' + "'content'" + ');return false;">' + doI18N("link.topnav.clients") + '</a></li>';
+	} else if (jQuery.MifosXUI.showMenu("GroupsMenu")) {
+		htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
+	}
 	
-	if (jQuery.MifosXUI.showMenu("GroupsMenu")) {
+	if (jQuery.MifosXUI.showMenu("CentersMenu")) {
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.groupings") + '</a>';
 		htmlVar += '		<ul>';
 		
@@ -223,10 +232,9 @@ function showMainContainer(containerDivName, username) {
 		
 		if (jQuery.MifosXUI.showMenu("CentersMenu")) {
 			htmlVar += '	<li><a href="unknown.html" onclick="showNewCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
+			htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
+			htmlVar += '	<li><a href="unknown.html" onclick="showCommunalBankListing();return false;">' + doI18N("link.topnav.communalbanks") + '</a></li>';
 		}
-
-		htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
-		htmlVar += '	<li><a href="unknown.html" onclick="showCommunalBankListing();return false;">' + doI18N("link.topnav.communalbanks") + '</a></li>';
 
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
@@ -261,9 +269,10 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '	</li>';
 	}
 	
-	if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
+	if (jQuery.MifosXUI.showMenu("AccountingMenu")) {
 		htmlVar += '  <li><a href="unknown.html" onclick="setAccountingContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.accounting") + '</a></li>';
-
+	}
+		
 	if (jQuery.MifosXUI.showMenu("ReportsMenu") == true)
 	{
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
@@ -581,14 +590,18 @@ function setOrgAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("AddOfficeMoneyTxn") == true)
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + officeMoneyTransfer + '" id="internalTransfer">' + doI18N("administration.link.office.money.transfer") + '</a>';
 
-	if (jQuery.MifosXUI.showTask("BulkLoanReassignment") == true)
+	if (jQuery.MifosXUI.showTask("BulkLoanReassignment") == true) {
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + bulkLoanReassignmentUrl + '" id="bulkLoanReassignment">' + doI18N("administration.link.bulk.loan.reassignment") + '</a>';	
-
+	}
+	
+	if (jQuery.MifosXUI.showMenu("AccountingMenu")) {
 		htmlOptions2 += ' | <a href="unknown.html" onclick="refreshTableView(' + "'accountingrule'" + ');return false;" id="viewaccountingrule">' + doI18N("administration.link.view.accountingrule") + '</a>';
-
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addAccountingRuleUrl + '" id="addaccountingrule">' + doI18N("administration.link.add.accountingrule") + '</a>';
-
+	}
+		
+	if (jQuery.MifosXUI.showTask("AddHoliday") == true) {
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addHolidayUrl + '" id="addHoliday">' + doI18N("administration.link.add.Holiday") + '</a>';
+	}
 
 	if (htmlOptions2 > "")
 	{

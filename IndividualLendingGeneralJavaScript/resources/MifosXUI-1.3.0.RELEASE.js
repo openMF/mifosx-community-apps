@@ -4,7 +4,7 @@
 //You can then use showMenu or showTask as normal to check if it should be displayed
 //Once you are finished development, you can remove from this array and put in taskPermissionsMatrix or menuTasksMatrix 
 inDevelopmentTasks = ["CENTERSMENU", "COLLECTIONSHEETMENU", "CHECKERMENU", "SAVINGSMENU",
-                      "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", 
+                      "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", "ADDHOLIDAY", 
                       "VIEWCONFIGURATION", "MANAGEPERMISSIONS", "CLOSEASRESCHEDULEDLOAN",
                       "ADDSAVINGACCOUNT"];
 
@@ -38,6 +38,8 @@ taskPermissionsMatrix = {
 		VIEWOFFICEMONEYTXNS: ["READ_OFFICETRANSACTION"],
 		ADDOFFICEMONEYTXN: ["CREATE_OFFICETRANSACTION"],
 		DELETEOFFICEMONEYTXN: ["DELETE_OFFICETRANSACTION"],
+		
+		ADDHOLIDAY: ["CREATE_HOLIDAY"],
 		
 		VIEWDATATABLES: ["READ_DATATABLE"],
 		CREATEDATATABLE: ["CREATE_DATATABLE"],
@@ -139,7 +141,7 @@ tenantNameInclusions = {
 tenantNameExclusions = {
 		"DEFAULT": ["VIEWOFFICEMONEYTXNS", "ADDOFFICEMONEYTXN"],
 		
-		"CEDA-MICROFINANCE": ["CHECKERMENU", "GROUPSMENU", "VIEWFUNDS", "ADDFUND", 
+		"CEDA-MICROFINANCE": ["CHECKERMENU", "VIEWFUNDS", "ADDFUND", 
 		                      "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", "VIEWOFFICEMONEYTXNS", 
 		                      "ADDOFFICEMONEYTXN", "ADDSAVINGACCOUNT", "VIEWCONFIGURATION"],
 		                      
