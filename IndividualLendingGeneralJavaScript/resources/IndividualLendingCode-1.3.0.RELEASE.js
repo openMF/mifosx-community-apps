@@ -9475,13 +9475,13 @@ function addHoliday() {
 		var postUrl = 'holidays';
 		var templateSelector = "#holidayFormTemplate";
 		var dialogWidth = 650; 
-		var dialogHeight = 500;
+		var dialogHeight = 600;
 		var dialogTitle = 'dialog.title.add.holiday';
 		
 		popupDialogWithPostOnlyFormView(postUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, addHolidaySuccessFunction, 0, 0, 0);	  	
 
 	    $('#offices').jqxTree({ source: records, checkboxes: true, width: '100%' });   
-	    $('#offices').jqxTree({ height: '400px', hasThreeStates: true,checkboxes: true, width: '440px'});   
+	    $('#offices').jqxTree({ height: '300px', hasThreeStates: true,checkboxes: true, width: '440px'});   
    	}
   	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
 }

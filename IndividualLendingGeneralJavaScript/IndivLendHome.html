@@ -10486,6 +10486,7 @@ $(document).ready(function() {
 		</div>
 	</div>
 </div>
+</script>
 
 <script id="holidayFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
@@ -10506,17 +10507,11 @@ $(document).ready(function() {
                 <td>
                     <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
                     <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-                    <label for="fromDate">{{=$ctx.doI18N("form.label.fromDate")}}</label>
+                    {{=$ctx.doI18N("form.label.fromDate")}}
                 </td>
                 <td>
                     <input id="fromDate" name="fromDate" title="" type="text" value="{{=$ctx.globalDate(fromDate)}}" class="datepickerfieldnoconstraint" />&nbsp;
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="toDate">{{=$ctx.doI18N("form.label.toDate")}}</label>
-                </td>
-                <td>
+					{{=$ctx.doI18N("form.label.toDate")}}
                     <input id="toDate" name="toDate" title="" type="text" value="{{=$ctx.globalDate(toDate)}}" class="datepickerfieldnoconstraint" />
                 </td>
             </tr>
