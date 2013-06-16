@@ -262,7 +262,7 @@ function fillList_FieldAgent(id) {
 }
 function fillListDetails_FieldAgent(id) {
 
-    var url = "runreports/FieldAgentProgramsDetails?R_programId=" + id + "&genericResultSet=false";
+    var url = "runreports/ProgramDetails?R_programId=" + id + "&genericResultSet=false";
 
 	var successFunction = function(data, textStatus, jqXHR) {
 	    var obj = new Object();
