@@ -2856,6 +2856,25 @@ function showILClient(clientId) {
 					e.preventDefault();
 					});
 
+					$('.unassignstafftoclient').button().click(function(e){
+						var linkId = this.id;
+						var staffId = linkId.replace("unassignstafftoclient", "");
+						var postUrl = clientUrl +'?command=unassignStaff';
+						var getUrl = ""
+
+						var width = 400; 
+						var height = 225;
+						var jsonbody = '{"staffId":"'+staffId+'"}';
+
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+								$("#dialog-form").dialog("close");
+								showILClient(clientId);
+						}	
+						popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction , jsonbody);
+
+						e.preventDefault();
+					});
+
 	        };
 	    
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
@@ -7009,6 +7028,21 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	}
 
 	if (templateSelector === "#clientFormTemplate" || templateSelector === "#editClientFormTemplate") {
+
+		if (templateSelector === "#clientFormTemplate") {
+			$("#dialog-form #officeId").change(function(e){
+				var selectedOfficeId = $(this).val();
+				var officeIdChangeSuccess = function(clientData, textStatus, jqXHR){
+					clientData['officeId'] = selectedOfficeId;
+					repopulateOpenPopupDialogWithFormViewData(clientData, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
+				}
+				if (data['id']){
+					executeAjaxRequest("clients/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
+				} else {
+					executeAjaxRequest("clients/template?officeId=" + selectedOfficeId , "GET", "", officeIdChangeSuccess, formErrorFunction);	
+				}
+			})
+		}
 
 		//onchange events for radio button clientType
 		$("input[name='clientType']").change(function() {
