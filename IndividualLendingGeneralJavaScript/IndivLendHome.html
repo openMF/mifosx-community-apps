@@ -8256,18 +8256,36 @@ $(document).ready(function() {
 	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
-	<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
-	<select id="officeId" name="officeId" title="">
-		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-		{{#each officeOptions}}
-			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
-			{{/if}}
-		{{/each}}
-	</select>
-
+	<table>
+		<tr>
+			<td style="padding-right:50px">
+				<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
+				<select id="officeId" name="officeId" title="">
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each officeOptions}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<label for="staffId">{{=$ctx.doI18N("label.client.staff")}}</label>
+				<select id="staffId" name="staffId" title="">
+					<option value="">{{=$ctx.doI18N("option.client.select.staff.first.choice")}}</option>
+					{{#each staffOptions}}
+						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+						{{/if}}                              
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	</table>
 	<table width="100%">
 		<tr>
 			<td colspan="3">
@@ -8332,17 +8350,36 @@ $(document).ready(function() {
 	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
-	<label for="office">{{=$ctx.doI18N("label.office")}}</label>
-	<select id="officeId" name="officeId" title="" disabled=disabled>
-		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-		{{#each officeOptions}}
-			{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-				<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
-			{{#else}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
-			{{/if}}
-		{{/each}}
-	</select>
+	<table>
+		<tr>
+			<td style="padding-right:50px">
+				<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
+				<select id="officeId" name="officeId" title="" disabled=disabled>
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each officeOptions}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<label for="staffId">{{=$ctx.doI18N("label.client.staff")}}</label>
+				<select id="staffId" name="staffId" title="">
+					<option value="">{{=$ctx.doI18N("option.client.select.staff.first.choice")}}</option>
+					{{#each staffOptions}}
+						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+						{{/if}}                              
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	</table>
 
 	<table width='100%'>
 		<tr>
@@ -8519,6 +8556,14 @@ $(document).ready(function() {
 										{{#each groups}}<a href="#" onclick="showGroup('{{=id}}'); return false;">{{=name}}</a>,&nbsp;{{/each}}
 										</span>
 									</div>
+									{{/if}}
+									{{#if staffName}}
+										<div class="row">
+											<span class="longrowlabel">{{=$ctx.doI18N("label.client.staff")}}</span>
+											<span class="rowvalue">{{=staffName}}</span>
+											<span style="margin-left:10px;"><a href="#" id="unassignstafftoclient{{=staffId}}" class="unassignstafftoclient">
+											{{=$ctx.doI18N("label.client.unassign.staff")}}</a></span>
+										</div>
 									{{/if}}
 								</div>
 							</td>
