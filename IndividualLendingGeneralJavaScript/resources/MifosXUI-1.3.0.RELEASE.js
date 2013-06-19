@@ -108,11 +108,13 @@ taskPermissionsMatrix = {
 		VIEWMEETING: ["READ_MEETING"],//not mapped to platform permission
 		ATTACHMEETING: ["ATTACH_MEETING"],//not mapped to platform permission
 		ADDGROUPLOAN: ["CREATE_GROUPLOAN"],//not mapped to platform permission
+		ACTIVATEGROUP: ["ACTIVATE_GROUP"],
 
 		VIEWCENTER: ["READ_CENTER"],
 		ADDCENTER: ["CREATE_CENTER"],
 		EDITCENTER: ["UPDATE_CENTER"],
 		DELETECENTER: ["DELETE_CENTER"],
+		ACTIVATECENTER: ["ACTIVATE_CENTER"],
 		CENTERSEARCH: ["READ_CENTER"]
 	};
 
