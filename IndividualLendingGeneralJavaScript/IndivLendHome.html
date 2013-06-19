@@ -8100,9 +8100,9 @@ $(document).ready(function() {
 						</td>
 						<td>
 					{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
-						<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;"/>
+						<input id="charges[{{=$parent.itemNumber}}][amount]" name="charges[{{=$parent.itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;"/>
 					{{#else}}
-						<input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
+						<input id="charges[{{=$parent.itemNumber}}][amount]" name="charges[{{=$parent.itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
 					{{/if}}
 						</td>
 						<td>
