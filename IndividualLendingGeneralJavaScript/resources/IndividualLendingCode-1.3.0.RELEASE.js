@@ -2111,6 +2111,18 @@ function loadGroupForm(container, officeId, templateIdentifier) {
 		
 		$("#entityform textarea").first().focus();
 		$('#entityform input').first().focus();
+
+		$("#activeCheckbox").change(function() {
+			var selected = this.checked;
+			if (selected) {
+				$("#activationDate").removeAttr("disabled");
+			} else {
+				$("#activationDate").val("");
+				$("#activationDate").attr("disabled", "disabled");
+			}
+		});
+
+		$('input:checkbox[id=activeCheckbox]').trigger('change');
 	};
 	
 	executeAjaxRequest('groups/template?officeId=' + officeId, 'GET', "", renderOnSuccessFunction, formErrorFunction);
@@ -2173,6 +2185,18 @@ var launchStandardGroupDialogOnSuccessFunction = function(data, textStatus, jqXH
 		
 		$("#entityform textarea").first().focus();
 		$('#entityform input').first().focus();
+
+		$("#activeCheckbox").change(function() {
+			var selected = this.checked;
+			if (selected) {
+				$("#activationDate").removeAttr("disabled");
+			} else {
+				$("#activationDate").val("");
+				$("#activationDate").attr("disabled", "disabled");
+			}
+		});
+
+		$('input:checkbox[id=activeCheckbox]').trigger('change');
 	}
 	
 	var saveNewGroupFunc = function() {
@@ -2219,6 +2243,17 @@ var launchCenterGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR)
 		
 		$("#entityform textarea").first().focus();
 		$('#entityform input').first().focus();
+
+		$("#activeCheckbox").change(function() {
+			var selected = this.checked;
+			if (selected) {
+				$("#activationDate").removeAttr("disabled");
+			} else {
+				$("#activationDate").attr("disabled", "disabled");
+			}
+		});
+
+		$('input:checkbox[id=activeCheckbox]').trigger('change');
 	}
 	
 	var saveNewGroupFunc = function() {
