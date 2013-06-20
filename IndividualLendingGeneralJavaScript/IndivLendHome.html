@@ -9189,16 +9189,20 @@ $(document).ready(function() {
 			{{=$ctx.doI18N("label.meeting.calendar.details")}}
 		</div>
 		<div class="notespacer">
-			<span>Start Date: {{=$ctx.globalDate(startDate)}}</span>
+			<span>{{=$ctx.doI18N("label.meeting.calendar.start.date")}} {{=$ctx.globalDate(startDate)}}</span>
 		</div>
 		{{#if repeating == true}}
 		<div class="notespacer">
 			<span>Repeats on : {{=humanReadable}}</span>
 		</div>
 		<div>
-			<input type="checkbox" id="synchmeeting" value="{{=id}}"/>
-			<input type="hidden" id="calendarId" name="calendarId"/>
-			<label for="synchmeeting" style="display: inline">{{=$ctx.doI18N("label.meeting.calendar.synchmeeting")}}</label>
+			<input type="checkbox" id="syncRepaymentsWithMeeting"/>
+			<input type="hidden" id="calendarId" name="calendarId" value="{{=id}}"/>
+			<label for="syncRepaymentsWithMeeting" style="display: inline">{{=$ctx.doI18N("label.meeting.calendar.syncRepayments")}}</label>
+		</div>
+		<div>
+			<input type="checkbox" id="syncDisbursementWithMeeting" name="syncDisbursementWithMeeting"/>
+			<label for="syncDisbursementWithMeeting" style="display: inline">{{=$ctx.doI18N("label.meeting.calendar.syncDisbursement")}}</label>
 		</div>
 		<hr>
 	{{/each}}
