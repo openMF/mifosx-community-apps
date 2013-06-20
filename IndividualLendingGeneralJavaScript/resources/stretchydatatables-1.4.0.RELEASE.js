@@ -1015,7 +1015,7 @@
 					"sExtends" : "xls",
 					"sButtonText" : doI18N("Save to CSV")
 				} ],
-				"sSwfPath" : sdt.datatableParams.resValue
+				"sSwfPath" : sdt.resValue
 						+ "DataTables-1.9.4/extras/TableTools/media/swf/copy_csv_xls.swf"
 			},
 
