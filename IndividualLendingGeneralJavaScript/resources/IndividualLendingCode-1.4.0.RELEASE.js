@@ -2910,6 +2910,23 @@ function showILClient(clientId) {
 						e.preventDefault();
 					});
 
+					$('.assignstafftoclient').button().click(function(e){
+						var linkId = this.id;
+						var clientId = linkId.replace("assignstafftoclient", "");
+						var postUrl = 'clients/' + clientId +'?command=assignStaff';
+						var getUrl = 'clients/' + clientId + '?template=true';
+
+						var templateSelector = "#assignStaffFormTemplate";
+						var width = 400; 
+						var height = 225;
+
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+								$("#dialog-form").dialog("close");
+								showILClient(clientId);
+						}	
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.staff", templateSelector, width,  height, saveSuccessFunction);
+					    e.preventDefault();
+					});
 	        };
 	    
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
