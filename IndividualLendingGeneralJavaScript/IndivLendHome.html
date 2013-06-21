@@ -16,7 +16,7 @@
 <link rel="stylesheet" type="text/css"	href="resources/stretchyreporting/stretchyreporting-1.4.0.RELEASE.css">
 <link rel="stylesheet" type="text/css"	href="resources/IndividualLendingCode-1.4.0.RELEASE.css" />
 <link rel="stylesheet" type="text/css"  href="resources/libs/jquery.multiselect.css" />
-
+<link rel="stylesheet" type="text/css"  href="resources/libs/jWizard/jquery.jWizard.css" />
 <!-- JQuery/JQuery UI is used. JQuery data tables are used to display rows of data - especially in reporting (stretchyreporting) -->
 <script type="text/javascript" src="resources/libs/jquery-1.9.1.min.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -33,6 +33,7 @@
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/i18n/jquery.ui.datepicker-zh.js"></script>
 <script type="text/javascript"  src="resources/libs/jquery.multiselect.js"></script>
 
+
 <!-- 
 JQuery plugins:
    combox(accounting),
@@ -48,6 +49,7 @@ JQuery plugins:
 <script type="text/javascript" src="resources/libs/jquery.jeditable.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery.fileDownload.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery.webcam.js"></script>
+<script type="text/javascript"  src="resources/libs/jWizard/jquery.jWizard.js"></script>
 
 <!-- JQuery Template plug-in and code (for rendering UI functionality) -->
 <script type="text/javascript" src="resources/libs/jsrender.js"></script>
@@ -6914,27 +6916,14 @@ $(document).ready(function() {
 </script>
 
 <script id="loanProductDialogTemplate" type="text/x-jquery-tmpl">
-<form id="entityform">
+<form id="entityform" style="height:100%">
 	<div id="formerrors"></div>
 
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
-	<div id="loanproducttabs{{=id}}" class="loanproducttabs">
-		<ul>
-			<li><a href="#productdetails" title="productdetails">{{=$ctx.doI18N("tab.details")}}</a></li>
-			<li><a href="#productterms" title="productterms">{{=$ctx.doI18N("tab.terms")}}</a></li>
-			<li><a href="#productsettings" title="productsettings">{{=$ctx.doI18N("tab.settings")}}</a></li>
-			{{#if $ctx.showTask("VIEWCHARGES")}}
-			<li><a href="#chargestab" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
-			{{/if}}
-			{{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
-			<li><a href="#accounting" title="accounting">{{=$ctx.doI18N("tab.accounting")}}</a></li>
-			{{#else}}
-			<li><a href="#accounting" title="accounting" style="display: none">{{=$ctx.doI18N("tab.accounting")}}</a></li>
-			{{/if}}
-		</ul>
-		
-		<div id="productdetails" style="margin-top: 5px;">
+	<div id="loanproducttabs{{=id}}" class="loanproducttabs" style="height:100%">
+			
+		<div id="productdetails" style="margin-top: 5px;" title="{{=$ctx.doI18N("tab.details")}}">
 			<table>
 			<tr>
 				<td>{{=$ctx.doI18N("label.name")}}</td>
@@ -6965,7 +6954,7 @@ $(document).ready(function() {
 			</table>
 		</div>
 
-		<div id="productterms" style="margin-top: 5px;">
+		<div id="productterms" style="margin-top: 5px;" title="{{=$ctx.doI18N("tab.terms")}}">
 					<table>
 						<tr>
 							<td>{{=$ctx.doI18N("label.currency")}}</td>
@@ -7072,7 +7061,7 @@ $(document).ready(function() {
 					</table>
 		</div>
 
-		<div id="productsettings" style="margin-top: 5px;">
+		<div id="productsettings" style="margin-top: 5px;" title="{{=$ctx.doI18N("tab.settings")}}">
 			<table>
 				<tr>
 					<td>{{=$ctx.doI18N("label.amortization")}}</td>
@@ -7167,14 +7156,23 @@ $(document).ready(function() {
 
 <!-- charges -->
 {{#if $ctx.showTask("VIEWCHARGES")}}
-<div id="chargestab" style="margin-top: 5px;">
-	 <select id="chargeOptions">
-		<option value="">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
-		{{#each chargeOptions}}
-		<option value="{{=$ctx.number(id)}}">{{=name}}</option>
-			{{/each}}
-	 </select>
-	 <button id="loanproduct-addLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+<div id="chargestab" style="margin-top: 5px;" title="{{=$ctx.doI18N("tab.charges")}}">
+	<table>
+		<tr>
+			<td>
+				Associate a new charge with the loan product
+			</td>
+			<td>
+				<select id="chargeOptions" style="width: 221px;" title="">
+					<option value="">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+					{{#each chargeOptions}}
+					<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+					{{/each}}
+	 			</select>
+	 			<button id="loanproduct-addLoanCharge">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+	 		</td>
+	 	</tr>
+	 </table>
 	 <table id="loanchargestable" class="pretty displayschedule">
 		<thead>
 			<tr>
@@ -7212,7 +7210,7 @@ $(document).ready(function() {
 
 <!-- accounting -->
 {{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
-		<div id="accounting" style="margin-top: 5px;">
+		<div id="accounting" style="margin-top: 5px;" title="{{=$ctx.doI18N("tab.accounting")}}">
 			<fieldset>
 				<legend>{{=$ctx.doI18N("legend.accounting.rules")}}  </legend>
 				<table style="width:100%">
@@ -7437,7 +7435,7 @@ $(document).ready(function() {
 			<br/>
 			<div id="advancedAccountingOptionsContainer">
 				<fieldset>
-					<legend>{{=$ctx.doI18N("legend.advanced.accounting.rules")}} [<a href="" id="toggleAdvancedAccountingOptions">{{=$ctx.doI18N("label.show")}}</a>]</legend>
+					<h2>{{=$ctx.doI18N("legend.advanced.accounting.rules")}} [<a href="" id="toggleAdvancedAccountingOptions">{{=$ctx.doI18N("label.show")}}</a>]</h2>
 					<div id="advancedAccountingRulesDiv">
 						<h3>{{=$ctx.doI18N("label.payment.channel.specific.fund.source")}}</h3>    
 						<button id="addPaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
