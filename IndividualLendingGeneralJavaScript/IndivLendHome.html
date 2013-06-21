@@ -8458,6 +8458,9 @@ $(document).ready(function() {
 				<button id="newsavingbtn" class="newsavingbtn">New savings account</button>
 			{{/if}}
 		{{/if}}
+		{{#if $ctx.showTask("ClientClose")}}
+			<button id="clientclosebtn" class=" clientclosebtn">Close</button>
+		{{/if}}
 			</span>
 		</td>
 	<tr>
@@ -8680,6 +8683,33 @@ $(document).ready(function() {
 
 {{/if}}
 </script>
+
+<script id="clientCloseTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	</div>
+	<table cellspacing="4px" cellpadding="8px">
+		<tr>
+			<td>
+				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+				<label for="closureDate">{{=$ctx.doI18N("label.closureDate")}}</label>
+				<input id="closureDate" name="closureDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(closureDate)}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="closureReasonId">{{=$ctx.doI18N("label.closure.reason")}}</label>
+				<select id="closureReasonId" name="closureReasonId" title="" >
+					{{#each crudRows}}
+							<option value="{{=id}}">{{=$ctx.doI18N(name)}}</option>
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	</table>
+</form>
+</script> 
 <!-- end of client -->
 
 
