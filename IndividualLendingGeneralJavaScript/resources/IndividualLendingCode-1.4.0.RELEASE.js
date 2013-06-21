@@ -2690,11 +2690,13 @@ function showILClient(clientId) {
 	        		clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
 	        		var currentTabIndex = $newtabs.tabs('option', 'active');
 	            	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
-	            
+	            	
 	            	//populate main content
-	            	var crudObject = new Object();
-	            	var tableHtml = $("#clientToolbarTemplate").render(data);
-	            	$("#clienttoolbar").html(tableHtml);
+	            	if(data.status.value != 'Closed') {
+		            	var crudObject = new Object();
+		            	var tableHtml = $("#clientToolbarTemplate").render(data);
+		            	$("#clienttoolbar").html(tableHtml);
+		            }
 	            	
 	        		var tableHtml = $("#clientDataTabTemplate").render(data);
 					$("#clienttab").html(tableHtml);
@@ -2769,6 +2771,23 @@ function showILClient(clientId) {
 					    e.preventDefault();
 					});
 					$('button.newsavingbtn span').text(doI18N('dialog.button.new.savings.account'));
+
+					$('.clientclosebtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
+						var clientClose = 'close';
+						var getUrl = 'clients/template?commandParam=' + clientClose;
+						var postUrl = 'clients/' + clientId + '?command=' + clientClose;
+						var templateSelector = "#clientCloseTemplate";
+						var width = 400; 
+						var height = 300;
+
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+							$("#dialog-form").dialog("close");
+							showILClient(clientId);
+						}
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.client.close", templateSelector, width, height, saveSuccessFunction);
+					    e.preventDefault();
+					});
+					$('button.clientclosebtn span').text(doI18N('dialog.button.client.close'));
 					
 					$('.addnotebtn').button({icons: {primary: "ui-icon-comment"}}).click(function(e) {
 						var postUrl = 'clients/' + clientId + '/notes';
@@ -5988,7 +6007,7 @@ function refreshLoanDocuments(loanId) {
 
 	function maintainTable(tableName, resourceUrl, submitType, putPostQuery) {
 		if (!(submitType == "PUT" || submitType == "POST"))
-		{
+		 {
 			alert("System Error - Invalid submitType: " + submitType);
 			return;
 		}
@@ -6434,6 +6453,10 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 				}else if(templateSelector == "#employeeFormTemplate" && submitType == "PUT") {
 					templateSelector = "#employeeFormEditTemplate";
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+				}else if (templateSelector == "#clientCloseTemplate") {
+					var codeValuesObject = new Object();
+			    	codeValuesObject.crudRows = data.closureReasons;
+					popupDialogWithFormViewData(codeValuesObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 				}else{
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 		  		}
@@ -6486,6 +6509,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 						}	
 					}
 				}
+
 				//End group create specific code
 		  	};
 
