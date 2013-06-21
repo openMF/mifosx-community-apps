@@ -4378,13 +4378,6 @@ function showCenter(centerId){
 		var cancelButton = doI18N('dialog.button.cancel');
 		
 		var buttonsOpts = {};
-		buttonsOpts[saveButton] = function() {
-			submitTabbedLoanProduct(dialogDiv, data.id);
-		};
-		// end of buttonsOpts for save button
-		
-		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
-		
 		var titleCode = 'dialog.title.add.loanproduct';
 		if (data.id){
 			titleCode = 'dialog.title.loanproduct.details';
@@ -4404,15 +4397,19 @@ function showCenter(centerId){
 		  			var formHtml = $("#loanProductDialogTemplate").render(data);
 		  			dialogDiv.html(formHtml);
 		  			
-		  			var loanproducttabs = $(".loanproducttabs").tabs({
-		  				create: function(event, ui) {
-		  					var curTab = $('#newtabs .ui-tabs-panel[aria-hidde="false"]');
-		  	      			var curTabID = curTab.prop("id");
-		  				},
-		  				beforeActivate: function( event, ui ) {
-		  				}
-		  			});
-		  			
+		  			$(".loanproducttabs").jWizard({
+		  				cancel: function(event, ui) {
+							$("#dialog-form").dialog( "close" );
+						},
+						finish: function(e, ui) {
+							submitTabbedLoanProduct(dialogDiv, data.id);
+							//return false to disable form submission
+							e.preventDefault();
+							return false;
+						},
+						effects: { enable: true }
+					})
+
 	  				//(initialize comboboxes)
 	  				$("#fundSourceAccountId").combobox();
 	  				$("#loanPortfolioAccountId").combobox();
