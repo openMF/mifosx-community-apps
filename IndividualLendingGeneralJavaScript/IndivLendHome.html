@@ -8533,6 +8533,12 @@ $(document).ready(function() {
 											<span style="margin-left:10px;"><a href="#" id="unassignstafftoclient{{=staffId}}" class="unassignstafftoclient">
 											{{=$ctx.doI18N("label.client.unassign.staff")}}</a></span>
 										</div>
+									{{#else}}
+										<div class="row">
+											<span class="longrowlabel">{{=$ctx.doI18N("label.client.staff")}}</span>
+											<span class="rowvalue"><a href="#" id="assignstafftoclient{{=id}}" class="assignstafftoclient">
+											{{=$ctx.doI18N("label.client.assign.staff")}}</a></span>
+										</div>
 									{{/if}}
 								</div>
 							</td>
@@ -10551,5 +10557,28 @@ $(document).ready(function() {
     </div>
 </form>
 </script>
+
+<script id="assignStaffFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.assign.staff")}}</legend>
+		<table>
+			<tr>
+				<td>
+					<label for="staffId">{{=$ctx.doI18N("label.client.staff")}}</label>
+					<select id="staffId" name="staffId" title="">
+					<option value="">{{=$ctx.doI18N("option.client.select.staff.first.choice")}}</option>
+					{{#each staffOptions}}
+						<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>                   
+					{{/each}}
+				</select>
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+</form>
+</script>
+
 </body>
 </html>
