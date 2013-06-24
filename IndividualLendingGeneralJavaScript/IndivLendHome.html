@@ -9639,7 +9639,7 @@ $(document).ready(function() {
 					</td>
 					<td>
 						<select name="productId" id="productId" class="productId">
-							<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
+							<option value="">{{=$ctx.doI18N("option.product.first.choice")}}</option>
 							{{#each productOptions}}
 								{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
 								<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
@@ -9677,7 +9677,7 @@ $(document).ready(function() {
 				</tr>
 			</table>
 			<br>
-			<button id="continuebtn" >{{=$ctx.doI18N("button.continue")}}</button>  
+			<button id="continuebtn" class="floatright alignCenter">{{=$ctx.doI18N("button.continue")}}</button>  
 			<br>
 		</div>
 	</div>
@@ -9703,8 +9703,8 @@ $(document).ready(function() {
 
 			</div>
 			<br>
-			<button id="backbtn" >{{=$ctx.doI18N("button.back")}}</button>&nbsp;&nbsp;&nbsp;
-			<button id="savebtn" >{{=$ctx.doI18N("button.save")}}</button>  
+			<button id="backbtn" >{{=$ctx.doI18N("button.back")}}
+			<button id="savebtn" class="floatright alignCenter">{{=$ctx.doI18N("button.save")}}</button>&nbsp;  
 			<br>
 		</div>
 	</div>
@@ -10553,5 +10553,11 @@ $(document).ready(function() {
     </div>
 </form>
 </script>
+
+<script id="jlgbulkloanErrorDialogFormTemplate" type="text/x-jquery-tmpl">
+	<span class="ui-icon ui-icon-alert floatleft" style="margin: 0 7px 20px 0;"></span> 
+	{{=$ctx.doI18N("error.msg.productId.clients.required")}}
+</script>
+
 </body>
 </html>
