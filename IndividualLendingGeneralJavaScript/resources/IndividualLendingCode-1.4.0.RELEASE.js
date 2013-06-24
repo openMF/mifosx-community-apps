@@ -8263,20 +8263,22 @@ function setCultureReshowFirstPage(cultureVal) {
 
 function setCulture(cultureVal) {
 	currentCulture = cultureVal;
-    	Globalize.culture(currentCulture);
-    	
-    	$.datepicker.setDefaults( $.datepicker.regional[currentCulture]);
- 
-    	var tenantTranslation = "messages-tenant-" + tenantIdentifier;
-    	jQuery.i18n.properties({
-			name:['messages', 'messages-platform-validation', 'messages-savings', 'messages-groups', 'messages-fields', tenantTranslation], 
-			path: 'resources/global-translations/',
-			mode:'map',
-			cache: true,
-			language: currentCulture,
-			callback: function() {
-			}
-		});
+	console.log("culture: " + currentCulture);
+
+	Globalize.culture(currentCulture);
+	
+	$.datepicker.setDefaults( $.datepicker.regional[currentCulture]);
+
+	var tenantTranslation = "messages-tenant-" + tenantIdentifier;
+	jQuery.i18n.properties({
+		name:['messages', 'messages-platform-validation', 'messages-savings', 'messages-groups', 'messages-fields', tenantTranslation], 
+		path: 'resources/global-translations/',
+		mode:'map',
+		cache: true,
+		language: currentCulture,
+		callback: function() {
+		}
+	});
 
 	$.timepicker.regional[currentCulture] = {
 		timeOnlyTitle: doI18N('timeOnlyTitle'),
@@ -8292,6 +8294,7 @@ function setCulture(cultureVal) {
 		pmNames: ['PM', doI18N('pmNames'),],
 		isRTL: false
 	};
+
 	$.timepicker.setDefaults($.timepicker.regional[currentCulture]);
 }
 
