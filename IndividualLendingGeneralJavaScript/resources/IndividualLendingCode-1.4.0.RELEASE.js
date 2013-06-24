@@ -3647,82 +3647,119 @@ function showCenter(centerId){
 }
 
 	function jlgBulkMembersLoanWizard(groupId){
-		setAddBulkLoanContent("content");
+		//setAddBulkLoanContent("content");
 
 		var viewMemberselection = function(data, textStatus, jqXHR) {
-			var memberHtml = $("#jlgbulkloanmemberselect").render(data);
 
-			$("#jlgloans").append(memberHtml);
+			var dialogDiv = $("<div id='dialog-form'></div>");
+			var buttonsOpts = {};
+			var titleCode = 'dialog.title.add.jlg.bulkMembers.loan';
 
-			$('.multiadd').click(function() {  
-				return !$('.multiNotSelectedItems option:selected').remove().appendTo('#loanMembers');  
-			});
-			
-			$('.multiremove').click(function() {  
-				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
-			});
 
-			$('#continuebtn').button({icons: { primary: "ui-icon-circle-arrow-e"}}).click(function(e){
-				
-				//get Loan product details
-				var container = $('#jlgloanproductdetails');
-				var loanProductId = $('#productId').val(); 
-				var membersLength = $('#loanMembers > option').length;
+			dialogDiv.dialog({
+				title: doI18N(titleCode), 
+		  		width: 1100, 
+		  		height: 650, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+		  			$(this).remove();
+				},
+				open: function (event, ui) {
+					var memberHtml = $("#jlgbulkloanmemberselect").render(data);
+					dialogDiv.html(memberHtml);
 
-				if(loanProductId === undefined || membersLength === undefined || membersLength <= 0){
-					return false;
+					$('.multiadd').click(function() {  
+						return !$('.multiNotSelectedItems option:selected').remove().appendTo('#loanMembers');  
+					});
+					
+					$('.multiremove').click(function() {  
+						return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
+					});
+
+					$('#continuebtn').button({icons: { primary: "ui-icon-circle-arrow-e"}}).click(function(e){
+						
+						//get Loan product details
+						var container = $('#jlgloanproductdetails');
+						var loanProductId = $('#productId').val(); 
+						var membersLength = $('#loanMembers > option').length;
+
+						if(loanProductId === undefined || loanProductId === "" || membersLength === undefined || membersLength <= 0){
+								var dialogErrordiv = $( '<div id="dialog-confirm" title="Errors"> </div>');
+							 dialogErrordiv.dialog({
+									resizable: true,
+									height:200,
+									width:400,
+									modal: true,
+									buttons: {
+										Cancel: function() {
+											$( this ).dialog( "close" );
+										}
+									},
+									close: function() {
+									},
+									open: function (event, ui) {
+										var errorHtml = $("#jlgbulkloanErrorDialogFormTemplate").render();
+										dialogErrordiv.html(errorHtml);
+									}
+								}).dialog('open');
+
+						   return false;
+						}
+
+						$('#membesselect').hide();
+						$('#jlgloancontainer').show();
+						var isjlgbulk = true;
+						var loanType = 'jlg';
+						loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, loanType, isjlgbulk);
+						$("#selectedmembers option").remove();
+						$('#selectedmembers').empty().append(function(){
+			                var output = "";
+			                $('#loanMembers option').each(function(i) {  
+			                    output += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
+			                });
+			                return output;
+			            });	
+
+						$('#backbtn').button({icons: { primary: "ui-icon-circle-arrow-w"}}).click(function(e){
+							$('#membesselect').show();
+							$('#jlgloancontainer').hide();
+						});
+
+			            $('#savebtn').button({icons: { primary: "ui-icon-disk"}}).click(function(e){
+			                var serializedArray = {};
+			                serializedArray = $('#entityform').serializeObject();
+			                serializedArray['productId'] = loanProductId;
+			                serializedArray['groupId'] = groupId;
+			                serializedArray["calendarId"] = $("#calendarId").val();
+			                var isError = false;
+			                var totalSelectedMembers = $('#selectedmembers > option').length;
+			                $('#selectedmembers option').each(function(index) {  
+			                    var serializedArray1 = serializedArray;
+			                    serializedArray1['clientId'] = $(this).val();
+			                    var newFormData = JSON.stringify(serializedArray);
+			                    var successFunction =  function(data, textStatus, jqXHR) {
+			                    	$("#dialog-form").dialog("close");
+			                        if (index === totalSelectedMembers - 1) {
+								        showGroup(groupId);
+								    }
+			                        
+			                    };
+			                    
+			                    var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
+			                        formErrorFunction(jqXHR, textStatus, errorThrown);
+			                        isError = true;
+			                    };
+			                    
+			            		if(isError) return false;
+
+			            		executeAjaxRequest('loans', "POST", newFormData , successFunction, customFormErrorFunction);
+			                });
+			            });		
+					});
 				}
-
-				$('#membesselect').hide();
-				$('#jlgloancontainer').show();
-				var isjlgbulk = true;
-				var loanType = 'jlg';
-				loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, loanType, isjlgbulk);
-				$("#selectedmembers option").remove();
-				$('#selectedmembers').empty().append(function(){
-	                var output = "";
-	                $('#loanMembers option').each(function(i) {  
-	                    output += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
-	                });
-	                return output;
-	            });	
-
-				$('#backbtn').button({icons: { primary: "ui-icon-circle-arrow-w"}}).click(function(e){
-					$('#membesselect').show();
-					$('#jlgloancontainer').hide();
-				});
-
-	            $('#savebtn').button({icons: { primary: "ui-icon-disk"}}).click(function(e){
-	                var serializedArray = {};
-	                serializedArray = $('#entityform').serializeObject();
-	                serializedArray['productId'] = loanProductId;
-	                serializedArray['groupId'] = groupId;
-	                serializedArray["calendarId"] = $("#calendarId").val();
-	                var isError = false;
-	                var totalSelectedMembers = $('#selectedmembers > option').length;
-	                $('#selectedmembers option').each(function(index) {  
-	                    var serializedArray1 = serializedArray;
-	                    serializedArray1['clientId'] = $(this).val();
-	                    var newFormData = JSON.stringify(serializedArray);
-	                    var successFunction =  function(data, textStatus, jqXHR) {
-	                        if (index === totalSelectedMembers - 1) {
-						        showGroup(groupId);
-						    }
-	                        
-	                    };
-	                    
-	                    var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
-	                        formErrorFunction(jqXHR, textStatus, errorThrown);
-	                        isError = true;
-	                    };
-	                    
-	            		if(isError) return false;
-
-	            		executeAjaxRequest('loans', "POST", newFormData , successFunction, customFormErrorFunction);
-	                });
-	            });		
-			});
-			
+			}).dialog('open');
 		}
 
 		var url = 'loans/template?templateType=jlgbulk&groupId=' + groupId + '&lendingStrategy=300';
