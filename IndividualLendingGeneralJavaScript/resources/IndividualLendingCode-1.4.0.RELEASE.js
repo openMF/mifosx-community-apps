@@ -2594,7 +2594,7 @@ function addClient(officeId, parentGroupId){
 		  showGroup(parentGroupId);
 		}
 
-		var getUrl = 'clients/template';
+		var getUrl = 'clients/template?officeId=' + officeId;
 		var postUrl = 'clients';
 		var templateSelector = "#clientFormTemplate";
 		var width = 600; 
@@ -7158,7 +7158,7 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				if (data['id']){
 					executeAjaxRequest("clients/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
 				} else {
-					executeAjaxRequest("clients/template?officeId=" + selectedOfficeId , "GET", "", officeIdChangeSuccess, formErrorFunction);	
+					executeAjaxRequest("clients/template?staffInSelectedOfficeOnly=false&officeId=" + selectedOfficeId , "GET", "", officeIdChangeSuccess, formErrorFunction);	
 				}
 			})
 		}
