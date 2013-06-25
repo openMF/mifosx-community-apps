@@ -127,9 +127,9 @@ $(document).ready(function() {
 				<option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
 				{{#each productOptions}}
 					{{#if $ctx.number($parent.parent.data.loanProductId)===$ctx.number(id)}}
-					<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+					<option value="{{=id}}" selected="selected">{{=name}}</option>
 					{{#else}}
-					<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+					<option value="{{=id}}">{{=name}}</option>
 					{{/if}}
 				{{/each}}
 			</select>
@@ -185,9 +185,9 @@ $(document).ready(function() {
 										<option value="">{{=$ctx.doI18N("option.fund.first.choice")}}</option>
 									{{#each fundOptions}}
 										{{#if $ctx.number($parent.parent.data.fundId)===$ctx.number(id)}}
-											<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+											<option value="{{=id}}" selected="selected">{{=name}}</option>
 										{{#else}}
-											<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+											<option value="{{=id}}">{{=name}}</option>
 										{{/if}}
 										{{/each}}
 									</select>
@@ -203,17 +203,17 @@ $(document).ready(function() {
 						{{#each charges}}
 							<tr>
 								<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
-								<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=$ctx.number(chargeId)}}" />
+								<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=chargeId}}" />
 								<td>{{=name}}, {{=currency.displaySymbol}}</td>
 								<td>
 									<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
-									<option value="{{=$ctx.number(chargeCalculationType.id)}}">{{=$ctx.doI18N(chargeCalculationType.code)}}</option>
+									<option value="{{=chargeCalculationType.id)}">{{=$ctx.doI18N(chargeCalculationType.code)}}</option>
 									</select>
 								</td>
 								<td><input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;" /></td>
 								<td>
 									<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
-									<option value="{{=$ctx.number(chargeTimeType.id)}}">{{=$ctx.doI18N(chargeTimeType.code)}}</option>
+									<option value="{{=chargeTimeType.id}}">{{=$ctx.doI18N(chargeTimeType.code)}}</option>
 									</select>
 								</td>
 								<td>
@@ -258,17 +258,17 @@ $(document).ready(function() {
 									<input type="hidden" value="dd MMMM yyyy" name="dateFormat" id="dateFormat">
 									<input type="hidden" value="en" name="locale" id="locale">
 									
-									<input type="hidden" id="loanTermFrequency" name="loanTermFrequency" value="{{=$ctx.number($parent.parent.parent.data.termFrequency)}}" />
-									<input type="hidden" id="loanTermFrequencyType" name="loanTermFrequencyType" value="{{=$ctx.number($parent.parent.parent.data.termPeriodFrequencyType.id)}}" />
-									<input id="repaymentEvery" name="repaymentEvery" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.repaymentEvery)}}" />
-									<input id="repaymentFrequencyType" name="repaymentFrequencyType" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.repaymentFrequencyType.id)}}" />
-									<input id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.transactionProcessingStrategyId)}}" />
-									<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.interestRatePerPeriod)}}" />
-									<input id="interestRateFrequencyType" name="interestRateFrequencyType" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.interestRateFrequencyType.id)}}" />
-									<input id="amortizationType" name="amortizationType" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.amortizationType.id)}}" />
-									<input id="interestType" name="interestType" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.interestType.id)}}" />
-									<input id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.interestCalculationPeriodType.id)}}" />
-									<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="hidden" value="{{=$ctx.number($parent.parent.parent.data.inArrearsTolerance)}}" />
+									<input type="hidden" id="loanTermFrequency" name="loanTermFrequency" value="{{=$parent.parent.parent.data.termFrequency}}" />
+									<input type="hidden" id="loanTermFrequencyType" name="loanTermFrequencyType" value="{{=$parent.parent.parent.data.termPeriodFrequencyType.id}}" />
+									<input id="repaymentEvery" name="repaymentEvery" title="" type="hidden" value="{{=$parent.parent.parent.data.repaymentEvery}}" />
+									<input id="repaymentFrequencyType" name="repaymentFrequencyType" title="" type="hidden" value="{{=$parent.parent.parent.data.repaymentFrequencyType.id}}" />
+									<input id="transactionProcessingStrategyId" name="transactionProcessingStrategyId" title="" type="hidden" value="{{=$parent.parent.parent.data.transactionProcessingStrategyId}}" />
+									<input id="interestRatePerPeriod" name="interestRatePerPeriod" title="" type="hidden" value="{{=$parent.parent.parent.data.interestRatePerPeriod}}" />
+									<input id="interestRateFrequencyType" name="interestRateFrequencyType" title="" type="hidden" value="{{=$parent.parent.parent.data.interestRateFrequencyType.id}}" />
+									<input id="amortizationType" name="amortizationType" title="" type="hidden" value="{{=$parent.parent.parent.data.amortizationType.id}}" />
+									<input id="interestType" name="interestType" title="" type="hidden" value="{{=$parent.parent.parent.data.interestType.id}}" />
+									<input id="interestCalculationPeriodType" name="interestCalculationPeriodType" title="" type="hidden" value="{{=$parent.parent.parent.data.interestCalculationPeriodType.id}}" />
+									<input id="inArrearsTolerance" name="inArrearsTolerance" title="" type="hidden" value="{{=$parent.parent.parent.data.inArrearsTolerance}}" />
 
 								 {{/if}}
 
@@ -590,9 +590,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -605,9 +605,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.group.select.parent.first.choice")}}</option>
 					{{#each centerOptions}}
 						{{#if $ctx.number($parent.parent.data.centerId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							<option value="{{=id}}" selected="selected">{{=name}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							<option value="{{=id}}">{{=name}}</option>
 						{{/if}}                            
 					{{/each}}
 				</select>
@@ -621,9 +621,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
 					{{#each staffOptions}}
 						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							<option value="{{=id}}">{{=displayName}}</option>
 						{{/if}}                              
 					{{/each}}
 				</select>
@@ -713,9 +713,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -729,9 +729,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.group.select.parent.first.choice")}}</option>
 					{{#each centerOptions}}
 						{{#if $ctx.number($parent.parent.data.centerId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							<option value="{{=id}}" selected="selected">{{=name}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							<option value="{{=id}}">{{=name}}</option>
 						{{/if}}                            
 					{{/each}}
 				</select>
@@ -745,9 +745,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
 					{{#each staffOptions}}
 						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							<option value="{{=id}}">{{=displayName}}</option>
 						{{/if}}                              
 					{{/each}}
 				</select>
@@ -828,9 +828,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -847,9 +847,9 @@ $(document).ready(function() {
 					<!-- Do not allow to change center
 					{{#each centerOptions}}
 						{{#if $ctx.number($parent.parent.data.centerId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							<option value="{{=id}}" selected="selected">{{=name}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							<option value="{{=id}}">{{=name}}</option>
 						{{/if}}                            
 					{{/each}}
 					-->
@@ -864,9 +864,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
 					{{#each staffOptions}}
 						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							<option value="{{=id}}">{{=displayName}}</option>
 						{{/if}}                              
 					{{/each}}
 				</select>
@@ -941,9 +941,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -954,9 +954,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
 					{{#each staffOptions}}
 						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							<option value="{{=id}}">{{=displayName}}</option>
 						{{/if}}                              
 					{{/each}}
 				</select>
@@ -1040,9 +1040,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -1053,9 +1053,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
 					{{#each staffOptions}}
 						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							<option value="{{=id}}">{{=displayName}}</option>
 						{{/if}}                              
 					{{/each}}
 				</select>
@@ -1101,9 +1101,9 @@ $(document).ready(function() {
 	 <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 	 {{#each officeOptions}}
 		 {{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-			 <option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+			 <option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 		 {{#else}}
-			 <option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			 <option value="{{=id}}">{{=nameDecorated}}</option>
 		 {{/if}}
 	 {{/each}}
 	</select>
@@ -1113,9 +1113,9 @@ $(document).ready(function() {
 	 <option value="">{{=$ctx.doI18N("option.group.select.staff.first.choice")}}</option>
 	 {{#each staffOptions}}
 		 {{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
-			 <option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+			 <option value="{{=id}}" selected="selected">{{=displayName}}</option>
 		 {{#else}}
-			 <option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+			 <option value="{{=id}}">{{=displayName}}</option>
 		 {{/if}}                              
 	 {{/each}}
 	</select>
@@ -1208,12 +1208,12 @@ $(document).ready(function() {
 					{{#each allowedDocumentTypes}}
 						{{#if $parent.parent.data.documentType}}
 							{{#if $ctx.number($parent.parent.parent.data.documentType.id)===$ctx.number(id)}}
-							   <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+							   <option value="{{=id}}" selected="selected">{{=name}}</option>
 							{{#else}}
-								<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+								<option value="{{=id}}">{{=name}}</option>
 							{{/if}}
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							<option value="{{=id}}">{{=name}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -1506,12 +1506,12 @@ $(document).ready(function() {
 					{{#each clientMembers}}
 						{{#if $parent.parent.data.selectedRole}}
 							{{#if $parent.parent.parent.data.selectedRole.clientId === id}}
-								<option value="{{=$ctx.number(id)}}" selected="selected">{{=displayName}}</option>
+								<option value="{{=id}}" selected="selected">{{=displayName}}</option>
 							{{#else}}
-								<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+								<option value="{{=id}}">{{=displayName}}</option>
 							{{/if}}
 						{{#else}}		
-							<option value="{{=$ctx.number(id)}}">{{=displayName}}</option>
+							<option value="{{=id}}">{{=displayName}}</option>
 						{{/if}}	
 					{{/each}}
 				</select>
@@ -1525,12 +1525,12 @@ $(document).ready(function() {
 					{{#each availableRoles}}
 						{{#if $parent.parent.data.selectedRole}}
 							{{#if $parent.parent.parent.data.selectedRole.role.id === id}}
-								<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+								<option value="{{=id}}" selected="selected">{{=name}}</option>
 							{{#else}}
-								<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+								<option value="{{=id}}">{{=name}}</option>
 							{{/if}}
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							<option value="{{=id}}">{{=name}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -1943,9 +1943,9 @@ $(document).ready(function() {
 						<select name="tenureType" id="tenureType"  title="">
 							{{#each tenureTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.tenureType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+									<option value="{{=id}}" selected="selected">{{=value}}</option>
 								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+									<option value="{{=id}}">{{=value}}</option>
 								{{/if}}
 							{{/each}}
 						</select>
@@ -1982,9 +1982,9 @@ $(document).ready(function() {
 						<select name="interestType" id="interestType"  title="">
 							{{#each savingsInterestTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.interestType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+									<option value="{{=id}}" selected="selected">{{=value}}</option>
 								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+									<option value="{{=id}}">{{=value}}</option>
 								{{/if}}
 							{{/each}}
 						</select>
@@ -2010,9 +2010,9 @@ $(document).ready(function() {
 							<select name="frequency" id="frequency"  title="" style="width: 121px;">
 								{{#each savingFrequencyOptions}}
 								{{#if $ctx.number($parent.parent.data.savingFrequencyType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+									<option value="{{=id}}" selected="selected">{{=value}}</option>
 								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+									<option value="{{=id}}">{{=value}}</option>
 								{{/if}}
 								{{/each}}
 							</select>
@@ -2025,9 +2025,9 @@ $(document).ready(function() {
 						<select name="lockinPeriodType" id="lockinPeriodType"  title="" style="width: 121px;">
 							{{#each lockinPeriodTypeOptions}}
 								{{#if $ctx.number($parent.parent.data.lockinPeriodType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=value}}</option>
+									<option value="{{=id}}" selected="selected">{{=value}}</option>
 								{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=value}}</option>
+									<option value="{{=id}}">{{=value}}</option>
 								{{/if}}
 							{{/each}}
 						</select>
