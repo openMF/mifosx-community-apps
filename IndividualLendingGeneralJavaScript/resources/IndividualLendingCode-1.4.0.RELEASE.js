@@ -3714,6 +3714,15 @@ function showCenter(centerId){
 						return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
 					});
 
+					$('#cancelbtn').button({
+			            icons : {
+			                primary : "ui-icon-close"
+			            }
+			         }).click(function(e){
+			             $("#dialog-form").dialog("close");
+			             e.preventDefault();
+			         });
+
 					$('#continuebtn').button({icons: { primary: "ui-icon-circle-arrow-e"}}).click(function(e){
 						
 						//get Loan product details
@@ -3762,6 +3771,15 @@ function showCenter(centerId){
 							$('#membesselect').show();
 							$('#jlgloancontainer').hide();
 						});
+
+						$('#exitbtn').button({
+				            icons : {
+				                primary : "ui-icon-close"
+				            }
+				         }).click(function(e){
+				             $("#dialog-form").dialog("close");
+				             e.preventDefault();
+				         });
 
 			            $('#savebtn').button({icons: { primary: "ui-icon-disk"}}).click(function(e){
 			                var serializedArray = {};
