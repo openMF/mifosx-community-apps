@@ -8878,6 +8878,19 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         
         popupDialogWithFormViewData(data, postPutUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
 
+        if(!(data.id === undefined)){
+        	$( '#startDate' ).datepicker( "destroy" );
+        	//should not allow to change start date to a past date.
+        	$('#startDate').datepicker({minDate: 0, constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+        	$('#startDate').val(custom.helperFunctions.globalDate(data.startDate));
+
+        	//do not allow to edit frequency and repeats every
+
+        	$('#repeats').attr("disabled", true);
+        	$('#repeatsEvery').attr("disabled", true);
+
+        }
+
         var repeats =  $('select.repeats');
         var repeatsEvery = $('select.repeatsEvery');
         
