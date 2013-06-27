@@ -292,12 +292,12 @@ function showMainContainer(containerDivName, username) {
 	htmlVar += '	<li><a href="unknown.html" onclick="return false;">' + doI18N("label.tenant.name") + ': ' + tenantIdentifier + '</a></li>';
     
 	htmlVar += '</ul>';
+
 	htmlVar += '<ul id="nav" class="floatright">';
-	
 	htmlVar += '    <li id="search_element" class="sb_wrapper">';
 
-    htmlVar += '           <input id="sb_input" name="sb_input" class="sb_input" type="text" placeholder="Search" />';
-    htmlVar += '           <button type="submit" class="globalsearchbtn ui-icon-search" id="globalsearchbtn" name="globalsearchbtn" title="Global Search">Search</button>';
+    htmlVar += '           <input id="sb_input" name="sb_input" class="sb_input" type="text" placeholder="Search" style="height:13px;"/>';
+    htmlVar += '           <button type="submit" class="globalsearchbtn ui-icon-search" id="globalsearchbtn" name="globalsearchbtn" title="Global Search" style="height:26.10px;">Search</button>';
     htmlVar += '           <ul class="sb_dropdown" >';
     htmlVar += '                <li class="sb_filter">Filter your search</li>';
     htmlVar += '                <li><input type="checkbox" name="gsresource" value="CLIENTS"/><label for="clients">Clients</label></li>';
@@ -309,7 +309,7 @@ function showMainContainer(containerDivName, username) {
     htmlVar += '           </ul>';
 
     htmlVar += '    </li>';
-	
+
 	htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.culture") + '</a>';
 	htmlVar += '		<ul>';
 	htmlVar += '			<li><a href="unknown.html" onclick="setCultureReshowFirstPage(' + "'" + 'en' + "'" + ');return false;">English</a></li>';
