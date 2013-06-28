@@ -6952,6 +6952,19 @@ $(document).ready(function() {
 				</td>
 			</tr>
 			{{/if}}
+
+			<tr>
+				<td>
+					{{#if includeInBorrowerCycle}}
+						<input type="checkbox" name="includeInBorrowerCycle" id="includeInBorrowerCycle" value="{{=includeInBorrowerCycle}}" checked />
+					{{#else}}
+						<input type="checkbox" name="includeInBorrowerCycle" id="includeInBorrowerCycle" value="{{=includeInBorrowerCycle}}" />
+					{{/if}}
+				</td>
+				<td>
+					{{=$ctx.doI18N("label.include.client.loan.cycle")}}
+				</td>
+			</tr>
 			</table>
 		</div>
 
