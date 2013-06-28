@@ -10588,6 +10588,14 @@ $(document).ready(function() {
             </tr>
             <tr>
                 <td>
+                    {{=$ctx.doI18N("form.label.alternativeWorkingDate")}}
+                </td>
+                <td>
+                    <input id="alternativeWorkingDate" name="alternativeWorkingDate" title="" type="text" value="{{=$ctx.globalDate(alternativeWorkingDate)}}" class="datepickerfieldnoconstraint" />
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <label for="description">{{=$ctx.doI18N("form.label.holiday.description")}}</label>
                 </td>
                 <td>
