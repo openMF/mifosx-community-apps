@@ -590,9 +590,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -713,9 +713,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -828,9 +828,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -941,9 +941,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -1040,9 +1040,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -1101,9 +1101,9 @@ $(document).ready(function() {
 	 <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 	 {{#each officeOptions}}
 		 {{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-			 <option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+			 <option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 		 {{#else}}
-			 <option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+			 <option value="{{=id}}">{{=nameDecorated}}</option>
 		 {{/if}}
 	 {{/each}}
 	</select>
@@ -2155,7 +2155,7 @@ $(document).ready(function() {
 		<select id="fromOfficeId" name="fromOfficeId" title="">
 			<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 			{{#each allowedOffices}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+				<option value="{{=id}}">{{=nameDecorated}}</option>
 				{{/each}}
 		</select>
 	  </td>
@@ -2164,7 +2164,7 @@ $(document).ready(function() {
 		<select id="toOfficeId" name="toOfficeId" title="">
 			<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 			{{#each allowedOffices}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+				<option value="{{=id}}">{{=nameDecorated}}</option>
 				{{/each}}
 		</select>
 	  </td>
@@ -2419,9 +2419,9 @@ $(document).ready(function() {
 						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 						{{#each crudRows}}
 							{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-								<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+								<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 							{{#else}}
-								<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+								<option value="{{=id}}">{{=nameDecorated}}</option>
 							{{/if}}
 						{{/each}}
 					</select>
@@ -2461,9 +2461,9 @@ $(document).ready(function() {
 						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 						{{#each allowedOffices}}
 							{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-								<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+								<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 							{{#else}}
-								<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+								<option value="{{=id}}">{{=nameDecorated}}</option>
 							{{/if}}
 						{{/each}}
 					</select>
@@ -2562,9 +2562,9 @@ $(document).ready(function() {
 						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 						{{#each officeOptions}}
 							{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-								<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+								<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 							{{#else}}
-								<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+								<option value="{{=id}}">{{=nameDecorated}}</option>
 							{{/if}}
 						{{/each}}
 					</select>
@@ -3033,9 +3033,9 @@ $(document).ready(function() {
 			<option value="-1">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 			{{#each allowedOffices}}
 				{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-					<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+					<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 				{{#else}}
-					<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+					<option value="{{=id}}">{{=nameDecorated}}</option>
 				{{/if}}
 			{{/each}}
 		</select>
@@ -4237,7 +4237,7 @@ $(document).ready(function() {
 				<select id="accountClosuresOfficeId" name="accountClosuresOfficeId" title="">
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each crudRows}}
-						<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						<option value="{{=id}}">{{=nameDecorated}}</option>
 					{{/each}}
 				</select>
 				<button id="searchglclosure">{{=$ctx.doI18N("button.searchClosures")}}</button>
@@ -4325,7 +4325,7 @@ $(document).ready(function() {
 				<select id="officeId" name="officeId" title="">
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each crudRows}}
-						<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+						<option value="{{=id}}">{{=nameDecorated}}</option>
 					{{/each}}
 				</select>
 			</td>
@@ -4397,7 +4397,7 @@ $(document).ready(function() {
 					<select id="journalEntryOfficeId" name="officeId" title="">
 						<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 						{{#each offices}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/each}}
 					</select>
 				</td>
@@ -4552,7 +4552,7 @@ $(document).ready(function() {
 			<select id="officeId" name="officeId" title="">
 				<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 				{{#each offices}}
-				<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+				<option value="{{=id}}">{{=nameDecorated}}</option>
 				{{/each}}
 			</select></td>
 		</tr>
@@ -8247,9 +8247,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -8341,9 +8341,9 @@ $(document).ready(function() {
 					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each officeOptions}}
 						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-							<option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
 						{{#else}}
-							<option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+							<option value="{{=id}}">{{=nameDecorated}}</option>
 						{{/if}}
 					{{/each}}
 				</select>
@@ -9954,9 +9954,9 @@ $(document).ready(function() {
                         <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
                         {{#each allowedOffices}}
                             {{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
-                                <option value="{{=$ctx.number(id)}}" selected="selected">{{=nameDecorated}}</option>
+                                <option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
                             {{#else}}
-                                <option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+                                <option value="{{=id}}">{{=nameDecorated}}</option>
                             {{/if}}
                         {{/each}}
                     </select>
@@ -10222,7 +10222,7 @@ $(document).ready(function() {
             <select id="officeId" name="officeId" title="">
                 <option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
                 {{#each offices}}
-                <option value="{{=$ctx.number(id)}}">{{=nameDecorated}}</option>
+                <option value="{{=id}}">{{=nameDecorated}}</option>
                 {{/each}}
             </select></td>
         </tr>
