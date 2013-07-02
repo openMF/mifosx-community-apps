@@ -5769,7 +5769,7 @@ function loadGuarantorForm(){
     $("#smartGuarantorSearch" ).autocomplete({
         source: function(request, response){
         	//get selected office
-			var sqlSearchValue = "display_name like '%" + request.term + "%'"; 
+			var sqlSearchValue = "c.display_name like '%" + request.term + "%'"; 
 			smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
 				response( $.map( data.pageItems, function( item ) {
                     return {
