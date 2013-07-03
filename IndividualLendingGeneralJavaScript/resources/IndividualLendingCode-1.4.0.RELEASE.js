@@ -1723,7 +1723,24 @@ function editCodeValueFunction(linkId, tableName){
             var errorFormFunction = function(jqXHR, textStatus, errorThrown){
                 //clear previous error messages
                 $('#formerrors').html("");
-                formErrorFunction(jqXHR, textStatus, errorThrown);
+                var dialogErrordiv = $( '<div id="dialog-confirm" title="Errors"> </div>');
+				 dialogErrordiv.dialog({
+						resizable: true,
+						height:200,
+						width:400,
+						modal: true,
+						buttons: {
+							Cancel: function() {
+								$( this ).dialog( "close" );
+							}
+						},
+						close: function() {
+						},
+						open: function (event, ui) {
+							var errorHtml = $("#codeValueErrorDialogFormTemplate").render();
+							dialogErrordiv.html(errorHtml);
+						}
+					}).dialog('open');
             }
 
             var updateSuccess = function(data, textStatus, jqXHR){
