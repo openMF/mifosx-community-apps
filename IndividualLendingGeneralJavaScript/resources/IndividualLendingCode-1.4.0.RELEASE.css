@@ -158,6 +158,7 @@ input.rightreadonly {
 .dashboard .information .column{
     display:inline-block;
     width: 45%;
+    vertical-align: top;
 }
 .dashboard .information .column div{
     margin: 7px 0;

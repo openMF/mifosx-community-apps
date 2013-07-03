@@ -260,13 +260,14 @@ function fillList_FieldAgent(id) {
 	}
     executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
 }
-function fillListDetails_FieldAgent(id) {
+function fillListDetails_FieldAgent(id, groupName) {
 
     var url = "runreports/ProgramDetails?R_programId=" + id + "&genericResultSet=false";
 
 	var successFunction = function(data, textStatus, jqXHR) {
 	    var obj = new Object();
-	    obj.dataRows = data;	    
+	    obj.dataRows = data;
+	    obj.groupName =   groupName;
 	    var htmlVar = $("#quipuExampleListDetailsFieldAgentTemplate").render(obj);  
 		$("#quipuExGenDashboardListDetails").html(htmlVar);
 		$("#quipuExGenDashboardListDetails #groupsstatstable").dataTable(custom.jqueryDataTableLayout.basic());
@@ -284,4 +285,158 @@ function fillStaffList(id) {
 		$("#quipuExGenDashboardList").html(htmlVar);
 	}
     executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
+}
+
+
+//Group creation for TEVI
+function launchTeviGroupDialog(groupId) {
+	
+	if (groupId) {
+		executeAjaxRequest('groups/' + groupId + '?template=true&associations=clientMembers', 'GET', "", launchTeviGroupDialogOnSuccessFunction, formErrorFunction);
+	} else {
+		executeAjaxRequest('groups/template', 'GET', "", launchTeviGroupDialogOnSuccessFunction, formErrorFunction);		
+	}
+}
+var launchTeviGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+
+	data.clientOptions = new Array();
+	var groupId = data.id;
+	var templateIdentifier = "#teviGroupFormTemplate";
+	if (groupId) {
+		templateIdentifier = "#teviGroupEditFormTemplate";
+	}
+	
+	var openGroupDialogFunc = function (event, ui) {
+		renderTeviGorupForm(data);
+	}
+	
+	var saveNewGroupFunc = function() {
+		saveGroup(dialogDiv, groupId);
+	};
+	
+	var dialog = null;
+	if (groupId) {
+		dialog = genericDialog(dialogDiv, 'dialog.title.edit.group', 380, 250, openGroupDialogFunc, saveNewGroupFunc);	
+	} else {
+		dialog = genericDialog(dialogDiv, 'dialog.title.add.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);
+	}
+};
+
+
+
+function loadTeviGroupForm(selectedValue){
+	var url='groups/template?officeId=' + selectedValue;
+	executeAjaxRequest(url,'GET',"",renderTeviGorupForm, formErrorFunction);
+}
+function renderTeviGorupForm(data) {
+	var groupId = data.id;
+	var templateIdentifier = "#teviGroupFormTemplate";
+	if (groupId) {
+		templateIdentifier = "#teviGroupEditFormTemplate";
+	}
+	var formHtml = $(templateIdentifier).render(data);
+	$("#dialog-form").html(formHtml);
+	
+	$("#dialog-form #officeId").change(function() {
+		var selectedValue = $(this).find(":selected").val();
+		loadTeviGroupForm(selectedValue);
+	});
+	
+	$('.multiremove').click(function() {  
+		return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
+	});
+	
+	$('.datepickerfield').datepicker({constrainInput: true, dateFormat: custom.datePickerDateFormat});
+	
+	$("#entityform textarea").first().focus();
+	$('#entityform input').first().focus();
+
+	var success = function(data){
+		var obj = new Object();
+		obj.clientOptions = data;
+		var html = $("#teviClientOptions").render(obj);
+		$("#dialog-form #notSelectedClients").append(html);
+
+		$('.multiadd').click(function() {  
+			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#clientMembers');  
+		});
+	}
+	executeAjaxRequest('runreports/ClientsByOffice?R_officeId='+data.officeId+'&genericResultSet=false','GET',"",success, formErrorFunction);
+}
+
+
+//Associate Clients to a group for TEVI
+
+function saveAssociateClientsToGroup(divContainer, groupId) {
+	var serializationOptions = {};
+	
+	$('#notSelectedClients option').each(function(i) {
+		$(this).prop("selected", "selected");
+	});
+	$('#clientMembers option').each(function(i) {
+		$(this).prop("selected", "selected");
+	});
+	
+	var serializedArray = {};
+	serializedArray = $('#entityform').serializeObject(serializationOptions);
+	
+	var newFormData = JSON.stringify(serializedArray);
+	
+	var successFunction =  function(data, textStatus, jqXHR) {
+		divContainer.dialog("close");
+		showGroup(groupId);
+	};
+	executeAjaxRequest('groups/' + groupId + '?command=associateClients', "POST", newFormData, successFunction, formErrorFunction);
+}
+
+var launchAssociateClientsToGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+
+	var groupId = data.id;
+	
+	var templateIdentifier = "#associateClientsToGroupFormTemplate";
+	
+	var openAssociateClientsToGroupDialogFunc = function (event, ui) {
+		var success = function(data2, textStatus, jqXHR){
+			data.clientOptions = data2;
+			var formHtml = $(templateIdentifier).render(data);
+			$("#dialog-form").html(formHtml);
+			
+			$('.multiadd').click(function() {  
+				return !$('.multiNotSelectedItems option:selected').remove().appendTo('#clientMembers');  
+			});
+			
+			$('.multiremove').click(function() {  
+				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
+			});
+			
+			$("#entityform textarea").first().focus();
+			$('#entityform input').first().focus();
+			
+		}
+		executeAjaxRequest('runreports/ClientsByOffice?R_officeId='+data.officeId+'&genericResultSet=false','GET',"",success, formErrorFunction);
+		
+	}
+	
+	var saveAssociateClientsToGroupFunc = function() {
+		saveAssociateClientsToGroup(dialogDiv, groupId);
+	};
+
+	var dialog = genericDialog(dialogDiv, 'dialog.title.associate.clients', 900, 300, openAssociateClientsToGroupDialogFunc, saveAssociateClientsToGroupFunc);	
+}
+
+function associateClientsToGroup(groupId){
+	executeAjaxRequest('groups/' + groupId + '?template=true&associations=clientMembers', 'GET', "", launchAssociateClientsToGroupDialogOnSuccessFunction, formErrorFunction);
+}
+
+function justNumbers(e)
+{
+	var keynum = window.event ? window.event.keyCode : e.which;
+	if ((keynum == 8) || (keynum == 46))
+		return true;
+	 
+	return /\d/.test(String.fromCharCode(keynum));
 }
