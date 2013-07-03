@@ -6,7 +6,7 @@
 inDevelopmentTasks = ["CENTERSMENU", "COLLECTIONSHEETMENU", "CHECKERMENU", "SAVINGSMENU",
                       "VIEWSAVINGPRODUCTS", "ADDSAVINGPRODUCT", "ADDHOLIDAY", 
                       "VIEWCONFIGURATION", "MANAGEPERMISSIONS", "CLOSEASRESCHEDULEDLOAN",
-                      "ADDSAVINGACCOUNT","ADDGROUP"];
+                      "ADDSAVINGACCOUNT"];
 
 //This does know about Mifos X Permission checking - each piece of functionality needs to be linked to a Mifos X permission
 taskPermissionsMatrix = {
