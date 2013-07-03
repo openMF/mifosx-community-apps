@@ -425,8 +425,8 @@
 		var dialogDiv = $("<div id='dialog-form'></div>");
 		dialogDiv.dialog({
 			title : doI18N(titleCode),
-			width : $(window).width() - 20,
-			height : $(window).height() - 20,
+			width : "auto",//$(window).width() - 20,
+			height : "auto",//$(window).height() - 20,
 			modal : true,
 			buttons : buttonsOpts,
 			close : function() {
@@ -447,6 +447,11 @@
 				formHtml = getFormHtml(html);
 
 				$("#dialog-form").html(formHtml);
+				var width = $("#dialog-form form").width()+50;
+				var height = $("#dialog-form form").height()+150;
+				$("#dialog-form").dialog("option","width",width);
+				$("#dialog-form").dialog("option","height",height);
+
 				$('.datepickerfield').datepicker({
 					constrainInput : true,
 					changeMonth : true,
