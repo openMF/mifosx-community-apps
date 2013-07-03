@@ -93,16 +93,6 @@ crudData = {
 				editTemplateNeeded: false,
 				refreshListNeeded: true
 			},
-		datatableCreate: {
-				editTemplateNeeded: false,
-				refreshListNeeded: false,
-                dialogWidth: 1200
-			},
-		datatableUpdate: {
-				editTemplateNeeded: false,
-				refreshListNeeded: false,
-                dialogWidth: 1200
-			},
 		report: {
 			editTemplateNeeded: true,
 			refreshListNeeded: true
@@ -110,16 +100,16 @@ crudData = {
 		accountingrule: {
 				editTemplateNeeded: true,
 				refreshListNeeded: true,
-				dialogWidth: 1200,
-				dialogHeight: 565
+				dialogWidth: 600,
+				dialogHeight: 375
 			}
 
 		};
 
 saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
-  	$("#dialog-form").dialog("close");
-	showILClient(currentClientId );
-};
+						  	$("#dialog-form").dialog("close");
+		  					showILClient(currentClientId );
+				  		};
 
 saveSuccessFunctionReloadClientListing =  function(data, textStatus, jqXHR) {
 	$("#dialog-form").dialog("close");
@@ -199,30 +189,17 @@ function executeMultipartUploadAjaxRequest(url, verbType, formData, successFunct
 function showMainContainer(containerDivName, username) {
 
 	var htmlVar = '<div id="logowrapper">';
-	htmlVar += '	<span style="float: right">';
-	htmlVar += '		<img style="float:right; border: 0;" alt="" src="resources/img/mifos-icon.png"/>';
+	htmlVar += '	<span style="float: left">';
+	htmlVar += '		<img style="float:left; border: 0;" alt="" src="resources/mifos.jpg"/>';
 	htmlVar += '	</span>';
 	htmlVar += '</div>';
 	htmlVar += '<div id="navwrapper">';
 	htmlVar += '<ul id="nav" class="floatleft">';
 
-	if (jQuery.MifosXUI.showMenu("DashboardMenu")) {
-		htmlVar += '  <li><a href="unknown.html" onclick="custom.showFirstPage();return false;">'+doI18N("link.topnav.dashboard")+'</a></li>';		
-	}
-
-	if (jQuery.MifosXUI.showMenu("ClientsMenu") && jQuery.MifosXUI.showMenu("GroupsMenu")) {
-		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a>';
-		htmlVar += '		<ul>';
+	if (jQuery.MifosXUI.showMenu("ClientsMenu"))
 		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing(' + "'content'" + ');return false;">' + doI18N("link.topnav.clients") + '</a></li>';
-		htmlVar += '		</ul>';
-		htmlVar += '	</li>';
-	} else if (jQuery.MifosXUI.showMenu("ClientsMenu")) {
-		htmlVar += '	<li><a href="unknown.html" onclick="showILClientListing(' + "'content'" + ');return false;">' + doI18N("link.topnav.clients") + '</a></li>';
-	} else if (jQuery.MifosXUI.showMenu("GroupsMenu")) {
-		htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
-	}
 	
-	if (jQuery.MifosXUI.showMenu("CentersMenu")) {
+	if (jQuery.MifosXUI.showMenu("GroupsMenu")) {
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.groupings") + '</a>';
 		htmlVar += '		<ul>';
 		
@@ -230,22 +207,16 @@ function showMainContainer(containerDivName, username) {
 			htmlVar += '  <li><a href="unknown.html" onclick="showCollectionSheet();return false;">' + doI18N("link.topnav.collection.sheet") + '</a></li>';
 		}
 		
-		if (jQuery.MifosXUI.showMenu("CentersMenu")) {
-			htmlVar += '	<li><a href="unknown.html" onclick="showNewCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
-			htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
-			htmlVar += '	<li><a href="unknown.html" onclick="showCommunalBankListing();return false;">' + doI18N("link.topnav.communalbanks") + '</a></li>';
-		}
-
+		htmlVar += '	<li><a href="unknown.html" onclick="showNewCenterListing();return false;">' + doI18N("link.topnav.centers") + '</a></li>';
+		htmlVar += '	<li><a href="unknown.html" onclick="showGroupListing();return false;">' + doI18N("link.topnav.groups") + '</a></li>';
+		htmlVar += '	<li><a href="unknown.html" onclick="showCommunalBankListing();return false;">' + doI18N("link.topnav.communalbanks") + '</a></li>';
+		
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
-
-	if (jQuery.MifosXUI.showMenu("SavingsMenu")) {
-  	 	htmlVar += '  <li><a href="unknown.html" onclick="showSavingsAccountsListing();return false;">' + doI18N("link.topnav.savings") + '</a></li>';    
-  	}
 	
 	if (jQuery.MifosXUI.showMenu("LoansMenu")) {
-		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';
+		htmlVar += '  <li><a href="unknown.html" onclick="showLoansListing();return false;">' + doI18N("link.topnav.loans") + '</a></li>';		
 	}
 	
 	if (jQuery.MifosXUI.showMenu("CheckerMenu")) {
@@ -257,7 +228,7 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		<ul>';
 		
 		if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true)
-			htmlVar += '	<li><a href="unknown.hgtml" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
+			htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 		
 		if (jQuery.MifosXUI.showMenu("OrgAdminMenu") == true)
 			htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
@@ -269,10 +240,9 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '	</li>';
 	}
 	
-	if (jQuery.MifosXUI.showMenu("AccountingMenu")) {
+	if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
 		htmlVar += '  <li><a href="unknown.html" onclick="setAccountingContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.accounting") + '</a></li>';
-	}
-		
+
 	if (jQuery.MifosXUI.showMenu("ReportsMenu") == true)
 	{
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
@@ -419,7 +389,8 @@ function setCenterListingContent(divName) {
 
 function setNewCenterListingContent(divName) {
 	var htmlVar = "";
-	if (jQuery.MifosXUI.showTask("ADDCENTER")) {
+	//Add ADDGROUP in MifosXUI
+	if (jQuery.MifosXUI.showTask("ADDCLIENT")) {
 		htmlVar = '<button id="addCenter" style="clear: both;">' + doI18N("link.add.new.center") + '</button>';
 	}
 		
@@ -431,12 +402,10 @@ function setNewCenterListingContent(divName) {
 function setGroupListingContent(divName) {
 	var htmlVar = "";
 	
-	if (jQuery.MifosXUI.showTask("ADDGROUP")) {
+	if (jQuery.MifosXUI.showTask("ADDCLIENT")) {
 		htmlVar = '<button id="addstandardgroup" style="clear: both;">' + doI18N("link.add.new.group") + '</button>';
 	}
-	if (jQuery.MifosXUI.showTask("ADDTEVIGROUP")) {
-		htmlVar = '<button id="addtevidgroup" style="clear: both;">' + doI18N("link.add.new.group") + '</button>';
-	}	
+		
 	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.group.manage") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
@@ -448,14 +417,6 @@ function setLoanListingContent(divName) {
 	htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
 
 	$("#" + divName).html(htmlVar);
-}
-
-function setSavingsAccountListingContent(divName) {
-  var htmlVar = "";
-  
-  htmlVar += '<div id="tabs"><ul><li><a href="#searchtab" title="searchtab">' + doI18N("tab.search") + '</a></li></ul><div id="searchtab"></div></div>';
-
-  $("#" + divName).html(htmlVar);
 }
 
 function setCommunalBankListingContent(divName){
@@ -481,9 +442,7 @@ function setGroupContent(divName) {
 	htmlVar += 	' title="groupclientstab" class="topleveltab"><span id="groupclientstabname">' + doI18N("app.loading") + '</span></a></li>'
 	htmlVar += 	' <li><a href="#groupsummarytab"'; 
 	htmlVar += 	' title="groupsummarytab" class="topleveltab"><span id="groupsummarytabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar += 	' <li><a href="#grouprolestab"'; 
-	htmlVar += 	' title="grouprolestab" class="topleveltab"><span id="grouprolestabname">' + doI18N("app.loading") + '</span></a></li>'
-	htmlVar += 	' </ul><div id="grouptab"></div><div id="groupclientstab"></div><div id="groupsummarytab"></div><div id="grouprolestab"></div></div></div>';
+	htmlVar += 	' </ul><div id="grouptab"></div><div id="groupclientstab"></div><div id="groupsummarytab"></div></div></div>';
 	
 	$("#" + divName).html(htmlVar);
 }
@@ -526,6 +485,8 @@ function setAddSavingContent(divName) {
 
 function setOrgAdminContent(divName) {
 
+//	var addSavingProductUrl="maintainTable('savingproduct', 'savingproducts', 'POST');return false;";
+//	var addDepositProductUrl="maintainTable('depositproduct', 'depositproducts', 'POST');return false;";
 	var addOfficeUrl = "maintainTable('office', 'offices', 'POST');return false;";
 	var addFundUrl = "maintainTable('fund', 'funds', 'POST');return false;";
 	var addEmployeeUrl = "maintainTable('employee', 'staff', 'POST');return false;";
@@ -534,7 +495,6 @@ function setOrgAdminContent(divName) {
 	var officeMoneyTransfer = "maintainTable('officetransaction', 'officetransactions', 'POST');return false;";
 	var bulkLoanReassignmentUrl = "maintainTable('bulkLoanReassignment', 'loans/loanreassignment', 'POST');return false;";
 	var addAccountingRuleUrl =  "maintainTable('accountingrule', 'accountingrules', 'POST');return false;"; 
-	var addHolidayUrl = "addHoliday();return false;";
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("ViewLoanProducts"))
@@ -546,12 +506,22 @@ function setOrgAdminContent(divName) {
 
 	if (jQuery.MifosXUI.showTask("ViewSavingProducts")) {
 		htmlOptions += ' | <a href="#" onclick="listSavingsProducts();return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
+//		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'savingsproduct'" + ');return false;" id="viewsavingproducts">' + doI18N("administration.link.view.saving.products") + '</a>';
 	}
 		
 	if (jQuery.MifosXUI.showTask("AddSavingProduct")) {
 		htmlOptions += ' | <a href="#" id="addsavingsproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
+//		htmlOptions += ' | <a href="unknown.html" onclick="' + addSavingProductUrl + '" id="addsavingproduct">' + doI18N("administration.link.add.saving.product") + '</a>';
 	}
 		
+	if (jQuery.MifosXUI.showTask("ViewDepositProducts")) {
+//		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'depositproduct'" + ');return false;" id="viewdepositproducts">' + doI18N("administration.link.view.deposit.products") + '</a>';
+	}
+		
+	if (jQuery.MifosXUI.showTask("AddDepositProduct")) {
+//		htmlOptions += ' | <a href="unknown.html" onclick="' + addDepositProductUrl + '" id="adddepositproduct">' + doI18N("administration.link.add.deposit.product") + '</a>';		
+	}
+
 	if (jQuery.MifosXUI.showTask("ViewFunds") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'fund'" + ');return false;" id="viewfunds">' + doI18N("administration.link.view.funds") + '</a>';
 
@@ -592,18 +562,12 @@ function setOrgAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("AddOfficeMoneyTxn") == true)
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + officeMoneyTransfer + '" id="internalTransfer">' + doI18N("administration.link.office.money.transfer") + '</a>';
 
-	if (jQuery.MifosXUI.showTask("BulkLoanReassignment") == true) {
+	if (jQuery.MifosXUI.showTask("BulkLoanReassignment") == true)
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + bulkLoanReassignmentUrl + '" id="bulkLoanReassignment">' + doI18N("administration.link.bulk.loan.reassignment") + '</a>';	
-	}
-	
-	if (jQuery.MifosXUI.showMenu("AccountingMenu")) {
+
 		htmlOptions2 += ' | <a href="unknown.html" onclick="refreshTableView(' + "'accountingrule'" + ');return false;" id="viewaccountingrule">' + doI18N("administration.link.view.accountingrule") + '</a>';
+
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addAccountingRuleUrl + '" id="addaccountingrule">' + doI18N("administration.link.add.accountingrule") + '</a>';
-	}
-		
-	if (jQuery.MifosXUI.showTask("AddHoliday") == true) {
-		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addHolidayUrl + '" id="addHoliday">' + doI18N("administration.link.add.Holiday") + '</a>';
-	}
 
 	if (htmlOptions2 > "")
 	{
@@ -651,16 +615,12 @@ function setSysAdminContent(divName) {
 
 	var addCodeUrl = "maintainTable('code', 'codes', 'POST');return false;";
 	var maintainMakerCheckerUrl = "maintainTable('permission', 'permissions?makerCheckerable=true', 'PUT');return false;";
-	var createDatatableUrl = "maintainTable('datatableCreate', 'datatables', 'POST'); return false;";
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST'); return false;";
 	var addReportUrl = "launchReportDialog(null);return false;";
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("VIEWDATATABLES") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="refreshTableView(' + "'datatable'" + ');return false;" id="listdatatables">' + doI18N("administration.link.view.datatables") + '</a>';
-
-	if (jQuery.MifosXUI.showTask("CREATEDATATABLE") == true)
-		htmlOptions += ' | <a href="unknown.html" onclick="' + createDatatableUrl + '" id="createdatatable">' + doI18N("administration.link.create.datatable") + '</a>';
 
 	if (jQuery.MifosXUI.showTask("REGISTERDATATABLE") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + registerDatatableUrl + '" id="registerdatatable">' + doI18N("administration.link.register.datatable") + '</a>';
@@ -752,118 +712,16 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 			var getUrl = "";
 			var putUrl = "journalentries";
 			var templateSelector = "#predefinedPostingEntryFormTemplate";
-			var width = 800;
-			var height = 500;
+			var width = 600;
+			var height = 350;
 
 			var saveSuccessFunction = function(data, textStatus, jqXHR) {
 				$("#dialog-form").dialog("close");
-				searchForJournalEntriesByTransactionId(data.transactionId);
+				searchForJournalEntriesByTransactionId();
 			}
 			popupDialogWithFormViewData(baseObject, putUrl, 'POST', "dialog.title.journalEntry.add", templateSelector, width, height, saveSuccessFunction);
+			$("#accountingRule").combobox();
 			$("#officeId").combobox();
-			$("#accountingRule").combobox({
-				selected : function (event,ui) {
-					var accountingruleObject = new Object();
-					for( i=0; i<baseObject.accountingRuleOptions.length; i++ ) {
-						var tempObject = baseObject.accountingRuleOptions[i];
-						if( tempObject.id == ui.item.value) {
-							accountingruleObject.debitAccounts = tempObject.debitAccounts;
-							accountingruleObject.creditAccounts = tempObject.creditAccounts;
-							accountingruleObject.allowMultipleDebitEntries = tempObject.allowMultipleDebitEntries;
-							accountingruleObject.allowMultipleCreditEntries = tempObject.allowMultipleCreditEntries;
-						}
-					}
-					var debitOrCreditAccountsTabHtml = $("#creditAndDebitAccountsFormTemplate").render(accountingruleObject);
-					$("#creditanddebitsdiv").html(debitOrCreditAccountsTabHtml);
-
-					var creditAccountsLength = accountingruleObject.creditAccounts.length;
-					var debitAccountsLength = accountingruleObject.debitAccounts.length;
-
-					if (creditAccountsLength > 0) {
-						$("#creditLabel").show();
-						$("#creditaccounts").show();
-					} else {
-						$("#creditLabel").hide();
-						$("#creditaccounts").hide();
-					}
-
-					if (debitAccountsLength > 0) {
-						$("#debitLabel").show();
-						$("#debitaccounts").show();
-					} else {
-						$("#debitLabel").hide();
-						$("#debitaccounts").hide();
-					}
-					//hide the amount field if both credit and debit accounts are predefined i.e. debitAccounts & creditAccounts empty.
-					if(creditAccountsLength > 0  && debitAccountsLength > 0) {
-						$("#amountLabel").hide();
-						$("#amountDiv").hide();
-					} else {
-						$("#amountLabel").show();
-						$("#amountDiv").show();
-					}
-
-					//initialize default comboboxes in popup
-					$("#debitAccountId01").combobox();
-					$("#creditAccountId01").combobox();
-
-					//init button for adding new debits
-					var debitSize = $('#debitaccounts p').size() + 1;
-					$("#addDebitButton").button({
-					icons : {
-						primary : "ui-icon-plusthick"
-					},
-					text: false
-					}).click(function(e) {
-						debitSize = debitSize + 1;
-						accountingruleObject.accountId = "debitAccountId0" + debitSize;
-						accountingruleObject.amountId = "debitAmount0" + debitSize;
-						accountingruleObject.deleteButtonId = "removeDebitButton0" + debitSize;
-						accountingruleObject.activity = "Remove this Debit Entry";
-						var debitTemplateHtml = $("#singleDebitEntryTemplate").render(accountingruleObject);
-						$("#debitaccounts").append(debitTemplateHtml);
-						//onclick funtion for newly added delete button
-						$("#" + accountingruleObject.deleteButtonId).button().click(function(e) {
-							if( debitSize > 1 ) {
-		                        $(this).parents('p').remove();
-		                        debitSize --;
-		               		}
-		                	e.preventDefault();
-						});
-						//make newly added select a combobox
-						$("#" + accountingruleObject.accountId).combobox();
-						e.preventDefault();
-					});
-
-					//init button for adding new credits
-					var creditSize = $('#creditaccounts p').size() + 1;
-					$("#addCreditButton").button({
-					icons : {
-						primary : "ui-icon-plusthick"
-					},
-					text: false
-					}).click(function(e) {
-						creditSize = creditSize + 1;
-						accountingruleObject.accountId = "creditAccountId0" + creditSize;
-						accountingruleObject.amountId = "creditAmount0" + creditSize;
-						accountingruleObject.deleteButtonId = "removeCreditButton0" + creditSize;
-						accountingruleObject.activity = "Remove this credit Entry";
-						var creditTemplateHtml = $("#singleCreditEntryTemplate").render(accountingruleObject);
-						$("#creditaccounts").append(creditTemplateHtml);
-						//onclick funtion for newly added delete button
-						$("#" + accountingruleObject.deleteButtonId).button().click(function(e) {
-							if( creditSize > 1 ) {
-		                        $(this).parents('p').remove();
-		                        creditSize --;
-		               		}
-		                	e.preventDefault();
-						});
-						//make newly added select a combobox
-						$("#" + accountingruleObject.accountId).combobox();
-						e.preventDefault();
-					});
-				}
-			});
 			e.preventDefault();
 		});
 
@@ -872,16 +730,11 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 				primary : "ui-icon-search"
 			}
 		}).click(function(e) {
-			var trxnId = $("#transactionId").val();
-			if (trxnId=="" || trxnId==undefined) {
-				alert("  Please Enter TransactionId  ");
-			} else{
-				searchForJournalEntriesByTransactionId($("#transactionId").val());
-			}
+			searchForJournalEntriesByTransactionId();
 			e.preventDefault();
 		});
-		//fetch journalentries whenever new predifined journalentry is created using corresponding transactionId or by entering transactionId.
-		var searchForJournalEntriesByTransactionId=function(dataTransactionId){
+
+		var searchForJournalEntriesByTransactionId = function() {
 			var getJournalEntriesByTransactionIdSuccessFunction = function(data, textStatus, jqXHR) {
 				var baseObject = new Object();
 				baseObject.crudRows = data.pageItems;
@@ -891,7 +744,7 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 
 				var reversingJournalEntrySuccessFunction = function(data, textStatus, jqXHR) {
 					$("#dialog-form").dialog("close");
-					searchForJournalEntriesByTransactionId(data.transactionId);
+					searchForJournalEntriesByTransactionId();
 				}
 
 				// initialize info and reversal buttons
@@ -926,17 +779,17 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 						});
 					}
 				});
+
 			}
-			var transactionId = dataTransactionId;
+			var transactionId = $("#transactionId").val();
 			if (transactionId != "") {
 				executeAjaxRequest('journalentries?transactionId='+transactionId, 'GET', "", getJournalEntriesByTransactionIdSuccessFunction, formErrorFunction);
 			} else{
 				executeAjaxRequest('journalentries', 'GET', "", getJournalEntriesByTransactionIdSuccessFunction, formErrorFunction);
-			};	
+			};
 		}
-		
 	}
-	executeAjaxRequest('accountingrules?associations=all', 'GET', "", getAccountingRulesSuccessFunction, formErrorFunction);
+	executeAjaxRequest('accountingrules', 'GET', "", getAccountingRulesSuccessFunction, formErrorFunction);
 }	
 
 function handleJournalEntriesTabSelection(officesObject) {
@@ -963,7 +816,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 			var getUrl = "";
 			var putUrl = "journalentries";
 			var templateSelector = "#journalEntryFormTemplate";
-			var width = 800;
+			var width = 600;
 			var height = 500;
 
 			var saveSuccessFunction = function(data, textStatus, jqXHR) {
@@ -991,9 +844,12 @@ function handleJournalEntriesTabSelection(officesObject) {
 				var debitTemplateHtml = $("#singleDebitOrCreditEntryTemplate").render(baseObject);
 				$("#debits").append(debitTemplateHtml);
 				//onclick funtion for newly added delete button
-				
-				// remove icon {icons : {primary : "ui-icon-cancel"},text:false} due to 
-				$("#" + baseObject.deleteButtonId).button().click(function(e) {
+				$("#" + baseObject.deleteButtonId).button({
+				icons : {
+					primary : "ui-icon-cancel"
+				},
+				text:false
+				}).click(function(e) {
 					if( debitSize > 1 ) {
                         $(this).parents('p').remove();
                         debitSize --;
@@ -1021,8 +877,12 @@ function handleJournalEntriesTabSelection(officesObject) {
 				var creditTemplateHtml = $("#singleDebitOrCreditEntryTemplate").render(baseObject);
 				$("#credits").append(creditTemplateHtml);
 				//onclick funtion for newly added delete button
-				// remove icon {icons : {primary : "ui-icon-cancel"},text:false} due to 
-				$("#" + baseObject.deleteButtonId).button().click(function(e) {
+				$("#" + baseObject.deleteButtonId).button({
+				icons : {
+					primary : "ui-icon-cancel"
+				}, 
+				text:false
+				}).click(function(e) {
 					if( creditSize > 1 ) {
                         $(this).parents('p').remove();
                         creditSize --;
@@ -1383,32 +1243,7 @@ function handleCOATabSelection(){
 	$("#addglaccount").button({icons: {
 	    primary: "ui-icon-circle-plus"}
 	    }).click(function(e){
-	    var selected = 0;
-    	if ($("input[name='radio']:checked").val() == 'listView') {
-			selected = $("#coatabs-main").tabs('option', 'active');
-		} else if ($("input[name='radio']:checked").val() == 'treeView') {
-			var selectedAccountHead = $("#coatabs-tree").jqxTree('selectedItem');
-			if (selectedAccountHead != null) {
-				for(i=0;i<finalObjectSentForTreeView.length;i++) {
-					var currentObj = finalObjectSentForTreeView[i];
-					if(selectedAccountHead.id == currentObj.id)	{
-						if (currentObj.parentType == "ASSET") {
-							selected = 1;
-						} else if (currentObj.parentType == "LIABILITY") {
-							selected = 2;
-						} else if (currentObj.parentType == "EQUITY") {
-							selected = 3;
-						} else if (currentObj.parentType == "INCOME") {
-							selected = 4;
-						} else if (currentObj.parentType == "EXPENSE") {
-							selected = 5;
-						}
-					}
-				} 
-			}else {
-				selected = 0;
-			}
-		}
+		var selected = $("#coatabs-main").tabs('option', 'active');
 	  	var getUrl = 'glaccounts/template?type='+selected;
 		var putUrl = "glaccounts";
 		var templateSelector = "#glAccountsFormTemplate";
@@ -1635,7 +1470,7 @@ function editCodeValueFunction(linkId, tableName){
                 value = value.trim();
                 var ele = this;
                 var searializedArray= {};
-                var codeValueId = $(ele).prop("id").replace('name', "");
+                var codeValueId = $(ele).attr("id").replace('name', "");
                 searializedArray['name']= value;
 
                 var jsonString =JSON.stringify(searializedArray);
@@ -1676,7 +1511,7 @@ function editCodeValueFunction(linkId, tableName){
                 value = value.trim();
                 var ele = this;
                 var searializedArray= {};
-                var codeValueId = $(this).prop("id").replace('position', "");
+                var codeValueId = $(this).attr("id").replace('position', "");
                 searializedArray['position']= value;
 
                 var jsonString =JSON.stringify(searializedArray);
@@ -1718,7 +1553,7 @@ function editCodeValueFunction(linkId, tableName){
         $('.deleteCodeValue').button().click(function(e){
             $('#formerrors').html("");
             clearErrorsClass();
-            var codeValueId = $(this).prop("id").replace('deleteCodeValue', "");
+            var codeValueId = $(this).attr("id").replace('deleteCodeValue', "");
             var codeValuesPostUrl = getUrl + '/' + codeValueId;
             var codeValueSubmitType = "DELETE";
 
@@ -1752,10 +1587,11 @@ function editCodeValueFunction(linkId, tableName){
         codeValues.codeId = entityId;
         popupDialogWithReadOnlyFormViewData(codeValues, dialogTitle, templateSelector, dialogWidth, dialogHeight, "dialog.button.close");
         refreshCodeValues(codeValues);
-        $("#addCodeValue"+entityId).button().click(function(e){
+        $("#addCodeValue").button().click(function(e){
             clearErrorsClass();
             //clear previous error messages
             $('#formerrors').html("");
+            var codeId = $("#addCodeValue").attr("data-codeId");
             var newFormData = JSON.stringify($('#entityform').serializeObject());
 
             var addsuccessFunction =  function(data, textStatus, jqXHR) {
@@ -1765,11 +1601,11 @@ function editCodeValueFunction(linkId, tableName){
                     codeValues.crudRows = data;
                     refreshCodeValues(codeValues);
                 }
-                executeAjaxRequest('codes/' + entityId + '/codevalues', "GET", "", codeValuesuccessFunction, formErrorFunction);
+                executeAjaxRequest('codes/' + codeId + '/codevalues', "GET", "", codeValuesuccessFunction, formErrorFunction);
 
             };
 
-            executeAjaxRequest('codes/' + entityId + '/codevalues', "POST", newFormData, addsuccessFunction, formErrorFunction);
+            executeAjaxRequest('codes/' + codeId + '/codevalues', "POST", newFormData, addsuccessFunction, formErrorFunction);
 
            e.preventDefault();
         });
@@ -2067,7 +1903,7 @@ function applyGroupSearchFilter(officeHierarchy) {
 
 
 //generic UI/dialog components 
-function genericDialog(dialogDiv, dialogTitleCode, width, height, onOpenFunc, onSaveFunc) {
+function gernericDialog(dialogDiv, dialogTitleCode, width, height, onOpenFunc, onSaveFunc) {
 	var saveButton = doI18N('dialog.button.save');
 	var cancelButton = doI18N('dialog.button.cancel');
 	
@@ -2092,8 +1928,6 @@ function genericDialog(dialogDiv, dialogTitleCode, width, height, onOpenFunc, on
 // standard group form (group + clients, no parents)
 function loadGroupForm(container, officeId, templateIdentifier) {
 	
-	var url='groups/template?officeId=' + officeId;
-	
 	var renderOnSuccessFunction = function(data, textStatus, jqXHR) {
 		var formHtml = $(templateIdentifier).render(data);
 		container.html(formHtml);
@@ -2115,27 +1949,22 @@ function loadGroupForm(container, officeId, templateIdentifier) {
 		
 		$("#entityform textarea").first().focus();
 		$('#entityform input').first().focus();
-
-		$("#activeCheckbox").change(function() {
-			var selected = this.checked;
-			if (selected) {
-				$("#activationDate").removeAttr("disabled");
-			} else {
-				$("#activationDate").val("");
-				$("#activationDate").attr("disabled", "disabled");
-			}
-		});
-
-		$('input:checkbox[id=activeCheckbox]').trigger('change');
 	};
 	
-	executeAjaxRequest(url, 'GET', "", renderOnSuccessFunction, formErrorFunction);
+	executeAjaxRequest('groups/template?officeId=' + officeId, 'GET', "", renderOnSuccessFunction, formErrorFunction);
 }
 
 function saveGroup(divContainer, groupId) {
 	var serializationOptions = {};
 	serializationOptions["checkboxesAsBools"] = true;
 	
+/*	$('#notSelectedClients option').each(function(i) {
+		$(this).attr("selected", "selected");
+	});
+	$('#clientMembers option').each(function(i) {
+		$(this).attr("selected", "selected");
+	});
+*/	
 	var serializedArray = {};
 	serializedArray = $('#entityform').serializeObject(serializationOptions);
 	
@@ -2189,18 +2018,6 @@ var launchStandardGroupDialogOnSuccessFunction = function(data, textStatus, jqXH
 		
 		$("#entityform textarea").first().focus();
 		$('#entityform input').first().focus();
-
-		$("#activeCheckbox").change(function() {
-			var selected = this.checked;
-			if (selected) {
-				$("#activationDate").removeAttr("disabled");
-			} else {
-				$("#activationDate").val("");
-				$("#activationDate").attr("disabled", "disabled");
-			}
-		});
-
-		$('input:checkbox[id=activeCheckbox]').trigger('change');
 	}
 	
 	var saveNewGroupFunc = function() {
@@ -2209,9 +2026,9 @@ var launchStandardGroupDialogOnSuccessFunction = function(data, textStatus, jqXH
 	
 	var dialog = null;
 	if (groupId) {
-		dialog = genericDialog(dialogDiv, 'dialog.title.edit.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);	
+		dialog = gernericDialog(dialogDiv, 'dialog.title.edit.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);	
 	} else {
-		dialog = genericDialog(dialogDiv, 'dialog.title.add.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);
+		dialog = gernericDialog(dialogDiv, 'dialog.title.add.group', 900, 450, openGroupDialogFunc, saveNewGroupFunc);
 	}
 };
 
@@ -2247,17 +2064,6 @@ var launchCenterGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR)
 		
 		$("#entityform textarea").first().focus();
 		$('#entityform input').first().focus();
-
-		$("#activeCheckbox").change(function() {
-			var selected = this.checked;
-			if (selected) {
-				$("#activationDate").removeAttr("disabled");
-			} else {
-				$("#activationDate").attr("disabled", "disabled");
-			}
-		});
-
-		$('input:checkbox[id=activeCheckbox]').trigger('change');
 	}
 	
 	var saveNewGroupFunc = function() {
@@ -2266,9 +2072,9 @@ var launchCenterGroupDialogOnSuccessFunction = function(data, textStatus, jqXHR)
 
 	var dialog = null;
 	if (groupId) {
-		dialog = genericDialog(dialogDiv, 'dialog.title.edit.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);	
+		dialog = gernericDialog(dialogDiv, 'dialog.title.edit.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);	
 	} else {
-		dialog = genericDialog(dialogDiv, 'dialog.title.add.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);
+		dialog = gernericDialog(dialogDiv, 'dialog.title.add.group', 900, 500, openGroupDialogFunc, saveNewGroupFunc);
 	}
 };
 
@@ -2285,10 +2091,10 @@ function saveAssociateClientsToGroup(divContainer, groupId) {
 	var serializationOptions = {};
 	
 	$('#notSelectedClients option').each(function(i) {
-		$(this).prop("selected", "selected");
+		$(this).attr("selected", "selected");
 	});
 	$('#clientMembers option').each(function(i) {
-		$(this).prop("selected", "selected");
+		$(this).attr("selected", "selected");
 	});
 	
 	var serializedArray = {};
@@ -2331,7 +2137,7 @@ var launchAssociateClientsToGroupDialogOnSuccessFunction = function(data, textSt
 		saveAssociateClientsToGroup(dialogDiv, groupId);
 	};
 
-	var dialog = genericDialog(dialogDiv, 'dialog.title.associate.clients', 900, 500, openAssociateClientsToGroupDialogFunc, saveAssociateClientsToGroupFunc);	
+	var dialog = gernericDialog(dialogDiv, 'dialog.title.associate.clients', 900, 500, openAssociateClientsToGroupDialogFunc, saveAssociateClientsToGroupFunc);	
 }
 
 function associateClientsToGroup(groupId){
@@ -2350,7 +2156,7 @@ function launchCenterGroupDialog(groupId) {
 function showNewCenterListing(){
 
 	//Add centerSearch to MifosXUI
-	if (jQuery.MifosXUI.showTask("CenterSearch") == false)
+	if (jQuery.MifosXUI.showTask("groupSearch") == false)
 	{
 		alert(doI18N("center.search.not.allowed"));
 		return;
@@ -2454,10 +2260,6 @@ function showGroupListing(){
 		launchGroupDialog();
 	    e.preventDefault();
 	});
-	$("#addtevidgroup").button().click(function(e){
-		launchTeviGroupDialog();
-		e.preventDefault();
-	})
 }
 
 
@@ -2497,41 +2299,6 @@ function showLoansListing() {
 	});
 } // end showLoansListing
 
-function showSavingsAccountsListing() {
-
-  if (jQuery.MifosXUI.showTask("savingsAccountsSearch") == false)
-  {
-    alert(doI18N("savingsaccount.search.not.allowed"));
-    return;
-  }
-
-  setSavingsAccountListingContent("content");
-
-  //HOME list loans functionality
-  $("#tabs").tabs({
-      beforeActivate: function(event, ui) {
-      },
-      load: function(event, ui) {
-      },
-      create: function(event, ui) {
-
-      var initSavingsAccountSearch =  function() {    
-      //render page markup
-      var tableHtml = $("#savingsAccountSearchTabTemplate").render();
-      $("#searchtab").html(tableHtml);
-
-      var savingsAccountsTableHtml = $("#savingsAccountsTableTemplate").render();
-      $("#savingsAccountTableDiv").html(savingsAccountsTableHtml);
-
-      var oTable = $("#savingsaccountstable").dataTable(custom.jqueryDataTableServerSide.paginated("savingsaccountstable"));
-      initTableConf("savingsaccountstable",oTable);
-  
-      };
-        //initialize the client search tab
-     initSavingsAccountSearch();
-   }
-  });
-} // end showSavingsAccountsListing
 
 //HOME list communal banks functionality
 function showCommunalBankListing(){
@@ -2602,7 +2369,7 @@ function addClient(officeId, parentGroupId){
 		  showGroup(parentGroupId);
 		}
 
-		var getUrl = 'clients/template?officeId=' + officeId;
+		var getUrl = 'clients/template';
 		var postUrl = 'clients';
 		var templateSelector = "#clientFormTemplate";
 		var width = 600; 
@@ -2655,8 +2422,7 @@ function showILClient(clientId) {
 	setClientContent("content");
 	
 	$newtabs = $("#clientdatatabs").tabs({
-	    	beforeActivate: function(event, tab) 
-	    	{
+	    	beforeActivate: function(event, tab) {
 				if (tab.newTab.index() == 0)
 				{
 					if (clientDirty == true)
@@ -2674,10 +2440,8 @@ function showILClient(clientId) {
 				else if (tab.newTab.index() == 2){
 					refreshClientDocuments(clientUrl);
 				}
-	    	},
-//		"add": function( event, ui ) {
-//				$newtabs.tabs('select', '#' + ui.panel.id);
-//		}
+
+	    		}
 	});
 	
 	var errorFunction = function(jqXHR, textStatus, errorThrown, index, anchor) {
@@ -2686,7 +2450,7 @@ function showILClient(clientId) {
 	        
 	//initialize client image related buttons
 	var imageFetchSuccessFunction = function(data, textStatus, jqXHR) {
-		$("#customerImage").prop("src",data);
+		$("#customerImage").attr("src",data);
 	};
 
 	var successFunction = function(data, status, xhr) {
@@ -2698,13 +2462,11 @@ function showILClient(clientId) {
 	        		clientDirty = false; //intended to refresh client if some data on its display has changed e.g. loan status or notes
 	        		var currentTabIndex = $newtabs.tabs('option', 'active');
 	            	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
-	            	
+	            
 	            	//populate main content
-	            	if(data.status.value != 'Closed') {
-		            	var crudObject = new Object();
-		            	var tableHtml = $("#clientToolbarTemplate").render(data);
-		            	$("#clienttoolbar").html(tableHtml);
-		            }
+	            	var crudObject = new Object();
+	            	var tableHtml = $("#clientToolbarTemplate").render(data);
+	            	$("#clienttoolbar").html(tableHtml);
 	            	
 	        		var tableHtml = $("#clientDataTabTemplate").render(data);
 					$("#clienttab").html(tableHtml);
@@ -2779,23 +2541,6 @@ function showILClient(clientId) {
 					    e.preventDefault();
 					});
 					$('button.newsavingbtn span').text(doI18N('dialog.button.new.savings.account'));
-
-					$('.clientclosebtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
-						var clientClose = 'close';
-						var getUrl = 'clients/template?commandParam=' + clientClose;
-						var postUrl = 'clients/' + clientId + '?command=' + clientClose;
-						var templateSelector = "#clientCloseTemplate";
-						var width = 400; 
-						var height = 300;
-
-						var saveSuccessFunction = function(data, textStatus, jqXHR) {
-							$("#dialog-form").dialog("close");
-							showILClient(clientId);
-						}
-						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.client.close", templateSelector, width, height, saveSuccessFunction);
-					    e.preventDefault();
-					});
-					$('button.clientclosebtn span').text(doI18N('dialog.button.client.close'));
 					
 					$('.addnotebtn').button({icons: {primary: "ui-icon-comment"}}).click(function(e) {
 						var postUrl = 'clients/' + clientId + '/notes';
@@ -2824,7 +2569,7 @@ function showILClient(clientId) {
 	            	}).click(function(e) {
 	            		var imageUploadSuccessFunction = function(data, textStatus, jqXHR) {
 	            			$("#dialog-form").dialog("close");
-							$("#customerImage").prop("src",imageCanvas.toDataURL("image/jpeg"));
+							$("#customerImage").attr("src",imageCanvas.toDataURL("image/jpeg"));
 						};
 						var templateSelector = "#clientImageWebcamFormTemplate";
 						var width = 775; 
@@ -2910,7 +2655,7 @@ function showILClient(clientId) {
 					var height = 225;
 					var saveSuccessFunction = function(data, textStatus, jqXHR) {
 							$("#dialog-form").dialog("close");
-						  	$("#customerImage").prop("src","resources/img/client-image-placeholder.png");
+						  	$("#customerImage").attr("src","resources/img/client-image-placeholder.png");
 					};
 											
 					popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction);
@@ -2918,42 +2663,6 @@ function showILClient(clientId) {
 					e.preventDefault();
 					});
 
-					$('.unassignstafftoclient').button().click(function(e){
-						var linkId = this.id;
-						var staffId = linkId.replace("unassignstafftoclient", "");
-						var postUrl = clientUrl +'?command=unassignStaff';
-						var getUrl = ""
-
-						var width = 400; 
-						var height = 225;
-						var jsonbody = '{"staffId":"'+staffId+'"}';
-
-						var saveSuccessFunction = function(data, textStatus, jqXHR) {
-								$("#dialog-form").dialog("close");
-								showILClient(clientId);
-						}	
-						popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunction , jsonbody);
-
-						e.preventDefault();
-					});
-
-					$('.assignstafftoclient').button().click(function(e){
-						var linkId = this.id;
-						var clientId = linkId.replace("assignstafftoclient", "");
-						var postUrl = 'clients/' + clientId +'?command=assignStaff';
-						var getUrl = 'clients/' + clientId + '?template=true';
-
-						var templateSelector = "#assignStaffFormTemplate";
-						var width = 400; 
-						var height = 225;
-
-						var saveSuccessFunction = function(data, textStatus, jqXHR) {
-								$("#dialog-form").dialog("close");
-								showILClient(clientId);
-						}	
-						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.staff", templateSelector, width,  height, saveSuccessFunction);
-					    e.preventDefault();
-					});
 	        };
 	    
 		executeAjaxRequest(clientUrl, 'GET', "", successFunction, errorFunction);
@@ -3187,8 +2896,7 @@ function showGroup(groupId){
 		var tableHtml = $("#groupDataTabTemplate").render(data);
 		var groupDetails = $("#groupDetailsTemplate").render(data);
 		var groupClients = $("#groupClientsTabTemplate").render(data);
-		var groupSummary = $("#groupSummaryTabTemplate").render();//group summary data should be fetched in another ajax call
-		var groupRoles = $("#groupRolesTabTemplate").render(data);
+		var groupSummary = $("#groupSummaryTabTemplate").render(data);
 
 		groupDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
 
@@ -3199,20 +2907,11 @@ function showGroup(groupId){
 		$("#groupclientstabname").html("Clients");
 		$("#groupsummarytab").html(groupSummary);
 		$("#groupsummarytabname").html("Summary");
-		$("#grouprolestab").html(groupRoles);
-		$("#grouprolestabname").html("Roles");
-
-		oTable = displayListTable("groupRolesTable");
 
 		refreshGroupLoanSummaryInfo(groupUrl);
 
-		refreshGroupSummaryInfo(groupId);
-
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'groups', 'centerCalendarContent');
-
-        custom.showRelatedDataTableInfo($newtabs, "m_group", groupId);
-
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 			
@@ -3254,28 +2953,16 @@ function showGroup(groupId){
 				
 				e.preventDefault();
 			});
-			if (jQuery.MifosXUI.showTask("ASSOCIATECLIENT")) {
-				$('.associateclientbtn').button().click(function(e){
-					var linkId = this.id;
-					var groupId = linkId.replace("associateclientbtn", "");
 
-					var officeId = data.officeId;
+			$('.associateclientbtn').button().click(function(e){
+				var linkId = this.id;
+				var groupId = linkId.replace("associateclientbtn", "");
 
-					associateClientsToGroup(groupId);
-					e.preventDefault();
-				});
-			}
-			if (jQuery.MifosXUI.showTask("ASSOCIATETEVICLIENT")) {
-				$('.associateteviclientbtn').button().click(function(e){
-					var linkId = this.id;
-					var groupId = linkId.replace("associateteviclientbtn", "");
+				var officeId = data.officeId;
 
-					var officeId = data.officeId;
-
-					associateClientsToGroup(groupId);
-					e.preventDefault();
-				});
-			}
+				associateClientsToGroup(groupId);
+				e.preventDefault();
+			});
 
 			$('.addclientbtn').button().click(function(e){
 				var linkId = this.id;
@@ -3288,29 +2975,21 @@ function showGroup(groupId){
 			});
 
 			// bind click listeners to buttons.
-			if (jQuery.MifosXUI.showTask("ADDGROUP")) {
-				$('.editstandardgroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
-					var linkId = this.id;
-					var groupId = linkId.replace("editstandardgroupbtn", "");
-					launchGroupDialog(groupId);
-					e.preventDefault();
-				});
-			}
-			if (jQuery.MifosXUI.showTask("ADDTEVIGROUP")) {
-				$('.edittevigroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
-					var linkId = this.id;
-					var groupId = linkId.replace("edittevigroupbtn", "");
-					launchTeviGroupDialog(groupId);
-					e.preventDefault();
-				});				
-			}
+			$('.editstandardgroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
+				var linkId = this.id;
+				var groupId = linkId.replace("editstandardgroupbtn", "");
+				launchGroupDialog(groupId);
+			    e.preventDefault();
+			});
+			
 			$('.editcentergroupbtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e) {
 				var linkId = this.id;
 				var groupId = linkId.replace("editcentergroupbtn", "");
 				
 				launchCenterGroupDialog(groupId);
-				e.preventDefault();
-			});	
+			    e.preventDefault();
+			});
+
 			$('.newbulkloanbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
 				//addLJGBulkMembersLoans(groupId);
 				jlgBulkMembersLoanWizard(groupId);
@@ -3404,57 +3083,6 @@ function showGroup(groupId){
             disassociateClientFromGroup(clientId, groupId);
             e.preventDefault();
 		});
-
-		$('#addgrouprole'+currentGroupId).button({icons: {
-	                 primary: "ui-icon-plus"}
-	            }).click(function(e) {
-	        var postUrl = 'groups/' + currentGroupId + '?command=assignRole';
-	        var templateSelector = "#addGroupRuleFormTemplate";
-	        var width = 600;
-	        var height = 400;
-
-	        var saveSuccessFunction = function(data, textStatus, jqXHR) {
-	            $("#dialog-form").dialog("close");
-	            showGroup(currentGroupId);
-	        }
-
-	        popupDialogWithFormView(groupUrl + '?associations=all&template=true', postUrl, 'POST', "dialog.button.add.group.role", templateSelector, width, height,  saveSuccessFunction);
-	        e.preventDefault();
-	    });
-	    $('button.addgrouprole span').text(doI18N('form.button.add.group.role'));
-
-	    $("a.editgrouprole").click( function(e) {
-			var linkId = this.id;
-			var entityId = linkId.replace("editgrouprole", "");
-			var templateSelector = "#addGroupRuleFormTemplate";
-	        var width = 600;
-	        var height = 400;
-			var getUrl = 'groups/' + currentGroupId + '?template=true&associations=clientMembers&roleId='+entityId;
-			var postUrl = 'groups/' + currentGroupId + '?command=updateRole&roleId='+entityId;
-
-			var saveSuccessFunction = function(data, textStatus, jqXHR) {
-	            $("#dialog-form").dialog("close");
-	            showGroup(currentGroupId);
-	        }
-
-			popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.button.update.group.role", templateSelector, width, height,  saveSuccessFunction);
-			e.preventDefault();
-		});
-
-		$("a.unassignrole").click( function(e) {
-			var linkId = this.id;
-			var entityId = linkId.replace("unassignrole", "");
-			var width = 400; 
-			var height = 150;
-			var resourceUrl = 'groups/' + currentGroupId + '?command=unassignRole&roleId='+entityId;
-
-			var saveSuccessFunction = function(data, textStatus, jqXHR) {
-			  	$("#dialog-form").dialog("close");
-			  	showGroup(currentGroupId);
-			}
-			popupConfirmationDialogAndPost(resourceUrl, 'POST', 'dialog.title.confirmation.required', width, height, entityId, saveSuccessFunction);
-			e.preventDefault();
-		});
 	
 	}
 
@@ -3463,49 +3091,7 @@ function showGroup(groupId){
         $(anchor.hash).html("error occured while ajax loading.");
     };
     
-	executeAjaxRequest(groupUrl + '?associations=all', 'GET', "", successFunction, errorFunction);
-}
-
-function refreshGroupSummaryInfo(groupId){
-	var groupSummaryCountsUrl = 'runreports/GroupSummaryCounts?genericResultSet=false&R_groupId=' + groupId;
-
-	var groupSummaryCountSuccessFunction = function(data, status, xhr){
-		var groupSummaryCount = $("#groupSummaryCountContentTemplate").render(data);
-		$("#groupsummaryleftcontent").html(groupSummaryCount);
-	}
-	executeAjaxRequest(groupSummaryCountsUrl, 'GET', "", groupSummaryCountSuccessFunction, formErrorFunction);
-
-	var groupSummaryAmountsUrl = 'runreports/GroupSummaryAmounts?genericResultSet=false&R_groupId=' + groupId;
-
-	var groupSummaryAmountSuccessFunction = function(data, status, xhr){
-		var crudObject = new Object();
-		crudObject.crudRows = data;
-		var groupSummaryAmount = $("#groupSummaryAmountContentTemplate").render(crudObject);
-		$("#groupsummaryrightcontent").html(groupSummaryAmount);
-	}
-	executeAjaxRequest(groupSummaryAmountsUrl, 'GET', "", groupSummaryAmountSuccessFunction, formErrorFunction);
-
-}
-
-function refreshCenterSummaryInfo(centerId){
-	var centerSummaryCountsUrl = 'runreports/GroupSummaryCounts?genericResultSet=false&R_groupId=' + centerId;
-
-	var centerSummaryCountSuccessFunction = function(data, status, xhr){
-		var centerSummaryCount = $("#centerSummaryCountContentTemplate").render(data);
-		$("#centersummaryleftcontent").html(centerSummaryCount);
-	}
-	executeAjaxRequest(centerSummaryCountsUrl, 'GET', "", centerSummaryCountSuccessFunction, formErrorFunction);
-
-	var centerSummaryAmountsUrl = 'runreports/GroupSummaryAmounts?genericResultSet=false&R_groupId=' + centerId;
-
-	var centerSummaryAmountSuccessFunction = function(data, status, xhr){
-		var crudObject = new Object();
-		crudObject.crudRows = data;
-		var centerSummaryAmount = $("#centerSummaryAmountContentTemplate").render(crudObject);
-		$("#centersummaryrightcontent").html(centerSummaryAmount);
-	}
-	executeAjaxRequest(centerSummaryAmountsUrl, 'GET', "", centerSummaryAmountSuccessFunction, formErrorFunction);
-
+	executeAjaxRequest(groupUrl + '?associations=clientMembers', 'GET', "", successFunction, errorFunction);
 }
 
 function disassociateClientFromGroup(clientId, groupId){
@@ -3550,7 +3136,7 @@ function showCenter(centerId){
 		var tableHtml = $("#centerDataTabTemplate").render(data);
 		var centerDetailsHtml = $("#centerDetailsTemplate").render(data);
 		var centerGroupsHtml = $("#centerGroupsTabTemplate").render(data);
-		var centerSummaryHtml = $("#centerSummaryTabTemplate").render();//fetch summary details in another ajax call
+		var centerSummaryHtml = $("#centerSummaryTabTemplate").render(data);
 
 
 		centerDirty = false; //intended to refresh group if some data on its display has changed e.g. loan status or notes
@@ -3565,10 +3151,9 @@ function showCenter(centerId){
 		$("#centertabgroupsname").html("Groups");
 
 		refreshGroupLoanSummaryInfo(centerUrl);
-		refreshCenterSummaryInfo(currentGroupId);
+
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'centers', 'centerCalendarContent');
-        custom.showRelatedDataTableInfo($newtabs, "m_group", currentGroupId);
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
@@ -3711,133 +3296,180 @@ function showCenter(centerId){
 }
 
 	function jlgBulkMembersLoanWizard(groupId){
-		//setAddBulkLoanContent("content");
+		setAddBulkLoanContent("content");
 
 		var viewMemberselection = function(data, textStatus, jqXHR) {
+			var memberHtml = $("#jlgbulkloanmemberselect").render(data);
 
-			var dialogDiv = $("<div id='dialog-form'></div>");
-			var buttonsOpts = {};
-			var titleCode = 'dialog.title.add.jlg.bulkMembers.loan';
+			$("#jlgloans").append(memberHtml);
 
+			$('.multiadd').click(function() {  
+				return !$('.multiNotSelectedItems option:selected').remove().appendTo('#loanMembers');  
+			});
+			
+			$('.multiremove').click(function() {  
+				return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
+			});
 
-			dialogDiv.dialog({
-				title: doI18N(titleCode), 
-		  		width: 1100, 
-		  		height: 650, 
-		  		modal: true,
-		  		buttons: buttonsOpts,
-		  		close: function() {
-		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
-		  			$(this).remove();
-				},
-				open: function (event, ui) {
-					var memberHtml = $("#jlgbulkloanmemberselect").render(data);
-					dialogDiv.html(memberHtml);
+			$('#continuebtn').button({icons: { primary: "ui-icon-circle-arrow-e"}}).click(function(e){
+				
+				//get Loan product details
+				var container = $('#jlgloanproductdetails');
+				var loanProductId = $('#productId').val(); 
+				var membersLength = $('#loanMembers > option').length;
 
-					$('.multiadd').click(function() {  
-						return !$('.multiNotSelectedItems option:selected').remove().appendTo('#loanMembers');  
-					});
-					
-					$('.multiremove').click(function() {  
-						return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');  
-					});
-
-					$('.cancelbtn').button({
-			            icons : {
-			                primary : "ui-icon-close"
-			            }
-			         }).click(function(e){
-			             $("#dialog-form").dialog("close");
-			             e.preventDefault();
-			         });
-
-					$('#continuebtn').button({icons: { primary: "ui-icon-circle-arrow-e"}}).click(function(e){
-						
-						//get Loan product details
-						var container = $('#jlgloanproductdetails');
-						var loanProductId = $('#productId').val(); 
-						var membersLength = $('#loanMembers > option').length;
-
-						if(loanProductId === undefined || loanProductId === "" || membersLength === undefined || membersLength <= 0){
-								var dialogErrordiv = $( '<div id="dialog-confirm" title="Errors"> </div>');
-							 dialogErrordiv.dialog({
-									resizable: true,
-									height:200,
-									width:400,
-									modal: true,
-									buttons: {
-										Cancel: function() {
-											$( this ).dialog( "close" );
-										}
-									},
-									close: function() {
-									},
-									open: function (event, ui) {
-										var errorHtml = $("#jlgbulkloanErrorDialogFormTemplate").render();
-										dialogErrordiv.html(errorHtml);
-									}
-								}).dialog('open');
-
-						   return false;
-						}
-
-						$('#membesselect').hide();
-						$('#jlgloancontainer').show();
-						var isjlgbulk = true;
-						var loanType = 'jlg';
-						loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, loanType, isjlgbulk);
-						$("#selectedmembers option").remove();
-						$('#selectedmembers').empty().append(function(){
-			                var output = "";
-			                $('#loanMembers option').each(function(i) {  
-			                    output += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
-			                });
-			                return output;
-			            });	
-
-						$('#backbtn').button({icons: { primary: "ui-icon-circle-arrow-w"}}).click(function(e){
-							$('#membesselect').show();
-							$('#jlgloancontainer').hide();
-						});
-
-			            $('#savebtn').button({icons: { primary: "ui-icon-disk"}}).click(function(e){
-			                var serializedArray = {};
-			                serializedArray = $('#entityform').serializeObject();
-			                serializedArray['productId'] = loanProductId;
-			                serializedArray['groupId'] = groupId;
-			                serializedArray["calendarId"] = $("#calendarId").val();
-			                var isError = false;
-			                var totalSelectedMembers = $('#selectedmembers > option').length;
-			                $('#selectedmembers option').each(function(index) {  
-			                    var serializedArray1 = serializedArray;
-			                    serializedArray1['clientId'] = $(this).val();
-			                    var newFormData = JSON.stringify(serializedArray);
-			                    var successFunction =  function(data, textStatus, jqXHR) {
-			                    	$("#dialog-form").dialog("close");
-			                        if (index === totalSelectedMembers - 1) {
-								        showGroup(groupId);
-								    }
-			                        
-			                    };
-			                    
-			                    var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
-			                        formErrorFunction(jqXHR, textStatus, errorThrown);
-			                        isError = true;
-			                    };
-			                    
-			            		if(isError) return false;
-
-			            		executeAjaxRequest('loans', "POST", newFormData , successFunction, customFormErrorFunction);
-			                });
-			            });		
-					});
+				if(loanProductId === undefined || membersLength === undefined || membersLength <= 0){
+					return false;
 				}
-			}).dialog('open');
+
+				$('#membesselect').hide();
+				$('#jlgloancontainer').show();
+				var isjlgbulk = true;
+				var loanType = 'jlg';
+				loadTabbedLoanApplicationForm(container, undefined, loanProductId, data.group, loanType, isjlgbulk);
+				$("#selectedmembers option").remove();
+				$('#selectedmembers').empty().append(function(){
+	                var output = "";
+	                $('#loanMembers option').each(function(i) {  
+	                    output += '<option value="' + $(this).val() + '">' + $(this).text() + '</option>';
+	                });
+	                return output;
+	            });	
+
+				$('#backbtn').button({icons: { primary: "ui-icon-circle-arrow-w"}}).click(function(e){
+					$('#membesselect').show();
+					$('#jlgloancontainer').hide();
+				});
+
+	            $('#savebtn').button({icons: { primary: "ui-icon-disk"}}).click(function(e){
+	                var serializedArray = {};
+	                serializedArray = $('#entityform').serializeObject();
+	                serializedArray['productId'] = loanProductId;
+	                serializedArray['groupId'] = groupId;
+	                serializedArray["calendarId"] = $("#calendarId").val();
+	                var isError = false;
+	                var totalSelectedMembers = $('#selectedmembers > option').length;
+	                $('#selectedmembers option').each(function(index) {  
+	                    var serializedArray1 = serializedArray;
+	                    serializedArray1['clientId'] = $(this).val();
+	                    var newFormData = JSON.stringify(serializedArray);
+	                    var successFunction =  function(data, textStatus, jqXHR) {
+	                        if (index === totalSelectedMembers - 1) {
+						        showGroup(groupId);
+						    }
+	                        
+	                    };
+	                    
+	                    var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
+	                        formErrorFunction(jqXHR, textStatus, errorThrown);
+	                        isError = true;
+	                    };
+	                    
+	            		if(isError) return false;
+
+	            		executeAjaxRequest('loans', "POST", newFormData , successFunction, customFormErrorFunction);
+	                });
+	            });		
+			});
+			
 		}
 
 		var url = 'loans/template?templateType=jlgbulk&groupId=' + groupId + '&lendingStrategy=300';
 		executeAjaxRequest(url, 'GET', "", viewMemberselection, formErrorFunction);	
 	}
+/*
+	### Not in use - delete after testing
+	function addLJGBulkMembersLoans(groupId){
+		setAddBulkLoanContent("content");
+
+		var addMemberLoanApplicationSuccess = function(data, textStatus, jqXHR) {
+			var memberHtml = $("#bulkLoanApplicationMemberPartial").render(data);
+			$("#jlgloans").append(memberHtml);
+
+			$('#productId').change(function() {
+				var productId = $('#productId').val();
+				addLJGBulkMembersLoansWithProdDetails(data.group.id , productId);
+			});
+
+		} 
+
+		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300';
+		executeAjaxRequest(url, 'GET', "", addMemberLoanApplicationSuccess, formErrorFunction);
+	}
+
+	function addLJGBulkMembersLoansWithProdDetails(groupId , productId){
+
+		setAddBulkLoanContent("content");
+
+		var addMemberLoanApplicationSuccess = function(data, textStatus, jqXHR) {
+			var memberHtml = $("#bulkLoanApplicationMemberPartial").render(data);
+			$("#jlgloans").append(memberHtml);
+
+			$('#productId').change(function() {
+				var productId = $('#productId').val();
+				addLJGBulkMembersLoansWithProdDetails(data.group.id , productId);
+			});
+
+			$('#alljlgclients:checkbox').change(function() {
+				if($(this).attr("checked")) $('input:checkbox').attr('checked','checked');
+			   else $('input:checkbox').removeAttr('checked');
+			});
+
+
+			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+
+			$('#submitjlgloanapps').button().click(function(e) {
+				$('.entityform').each(function(){
+
+		    		var serializationOptions = {};
+					serializationOptions["checkboxesAsBools"] = true;
+					
+					var memberLoanData = $(this).serializeObject(serializationOptions),
+						entityForm = $(this);
+
+	    			
+		    		if(memberLoanData.jlgclient === 'true') {
+
+		    				delete memberLoanData.jlgclient;
+
+		    				memberLoanData.submittedOnDate = $('#submittedOnDate').val();
+		    				memberLoanData.expectedDisbursementDate = $('#expectedDisbursementDate').val();
+		    				memberLoanData.interestChargedFromDate = $('#interestChargedFromDate').val();
+		    				memberLoanData.repaymentsStartingFromDate = $('#repaymentsStartingFromDate').val();
+		    				memberLoanData.productId = $('#productId').val();
+
+							var serializedCharges = $("#charges").serializeObject();	
+							memberLoanData.charges = serializedCharges.charges;	    				
+
+		    				var memberLoanDataString = JSON.stringify(memberLoanData);
+					
+							var successFunction =  function(data, textStatus, jqXHR) {
+								entityForm.closest("#client" + memberLoanData.clientId).remove();
+							if ($('.entityform').length === 0){
+								showGroup(groupId);	
+								}
+							};
+							
+							var customFormErrorFunction = function(jqXHR, textStatus, errorThrown) {
+								handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#client" + memberLoanData.clientId + " .formerrors");
+							};
+					
+							executeAjaxRequest('loans', "POST", memberLoanDataString, successFunction, customFormErrorFunction);	
+
+					}
+				})
+
+	    		e.preventDefault();
+
+			});
+
+		} 
+
+		var url = 'loans/template?groupId=' + groupId + '&lendingStrategy=300' + '&productId=' + productId;
+
+		executeAjaxRequest(url, 'GET', "", addMemberLoanApplicationSuccess, formErrorFunction);
+	}	
+*/
 
 	// function to retrieve and display loan summary information in it placeholder
 	function refreshLoanSummaryInfo(clientUrl) {
@@ -4085,7 +3717,6 @@ function showCenter(centerId){
 			  			$(this).remove();
 					},
 			  		open: function (event, ui) {
-			  			
 			  			if (data.loanProductId) {
 			  				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, data.loanProductId , data.group, loanType);
 			  			} else {
@@ -4154,7 +3785,7 @@ function showCenter(centerId){
 					
 					$("#productId").change(function() {
 						var loanProductId = $("#productId").val();
-						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, null, data.loanType);
+						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, data.loanType.value.toLowerCase());
 					});
 		  		}
 		  	}).dialog('open');		
@@ -4185,7 +3816,8 @@ function showCenter(centerId){
 		
 		$("#productId").change(function() {
 			var loanProductId = $("#productId").val();
-			loadTabbedLoanApplicationForm(container, data.clientId, loanProductId, null, data.loanType, false);
+			
+			loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, data.loanType);
 		});
 		
 		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -4262,15 +3894,11 @@ function showCenter(centerId){
 	    }
 	    
 	    if(data.calendarOptions){
-	        loadAvailableCalendars(data.calendarOptions, data.meeting, data.id, data.syncDisbursementWithMeeting);   
+	        loadAvailableCalendars(data.calendarOptions, data.meeting);   
         }
 	};
 	
 	function loadTabbedLoanApplicationForm(container, clientId, productId , group, loanType, isjlgbulk) {
-		
-		isjlgbulk = isjlgbulk || false; 
-		group = group || undefined;
-		clientId = clientId || undefined;
 		
 		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
 			//set loan type
@@ -4290,7 +3918,7 @@ function showCenter(centerId){
 			
 			$("#productId").change(function() {
 				var loanProductId = $("#productId").val();
-				loadTabbedLoanApplicationForm(container, data.clientId, loanProductId, null, loanType, isjlgbulk);
+				loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, loanType );
 			});
 			
 			//setting the minimum submission date
@@ -4369,6 +3997,7 @@ function showCenter(centerId){
 			if(data.calendarOptions){
 				loadAvailableCalendars(data.calendarOptions);   
 			}
+                
 
             if(isjlgbulk){
             	//This is for bulk JLG loans hide applicant
@@ -4376,6 +4005,7 @@ function showCenter(centerId){
 					$(this).html('');
 				});
             }
+
 		};
 		
 		
@@ -4393,17 +4023,8 @@ function showCenter(centerId){
 	}
 	
 	function previewLoanApplicationSchedule() {
-		var serializationOptions = {};
-		serializationOptions["checkboxesAsBools"] = true;
 		
-		var serializedArray = {};
-		serializedArray = $('#entityform').serializeObject(serializationOptions);
-
-		if(!$("#syncRepaymentsWithMeeting").is(':checked') && !$("#syncDisbursementWithMeeting").is(':checked')){
-			serializedArray["calendarId"] = "";	
-		}
-
-		var newFormData = JSON.stringify(serializedArray);
+		var newFormData = JSON.stringify($('#entityform').serializeObject());
     	
 		var successFunction = function(data, textStatus, jqXHR) {
 	  		removeErrors("#formerrors");
@@ -4432,10 +4053,6 @@ function showCenter(centerId){
 
 		if (!serializedArray["paymentChannelToFundSourceMappings"]) {
 			serializedArray["paymentChannelToFundSourceMappings"] = new Array();
-		}
-
-		if (!serializedArray["feeToIncomeAccountMappings"]) {
-			serializedArray["feeToIncomeAccountMappings"] = new Array();
 		}
 		
 		var newFormData = JSON.stringify(serializedArray);
@@ -4488,6 +4105,13 @@ function showCenter(centerId){
 		var cancelButton = doI18N('dialog.button.cancel');
 		
 		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			submitTabbedLoanProduct(dialogDiv, data.id);
+		};
+		// end of buttonsOpts for save button
+		
+		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+		
 		var titleCode = 'dialog.title.add.loanproduct';
 		if (data.id){
 			titleCode = 'dialog.title.loanproduct.details';
@@ -4507,19 +4131,15 @@ function showCenter(centerId){
 		  			var formHtml = $("#loanProductDialogTemplate").render(data);
 		  			dialogDiv.html(formHtml);
 		  			
-		  			$(".loanproducttabs").jWizard({
-		  				cancel: function(event, ui) {
-							$("#dialog-form").dialog( "close" );
-						},
-						finish: function(e, ui) {
-							submitTabbedLoanProduct(dialogDiv, data.id);
-							//return false to disable form submission
-							e.preventDefault();
-							return false;
-						},
-						effects: { enable: true }
-					})
-
+		  			var loanproducttabs = $(".loanproducttabs").tabs({
+		  				create: function(event, ui) {
+		  					var curTab = $('#newtabs .ui-tabs-panel[aria-hidde="false"]');
+		  	      			var curTabID = curTab.prop("id");
+		  				},
+		  				beforeActivate: function( event, ui ) {
+		  				}
+		  			});
+		  			
 	  				//(initialize comboboxes)
 	  				$("#fundSourceAccountId").combobox();
 	  				$("#loanPortfolioAccountId").combobox();
@@ -4552,10 +4172,10 @@ function showCenter(centerId){
 	  			        var selectedValue = $(this).val();
 	  			        if(selectedValue == "1"){
 	  			        	 $("#accountingPlaceholdersDiv").hide();
-	  			        	 $("#advancedAccountingOptionsContainer").hide();
+	  			        	 $("#advancedOptionContainer").hide();
 	  			        }else if (selectedValue == "2"){
 	  			        	 showCashFinancialPlaceholders();
-	  			        	 $("#advancedAccountingOptionsContainer").show();
+	  			        	 $("#advancedOptionContainer").show();
 	  			        }else if (selectedValue == "3"){
 	  			        	 showAccrualFinancialPlaceholders();
 	  			        }
@@ -4564,10 +4184,10 @@ function showCenter(centerId){
 	  			    //hide accounting placeholders div on page load
 	  			    if(data.accountingRule.value == "NONE"){
 	  			    	$("#accountingPlaceholdersDiv").hide();
-	  			    	$("#advancedAccountingOptionsContainer").hide();
+	  			    	$("#advancedOptionContainer").hide();
 	  			    }else if (data.accountingRule.value == "CASH BASED"){
 	  			    	 showCashFinancialPlaceholders();
-	  			    	 $("#advancedAccountingOptionsContainer").show();
+	  			    	 $("#advancedOptionContainer").show();
 	  			    }else if (data.accountingRule.value == "ACCRUAL BASED"){
 	  			    	 showAccrualFinancialPlaceholders();
 	  			    }
@@ -4575,13 +4195,13 @@ function showCenter(centerId){
 	  			    //hide advanced accounting div on page load (and setup toggle functionality)
 	  			    $('#advancedAccountingRulesDiv').hide();
 		            $('#toggleAdvancedAccountingOptions').on("click", function(e) {
-					    $("#advancedAccountingRulesDiv").toggle();
-					    if ($('#toggleAdvancedAccountingOptions').html() == doI18N('label.show')) {
-					  		$('#toggleAdvancedAccountingOptions').html(doI18N('label.hide'));
-					    } else{
-					  		$('#toggleAdvancedAccountingOptions').html(doI18N('label.show'));
-					  	}
-					 	e.preventDefault();
+					  $("#advancedAccountingRulesDiv").toggle();
+					  if ($('#toggleAdvancedAccountingOptions').html() == doI18N('label.show')) {
+					  	$('#toggleAdvancedAccountingOptions').html(doI18N('label.hide'));
+					  } else{
+					  	$('#toggleAdvancedAccountingOptions').html(doI18N('label.show'));
+					  };
+					  e.preventDefault();
 					});
 
 				  	//initialize button for adding new "payment Type to Fund source mappings"
@@ -4592,7 +4212,7 @@ function showCenter(centerId){
 						paymentChannelToFundSourceMappingIndex = data["paymentChannelToFundSourceMappings"].length;
 						//initialize all delete buttons for "payment Type to Fund source mappings"
 						$("#paymentChannelToFundSourceMappingTable tbody tr .removePaymentChannelToFundSourceMappings").each(function(index) {
-							 $(this).button().click(function(e) {
+							 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 								$(this).closest('tr').remove();
 				            	e.preventDefault();
 				            });
@@ -4607,79 +4227,12 @@ function showCenter(centerId){
 						var paymentChannelToFundSourceMappingHtml = $("#loanProductAddPaymentChannelToFundSourceRowTemplate").render(crudObject);
 						$("#paymentChannelToFundSourceMappingTable tbody").append(paymentChannelToFundSourceMappingHtml);
 			  		
-						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex)
-						.button()
-						.click(function(e) {
+						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 							$(this).closest('tr').remove();
 		            		e.preventDefault();
 		            	});
 					    e.preventDefault();
 					});
-
-					//initialize button for adding new "charge to income account mappings"
-				  	var chargeToIncomeAccountMappingIndex = 0;
-					if(undefined === data.feeToIncomeAccountMappings || data.feeToIncomeAccountMappings === null) {
-						chargeToIncomeAccountMappingIndex = 0;
-					} else {
-						chargeToIncomeAccountMappingIndex = data["feeToIncomeAccountMappings"].length;
-						//initialize all delete buttons for "charge to income account mappings"
-						$("#feeToIncomeAccountMappingTable tbody tr .removeFeeToIncomeAccountMappings").each(function(index) {
-							 $(this).button().click(function(e) {
-								$(this).closest('tr').remove();
-				            	e.preventDefault();
-				            });
-						});
-					}
-				  	$("#addFeeToIncomeAccountMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
-				  		chargeToIncomeAccountMappingIndex++;
-						var crudObject = new Object();
-						crudObject["index"] = chargeToIncomeAccountMappingIndex;
-						crudObject["chargeOptions"] = data.chargeOptions;
-						crudObject["incomeAccountOptions"] = data["accountingMappingOptions"]["incomeAccountOptions"];
-						var chargeToIncomeAccountMappingHtml = $("#loanProductAddFeeToIncomeAccountRowTemplate").render(crudObject);
-						$("#feeToIncomeAccountMappingTable tbody").append(chargeToIncomeAccountMappingHtml);
-			  		
-						$('#removeFeeToIncomeAccountMappings'+chargeToIncomeAccountMappingIndex)
-						.button()
-						.click(function(e) {
-							$(this).closest('tr').remove();
-		            		e.preventDefault();
-		            	});
-					    e.preventDefault();
-					});
-
-					//initialize button for adding new "penalty to income account mappings"
-				  	var penaltyToIncomeAccountMappingIndex = 0;
-					if(undefined === data.penaltyToIncomeAccountMappings || data.penaltyToIncomeAccountMappings === null) {
-						penaltyToIncomeAccountMappingIndex = 0;
-					} else {
-						penaltyToIncomeAccountMappingIndex = data["penaltyToIncomeAccountMappings"].length;
-						//initialize all delete buttons for "charge to income account mappings"
-						$("#penaltyToIncomeAccountMappingTable tbody tr .removePenaltyToIncomeAccountMappings").each(function(index) {
-							 $(this).button().click(function(e) {
-								$(this).closest('tr').remove();
-				            	e.preventDefault();
-				            });
-						});
-					}
-				  	$("#addPenaltyToIncomeAccountMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
-				  		penaltyToIncomeAccountMappingIndex++;
-						var crudObject = new Object();
-						crudObject["index"] = penaltyToIncomeAccountMappingIndex;
-						crudObject["penaltyOptions"] = data.penaltyOptions;
-						crudObject["incomeAccountOptions"] = data["accountingMappingOptions"]["incomeAccountOptions"];
-						var chargeToIncomeAccountMappingHtml = $("#loanProductAddPenaltyToIncomeAccountRowTemplate").render(crudObject);
-						$("#penaltyToIncomeAccountMappingTable tbody").append(chargeToIncomeAccountMappingHtml);
-			  		
-						$('#removePenaltyToIncomeAccountMappings'+ penaltyToIncomeAccountMappingIndex)
-						.button()
-						.click(function(e) {
-							$(this).closest('tr').remove();
-		            		e.preventDefault();
-		            	});
-					    e.preventDefault();
-					});
-
 
 	  			
 		  			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -4705,9 +4258,7 @@ function showCenter(centerId){
 								$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 								$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 								
-								
-								// remove icon {icons: {primary: "ui-icon-trash"},text: false} as seems is cause of bug https://mifosforge.jira.com/browse/MIFOSX-386
-								$('#loanchargestable tbody tr:last .loanproduct-removeLoanCharge').button().click(function(e) {
+								$('#loanchargestable tbody tr:last .loanproduct-removeLoanCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 									$(this).closest('tr').remove();
 				            		e.preventDefault();
 				            	});
@@ -4723,9 +4274,7 @@ function showCenter(centerId){
 						// do nothing
 					} else {
 						 $("#loanchargestable tbody tr .loanproduct-removeLoanCharge").each(function(index) {
-							 
-							// remove icon {icons: {primary: "ui-icon-trash"},text: false} as seems is cause of bug https://mifosforge.jira.com/browse/MIFOSX-386
-							 $(this).button().click(function(e) {
+							 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 								$(this).closest('tr').remove();
 				            	e.preventDefault();
 				            });
@@ -4753,10 +4302,6 @@ function showCenter(centerId){
 		
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
-
-		if (!serializedArray["paymentChannelToFundSourceMappings"]) {
-			serializedArray["paymentChannelToFundSourceMappings"] = new Array();
-		}
 		
 		var newFormData = JSON.stringify(serializedArray);
 		
@@ -4840,83 +4385,6 @@ function showCenter(centerId){
 		  				beforeActivate: function( event, ui ) {
 		  				}
 		  			});
-
-		  			//(initialize comboboxes)
-	  				$("#savingsReferenceAccountId").combobox();
-	  				$("#savingsControlAccountId").combobox();
-	  				$("#interestOnSavingsAccountId").combobox();
-	  				$("#incomeFromFeeAccountId").combobox();
-	  				
-	  				
-	  				var showCashFinancialPlaceholders = function() {
-	  					 $("#accountingPlaceholdersDiv").show();
-	  				};
-	  				
-	  						
-	  				//onchange events for radio buttonaccountingRule
-	  				 $("input[name=accountingRule]").change(function() {
-	  			        var selectedValue = $(this).val();
-	  			        if(selectedValue == "1"){
-	  			        	 $("#accountingPlaceholdersDiv").hide();
-	  			        	 $("#advancedAccountingOptionsContainer").hide();
-	  			        }else if (selectedValue == "2"){
-	  			        	 showCashFinancialPlaceholders();
-	  			        	 $("#advancedAccountingOptionsContainer").show();
-	  			        }
-	  			    }); 
-	  			    
-	  			    //hide accounting placeholders div on page load
-	  			    if(data.accountingRule.value == "NONE"){
-	  			    	$("#accountingPlaceholdersDiv").hide();
-	  			    	$("#advancedAccountingOptionsContainer").hide();
-	  			    }else if (data.accountingRule.value == "CASH BASED"){
-	  			    	showCashFinancialPlaceholders();
-	  			    	$("#advancedAccountingOptionsContainer").show();
-	  			    }
-
-	  			    //hide advanced accounting div on page load (and setup toggle functionality)
-	  			    $('#advancedAccountingRulesDiv').hide();
-		            $('#toggleAdvancedAccountingOptions').on("click", function(e) {
-					    $("#advancedAccountingRulesDiv").toggle();
-					    if ($('#toggleAdvancedAccountingOptions').html() == doI18N('label.show')) {
-					  		$('#toggleAdvancedAccountingOptions').html(doI18N('label.hide'));
-					    } else{
-					  		$('#toggleAdvancedAccountingOptions').html(doI18N('label.show'));
-					  	}
-					 	e.preventDefault();
-					});
-
-
-				  	//initialize button for adding new "payment Type to Fund source mappings"
-				  	var paymentChannelToFundSourceMappingIndex = 0;
-					if(undefined === data.paymentChannelToFundSourceMappings || data.paymentChannelToFundSourceMappings === null) {
-						paymentChannelToFundSourceMappingIndex = 0;
-					} else {
-						paymentChannelToFundSourceMappingIndex = data["paymentChannelToFundSourceMappings"].length;
-						//initialize all delete buttons for "payment Type to Fund source mappings"
-						$("#paymentChannelToFundSourceMappingTable tbody tr .removePaymentChannelToFundSourceMappings").each(function(index) {
-							 $(this).button().click(function(e) {
-								$(this).closest('tr').remove();
-				            	e.preventDefault();
-				            });
-						});
-					}
-				  	$("#addPaymentChannelToFundSourceMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
-						paymentChannelToFundSourceMappingIndex++;
-						var crudObject = new Object();
-						crudObject["index"] = paymentChannelToFundSourceMappingIndex;
-						crudObject["paymentTypeOptions"] = data.paymentTypeOptions;
-						crudObject["assetAccountOptions"] = data["accountingMappingOptions"]["assetAccountOptions"];
-						var paymentChannelToFundSourceMappingHtml = $("#loanProductAddPaymentChannelToFundSourceRowTemplate").render(crudObject);
-						$("#paymentChannelToFundSourceMappingTable tbody").append(paymentChannelToFundSourceMappingHtml);
-			  		
-						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button().click(function(e) {
-							$(this).closest('tr').remove();
-		            		e.preventDefault();
-		            	});
-					    e.preventDefault();
-					});
-
 		  			
 		  			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -5188,7 +4656,13 @@ function showLoan(loanId, product, loanAccountNo, parenttab){
 		if (undefined === loanAccountNo) {
 			title = product + ": #" + loanId;
 		}
+		//$newtabs.tabs( "add", "unknown.html", title);  Deprecated
 		$newtabs.addTab(newLoanTabId, title);
+		//add ids and titles to newly added div's and a'hrefs
+		// var lastAHref=$('#'+ parenttab +'> ul > li:last > a');
+		// var lastDiv=$('#'+ parenttab +' > div:last');
+		// lastAHref.attr('href','#loan'+loanId+'tab');
+		// lastDiv.attr('id',newLoanTabId);
 
 		$newtabs.tabs( "option", "active", $('#'+ parenttab +'> ul > li').length-1);
 		loadLoan(loanId, parenttab);
@@ -5224,9 +4698,9 @@ function loadLoan(loanId, parenttab) {
 	};
 
 	var successFunction = function(data, status, xhr) {
-
-	            	var currentTabIndex = $('#' + parenttab).tabs('option', 'active');
-	            	$("#" + parenttab + " li:eq(" + currentTabIndex + ") *:last").text(data.loanProductName + ": " + data.accountNo);
+	        	
+	        		var currentTabIndex = $newtabs.tabs('option', 'active');
+	            	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
 	            
 	        		var tableHtml = $("#loanDataTabTemplate").render(data);
 	        		
@@ -5297,16 +4771,23 @@ function loadLoan(loanId, parenttab) {
         				offsetToDisbursalDate = Date.daysBetween(today, offsetDate);
         			}
 	        		
+	        		//adding styles for vertical sub-tabs
+	        		//$( ".loantabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+	        		//$( ".loantabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+	        		//var $loantabs = $(".loantabs").tabs({
 		        	var $loantabs = $("#loantabs" + loanId).tabs({
+						create: function(event, ui) {
+							var curTab = $('#' + parenttab + ' .ui-tabs-panel[aria-hidden="false"]');
+			      			var curTabID = curTab.prop("id")
+						},
 						beforeActivate: function( event, ui ) {
-        					if($(ui.newPanel).attr( 'id' ) == ( "loanDocuments"+ loanId )){
+        					if($(ui.panel).attr( 'id' ) == ( "loanDocuments"+ loanId )){
         						refreshLoanDocuments(loanId)
         					}
    						}
 					});
-		        
-		        $('.modifyloanapp'+loanId).unbind('click');	
-	        	$('.modifyloanapp'+loanId).button({icons: {primary: "ui-icon-document"}}).click(function(e) {
+		        	
+	        	$('.modifyloanapp').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("modifyloanappbtn", "");
 					launchModifyLoanApplicationDialog(loanId);
@@ -5315,7 +4796,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.modifyloanapp span').text(doI18N('button.application.modify'));
 	        		
-	        	$('.rejectloan'+loanId).button().click(function(e) {
+	        	$('.rejectloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("rejectbtn", "");
 					var postUrl = 'loans/' + loanId + '?command=reject';
@@ -5329,7 +4810,7 @@ function loadLoan(loanId, parenttab) {
 				});
 	        	$('button.rejectloan span').text(doI18N('button.application.reject'));
 					
-				$('.withdrawnbyapplicantloan'+loanId).button().click(function(e) {
+				$('.withdrawnbyapplicantloan').button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("withdrawnbyapplicantloanbtn", "");
 						var postUrl = 'loans/' + loanId + '?command=withdrawnByApplicant';
@@ -5342,7 +4823,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.withdrawnbyapplicantloan span').text(doI18N('button.application.withdrawnByApplicant'));
 				
-				$('.approveloan'+loanId).button().click(function(e) {
+				$('.approveloan').button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("approvebtn", "");
 						var postUrl = 'loans/' + loanId + '?command=approve';
@@ -5356,7 +4837,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.approveloan span').text(doI18N('button.application.approve'));
 					
-				$('.undoapproveloan'+loanId).button().click(function(e) {
+				$('.undoapproveloan').button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("undoapprovebtn", "");
 						var postUrl = 'loans/' + loanId + '?command=undoapproval';
@@ -5370,7 +4851,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.undoapproveloan span').text(doI18N('button.application.undoApproval'));
 					
-				$('.deleteloan'+loanId).button().click(function(e) {
+				$('.deleteloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("deletebtn", "");
 					var url = 'loans/' + loanId;
@@ -5382,7 +4863,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.deleteloan span').text(doI18N('button.application.delete'));
 					
-				$('.disburseloan'+loanId).button().click(function(e) {
+				$('.disburseloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("disbursebtn", "");
 					var getUrl = 'loans/' + loanId + '/transactions/template?command=disburse';
@@ -5398,7 +4879,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.disburseloan span').text(doI18N('button.loan.disburse'));
 					
-				$('.undodisbursalloan'+loanId).button().click(function(e) {
+				$('.undodisbursalloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("undodisbursalbtn", "");
 					var postUrl = 'loans/' + loanId + '?command=undodisbursal';
@@ -5412,7 +4893,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.undodisbursalloan span').text(doI18N('button.loan.undoDisbursal'));
 					
-				$('.repaymentloan'+loanId).button().click(function(e) {
+				$('.repaymentloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("repaymentbtn", "");
 					var getUrl = 'loans/' + loanId + '/transactions/template?command=repayment';
@@ -5429,7 +4910,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.repaymentloan span').text(doI18N('button.loan.repayment'));
 					
-				$('.waiveinterestloan'+loanId).button().click(function(e) {
+				$('.waiveinterestloan').button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("waiveinterestbtn", "");
 						
@@ -5448,7 +4929,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.waiveloan span').text(doI18N('button.loan.waiveInterest'));
 				
-				$('.writeoffloan'+loanId).button().click(function(e) {
+				$('.writeoffloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("writeoffbtn", "");
 					
@@ -5467,7 +4948,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.writeoffloan span').text(doI18N('button.loan.writeOff'));
 				
-				$('.closeasrescheduledloan'+loanId).button().click(function(e) {
+				$('.closeasrescheduledloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("closeasrescheduledbtn", "");
 					
@@ -5486,7 +4967,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.closeasrescheduledloan span').text(doI18N('button.loan.closeAsRescheduled'));
 				
-				$('.closeloan'+loanId).button().click(function(e) {
+				$('.closeloan').button().click(function(e) {
 					var linkId = this.id;
 					var loanId = linkId.replace("closebtn", "");
 					
@@ -5505,19 +4986,21 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.closeloan span').text(doI18N('button.loan.close'));
 					
-				$(".printSchedule"+loanId).button({icons: {primary: "ui-icon-print"},text: false}).click(function(e){
+				$(".printSchedule").button({icons: {
+		            primary: "ui-icon-print"},
+					text: false
+		            }).click(function(e){
 					var loanId=	this.offsetParent.id.replace("loantabs","");
 
 					var printButtons = document.getElementsByClassName('printSchedule');
                     for(var i=0; i < printButtons.length; i++) { 
                       printButtons[i].style.display = 'none';
-                	}
-				
+                    }
 					$("#schedule"+loanId).printThis();
 					e.preventDefault();
-				});	
+			      });	
 					
-				$('.adjustloanrepayment'+loanId).button({
+				$('.adjustloanrepayment').button({
                     icons : {
                         primary : "ui-icon-pencil"
                     },
@@ -5542,7 +5025,7 @@ function loadLoan(loanId, parenttab) {
 				
 				//$('button.adjustloanrepayment span').text(doI18N('button.loanTransaction.adjust'));
 				
-				$('.undoloanrepayment'+loanId).button({
+				$('.undoloanrepayment').button({
                     icons : {
                         primary : "ui-icon-trash"
                     },
@@ -5571,7 +5054,7 @@ function loadLoan(loanId, parenttab) {
                     e.preventDefault();
                 }); 
                 
-				$('.addloancharge'+loanId).button().click(function(e){
+				$('.addloancharge').button().click(function(e){
 						var linkId = this.id;
 						var loanId = linkId.replace("addloanchargebtn", "");
 						var postUrl = 'loans/' + loanId + '/charges';
@@ -5585,9 +5068,8 @@ function loadLoan(loanId, parenttab) {
 						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addLoanCharge", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
 					    e.preventDefault();
 				});
-				$('button.addloancharge span').text(doI18N('button.addLoanCharge'));
 				
-				$('.addloancollateral'+loanId).button().click(function(e){
+				$('.addloancollateral').button().click(function(e){
                         var linkId = this.id;
                         var loanId = linkId.replace("addloancollateralbtn", "");
                         var postUrl = 'loans/' + loanId + '/collaterals';
@@ -5601,10 +5083,10 @@ function loadLoan(loanId, parenttab) {
                         popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addCollateral", templateSelector, width,  height, saveSuccessFunctionReloadLoan);
                         e.preventDefault();
                 });
-				$('button.addloancollateral span').text(doI18N('button.addLoanCharge'));
+				$('button.addloancharge span').text(doI18N('button.addLoanCharge'));
 				
 				//Guarantor for loan functionality
-				$('.setguarantor'+loanId).button({icons: {primary: "ui-icon-link"}}).click(function(e) {
+				$('.setguarantor').button({icons: {primary: "ui-icon-link"}}).click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("setGuarantorbtn", "");
 						var getUrl = 'loans/'+loanId+'/guarantors/template';
@@ -5641,7 +5123,7 @@ function loadLoan(loanId, parenttab) {
 				    });
 			    }
 	            
-				$('.assignloanofficer'+loanId).button().click(function(e){
+				$('.assignloanofficer').button().click(function(e){
 
 						var linkId = this.id;
 						var loanId = linkId.replace("assignloanofficerbtn", "");
@@ -5658,7 +5140,7 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.assignloanofficer span').text(doI18N('button.assignLoanOfficer'));
 
-				$('.unassignloanofficer'+loanId).button({icons: {primary: "ui-icon-circle-close"}}).click(function(e){
+				$('.unassignloanofficer').button({icons: {primary: "ui-icon-circle-close"}}).click(function(e){
 
 						var linkId = this.id;
 						var loanId = linkId.replace("unassignloanofficerbtn", "");
@@ -5674,7 +5156,7 @@ function loadLoan(loanId, parenttab) {
 						e.preventDefault();
 				});
 
-				$('.editaccountnobtn'+loanId).button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
+				$('.editaccountnobtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
 
 					var linkId = this.id;
 					var loanId = linkId.replace("editaccountnobtn", "");
@@ -5797,7 +5279,7 @@ function loadGuarantorForm(){
     $("#smartGuarantorSearch" ).autocomplete({
         source: function(request, response){
         	//get selected office
-			var sqlSearchValue = "c.display_name like '%" + request.term + "%'"; 
+			var sqlSearchValue = "display_name like '%" + request.term + "%'"; 
 			smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
 				response( $.map( data.pageItems, function( item ) {
                     return {
@@ -5976,7 +5458,7 @@ function refreshLoanDocuments(loanId) {
 
 				$("a.delete" + tableName).click( function(e) {
 					
-					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction'|| tableName == 'report' || tableName == 'accountingrule' || tableName == 'datatable') {
+					if (tableName === 'savingproduct' ||tableName === 'depositproduct' || tableName ==='charge' || tableName ==='user' || tableName == 'code' || tableName == 'officetransaction'|| tableName == 'report' || tableName == 'accountingrule') {
 						var linkId = this.id;
 						var entityId = linkId.replace("delete" + tableName, "");
 
@@ -6018,15 +5500,6 @@ function refreshLoanDocuments(loanId) {
 						popupDialogWithPostOnlyFormView(putUrl, 'PUT', 'dialog.title.update.password', templateSelector, width, height, saveSuccessFunction, 0, 0, 0);
 					}
 					e.preventDefault();
-				});
-
-				$("a.updatedatatable").click( function(e) {
-					
-						var linkId = this.id;
-						var entityId = linkId.replace("updatedatatable", "");
-                        maintainTable("datatableUpdate", entityId, "PUT");
-					
-						e.preventDefault();
 				});
 
 				$("a.deregister" + tableName).click( function(e) {
@@ -6081,7 +5554,7 @@ function refreshLoanDocuments(loanId) {
 
 	function maintainTable(tableName, resourceUrl, submitType, putPostQuery) {
 		if (!(submitType == "PUT" || submitType == "POST"))
-		 {
+		{
 			alert("System Error - Invalid submitType: " + submitType);
 			return;
 		}
@@ -6103,20 +5576,12 @@ function refreshLoanDocuments(loanId) {
 		eval(genSSF);
 		
 		//datatable specific code
-		if (tableName == "datatable") {
+		if (tableName == "datatable") 
+		{
 			dialogTitle = 'dialog.title.register.datatable';
 			popupRegisterDatatableDialog('dialog.title.register.datatable', templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
 			return false;
-		} else if (tableName == "datatableCreate") {
-			dialogTitle = 'dialog.title.create.datatable';
-			popupCreateDatatableDialog(dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
-			return false;
-		} else if (tableName == "datatableUpdate") {
-            dialogTitle = 'dialog.title.update.datatable';
-            popupUpdateDatatableDialog(dialogTitle, resourceUrl, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction, 0, 0, 0);
-
-			return false;
-        }
+		}
 		//end datatable specific code
 
 		if (resourceUrl.indexOf("/permissions") > -1) 
@@ -6152,15 +5617,12 @@ function refreshLoanDocuments(loanId) {
 		}
 		else
 		{
-			if (crudData[tableName].editTemplateNeeded == true) {
-				getUrl = resourceUrl + '?template=true'
-			}
-			else {
-				getUrl = resourceUrl;
-			}
+			if (crudData[tableName].editTemplateNeeded == true) getUrl = resourceUrl + '?template=true'
+			else getUrl = resourceUrl;
 			
 			popupDialogWithFormView(getUrl, putPostUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, saveSuccessFunction);
 		}
+		
 	}
 
 
@@ -6409,14 +5871,7 @@ function setBasicAuthKey(logonDivName, username, password)
 					currentUserName = data.username;
 					currentPwd = password;
 
-					var staffUser = {
-							staffId: data.staffId,
-							staffDisplayName: data.staffDisplayName,
-							organisationalRole: data.organisationalRole
-					}
-					jQuery.MifosXUI.initialise(staffUser, data.permissions, applicationProfile, tenantIdentifier, applicationMode, currentUser);
-
-					//jQuery.MifosXUI.initialise(data.organisationalRole, data.permissions, applicationProfile, tenantIdentifier, applicationMode, currentUser);
+					jQuery.MifosXUI.initialise(data.roles, data.permissions, applicationProfile, tenantIdentifier, applicationMode);
 
 					showMainContainer(logonDivName, username);
 					custom.showFirstPage();
@@ -6488,8 +5943,10 @@ function popupDialogWithReadOnlyFormView(getUrl, titleCode, templateSelector, wi
 	}
 }
 
-function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name )  {
-	button_msg_name = button_msg_name || "dialog.button.cancel";
+function popupDialogWithReadOnlyFormViewData(data, titleCode, templateSelector, width, height, button_msg_name)  {
+	
+    button_msg_name = button_msg_name || "dialog.button.cancel";
+
 	var dialogDiv = $("<div id='dialog-form'></div>");
 	var cancelButton = doI18N(button_msg_name);
 
@@ -6522,15 +5979,11 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 
 				if(templateSelector == "#employeeFormTemplate" && submitType!= "PUT"){
 					var officesObject = new Object();
-			    	officesObject.crudRows = data;
+			    		officesObject.crudRows = data;
 					popupDialogWithFormViewData(officesObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 				}else if(templateSelector == "#employeeFormTemplate" && submitType == "PUT") {
 					templateSelector = "#employeeFormEditTemplate";
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
-				}else if (templateSelector == "#clientCloseTemplate") {
-					var codeValuesObject = new Object();
-			    	codeValuesObject.crudRows = data.closureReasons;
-					popupDialogWithFormViewData(codeValuesObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 				}else{
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 		  		}
@@ -6545,7 +5998,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 						{
 							var officeId = jQuery.parseJSON(extraParam).officeId;
 							var groupId = jQuery.parseJSON(extraParam).groupId;
-							$("#officeId option[value='"+ officeId +"']").prop("selected", "selected");
+							$("#officeId option[value='"+ officeId +"']").attr("selected", "selected");
 							$('#officeId').prop('disabled', true);
 							$('<input>').attr({type: 'hidden',id: 'officeId',name: 'officeId',value:officeId}).appendTo('#entityform');
 							$('<input>').attr({type: 'hidden',id: 'groupId',name: 'groupId',value:groupId}).appendTo('#entityform');
@@ -6574,7 +6027,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 						var action = jQuery.parseJSON(extraParam).action;
 						$('#officeId').prop('disabled', true);
 						if(!(centerId === undefined) ){
-							$("#centerId option[value='"+ centerId +"']").prop("selected", "selected");
+							$("#centerId option[value='"+ centerId +"']").attr("selected", "selected");
 							if(action == 'disable'){
 								$('#centerId').prop('disabled', true);
 								$('<input>').attr({type: 'hidden',id: 'centerId',name: 'centerId',value:centerId}).appendTo('#entityform');
@@ -6583,16 +6036,11 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 						}	
 					}
 				}
-
 				//End group create specific code
 		  	};
 
-		if (getUrl == "") {
-			popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
-		}
-		else {
-			executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
-		}
+		if (getUrl == "") popupDialogWithFormViewData("", postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
+		else executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
 }
 
 function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)  {
@@ -6608,59 +6056,41 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 	buttonsOpts[saveButton] = function() {
 		
 		$('#notSelectedClients option').each(function(i) {
-			$(this).prop("selected", "selected");
+			$(this).attr("selected", "selected");
 		});
-
 		$('#clientMembers option').each(function(i) {
-			$(this).prop("selected", "selected");
+			$(this).attr("selected", "selected");
 		});
 		
 		$('#notSelectedCharges option').each(function(i) {
-			$(this).prop("selected", "selected");
+			$(this).attr("selected", "selected");
 		});
-		
 		$('#charges option').each(function(i) {
-			$(this).prop("selected", "selected");
+			$(this).attr("selected", "selected");
 		});
 		
-		$('#notSelectedRoles option').each(function(i) {
-			$(this).prop("selected", "selected");  
+		$('#notSelectedRoles option').each(function(i) {  
+			$(this).attr("selected", "selected");  
 		});
 		
-		$('#roles option').each(function(i) { 
-		   	$(this).prop("selected", "selected");  
+		$('#roles option').each(function(i) {  
+		   	$(this).attr("selected", "selected");  
 		});
 		
-		$('#notSelectedItems option').each(function(i) {
-			$(this).prop("selected", "selected");
+		$('#notSelectedItems option').each(function(i) {  
+			   $(this).attr("selected", "selected");  
 		});
 		
-		$('#selectedItems option').each(function(i) { 
-			$(this).prop("selected", "selected");
+		$('#selectedItems option').each(function(i) {  
+			$(this).attr("selected", "selected");  
 		});
 		
-		$('#notSelectedCurrencies option').each(function(i) {
-			$(this).prop("selected", "selected");
+		$('#notSelectedCurrencies option').each(function(i) {  
+		    	   	$(this).attr("selected", "selected");  
 		});
 		
-		$('#currencies option').each(function(i) {
-			$(this).prop("selected", "selected");
-		});
-
-		$('#notSelectedcreditTags option').each(function(i) {
-			$(this).prop("selected", "selected");
-		});
-		
-		$('#creditTags option').each(function(i) {
-			$(this).prop("selected", "selected");
-		});
-
-		$('#notSelecteddebitTags option').each(function(i) {
-			$(this).prop("selected", "selected");
-		});
-		
-		$('#debitTags option').each(function(i) {
-			$(this).prop("selected", "selected");
+		$('#currencies option').each(function(i) {  
+		   		$(this).attr("selected", "selected");  
 		});
 		
 		if (document.changeUserSettingsForm!=undefined) {
@@ -6733,60 +6163,32 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
     	   	serializedArray["transactionDate"] = $('#transactionDate').val();
     	   	serializedArray["referenceNumber"] = $('#referenceNumber').val();	
 			serializedArray["comments"] = $('#comments').val();
-			//populate debits and credits array
-    	   	var populateCreditOrDebitArray = function(type){
-    	   		serializedArray[type] = new Array();
-    	   		$("#" + type).children('p').each(function (i) {
-    	   		// "this" is the current element in the loop
-    	   		var tempObject= new Object();
-			    $(this).children('label').each(function(j){
-			    	if(j==0){
-			    		//for property of label had Id of glAccount selectbox
-			    		tempObject.glAccountId=$("#"+$(this).attr("for")).val();
-			    	}else{
-			    		//for property of label had Id of amount input
-			    		tempObject.amount=$("#"+$(this).attr("for")).val();;
-			    	}
-			    }); 
-			    serializedArray[type][i]=tempObject;
-				});
-    	   	}
-    	   	if (templateSelector === "#journalEntryFormTemplate") {
+			serializedArray["isPredefinedRuleEntry"] = $('#isPredefinedRuleEntry').val();
+			if (templateSelector === "#journalEntryFormTemplate") {
+				//populate debits and credits array
+	    	   	var populateCreditOrDebitArray = function(type){
+	    	   		serializedArray[type] = new Array();
+	    	   		$("#" + type).children('p').each(function (i) {
+	    	   		// "this" is the current element in the loop
+	    	   		var tempObject= new Object();
+				    $(this).children('label').each(function(j){
+				    	if(j==0){
+				    		//for property of label had Id of glAccount selectbox
+				    		tempObject.glAccountId=$("#"+$(this).attr("for")).val();
+				    	}else{
+				    		//for property of label had Id of amount input
+				    		tempObject.amount=$("#"+$(this).attr("for")).val();;
+				    	}
+				    }); 
+				    serializedArray[type][i]=tempObject;
+					});
+	    	   	}
 	    	   	populateCreditOrDebitArray("debits");
 				populateCreditOrDebitArray("credits");
 			} else if(templateSelector === "#predefinedPostingEntryFormTemplate") {
-
-				//get the selected object from data object
-				var ruleObject = new Object();
-				var selectedRule = $('#accountingRule').val();
-				for(i=0; i<data.accountingRuleOptions.length; i++) {
-					var tempObject = data.accountingRuleOptions[i];
-					if (selectedRule == tempObject.id) {
-						ruleObject = tempObject;
-					}
-				}
-				if (ruleObject.creditAccounts != undefined && ruleObject.debitAccounts != undefined) {
-					if (!(ruleObject.creditAccounts.length>0 && ruleObject.debitAccounts.length>0)) {
-						serializedArray["amount"] = $('#amount').val();
-					}
-				} 
 				serializedArray["accountingRule"] = $('#accountingRule').val();
-				
-				if (ruleObject.creditAccounts != undefined) {
-					if (ruleObject.creditAccounts.length>0) {
-						populateCreditOrDebitArray("creditaccounts");
-						serializedArray["credits"]=serializedArray["creditaccounts"];
-						delete serializedArray["creditaccounts"];
-					}
-				}
-				if (ruleObject.debitAccounts != undefined) {
-					if (ruleObject.debitAccounts.length>0) {
-						populateCreditOrDebitArray("debitaccounts");
-						serializedArray["debits"]=serializedArray["debitaccounts"];
-						delete serializedArray["debitaccounts"];
-					}
-				}
-			}	
+				serializedArray["amount"] = $('#amount').val();
+			};	
 		}	
 	
 	   //Caledar form data
@@ -6796,14 +6198,9 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             serializedArray = {};
             serializedArray["locale"] = $('#locale').val();
             serializedArray["dateFormat"] = $('#dateFormat').val();
-            //serializedArray["title"] = $('#title').val();
-            //Provide default title value
-            var urlSplit = postUrl.split('/');
-            serializedArray["title"] = urlSplit[0] + '_' + urlSplit[1] + '_CollectionMeeting';
-            //e.g. : group_1_CollectionMeeting
+            serializedArray["title"] = $('#title').val();
             serializedArray["description"] = $('#description').val();
-            //serializedArray["typeId"] = $('#meetingTypeId').val();
-            serializedArray["typeId"] = 1;
+            serializedArray["typeId"] = $('#meetingTypeId').val();
             serializedArray["startDate"] = $('#startDate').val();
             serializedArray["repeating"] = $('#repeating').val()==="on"?true:false;
             serializedArray["recurrence"] = rrule;
@@ -6814,8 +6211,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
                 }
             }
 
-            //In first release no other meeting types are supported
-            /*
             if($('#meetingTypeId').val() != "1"){
             	serializedArray["location"] = $('#location').val();
             	serializedArray["duration"] = $('#duration').val();
@@ -6823,7 +6218,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 	            serializedArray["firstReminder"] = $('#firstReminder').val();
 	            serializedArray["secondReminder"] = $('#secondReminder').val();
             }
-            */
             
         }
 	
@@ -6831,51 +6225,12 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			if (serializedArray.name === "") {
 				delete serializedArray.name;
 			}
-			if (serializedArray.accountToDebit === "") {
-				delete serializedArray.accountToDebit;
+			else if (serializedArray.debitAccountHead === "") {
+				delete serializedArray.debitAccountHead;
 			}
-			if (serializedArray.accountToCredit === "") {
-				delete serializedArray.accountToCredit;
+			else if (serializedArray.creditAccountHead === "") {
+				delete serializedArray.creditAccountHead;
 			}
-			
-			//allow only one value for debits
-			if (serializedArray.debitRuleType === "Fixed") {
-				delete serializedArray.debitTags;
-				delete serializedArray.allowMultipleDebitEntries;
-			} else if (serializedArray.debitRuleType === "List") {
-				delete serializedArray.accountToDebit;
-				if (typeof serializedArray.debitTags === 'string') {
-					var debits = [];
-					debits.push(serializedArray.debitTags);
-					delete serializedArray.debitTags;
-					serializedArray["debitTags"] = debits;
-				}
-			} else {
-				delete serializedArray.debitTags;
-				delete serializedArray.accountToDebit;
-				delete serializedArray.allowMultipleDebitEntries;
-			}
-
-			//allow only one value for credits
-			if (serializedArray.creditRuleType === "Fixed") {
-				delete serializedArray.creditTags;
-				delete serializedArray.allowMultipleCreditEntries;
-			} else if (serializedArray.creditRuleType === "List") {
-				delete serializedArray.accountToCredit;
-				if (typeof serializedArray.creditTags === 'string') {
-					var credits = [];
-					credits.push(serializedArray.creditTags);
-					delete serializedArray.creditTags;
-					serializedArray["creditTags"] = credits;
-				}
-			} else {
-				delete serializedArray.creditTags;
-				delete serializedArray.accountToCredit;
-				delete serializedArray.allowMultipleCreditEntries;
-			}
-
-			delete serializedArray.debitRuleType;
-			delete serializedArray.creditRuleType;
 		}
 		var newFormData = JSON.stringify(serializedArray);
 		if (postUrl.toLowerCase().indexOf("permissions") > -1) {
@@ -6883,7 +6238,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			permissions.permissions = serializedArray;
 			newFormData = JSON.stringify(permissions);
 		}
-		
+	        
 		//spl ajax req for webcam and doc upload
 		if( templateSelector == '#clientImageWebcamFormTemplate'){
 			var imageCanvas = $('#imageCanvas')[0];
@@ -6957,131 +6312,9 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	// for accounting rule initialize comboboxes
 	if (templateSelector === "#accountingruleFormTemplate") {
 		$("#officeId").combobox();
-
-		var debitRuleType = $('input:radio[name=debitRuleType]:checked').val();
-		var creditRuleType = $('input:radio[name=creditRuleType]:checked').val();
-
-		if (debitRuleType == "Fixed") {
-			$("#fixeddebitaccount").show();
-			$("#fixeddebitaccountlabel").show();
-			$("#availabledebittags").hide();
-			$("#selecteddebittags").hide();
-			$("#allowmultipledebitentrieslabel").hide();
-			$("#allowmultipledebitentries").hide();
-			$("#accountToDebit").combobox();
-		} else if (debitRuleType == "List"){
-			$("#fixeddebitaccount").hide();
-			$("#fixeddebitaccountlabel").hide();
-			$("#availabledebittags").show();
-			$("#selecteddebittags").show();
-			$("#allowmultipledebitentrieslabel").show();
-			$("#allowmultipledebitentries").show();
-			// enable the buttons for add and remove
-			$('.addmultipledebits').click(function() {  
-  			     return !$('.multiNotSelectedDebits option:selected').remove().appendTo('#debitTags');  
-  			});
-  			$('.removemultipledebits').click(function() {  
-  				return !$('.multiSelectedDebits option:selected').remove().appendTo('#notSelecteddebitTags');  
-  			});
-		} else {
-			$('input:radio[name=debitRuleType]')[0].checked=true;
-			$("#fixeddebitaccount").show();
-			$("#fixeddebitaccountlabel").show();
-			$("#availabledebittags").hide();
-			$("#selecteddebittags").hide();
-			$("#allowmultipledebitentrieslabel").hide();
-			$("#allowmultipledebitentries").hide();
-			$("#accountToDebit").combobox();
-		}
-
-		if (creditRuleType == "Fixed") {
-			$("#fixedcreditaccount").show();
-			$("#fixedcreditaccountlabel").show();
-			$("#availablecredittags").hide();
-			$("#selectedcredittags").hide();
-			$("#allowmultiplecreditentrieslabel").hide();
-			$("#allowmultiplecreditentries").hide();
-			$("#accountToCredit").combobox();
-		} else if (creditRuleType == "List"){
-			$("#fixedcreditaccount").hide();
-			$("#fixedcreditaccountlabel").hide();
-			$("#availablecredittags").show();
-			$("#selectedcredittags").show();
-			$("#allowmultiplecreditentrieslabel").show();
-			$("#allowmultiplecreditentries").show();
-			// enable the buttons for add and remove
-			$('.addmultiplecredits').click(function() {  
-  			     return !$('.multiNotSelectedCredits option:selected').remove().appendTo('#creditTags');  
-  			});
-  			$('.removemultiplecredits').click(function() {  
-  				return !$('.multiSelectedCredits option:selected').remove().appendTo('#notSelectedcreditTags');  
-  			});
-		} else {
-			$('input:radio[name=creditRuleType]')[0].checked=true;
-			$("#fixedcreditaccount").show();
-			$("#fixedcreditaccountlabel").show();
-			$("#availablecredittags").hide();
-			$("#selectedcredittags").hide();
-			$("#allowmultiplecreditentrieslabel").hide();
-			$("#allowmultiplecreditentries").hide();
-			$("#accountToCredit").combobox();
-		}
-
-		$('input:radio[name=debitRuleType]').change(function (){
-			var selectedType = $(this).val();
-			if (selectedType == "Fixed") {
-				$("#fixeddebitaccount").show();
-	            $("#fixeddebitaccountlabel").show();
-	            $("#availabledebittags").hide();
-	            $("#selecteddebittags").hide();
-	            $("#allowmultipledebitentrieslabel").hide();
-	            $("#allowmultipledebitentries").hide();
-	            $("#accountToDebit").combobox();
-			} else if (selectedType == "List"){
-				$("#fixeddebitaccount").hide();
-	            $("#fixeddebitaccountlabel").hide();
-	            $("#availabledebittags").show();
-	            $("#selecteddebittags").show();
-	            $("#allowmultipledebitentrieslabel").show();
-	            $("#allowmultipledebitentries").show();
-	            // enable the buttons for add and remove
-	            $('.addmultipledebits').click(function() {  
-  			     return !$('.multiNotSelectedDebits option:selected').remove().appendTo('#debitTags');  
-	  			});
-	  			$('.removemultipledebits').click(function() {  
-	  				return !$('.multiSelectedDebits option:selected').remove().appendTo('#notSelecteddebitTags');  
-	  			});
-
-			}
-		});
-
-		$('input:radio[name=creditRuleType]').change(function () {
-			var selectedType = $(this).val();
-			if (selectedType == "Fixed") {
-				$("#fixedcreditaccount").show();
-	            $("#fixedcreditaccountlabel").show();
-	            $("#availablecredittags").hide();
-	            $("#selectedcredittags").hide();
-	            $("#allowmultiplecreditentrieslabel").hide();
-	            $("#allowmultiplecreditentries").hide();
-	            $("#accountToCredit").combobox();
-			} else if (selectedType == "List"){
-				$("#fixedcreditaccount").hide();
-	            $("#fixedcreditaccountlabel").hide();
-	            $("#availablecredittags").show();
-	            $("#selectedcredittags").show();
-	            $("#allowmultiplecreditentrieslabel").show();
-	            $("#allowmultiplecreditentries").show();
-	            // enable the buttons for add and remove
-	            $('.addmultiplecredits').click(function() {  
-	  			     return !$('.multiNotSelectedCredits option:selected').remove().appendTo('#creditTags');  
-	  			});
-	  			$('.removemultiplecredits').click(function() {  
-	  				return !$('.multiSelectedCredits option:selected').remove().appendTo('#notSelectedcreditTags');  
-	  			});
-			}
-		});
-	}
+		$("#debitAccountHead").combobox();
+		$("#creditAccountHead").combobox();
+	};
 
 	if (templateSelector === "#groupFormTemplate"){
 		$("#dialog-form #officeId").change(function(e){
@@ -7147,10 +6380,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
     	loadTransactionForm();
 	}
 
-	if (templateSelector === "#savingsAccountTransactionFormTemplate") {
-		loadTransactionForm();
-	};
-
 	if (templateSelector === "#bulkLoanReassignmentFormTemplate"){
 		$("#dialog-form #officeId").change(function(e){
 			var selectedOfficeId = $("#dialog-form #officeId").val();
@@ -7184,21 +6413,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	}
 
 	if (templateSelector === "#clientFormTemplate" || templateSelector === "#editClientFormTemplate") {
-
-		if (templateSelector === "#clientFormTemplate") {
-			$("#dialog-form #officeId").change(function(e){
-				var selectedOfficeId = $(this).val();
-				var officeIdChangeSuccess = function(clientData, textStatus, jqXHR){
-					clientData['officeId'] = selectedOfficeId;
-					repopulateOpenPopupDialogWithFormViewData(clientData, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction)
-				}
-				if (data['id']){
-					executeAjaxRequest("clients/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);	
-				} else {
-					executeAjaxRequest("clients/template?staffInSelectedOfficeOnly=false&officeId=" + selectedOfficeId , "GET", "", officeIdChangeSuccess, formErrorFunction);	
-				}
-			})
-		}
 
 		//onchange events for radio button clientType
 		$("input[name='clientType']").change(function() {
@@ -7241,7 +6455,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#addclientmembers').click(function() {  
 		return !$('#notSelectedClients option:selected').remove().appendTo('#clientMembers');  
 	});
-
 	$('#removeclientmembers').click(function() {  
 		return !$('#clientMembers option:selected').remove().appendTo('#notSelectedClients');  
 	});
@@ -7263,7 +6476,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#add').click(function() {  
 	     return !$('#notSelectedItems option:selected').remove().appendTo('#selectedItems');  
 	});
-	
 	$('#remove').click(function() {  
 		return !$('#selectedItems option:selected').remove().appendTo('#notSelectedItems');  
 	});
@@ -7271,588 +6483,15 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#addcurrencies').click(function() {  
 		return !$('#notSelectedCurrencies option:selected').remove().appendTo('#currencies');  
 	});
-	
 	$('#removecurrencies').click(function() {  
 		return !$('#currencies option:selected').remove().appendTo('#notSelectedCurrencies');  
 	});
 
-	$('#adddebitTags').click(function() {  
-		return !$('#notSelecteddebitTags option:selected').remove().appendTo('#debitTags');  
-	});
-
-	$('#removedebitTags').click(function() {  
-		return !$('#debitTags option:selected').remove().appendTo('#notSelecteddebitTags');  
-	});
-
-	$('#addcreditTags').click(function() {  
-		return !$('#notSelectedcreditTags option:selected').remove().appendTo('#creditTags');  
-	});
-
-	$('#removecreditTags').click(function() {  
-		return !$('#creditTags option:selected').remove().appendTo('#notSelectedcreditTags');  
-	});
-	
 	$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 	$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 	
 	$("#entityform textarea").first().focus();
 	$('#entityform input').first().focus();	
-}
-
-function validateCreateDatatableRow(row, index, validationErrors) {
-    var name = $(row).find("input[name=columnName]").val();
-    var type = $(row).find("select[name=columnType]").val();
-    var length = $(row).find("input[name=columnLength]").val();
-    var code = $(row).find("input[name=columnCode]").val();
-
-    validationErrors[index] = new Object();
-    if (name.length <= 0 || !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,}[a-zA-Z0-9]$/.test(name))) {
-        validationErrors[index].name = true;
-    }
-    if (type == "String") {
-        if (isNaN(parseInt(length)) || !isFinite(length) || length <= 0) {
-            validationErrors[index].length = true;
-        }
-    }
-    if (type == "Dropdown")
-    {
-        if (!(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,48}[a-zA-Z0-9]$/.test(code))) {
-            validationErrors[index].code = true;
-        }
-    }
-}
-
-function validateUpdateDatatableRow(row, validationErrors) {
-    var id = $(row).attr("id");
-    var name = $(row).find("input[name=columnName]").val();
-    var newName = $(row).find("input[name=columnNewName]").val();
-    var type = $(row).find("select[name=columnType]").val();
-    var length = $(row).find("input[name=columnLength]").val();
-    var code = $(row).find("input[name=columnCode]").val();
-    var newCode = $(row).find("input[name=columnNewCode]").val();
-
-    validationErrors[id] = new Object();
-    if (name.length <= 0 || !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,}[a-zA-Z0-9]$/.test(name))) {
-        validationErrors[id].name = true;
-    }
-    if (newName.length > 0 && !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,}[a-zA-Z0-9]$/.test(newName))) {
-        validationErrors[id].newName = true;
-    }
-    if (type == "String") {
-        if (isNaN(parseInt(length)) || !isFinite(length) || length <= 0) {
-            validationErrors[id].length = true;
-        }
-    }
-    if (type == "Dropdown")
-    {
-        if (!(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,48}[a-zA-Z0-9]$/.test(code))) {
-            validationErrors[id].code = true;
-        }
-        if (newCode.length > 0 && !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,48}[a-zA-Z0-9]$/.test(newCode))) {
-            validationErrors[id].newCode = true;
-        }
-    }
-}
-
-function popupCreateDatatableDialog(titleCode, templateSelector, width, height, saveSuccessFunction) {
-
-var validationErrors = null;
-var dialogDiv = $("<div id='dialog-form'></div>");
-var data = new Object();
-var formHtml = $(templateSelector).render(data);
-dialogDiv.append(formHtml);
-
-var saveButton = doI18N('dialog.button.save');
-var cancelButton = doI18N('dialog.button.cancel');
-var buttonsOpts = {};
-
-buttonsOpts[saveButton] = function() {
-    validationErrors = new Object();
-    var datatableObject = new Object();
-    datatableObject.datatableName = $("#registeredTableName").val();
-    datatableObject.apptableName = $("#applicationTableName").val();
-    datatableObject.multiRow = $("#multiRow").prop("checked");
-    datatableObject.columns = new Array();
-    $("#createDatatableColumns tbody tr").each(function(index) {
-        var column = new Object();
-        column.name = $(this).find("input[name=columnName]").val();
-        column.type = $(this).find("select[name=columnType]").val();
-        column.mandatory = $(this).find("input[name=columnMandatory]").prop("checked");
-        if (column.type == "String") {
-            column.length = $(this).find("input[name=columnLength]").val();
-        }
-        if (column.type == "Dropdown") {
-            column.code = $(this).find("input[name=columnCode]").val();
-        }
-
-        validateCreateDatatableRow($(this), index, validationErrors);
-
-        datatableObject.columns.push(column);
-    });
-
-    var errorFunction = function(jqXHR, textStatus, errorThrown) {
-        handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#formerrors");
-
-        if (!(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,48}[a-zA-Z0-9]$/.test(datatableObject.datatableName))) {
-            $("#registeredTableName").addClass("ui-state-error");
-        }
-        if (datatableObject.apptableName.length <= 0) {
-            $("#applicationTableName").addClass("ui-state-error");
-        }
-
-        $.each(validationErrors, function(index, item) {
-            var row = $("table#createDatatableColumns tbody").children().eq(index);
-
-            if (item.name) {
-                $(row).find("input[name=columnName]").addClass("ui-state-error");
-            }
-            if (item.length) {
-                $(row).find("input[name=columnLength]").addClass("ui-state-error");
-            }
-            if (item.code) {
-                $(row).find("input[name=columnCode]").addClass("ui-state-error");
-            }
-        });
-    };
-
-	executeAjaxRequest("datatables", "POST", JSON.stringify(datatableObject), saveSuccessFunction, errorFunction);
-};
-buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
-
-dialogDiv.dialog({
-  		title: doI18N(titleCode), 
-  		width: width, 
-  		height: height, 
-  		modal: true,
-  		buttons: buttonsOpts,
-  		close: function() {
-  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
-  			$(this).remove();
-		},
-  		open: function (event, ui) {  			
-  			$("#entityform textarea").first().focus();
-  			$('#entityform input').first().focus();
-  		}
-  }).dialog('open');
-
-var templateTableRow = $("table#createDatatableColumns tbody tr").first().clone();
-var rowDeleteFunction = function(e) {
-    e.preventDefault();
-    $(this).parent().parent().remove();
-    return false;
-};
-var changeTypeFunction = function(e) {
-    e.preventDefault();
-
-    var type = $(this).val();
-    $(this).parent().parent().find("input[name=columnLength]").prop("disabled", (type != "String")).removeClass("ui-state-error");
-    $(this).parent().parent().find("input[name=columnCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
-
-    return false;
-}
-
-$("table#createDatatableColumns tbody button").click(rowDeleteFunction);
-$("table#createDatatableColumns tbody select").change(changeTypeFunction);
-
-$("table#createDatatableColumns tfoot button").click(function(e) {
-    e.preventDefault();
-    var newRow = $(templateTableRow).clone().appendTo("table#createDatatableColumns tbody");
-    $(newRow).find("button").click(rowDeleteFunction);
-    $(newRow).find("select").change(changeTypeFunction);
-
-    return false;
-});
-
-var fixHelper = function(e, ui) {
-    ui.children().each(function() {
-        $(this).width($(this).width());
-    });
-    return ui;
-};
-
-$("table#createDatatableColumns tbody").sortable({ helper: fixHelper,
-    handle: "div[data-handle=handle]" });
-
-}
-
-function getDatatableColumnRealName(datatableRowObject) {
-
-    var name = $(datatableRowObject).find("input[name=columnName]").val();
-    var type = $(datatableRowObject).find("select[name=columnType]").val();
-
-    if (type == "Dropdown") {
-        var code =  $(datatableRowObject).find("input[name=columnCode]").val();
-
-        name = code + "_cd_" + name;
-    }
-
-    return name;
-}
-
-function getDatatableColumnNewName(datatableRowObject) {
-
-    var newName = $(datatableRowObject).find("input[name=columnNewName]").val();
-    var name = (newName.length > 0) ? newName : $(datatableRowObject).find("input[name=columnName]").val();
-    var type = $(datatableRowObject).find("select[name=columnType]").val();
-
-    if (type == "Dropdown") {
-        var newCode =  $(datatableRowObject).find("input[name=columnNewCode]").val();
-        var code = (newCode.length > 0) ? newCode : $(datatableRowObject).find("input[name=columnCode]").val();
-
-        name = code + "_cd_" + name;
-    }
-
-    return name;
-}
-
-function insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns) {
-    var newRow = $(templateTableRow).clone().appendTo("table#updateDatatableColumns tbody");
-    $(newRow).find("button").click({ array: dropColumns }, rowDeleteFunction);
-    $(newRow).find("select").change(changeTypeFunction);
-
-    $(newRow).find("input[name=columnName]").val(columnData.name).prop("disabled", (columnData.action == "change"));
-    $(newRow).find("input[name=columnNewName]").val(columnData.newName).prop("disabled", (columnData.action == "add"));
-    $(newRow).find("select[name=columnType]").prop("disabled", (columnData.action == "change"));
-    $(newRow).find("select[name=columnType] option[value=" + columnData.type + "]").attr("selected", "selected");
-    $(newRow).find("input[name=columnMandatory]").prop("checked", columnData.mandatory);
-    $(newRow).find("input[name=columnLength]").val(columnData["length"]).prop("disabled", (columnData.type != "String"));
-    $(newRow).find("input[name=columnCode]").val(columnData.code).prop("disabled", (columnData.type != "Dropdown" || columnData.action == "change"));
-    $(newRow).find("input[name=columnNewCode]").val(columnData.newCode).prop("disabled", (columnData.type != "Dropdown" || columnData.action == "add"));
-
-    if (columnData.action == "change") {
-        $(newRow).find("input[name=columnName]").attr("data-original-name", getDatatableColumnRealName($(newRow)));
-        $(newRow).attr("data-original-index", columnData.index);
-    }
-
-    $(newRow).attr("id", columnData.id);
-}
-
-function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData, validationErrors) {
-    $("#updateDatatableColumns tbody").empty();
-
-    var populateSuccessFunction = function(data) {
-        var datatableData = JSON.parse(JSON.stringify(data));
-        var typeMap = {};
-        typeMap["varchar"] = "String";
-        typeMap["decimal"] = "Decimal";
-        typeMap["int"] = "Number";
-        typeMap["date"] = "Date";
-        typeMap["text"] = "Text";
-
-        $("#registeredTableName").text(datatableName);
-        $("#applicationTableName option[value=" + datatableData.applicationTableName + "]").attr("selected", "selected");
-
-        if (datatableData.columnHeaderData) {
-            $.each(datatableData.columnHeaderData, function(index, column) {
-                var fkFieldName = datatableData.applicationTableName.substring(2, datatableData.applicationTableName.length) + "_id";
-                if (column.columnName == fkFieldName || column.columnName == "id") {
-                    return true;
-                }
-
-                var name = "";
-                var newName = "";
-                var type = "";
-                var mandatory = false;
-                var length = "";
-                var code = "";
-                var newCode = "";
-                var action = "change";
-                var id = "";
-
-                if (enteredFormData && enteredFormData[column.columnName]) {
-                    var data = enteredFormData[column.columnName];
-
-                    name = data.name;
-                    newName = (data.newName) ? data.newName : "";
-                    type = data.type;
-                    mandatory = data.mandatory;
-                    length = (data["length"]) ? data["length"] : "";
-                    code = (data.code) ? data.code : "";
-                    newCode = (data.newCode) ? data.newCode : "";
-                    action = data.action;
-                    id = data.id;
-
-                    delete enteredFormData[column.columnName];
-                } else {
-                    var indexOfCD = column.columnName.indexOf("_cd_");
-                    name = (indexOfCD > -1) ? column.columnName.substring(indexOfCD + 4, column.columnName.length) : column.columnName;
-                    type = (indexOfCD > -1) ? "Dropdown" : typeMap[column.columnType.toLowerCase()];
-                    mandatory = !column.isColumnNullable;
-                    length = (type == "String") ? column.columnLength : "";
-                    code = (indexOfCD > -1) ? column.columnName.substring(0, indexOfCD) : "";
-                    id = new Date().getTime();
-                }
-
-                var columnData = {
-                    name: name,
-                    newName: newName,
-                    type: type,
-                    mandatory: mandatory,
-                    length: length,
-                    code: code,
-                    newCode: newCode,
-                    action: action,
-                    index: index,
-                    id: id
-                };
-                insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns);
-            });
-        }
-        $.each(enteredFormData, function(index, item) {
-            if (item.action != "add") {
-                return true;
-            }
-
-            var columnData = {
-                name: (item.name) ? item.name : "",
-                newName: "",
-                type: item.type,
-                mandatory: item.mandatory,
-                length: (item["length"]) ? item["length"] : "",
-                code: (item.code) ? item.code : "",
-                newCode: "",
-                action: item.action,
-                after: item.after,
-                id: item.id
-            };
-            insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns);
-        });
-
-        if (validationErrors) {
-            $.each(validationErrors, function(index, item) {
-                var row = $("table#updateDatatableColumns tbody tr[id='" + index + "']");
-
-                if (item.name) {
-                    $(row).find("input[name=columnName]").addClass("ui-state-error");
-                }
-                if (item.newName) {
-                    $(row).find("input[name=columnNewName]").addClass("ui-state-error");
-                }
-                if (item.length) {
-                    $(row).find("input[name=columnLength]").addClass("ui-state-error");
-                }
-                if (item.code) {
-                    $(row).find("input[name=columnCode]").addClass("ui-state-error");
-                }
-                if (item.newCode) {
-                    $(row).find("input[name=columnNewCode]").addClass("ui-state-error");
-                }
-            });
-        }
-    };
-
-    executeAjaxRequest("datatables/" + datatableName, "GET", {}, populateSuccessFunction);
-}
-
-function popupUpdateDatatableDialog(titleCode, datatableName, templateSelector, width, height, saveSuccessFunction) {
-
-var validationErrors = null;
-var dropColumns = new Array();
-var dialogDiv = $("<div id='dialog-form'></div>");
-var data = new Object();
-var formHtml = $(templateSelector).render(data);
-dialogDiv.append(formHtml);
-
-var saveButton = doI18N('dialog.button.save');
-var cancelButton = doI18N('dialog.button.cancel');
-var buttonsOpts = {};
-
-buttonsOpts[saveButton] = function () { };
-buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
-
-dialogDiv.dialog({
-  		title: doI18N(titleCode), 
-  		width: width, 
-  		height: height, 
-  		modal: true,
-  		buttons: buttonsOpts,
-  		close: function() {
-  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
-  			$(this).remove();
-		},
-  		open: function (event, ui) {  			
-  			$("#entityform textarea").first().focus();
-  			$('#entityform input').first().focus();
-  		}
-  }).dialog('open');
-
-var enteredFormData = new Object();
-var templateTableRow = $("table#updateDatatableColumns tbody tr").first().clone();
-var rowDeleteFunction = function(e) {
-    e.preventDefault();
-
-    var originalName = $(this).parent().parent().find("input[name=columnName]").attr("data-original-name");
-    if (originalName) {
-        var columnObject = new Object();
-        columnObject.name = originalName;
-        e.data.array.push(columnObject);
-    }
-
-    $(this).parent().parent().remove();
-
-    return false;
-};
-var changeTypeFunction = function(e) {
-    e.preventDefault();
-
-    var attr = $(this).parent().parent().find("input[name=columnName]").attr("data-original-name");
-    var indexOfCD = (attr) ? attr.indexOf("_cd_") : -1;
-    var type = $(this).val();
-
-    $(this).parent().parent().find("input[name=columnLength]").prop("disabled", (type != "String")).removeClass("ui-state-error");
-
-    if (indexOfCD > -1) {
-        $(this).parent().parent().find("input[name=columnNewCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
-    } else {
-        $(this).parent().parent().find("input[name=columnCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
-    }
-
-    return false;
-}
-
-// Populate Data Table
-populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData);
-
-// Handle Events
-$("table#updateDatatableColumns tbody tr").first().remove();
-
-$("table#updateDatatableColumns tfoot button").click(function(e) {
-    e.preventDefault();
-    var newRow = $(templateTableRow).clone().appendTo("table#updateDatatableColumns tbody");
-    var id = new Date().getTime();
-    $(newRow).find("button").click({ array: dropColumns }, rowDeleteFunction);
-    $(newRow).find("select").change(changeTypeFunction);
-    $(newRow).attr("id", id);
-
-    return false;
-});
-
-var fixHelper = function(e, ui) {
-    ui.children().each(function() {
-        $(this).width($(this).width());
-    });
-    return ui;
-};
-
-$("table#updateDatatableColumns tbody").sortable({ 
-    helper: fixHelper,
-    handle: "div[data-handle=handle]",
-    change: function(e, ui) {
-        $(ui.item).attr("data-order-changed", "true");
-    }
-});
-
-$("div[class=ui-dialog-buttonset]").children().first().click({ array: dropColumns }, function(e) {
-    enteredFormData = new Object();
-    var datatableObject = new Object();
-    datatableObject.apptableName = $("#applicationTableName").val();
-    var fkFieldName = datatableObject.apptableName.substring(2, datatableObject.apptableName.length) + "_id";
-
-    var dropColumns = e.data.array;
-    if (dropColumns && dropColumns.length > 0) {
-        datatableObject.dropColumns = new Array();
-    }
-    // Drop Columns
-    $.each(dropColumns, function(index, column) {
-        var dropObject = new Object();
-        dropObject.name = column.name;
-        datatableObject.dropColumns.push(dropObject);
-    });
-    // Add Columns
-    $("table#updateDatatableColumns tbody tr").not("[data-original-index]").each(function() {
-        if (datatableObject.addColumns == null) {
-            datatableObject.addColumns = new Array();
-        }
-
-        var addObject = new Object();
-        addObject.name = $(this).find("input[name=columnName]").val();
-        addObject.type = $(this).find("select[name=columnType]").val();
-        addObject.mandatory = $(this).find("input[name=columnMandatory]").prop("checked");
-        if (addObject.type == "String") {
-            addObject.length = $(this).find("input[name=columnLength]").val();
-        }
-        if (addObject.type == "Dropdown") {
-            addObject.code = $(this).find("input[name=columnCode]").val();
-        }
-
-        var prev = $(this).prevAll("tr[data-original-index]");
-        if (prev.length > 0) {
-            prev = prev.first();
-        }
-
-        prev = (prev.length) ? getDatatableColumnRealName($(prev)) : fkFieldName;
-        addObject.after = prev;
-
-        var fullName = (addObject.code) ? addObject.code + "_cd_" + addObject.name : addObject.name;
-        enteredFormData[fullName] = new Object();
-        enteredFormData[fullName].name = addObject.name;
-        enteredFormData[fullName].type = addObject.type;
-        enteredFormData[fullName].mandatory = addObject.mandatory;
-        enteredFormData[fullName].length = addObject.length;
-        enteredFormData[fullName].code = addObject.code;
-        enteredFormData[fullName].after = addObject.after;
-        enteredFormData[fullName].action = "add";
-        enteredFormData[fullName].id = $(this).attr("id");
-
-        datatableObject.addColumns.unshift(addObject);
-    });
-    // Change Columns
-    $("table#updateDatatableColumns tbody tr[data-original-index]").each(function() {
-        if (datatableObject.changeColumns == null) {
-            datatableObject.changeColumns = new Array();
-        }
-
-        var type = $(this).find("select[name=columnType]").val();
-        var newName = $(this).find("input[name=columnNewName]").val();
-        var changeObject = new Object();
-
-        changeObject.name = $(this).find("input[name=columnName]").val();
-        if (newName.length > 0) {
-            changeObject.newName = newName;
-        }
-        changeObject.mandatory = $(this).find("input[name=columnMandatory]").prop("checked");
-        if (type == "String") {
-            changeObject.length = $(this).find("input[name=columnLength]").val();
-        }
-        if (type == "Dropdown") {
-            changeObject.code = $(this).find("input[name=columnCode]").val();
-            changeObject.newCode = $(this).find("input[name=columnNewCode]").val();
-        }
-
-        var prev = $(this).prev();
-        prev = (prev.length) ? getDatatableColumnNewName($(prev)) : fkFieldName;
-        changeObject.after = prev;
-
-        var fullName = (changeObject.code) ? changeObject.code + "_cd_" + changeObject.name : changeObject.name;
-        enteredFormData[fullName] = new Object();
-        enteredFormData[fullName].name = changeObject.name;
-        enteredFormData[fullName].newName = changeObject.newName;
-        enteredFormData[fullName].type = type;
-        enteredFormData[fullName].mandatory = changeObject.mandatory;
-        enteredFormData[fullName].length = changeObject.length;
-        enteredFormData[fullName].code = changeObject.code;
-        enteredFormData[fullName].newCode = changeObject.newCode;
-        enteredFormData[fullName].after = changeObject.after;
-        enteredFormData[fullName].action = "change";
-        enteredFormData[fullName].id = $(this).attr("id");
-
-        datatableObject.changeColumns.push(changeObject);
-    });
-
-    validationErrors = new Object();
-    $("table#updateDatatableColumns tbody tr").each(function(index) {
-        validateUpdateDatatableRow($(this), validationErrors);
-    });
-
-    var errorFunction = function(jqXHR, textStatus, errorThrown) {
-        dropColumns = new Array();
-        populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData, validationErrors);
-        formErrorFunction(jqXHR, textStatus, errorThrown);
-    };
-
-	executeAjaxRequest("datatables/" + datatableName, "PUT", JSON.stringify(datatableObject), saveSuccessFunction, errorFunction);
-});
-
 }
 
 function popupRegisterDatatableDialog(titleCode, templateSelector, width, height, saveSuccessFunction) {
@@ -7889,6 +6528,7 @@ dialogDiv.dialog({
   }).dialog('open');
 }
 
+
 // used by deposit account functionality
 function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction) {
 var dialogDiv = $("<div id='dialog-form'></div>");
@@ -7901,8 +6541,8 @@ var cancelButton = doI18N('dialog.button.cancel');
 var buttonsOpts = {};		
 buttonsOpts[saveButton] = function() {
 	$('.multiSelectedItems option').each(function(i) {  
-		$(this).prop("selected", "selected");  
-    });
+    	   		$(this).attr("selected", "selected");  
+    		});
 
 	if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
 
@@ -7950,24 +6590,12 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 		var buttonsOpts = {};		
 		buttonsOpts[saveButton] = function() {
 			$('.multiSelectedItems option').each(function(i) {  
-		    	   		$(this).prop("selected", "selected");  
+		    	   		$(this).attr("selected", "selected");  
 		    		});
 
 			if (document.changePasswordForm!=undefined) newPassword = document.changePasswordForm.password.value;
 
-			var serializedArray = {};
-			serializedArray = $('#entityform').serializeObject();
-			if(templateSelector==="#holidayFormTemplate") {
-				serializedArray["offices"] = new Array();
-
-				var items = $('#offices').jqxTree('getCheckedItems');
-				$(items).each(function(i){
-					var tempObject = new Object();
-					tempObject.officeId = this.id;
-					serializedArray["offices"][i] = tempObject;
-				});
-			}
-			var newFormData = JSON.stringify(serializedArray);
+			var newFormData = JSON.stringify($('#entityform').serializeObject());
 			executeAjaxRequest(postUrl, submitType, newFormData, saveSuccessFunction, formErrorFunction);
 		};
 		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
@@ -7992,7 +6620,7 @@ function popupDialogWithPostOnlyFormView(postUrl, submitType, titleCode, templat
 		  			});
 		  			
 		  			$('.datepickerfield').datepicker({constrainInput: true, minDate: minOffset, defaultDate: defaultOffset, maxDate: maxOffset, dateFormat: custom.datePickerDateFormat});
-		  			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, minDate: minOffset, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+		  			
 		  			$("#entityform textarea").first().focus();
 		  			$('#entityform input').first().focus();
 		  		}
@@ -8248,9 +6876,6 @@ function getBaseApiURL(docURL)
 	}
 	else if (l.hostname == "demo.openmf.org") {
 		baseApiUrl = "/mifosng-provider/api/v1/";
-	}
-	else if (l.hostname.toLowerCase().indexOf("openmf.org") >= 0) {
-		baseApiUrl = "https://" + l.hostname + "/mifosng-provider/api/v1/";
 	} else {
 		baseApiUrl = "https://" + l.hostname + ":8443/mifosng-provider/api/v1/";
 	}
@@ -8300,22 +6925,20 @@ function setCultureReshowFirstPage(cultureVal) {
 
 function setCulture(cultureVal) {
 	currentCulture = cultureVal;
-	console.log("culture: " + currentCulture);
-
-	Globalize.culture(currentCulture);
-	
-	$.datepicker.setDefaults( $.datepicker.regional[currentCulture]);
-
-	var tenantTranslation = "messages-tenant-" + tenantIdentifier;
-	jQuery.i18n.properties({
-		name:['messages', 'messages-platform-validation', 'messages-savings', 'messages-groups', 'messages-fields', tenantTranslation], 
-		path: 'resources/global-translations/',
-		mode:'map',
-		cache: true,
-		language: currentCulture,
-		callback: function() {
-		}
-	});
+    	Globalize.culture(currentCulture);
+    	
+    	$.datepicker.setDefaults( $.datepicker.regional[currentCulture]);
+ 
+    	var tenantTranslation = "messages-tenant-" + tenantIdentifier;
+    	jQuery.i18n.properties({
+			name:['messages', 'messages-platform-validation', 'messages-savings', 'messages-groups', 'messages-fields', tenantTranslation], 
+			path: 'resources/global-translations/',
+			mode:'map',
+			cache: true,
+			language: currentCulture,
+			callback: function() {
+			}
+		});
 
 	$.timepicker.regional[currentCulture] = {
 		timeOnlyTitle: doI18N('timeOnlyTitle'),
@@ -8331,7 +6954,6 @@ function setCulture(cultureVal) {
 		pmNames: ['PM', doI18N('pmNames'),],
 		isRTL: false
 	};
-
 	$.timepicker.setDefaults($.timepicker.regional[currentCulture]);
 }
 
@@ -8433,8 +7055,7 @@ $.fn.serializeObject = function(serializationOptions)
 	$.each(a, function() {
 		
 		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedRoles' 
-	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges'
-	    		|| this.name === 'notSelecteddebitTags' || this.name === 'notSelectedcreditTags') {
+	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges') {
 			// do not serialize
 		} else if (this.name.indexOf('[') !== -1) { //serialize as separate object
 			arrayName = this.name.substring(0, this.name.indexOf("["));
@@ -8459,7 +7080,7 @@ $.fn.serializeObject = function(serializationOptions)
 		    } else {
 		    	
 		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies'  
-	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges' || this.name === 'loans' || this.name === 'creditTags' || this.name === 'debitTags') {
+	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges' || this.name === 'loans') {
 		    		o[this.name] = new Array();
 		    		o[this.name].push(this.value || '');
 		    	} else {
@@ -8685,7 +7306,7 @@ function loadSavingAccount(accountId) {
 			}
 		});
 		
-		$('.savingsaccountdeposit'+accountId).button({icons: {primary: "ui-icon-arrowthick-1-e"}}).click(function(e) {
+		$('.savingsaccountdeposit').button({icons: {primary: "ui-icon-arrowthick-1-e"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountdepositbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=deposit';
@@ -8701,7 +7322,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountdeposit span').text(doI18N('button.deposit'));
 		
-		$('.savingsaccountwithdrawal'+accountId).button({icons: {primary: "ui-icon-arrowthick-1-w"}}).click(function(e) {
+		$('.savingsaccountwithdrawal').button({icons: {primary: "ui-icon-arrowthick-1-w"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountwithdrawalbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=withdrawal';
@@ -8717,7 +7338,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountwithdrawal span').text(doI18N('button.withdrawal'));
 		
-		$('.savingsaccountinterestcalc'+accountId).button({icons: {primary: "ui-icon-calculator"}}).click(function(e) {
+		$('.savingsaccountinterestcalc').button({icons: {primary: "ui-icon-calculator"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountinterestcalcbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=calculateInterest';
@@ -8730,7 +7351,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountinterestcalc span').text(doI18N('button.calculateInterest'));
 		
-		$('.savingsaccountinterestpost'+accountId).button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
+		$('.savingsaccountinterestpost').button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountinterestpostbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=postInterest';
@@ -8743,7 +7364,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountinterestpost span').text(doI18N('button.postInterest'));
 		
-		$('.savingsaccountactivate'+accountId).button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
+		$('.savingsaccountactivate').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountactivatebtn", "");
 			var getUrl = 'savingsaccounts/' + savingAccountId + '?command=activate&template=true';
@@ -8758,7 +7379,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountactivate span').text(doI18N('button.activate'));
 		
-		$('.savingsaccountdelete'+accountId).button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
+		$('.savingsaccountdelete').button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("savingsaccountdeletebtn", "");
 			var url = 'savingsaccounts/' + savingAccountId;
@@ -8770,7 +7391,7 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountdelete span').text(doI18N('button.delete'));
 		
-		$('.editsavingsaccountnobtn'+accountId).button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
+		$('.editsavingsaccountnobtn').button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
 
 			var linkId = this.id;
 			var savingAccountId = linkId.replace("editsavingsaccountnobtn", "");
@@ -8841,8 +7462,8 @@ return 'var successFunction = function(data, textStatus, jqXHR) {   ' +
                 ' var linkId = this.id;' +
                 ' var resourceName = "' + resource + '";' +
                 ' var resourceId = ' + resourceId + ';' +
-                ' var entityType = $(this).prop("entityType");' +
-                ' var entityId = $(this).prop("entityId");' +
+                ' var entityType = $(this).attr("entityType");' +
+                ' var entityId = $(this).attr("entityId");' +
                 ' if (entityType) {' +
                 	'resourceName = entityType.toLowerCase();' +
                 	' resourceId = entityId;' +
@@ -8905,19 +7526,6 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         }
         
         popupDialogWithFormViewData(data, postPutUrl, submitType, dialogTitle, templateSelector, width, height, saveSuccessFunction);
-
-        if(!(data.id === undefined)){
-        	$( '#startDate' ).datepicker( "destroy" );
-        	//should not allow to change start date to a past date.
-        	$('#startDate').datepicker({minDate: 0, constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-        	$('#startDate').val(custom.helperFunctions.globalDate(data.startDate));
-
-        	//do not allow to edit frequency and repeats every
-
-        	$('#repeats').attr("disabled", true);
-        	$('#repeatsEvery').attr("disabled", true);
-
-        }
 
         var repeats =  $('select.repeats');
         var repeatsEvery = $('select.repeatsEvery');
@@ -9000,13 +7608,13 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
             var checkedValue = $("input:checked").val();
             switch (checkedValue) {
                 case "endsnever":
-                    $('.endsafter').val('').prop('readonly', true);                  
+                    $('.endsafter').val('').attr('readonly', true);                  
                 break;
                 case "endsafter":
-                    $('.endsafter').prop('readonly', false);
+                    $('.endsafter').attr('readonly', false);
                 break;
                 case "endondate":
-                    $('.endsafter').val('').prop('readonly', true);
+                    $('.endsafter').val('').attr('readonly', true);
                 break;
             }
             
@@ -9080,8 +7688,7 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         if(data.remindBy){
         	$('#remindById').val(data.remindBy.id);	
         }
-		
-		$('.calendarhide').hide();        
+        
                                        
     }
 
@@ -9140,95 +7747,127 @@ function convertToRfc5545(){
     return rrule;
 }
 
-function loadAvailableCalendars(allAttachedCalendars, meetingCalendar, loanId, syncDisbursementWithMeeting){
-    var calendars = new Object();
-    calendars.crudRows = allAttachedCalendars;
-    var tableHtml = $('#meetingCalendarTemplate').render(calendars);
+function loadAvailableCalendars(data, meeting){
+    var tableHtml = $('#meetingCalendarTemplate').render();
     $('#meetingCalendarPlaceholder').html(tableHtml);
-    
-    if(!meetingCalendar && !loanId){ 
-		//If meeting is null and loanId is null then syncRepayment should be checked
-    	//New loan application
-		$('input:checkbox[id=syncRepaymentsWithMeeting]').prop('checked', true);
-		$('input:checkbox[id=syncDisbursementWithMeeting]').prop('checked', true);
-	}else{ //Edit loan application
-		if(syncDisbursementWithMeeting) {
-			$('input:checkbox[id=syncDisbursementWithMeeting]').prop('checked', true);
-		}
-		if(meetingCalendar){
-			$('input:checkbox[id=syncRepaymentsWithMeeting]').prop('checked', true);
-		}
-	}
+    var calendars = new Object();
+    calendars.crudRows = data;
+    var output = "";
+    if(calendars.crudRows.length > 1){
+    	output = '<option value=0> -- Select a meeting -- </option>';
+    }
 
-    var getAttachedCalendarData = function(){
-    	var attachedcalendars = $.grep(calendars.crudRows, function(n, i) {
-            return n.id;
+    $('#calendarId').empty().append(function(){
+        
+        $.each(calendars.crudRows, function(key, value){
+            output += '<option value=' + value.id + '>' + value.title + ' - ';
+            if(value.entityType.value === 'CLIENTS'){
+                output += doI18N("label.select.calendar.client");
+            } else if(value.entityType.value === 'CENTERS'){
+                output += doI18N("label.select.calendar.center");
+            } else if(value.entityType.value === 'GROUPS'){
+                output += doI18N("label.select.calendar.group");
+            } else if(value.entityType.value === 'LOANS'){
+                output += doI18N("label.select.calendar.loan");
+            }
+                
+            output += '</option>';
         });
-        if (attachedcalendars.length > 0) {
-            var selectedCalendar = attachedcalendars[0];//get calendar from array
-            return selectedCalendar;
+        return output;
+    });
+
+    $('#calendarId').change(function(){
+        var calendarId = $(this).val();
+        if(calendarId !== 0){
+        
+            //set first recurring date as expected disbursal date
+            var selectedCalendars = $.grep(calendars.crudRows, function(n, i) {
+                return n.id == calendarId;
+            });
+        
+            if (selectedCalendars.length > 0) {
+                var selectedCalendar = selectedCalendars[0];//get calendar from array
+                var recurringDates = selectedCalendar.nextTenRecurringDates;
+                var firstDate = recurringDates[0];//First recurring date
+                //var secondDate = recurringDates[1];//Second recurring date
+                
+                $( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(firstDate));
+                //$( '#repaymentsStartingFromDate' ).val(custom.helperFunctions.globalDate(secondDate));
+                
+                //Set loan term
+                
+                var matches = /FREQ=([^;]+);?/.exec(selectedCalendar.recurrence);
+                if (matches) {
+                    var freq = matches[1];
+                    var loantermoptionvalue;
+                    if(freq === 'DAILY'){
+                        loantermoptionvalue = 0;
+                    }else if(freq === 'WEEKLY'){
+                        loantermoptionvalue = 1;
+                    }else if(freq === 'MONTHLY'){
+                        loantermoptionvalue = 2;
+                    }else if(freq === 'YEARLY'){
+                        loantermoptionvalue = 3;
+                    }
+                    
+                    $('#loanTermFrequencyType').val(loantermoptionvalue);
+                    $('#repaymentFrequencyType').val(loantermoptionvalue);
+                }
+                
+                //Set repaymentEvery 
+                matches = /INTERVAL=([0-9]+);?/.exec(data.recurrence);
+                if (matches) {
+                    interval = matches[1];
+                } else {
+                    interval = '1';
+                }
+                
+                $('#repaymentEvery').val(interval);        
+            }
+
         }
-    }
-
-    var firstRecurringDate = function(){
-    	var attachedCalendar = getAttachedCalendarData();
-    	var recurringDates = attachedCalendar.nextTenRecurringDates; 
-    	return recurringDates[0];
-    }
-
-    var secondRecurringDate = function(){
-    	var attachedCalendar = getAttachedCalendarData();
-    	var recurringDates = attachedCalendar.nextTenRecurringDates; 
-    	return recurringDates[1];	
-    }
+    });
 
     var availableDate = function(date) {
-  
-        var recurringDatesArr = [];
-        var attachedCalendarData = getAttachedCalendarData();
-        var recurringDates = attachedCalendarData.recurringDates;
-        $.each(recurringDates, function(n,i){
-            var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
-            //alert(newdate);
-            recurringDatesArr[n] = newdate;
+          
+        var recurringDates = [];
+        var selectedcals = $.grep(calendars.crudRows, function(n, i) {
+            return n.id == $("#calendarId").val();
         });
+    
+        if (selectedcals.length > 0) {
+            var selcal = selectedcals[0];
+            var recudatearr = selcal.recurringDates;
+            $.each(recudatearr, function(n,i){
+                var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
+                //alert(newdate);
+                recurringDates[n] = newdate;
+            });
+        }
         
         var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
 
-        if ($.inArray(ymd, recurringDatesArr) < 0 ) {
-            return [false, "","Not a meeting date"];
+        if ($.inArray(ymd, recurringDates) < 0 ) {
+            return [false, "","unAvailable"];
         } else {
-            return [true,"","Available meeting date"];
+            return [true,"","Available"];
         }
     }
+    $( '#expectedDisbursementDate' ).datepicker( "destroy" );
+    $('#expectedDisbursementDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
 
-    $('input:checkbox[id=syncRepaymentsWithMeeting]').change(function(){	
-        var checked = this.checked;
-        $( '#repaymentsStartingFromDate' ).datepicker( "destroy" );
-        if(checked){
-		    $('#repaymentsStartingFromDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
-        }else{
-		    $('#repaymentsStartingFromDate').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-        }
-    });
-
-	$('input:checkbox[id=syncDisbursementWithMeeting]').change(function(){	
-        var checked = this.checked;
-		$( '#expectedDisbursementDate' ).datepicker( "destroy" );
-        if(checked){
-    		if(!meetingCalendar) {
-    			var firstMeetingDate = firstRecurringDate();
-				$('#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(firstMeetingDate));
-	        }
-		    $('#expectedDisbursementDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
-        }else{
-		    $('#expectedDisbursementDate').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-        }
-    });
-
-	$('#syncRepaymentsWithMeeting').trigger('change');
-	$('#syncDisbursementWithMeeting').trigger('change');
-	
+    $( '#repaymentsStartingFromDate' ).datepicker( "destroy" );
+    $('#repaymentsStartingFromDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});
+    
+    if(meeting) {
+        $("#calendarId").val(meeting.id);
+        //if(expectedDisbursementDate){
+        //	$( '#expectedDisbursementDate' ).val(custom.helperFunctions.globalDate(expectedDisbursementDate));	
+        //}        
+    }else if(calendars.crudRows.length === 1){
+    	//if meeting is not attached then only trigger change event
+    	$('#calendarId').trigger('change');
+    }
 }
 function loadAttachedCalendarToLoan(loanId){
     var successFunction = function(data, textStatus, jqXHR) {
@@ -9271,7 +7910,7 @@ function showCollectionSheet() {
                     });
 
                     $("#officeId").change(function(){
-                    	$('#continuebtn').prop('disabled','disabled');
+                    	$('#continuebtn').attr('disabled','disabled');
                         loadCentersAssociatedToOffice($(this).val());
                         loadGroupsAssociatedToOffice($(this).val());
                     })
@@ -9295,7 +7934,7 @@ function showCollectionSheet() {
                      e.preventDefault();
                  });
 
-                 $('#continuebtn').prop('disabled','disabled');
+                 $('#continuebtn').attr('disabled','disabled');
             }
             initCollectionSheet();
         }
@@ -9332,7 +7971,7 @@ function loadCentersAssociatedToOffice(officeId){
         })
 
         if(centerObject.crudRows.length === 1){
-        	$('select[name=centerId] option:eq(1)').prop('selected', 'selected');
+        	$('select[name=centerId] option:eq(1)').attr('selected', 'selected');
         	$('#centerId').trigger('change');	
         }
         
@@ -9357,11 +7996,10 @@ function loadGroupsAssociatedToCenter(centerId){
 
         $("#groupId").change(function(){
 			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
-			$('#continuebtn').removeAttr('disabled');
         })    
 
         if(groupObject.crudRows.length === 1){
-        	$('select[name=groupId] option:eq(1)').prop('selected', 'selected');
+        	$('select[name=groupId] option:eq(1)').attr('selected', 'selected');
         	$('#groupId').trigger('change');	
         }
     };
@@ -9385,7 +8023,6 @@ function loadGroupsAssociatedToOffice(officeId){
 
         $("#groupId").change(function(){
 			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
-			$('#continuebtn').removeAttr('disabled');
         })    
     };
     executeAjaxRequest('groups?officeId=' + officeId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
@@ -9623,56 +8260,3 @@ function loadCollectionSheet(postUrl){
     executeAjaxRequest(postUrl + '?command=generateCollectionSheet', "post", newFormData, successFunction, formErrorFunction);
 
 }
-
-function addHoliday() {
-
-	var officeSearchSuccessFunction =  function(data) {
-		var finalJson = [];
-		
-		for(i=0;i<data.length;i++){
-			var currentObj = data[i];
-			delete currentObj.nameDecorated;
-			delete currentObj.openingDate;
-			delete currentObj.hierarchy;
-			delete currentObj.parentName;
-			finalJson.push(currentObj);
-		}
-		
-		var data = finalJson;
-		// prepare the data
-        var source =
-        {
-            datatype: "json",
-            datafields: [
-                { name: 'id' },
-                { name: 'name' },
-                { name: 'parentId' }
-            ],
-            id: 'id',
-            localdata: data
-        };
-		 // create data adapter.
-        var dataAdapter = new $.jqx.dataAdapter(source);
-        // perform Data Binding.
-        dataAdapter.dataBind();
-        var records = dataAdapter.getRecordsHierarchy('id', 'parentId', 'items', [{ name: 'name', map: 'label'}]);
-
-        var addHolidaySuccessFunction = function(data, textStatus, jqXHR) {
-		$('#dialog-form').dialog("close");
-		}
-	
-		var submitType = 'POST';
-		var postUrl = 'holidays';
-		var templateSelector = "#holidayFormTemplate";
-		var dialogWidth = 650; 
-		var dialogHeight = 600;
-		var dialogTitle = 'dialog.title.add.holiday';
-		
-		popupDialogWithPostOnlyFormView(postUrl, submitType, dialogTitle, templateSelector, dialogWidth, dialogHeight, addHolidaySuccessFunction, 0, 0, 0);	  	
-
-	    $('#offices').jqxTree({ source: records, checkboxes: true, width: '100%' });   
-	    $('#offices').jqxTree({ height: '300px', hasThreeStates: true,checkboxes: true, width: '440px'});   
-   	}
-  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
-}
-
