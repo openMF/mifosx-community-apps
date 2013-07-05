@@ -3744,7 +3744,7 @@ function showCenter(centerId){
 						
 						//get Loan product details
 						var container = $('#jlgloanproductdetails');
-						var loanProductId = $('#productId').val(); 
+						var loanProductId = $('#loanProductId').val(); 
 						var membersLength = $('#loanMembers > option').length;
 
 						if(loanProductId === undefined || loanProductId === "" || membersLength === undefined || membersLength <= 0){
@@ -4143,7 +4143,7 @@ function showCenter(centerId){
 					
 					$("#productId").change(function() {
 						var loanProductId = $("#productId").val();
-						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, null, data.loanType);
+						loadTabbedLoanApplicationForm(dialogDiv, data.clientId, loanProductId, data.group, data.loanType);
 					});
 		  		}
 		  	}).dialog('open');		
@@ -4279,7 +4279,7 @@ function showCenter(centerId){
 			
 			$("#productId").change(function() {
 				var loanProductId = $("#productId").val();
-				loadTabbedLoanApplicationForm(container, data.clientId, loanProductId, null, loanType, isjlgbulk);
+				loadTabbedLoanApplicationForm(container, data.clientId, loanProductId, group, loanType, isjlgbulk);
 			});
 			
 			//setting the minimum submission date
