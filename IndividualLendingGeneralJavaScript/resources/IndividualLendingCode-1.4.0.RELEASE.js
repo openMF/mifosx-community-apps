@@ -5067,11 +5067,11 @@ function showCenter(centerId){
 		return false;
 	}
 	
-	function removeLoanCollateral(loanId, loanCollateralId) {
+	function removeLoanCollateral(loanId, loanCollateralId, parenttab) {
 
         var successFunction = function(data, textStatus, jqXHR) {
             $("#dialog-form").dialog("close");
-            loadILLoan(loanId);
+            loadILLoan(loanId, parenttab);
         };
 
         popupConfirmationDialogAndPost('loans/' + loanId +'/collaterals/' + loanCollateralId, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
@@ -5079,12 +5079,12 @@ function showCenter(centerId){
         return false;
     }
     
-    function modifyLoanCollateral(loanId, loanCollateralId) {
+    function modifyLoanCollateral(loanId, loanCollateralId, parenttab) {
 
-        var successFunction = function(data, textStatus, jqXHR) {
-            $("#dialog-form").dialog("close");
-            loadILLoan(loanId);
-        };
+		var successFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			loadILLoan(loanId, parenttab);
+		};	
         
         var getUrl = 'loans/' + loanId +'/collaterals/' + loanCollateralId+"?template=true";
         var putUrl = 'loans/' + loanId +'/collaterals/' + loanCollateralId;
@@ -5714,7 +5714,7 @@ function loadLoan(loanId, parenttab) {
                                 primary: "ui-icon-trash"},
                                 text: false
                             }).click(function(e) {
-                                removeLoanCollateral(loanId,val.id);
+                                removeLoanCollateral(loanId,val.id,parenttab);
                                 e.preventDefault();
                             });
                         }
@@ -5725,7 +5725,7 @@ function loadLoan(loanId, parenttab) {
                                 primary: "ui-icon-pencil"},
                                 text: false
                             }).click(function(e) {
-                                modifyLoanCollateral(loanId,val.id);
+                                modifyLoanCollateral(loanId,val.id,parenttab);
                                 e.preventDefault();
                             });
                         }
