@@ -4041,7 +4041,11 @@ function showCenter(centerId){
 		
 		var successFunction =  function(data, textStatus, jqXHR) {
 			divContainer.dialog("close");
-			loadILLoan(loanId, "clientdatatabs");
+			if(data.groupId) {
+				loadILLoan(loanId, "groupdatatabs");
+			} else {
+				loadILLoan(loanId, "clientdatatabs");
+			}
 		};
 		
 		executeAjaxRequest('loans/' + loanId , "PUT", newFormData, successFunction, formErrorFunction);	  
