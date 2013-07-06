@@ -4031,6 +4031,10 @@ function showCenter(centerId){
 		    serializedArray["charges"] = {};
 		}
 
+		if(!("collateral" in serializedArray)){
+		    serializedArray["collateral"] = [];
+		}
+
         //If JLG loan, send group id and calendar id
         if(!(group === undefined)){
             serializedArray["groupId"] = group.id;//This is group loan
