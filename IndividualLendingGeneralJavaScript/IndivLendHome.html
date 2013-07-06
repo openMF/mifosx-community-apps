@@ -9252,6 +9252,7 @@ $(document).ready(function() {
 			<input type="checkbox" id="syncDisbursementWithMeeting" name="syncDisbursementWithMeeting"/>
 			<label for="syncDisbursementWithMeeting" style="display: inline">{{=$ctx.doI18N("label.meeting.calendar.syncDisbursement")}}</label>
 		</div>
+		<span id="uncheckSyncRepayment" style="background-color:#F2F5A9"></span>
 		<hr>
 	{{/each}}
 </script>
@@ -10642,6 +10643,9 @@ $(document).ready(function() {
 <script id="codeValueErrorDialogFormTemplate" type="text/x-jquery-tmpl">
 	<span class="ui-icon ui-icon-alert floatleft" style="margin: 0 7px 20px 0;"></span> 
 	{{=$ctx.doI18N("error.msg.codeValue.in.use")}}
+</script>
+<script id="msgLoanSyncCheckbox" type="text/x-jquery-tmpl">
+	{{=$ctx.doI18N("msg.checkSynRepayment.mandatory.show")}}
 </script>
 </body>
 </html>

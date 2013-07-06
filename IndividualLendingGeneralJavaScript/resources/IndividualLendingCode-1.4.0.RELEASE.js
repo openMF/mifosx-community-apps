@@ -9138,6 +9138,22 @@ function loadAvailableCalendars(allAttachedCalendars, meetingCalendar, loanId, s
     calendars.crudRows = allAttachedCalendars;
     var tableHtml = $('#meetingCalendarTemplate').render(calendars);
     $('#meetingCalendarPlaceholder').html(tableHtml);
+
+    $('#syncRepaymentsWithMeeting').change(function(){
+		if((!$(this).is(':checked')) && ($('#syncDisbursementWithMeeting').is(':checked'))){
+	    	$('input:checkbox[id=syncDisbursementWithMeeting]').prop('checked', false);
+	    	var msgHtml = $("#msgLoanSyncCheckbox").render();
+	    	$("#uncheckSyncRepayment").html(msgHtml).show().delay(4000).fadeOut(300);
+    	}
+    });
+
+    $('#syncDisbursementWithMeeting').change(function(){
+		if($(this).is(':checked') && !$('#syncRepaymentsWithMeeting').is(':checked')){
+			$('input:checkbox[id=syncRepaymentsWithMeeting]').prop('checked', true);
+			var msgHtml = $("#msgLoanSyncCheckbox").render();
+			$("#uncheckSyncRepayment").html(msgHtml).show().delay(4000).fadeOut(300);
+    	}
+    });
     
     if(!meetingCalendar && !loanId){ 
 		//If meeting is null and loanId is null then syncRepayment should be checked
@@ -9151,6 +9167,7 @@ function loadAvailableCalendars(allAttachedCalendars, meetingCalendar, loanId, s
 		if(meetingCalendar){
 			$('input:checkbox[id=syncRepaymentsWithMeeting]').prop('checked', true);
 		}
+
 	}
 
     var getAttachedCalendarData = function(){
