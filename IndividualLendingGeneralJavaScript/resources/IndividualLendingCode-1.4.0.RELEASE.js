@@ -5634,7 +5634,7 @@ function loadLoan(loanId, parenttab) {
 							eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 							popupConfirmationDialogAndPost(deleteUrl, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan);
 		            		e.preventDefault();
-		            	});
+		            	});		            	
 				    });
 			    }
 	            
@@ -5756,6 +5756,21 @@ function loadLoan(loanId, parenttab) {
                         }
                     });
                 }
+
+			   	$(".editnote").click(function(e) {  
+					 var linkId = this.id; 
+					 var noteId = linkId.replace("editnotelink", ""); 
+					 var getAndPutUrl = "loans/"+loanId+"/notes/"+noteId; 
+					 var templateSelector = "#noteFormTemplate"; 
+					 var width = 600; 
+					 var height = 400; 
+					 var saveSuccessFunction = function(data, textStatus, jqXHR) { 
+					  	 $("#dialog-form").dialog("close"); 
+						 loadILLoan(loanId, parenttab); 
+					 }; 
+					 popupDialogWithFormView(getAndPutUrl, getAndPutUrl, "PUT", "dialog.title.edit.note", templateSelector, width, height,  saveSuccessFunction); 
+				     e.preventDefault(); 
+		       }); 
 	        };
 	    
 		executeAjaxRequest(loanUrl, 'GET', "", successFunction, errorFunction);	  

@@ -4912,6 +4912,9 @@ $(document).ready(function() {
 		<li><a href="#collaterals{{=id}}" title="collaterals">{{=$ctx.doI18N("tab.collaterals")}}</a></li>
 		{{/if}}
 		<li><a href="#loanDocuments{{=id}}" title="documents">{{=$ctx.doI18N("tab.loanDocuments")}}</a></li>
+		{{#if notes}}
+		<li><a href="#loanNotes{{=id}}" title="notes">{{=$ctx.doI18N("tab.loanNotes")}}</a></li>
+		{{/if}}
 	</ul>
 	<!-- first loan tab -->
 
@@ -5563,6 +5566,27 @@ $(document).ready(function() {
 	<!-- Loan Documents Tab--->
 	<div id="loanDocuments{{=id}}" style="margin-top: 5px;">
 	</div>
+
+	<!-- Loan Notes Tab-->
+	{{#if notes}}
+	<div id="loanNotes{{=id}}" style="margin-top: 5px;">
+		{{#each notes}}
+			<div>
+				<div class="notespacer">
+					<span class="ui-icon ui-icon-note" style="float: left; margin-right: 5px;"></span>
+					<span>{{=noteType.value}}:</span>
+					<span><a href="#" class="editnote" id="editnotelink{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</a></span>
+				</div>
+				<div class="notecontent">{{=note}}</div>
+				<div class="notespacer">
+					<span class="ui-icon ui-icon-person" style="float: left; margin-right: 5px;" ></span>
+					<span class="noteusername">{{=updatedByUsername}}</span>
+					<span>&nbsp;{{=$ctx.globalDateTime(updatedOn)}}</span>
+				</div>
+			</div>
+		{{/each}}
+	</div>
+	{{/if}}
 
 	
 </div>
