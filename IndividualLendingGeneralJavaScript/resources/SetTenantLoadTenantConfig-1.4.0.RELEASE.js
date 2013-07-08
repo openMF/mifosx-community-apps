@@ -300,6 +300,10 @@ custom.datatablePresentation = {
 		renderInfo : [],
 		exclude : [ ]
 	},
+	"M_CENTER" : {
+		renderInfo : [],
+		exclude : [ ]
+	},
 	"M_OFFICE" : {
 		renderInfo : [],
 		exclude : [ ]

@@ -3557,7 +3557,7 @@ function showCenter(centerId){
 		refreshCenterSummaryInfo(currentGroupId);
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'centers', 'centerCalendarContent');
-        custom.showRelatedDataTableInfo($newtabs, "m_group", currentGroupId);
+        custom.showRelatedDataTableInfo($newtabs, "m_center", currentGroupId);
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
 
