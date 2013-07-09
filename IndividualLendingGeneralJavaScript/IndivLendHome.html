@@ -8792,6 +8792,10 @@ $(document).ready(function() {
 			{{#else entityType == 'GROUP'}}
 
 				<td><a id='navigateToGroup{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showGroup({{=entityId}}); return false;">{{=entityName}}</a></td>
+
+			{{#else entityType == 'CENTER'}}
+
+				<td><a id='navigateToGroup{{=entityId}}' href='#' style='margin-right: 5px;' onclick="showCenter({{=entityId}}); return false;">{{=entityName}}</a></td>
 			
 			{{#else}}
 			
