@@ -5635,7 +5635,20 @@ function loadLoan(loanId, parenttab) {
 							popupConfirmationDialogAndPost(deleteUrl, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadLoan);
 		            		e.preventDefault();
 		            	});		            	
-				    });
+						$('#editguarantor'+val.id).button({
+							icons: {primary: "ui-icon-pencil"},
+							text: false
+						}).click(function(e) {
+							var putUrl = 'loans/'+loanId+'/guarantors/' + val.id;
+							var getUrl = 'loans/'+loanId+'/guarantors/' + val.id +'?template=true';
+							var templateSelector = "#guarantorFormTemplate";
+							var width = 600;
+							var height = 350;
+							eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
+							popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.guarantor", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
+							e.preventDefault();
+						});
+					});
 			    }
 	            
 				$('.assignloanofficer'+loanId).button().click(function(e){
@@ -5793,8 +5806,16 @@ function loadTransactionForm(){
 }
 
 function loadGuarantorForm(){
-	//initially hide external guarantor div
-	$('#externalGuarantorDiv').hide();
+	//initially load the appropriate div
+	var isChecked = $('#internalGuarantorCheckbox').is(':checked')
+	if(isChecked){
+		$('#internalGuarantorDiv').show();
+		$('#externalGuarantorDiv').hide();
+	}else{
+		$('#internalGuarantorDiv').hide();
+		$('#externalGuarantorDiv').show();
+	}
+
 	$("#internalGuarantorCheckbox").change(function() {
 	  var isChecked = $('#internalGuarantorCheckbox').is(':checked')
 	  if(isChecked){
@@ -5809,7 +5830,7 @@ function loadGuarantorForm(){
     $("#smartGuarantorSearch" ).autocomplete({
         source: function(request, response){
         	//get selected office
-			var sqlSearchValue = "c.display_name like '%" + request.term + "%'"; 
+			var sqlSearchValue = "display_name like '%" + request.term + "%' and c.status_enum != 600"; 
 			smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
 				response( $.map( data.pageItems, function( item ) {
                     return {
@@ -6712,29 +6733,29 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 
 		//manipulate serialized array for guarantors
     	if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
-    	   //TODO: Vishwas...var is repeated
-    	   var serializedArray = {};
-    	   var isChecked = $('#internalGuarantorCheckbox').is(':checked')
-		   if(isChecked){
-    	   	serializedArray["entityId"] = $('#selectedGuarantorIdentifier').val();
-    	   	serializedArray["guarantorTypeId"] = 1;
-    	   	serializedArray["clientRelationshipTypeId"] =$('#relationshipTypeIdForInternalGuarantor').val();
-    	   }else{
-    	   	serializedArray["clientRelationshipTypeId"] =$('#relationshipTypeIdForExternalGuarantor').val();
-    	   	serializedArray["guarantorTypeId"] = 3;
-    	   	serializedArray["firstname"] = $('#guarantorFirstName').val();
-    	   	serializedArray["lastname"] = $('#guarantorLastName').val();
-    	   	serializedArray["dob"] = $('#guarantorDateOfBirth').val();
-    	   	serializedArray["addressLine1"] = $('#guarantorAddressLine1').val();
-    	   	serializedArray["addressLine2"] = $('#guarantorAddressLine2').val();
-    	   	serializedArray["city"] = $('#guarantorCity').val();
-    	   	serializedArray["zip"] = $('#guarantorZip').val();
-    	   	serializedArray["mobileNumber"] = $('#guarantorMobileNumber').val();
-    	   	serializedArray["housePhoneNumber"] = $('#guarantorHouseNumber').val();
-    	   	serializedArray["locale"] = $('#locale').val();
-    	   	serializedArray["dateFormat"] = $('#dateFormat').val();
-    	   }  
-    	}
+			//TODO: Vishwas...var is repeated
+			var serializedArray = {};
+			serializedArray["locale"] = $('#locale').val();
+			var isChecked = $('#internalGuarantorCheckbox').is(':checked')
+		    if(isChecked){
+				serializedArray["entityId"] = $('#selectedGuarantorIdentifier').val();
+				serializedArray["guarantorTypeId"] = 1;
+				serializedArray["clientRelationshipTypeId"] =$('#relationshipTypeIdForInternalGuarantor').val();
+			}else{
+				serializedArray["clientRelationshipTypeId"] =$('#relationshipTypeIdForExternalGuarantor').val();
+				serializedArray["guarantorTypeId"] = 3;
+				serializedArray["firstname"] = $('#guarantorFirstName').val();
+				serializedArray["lastname"] = $('#guarantorLastName').val();
+				serializedArray["dob"] = $('#guarantorDateOfBirth').val();
+				serializedArray["addressLine1"] = $('#guarantorAddressLine1').val();
+				serializedArray["addressLine2"] = $('#guarantorAddressLine2').val();
+				serializedArray["city"] = $('#guarantorCity').val();
+				serializedArray["zip"] = $('#guarantorZip').val();
+				serializedArray["mobileNumber"] = $('#guarantorMobileNumber').val();
+				serializedArray["housePhoneNumber"] = $('#guarantorHouseNumber').val();
+				serializedArray["dateFormat"] = $('#dateFormat').val();
+			}
+		}
     	
     	//manipulate serialized array for journal entries
     	if (postUrl.toLowerCase().indexOf("journalentries") >= 0 ){
