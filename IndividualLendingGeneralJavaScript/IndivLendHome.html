@@ -5132,6 +5132,7 @@ $(document).ready(function() {
 						{{#if $ctx.showTask("REMOVELOANGUARANTOR")}}
 							<button id="removeguarantor{{=id}}" class="removeguarantor">Remove</button>
 						{{/if}}	
+						<button id="editguarantor{{=id}}" class="editguarantor">Edit</button>
 					</span>
 				</div>
 				<div class="row">
@@ -5692,10 +5693,20 @@ $(document).ready(function() {
 <script id="guarantorFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>
-	
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 	<table>
 			<tr>
-				<td><input type="checkbox" id="internalGuarantorCheckbox" checked="true">{{=$ctx.doI18N("label.guarantor.existingClient")}}</input>
+				<td>
+					{{#if guarantorType}}
+						{{#if guarantorType.value === "CUSTOMER"}}
+							<input type="checkbox" id="internalGuarantorCheckbox" checked="true">{{=$ctx.doI18N("label.guarantor.existingClient")}}</input>
+						{{#else}}
+							<input type="checkbox" id="internalGuarantorCheckbox">{{=$ctx.doI18N("label.guarantor.existingClient")}}</input>
+						{{/if}}
+					{{#else}}
+						<input type="checkbox" id="internalGuarantorCheckbox" checked="true">{{=$ctx.doI18N("label.guarantor.existingClient")}}</input>
+					{{/if}}
 				</td>
 			</tr>
 	</table>
@@ -5718,37 +5729,43 @@ $(document).ready(function() {
 					<td><label>{{=$ctx.doI18N("label.guarantor.relationship")}}</label></td>
 					<td>
 						<select id="relationshipTypeIdForInternalGuarantor" name="relationshipTypeIdForInternalGuarantor" title="">
-						   <option value="" selected="selected">{{=$ctx.doI18N("option.relationship.first.choice")}}</option>
+						   <option value="">{{=$ctx.doI18N("option.relationship.first.choice")}}</option>
 						   {{#each allowedClientRelationshipTypes}}
-						   <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+								{{#if $parent.parent.data.clientRelationshipType}}
+									{{#if $parent.parent.parent.data.clientRelationshipType.id === id}}
+										<option value="{{=id}}" selected="selected">{{=name}}</option>
+									{{#else}}
+										<option value="{{=id}}">{{=name}}</option>
+									{{/if}}
+								{{#else}}
+									<option value="{{=id}}">{{=name}}</option>
+								{{/if}}
 						   {{/each}}
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td><label for="selectedGuarantorName">{{=$ctx.doI18N("label.name")}}</label></td>
-					<td><input readonly="true" id="selectedGuarantorName" name="selectedGuarantorName" title="" type="text" value=""/></td>
+					<td><input readonly="true" id="selectedGuarantorName" name="selectedGuarantorName" title="" type="text" value="{{=firstname}} {{=lastname}}"/></td>
 					
 				</tr>
 				<tr>
 					<td><label for="selectedGuarantorIdentifier">{{=$ctx.doI18N("label.guarantorIdentifier")}}</label></td>
-					<td><input readonly="true" id="selectedGuarantorIdentifier" name="selectedGuarantorIdentifier" title="" type="text" value=""/></td>
+					<td><input readonly="true" id="selectedGuarantorIdentifier" name="selectedGuarantorIdentifier" title="" type="text" value="{{=entityId}}"/></td>
 				</tr>
 				<tr>	
 					<td><label for="selectedGuarantorBranch">{{=$ctx.doI18N("label.office")}}</label></td>
-					<td><input readonly="true" id="selectedGuarantorBranch" name="selectedGuarantorBranch" title="" type="text" value=""/></td>
+					<td><input readonly="true" id="selectedGuarantorBranch" name="selectedGuarantorBranch" title="" type="text" value="{{=officeName}}"/></td>
 				</tr>
 				<tr>	
 					<td><label for="selectedGuarantorJoinedDate">{{=$ctx.doI18N("label.activationDate")}}</label></td>
-					<td><input readonly="true" id="selectedGuarantorJoinedDate" name="selectedGuarantorJoinedDate" title="" type="text" value=""/></td>
+					<td><input readonly="true" id="selectedGuarantorJoinedDate" name="selectedGuarantorJoinedDate" title="" type="text" value="{{=$ctx.globalDate(joinedDate)}}"/></td>
 				</tr>
 			</table>
 		</fieldset>
 	</div>
 	
 	<div id="externalGuarantorDiv">
-		 <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-		 <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		 <fieldset>
 			<legend>{{=$ctx.doI18N("label.guarantorDetails")}}</legend>
 			<table>
@@ -5757,46 +5774,54 @@ $(document).ready(function() {
 					<td>
 						<select id="relationshipTypeIdForExternalGuarantor" name="relationshipTypeIdForExternalGuarantor" title="">
 						   <option value="" selected="selected">{{=$ctx.doI18N("option.relationship.first.choice")}}</option>
-						   {{#each allowedClientRelationshipTypes}}
-						   <option value="{{=$ctx.number(id)}}">{{=name}}</option>
-						   {{/each}}
+						    {{#each allowedClientRelationshipTypes}}
+								{{#if $parent.parent.data.clientRelationshipType}}
+									{{#if $parent.parent.parent.data.clientRelationshipType.id === id}}
+										<option value="{{=id}}" selected="selected">{{=name}}</option>
+									{{#else}}
+										<option value="{{=id}}">{{=name}}</option>
+									{{/if}}
+								{{#else}}
+									<option value="{{=id}}">{{=name}}</option>
+								{{/if}}
+						    {{/each}}
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td><label>{{=$ctx.doI18N("label.name")}}</label></td>
 					<td>
-						<input id="guarantorFirstName" name="guarantorFirstName" title="" type="text" value=""/>
-						<input id="guarantorLastName" name="guarantorLastName" title="" type="text" value=""/>
+						<input id="guarantorFirstName" name="guarantorFirstName" title="" type="text" value="{{=firstname}}"/>
+						<input id="guarantorLastName" name="guarantorLastName" title="" type="text" value="{{=lastname}}"/>
 					</td>
 				</tr>
 				<tr>
 					<td><label for="guarantorDateOfBirth">{{=$ctx.doI18N("label.dob")}}</label></td>
-					<td><input id="guarantorDateOfBirth" name="guarantorDateOfBirth" title="" class="datepickerfield" /></td>
+					<td><input id="guarantorDateOfBirth" name="guarantorDateOfBirth" title="" class="datepickerfield" value="{{=$ctx.globalDate(dob)}}"/></td>
 				</tr>
 				<tr>
 					<td><label>{{=$ctx.doI18N("label.address")}}</label></td>
-					<td><input id="guarantorAddressLine1" name="guarantorAddressLine1" type="text" style="width: 200px"/></td>
+					<td><input id="guarantorAddressLine1" name="guarantorAddressLine1" type="text" style="width: 200px" value="{{=addressLine1}}"/></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td><input id="guarantorAddressLine2" name="guarantorAddressLine2" type="text" style="width: 200px"/></td>
+					<td><input id="guarantorAddressLine2" name="guarantorAddressLine2" type="text" style="width: 200px" value="{{=addressLine2}}"/></td>
 				</tr>
 				<tr>	
 					<td><label for="guarantorCity">{{=$ctx.doI18N("label.city")}}</label></td>
 					<td>
-						<input id="guarantorCity" name="guarantorCity" title="" type="text" value=""/>
+						<input id="guarantorCity" name="guarantorCity" title="" type="text" value="{{=city}}"/>
 						{{=$ctx.doI18N("label.zip")}}
-						<input id="guarantorZip" name="guarantorZip" title="" type="text" value=""/>
+						<input id="guarantorZip" name="guarantorZip" title="" type="text" value="{{=zip}}"/>
 					</td>
 				</tr>
 				<tr>	
 					<td><label for="guarantorMobileNumber">{{=$ctx.doI18N("label.mobile")}}</label></td>
-					<td><input id="guarantorMobileNumber" name="guarantorMobileNumber" title="" type="text" value=""/></td>
+					<td><input id="guarantorMobileNumber" name="guarantorMobileNumber" title="" type="text" value="{{=mobileNumber}}"/></td>
 				</tr>
 				<tr>	
 					<td><label for="guarantorHouseNumber">{{=$ctx.doI18N("label.telephone")}}</label></td>
-					<td><input id="guarantorHouseNumber" name="guarantorHouseNumber" title="" type="text" value=""/></td>
+					<td><input id="guarantorHouseNumber" name="guarantorHouseNumber" title="" type="text" value="{{=housePhoneNumber}}"/></td>
 				</tr>
 			</table>
 		</fieldset>
