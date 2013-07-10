@@ -6971,6 +6971,7 @@ $(document).ready(function() {
 <form id="entityform" style="height:100%">
 	<div id="formerrors"></div>
 
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<div id="loanproducttabs{{=id}}" class="loanproducttabs" style="height:100%">
@@ -7003,7 +7004,25 @@ $(document).ready(function() {
 				</td>
 			</tr>
 			{{/if}}
-
+			<tr>
+				<td>{{=$ctx.doI18N("form.label.startDate")}}</td>
+                <td>
+                    <input id="startDate" name="startDate" title="" type="text" value="{{=$ctx.globalDate(startDate)}}" class="datepickerfieldnoconstraint" />&nbsp;
+					{{=$ctx.doI18N("form.label.closeDate")}}
+                    <input id="closeDate" name="closeDate" title="" type="text" value="{{=$ctx.globalDate(closeDate)}}" class="datepickerfieldnoconstraint" />
+                </td>
+			</tr>
+			<tr>
+				<td>
+					{{#if active}}
+                	<input type="hidden" id="active" name="active" value="true" />
+					<input type="checkbox" name="loanActiveCheckbox" id="loanActiveCheckbox" value="true"/>
+					{{else}}
+	                <input id="loanActiveCheckbox" type="checkbox" name="loanActiveCheckbox" value="false" />
+	                {{/if}}
+				</td>
+				<td><label for="loanActiveCheckbox">{{=$ctx.doI18N("label.active")}}</label></td>
+			</tr>
 			<tr>
 				<td>
 					{{#if includeInBorrowerCycle}}
