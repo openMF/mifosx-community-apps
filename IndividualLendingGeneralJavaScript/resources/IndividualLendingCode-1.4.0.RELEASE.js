@@ -4435,6 +4435,9 @@ function showCenter(centerId){
 			serializedArray["feeToIncomeAccountMappings"] = new Array();
 		}
 		
+		if (serializedArray.loanActiveCheckbox) {
+			delete serializedArray.loanActiveCheckbox
+		}
 		var newFormData = JSON.stringify(serializedArray);
 		
 		var successFunction =  function(data, textStatus, jqXHR) {
@@ -4715,7 +4718,25 @@ function showCenter(centerId){
 						}
 					    e.preventDefault();
 					});
+
+					$("#loanActiveCheckbox").change(function() {
+			            var selected = this.checked;
+			            if (selected) {
+			            	$("#closeDate").val("");
+			                $("#closeDate").attr("disabled", "disabled");
+			            } else {
+			            	$("#closeDate").removeAttr("disabled");
+			            }
+			        });
+			        
+			        $('input:checkbox[id=activeCheckbox]').trigger('change');
 					
+					if(data.closeDate) {
+						$("#loanActiveCheckbox").prop("checked",false);
+					} else {
+						$("#loanActiveCheckbox").prop("checked",true);
+						$("#closeDate").attr("disabled", "disabled");
+					}
 					if(undefined === data.charges || data.charges === null) {
 						// do nothing
 					} else {
