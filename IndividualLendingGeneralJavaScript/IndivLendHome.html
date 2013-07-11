@@ -6948,6 +6948,8 @@ $(document).ready(function() {
 			{{#if $ctx.showTask("VIEWFUNDS")}}
 			<th>{{=$ctx.doI18N("table.heading.fundname")}}</th>
 			{{/if}}
+			<th>{{=$ctx.doI18N("table.heading.loan.product.status")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.loan.product.expiry.date")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -6958,8 +6960,13 @@ $(document).ready(function() {
 	{{#if $ctx.showTask("VIEWFUNDS")}}
 	<td>{{=fundName}}</td>
 	{{/if}}
+	<td><img src="resources/img/{{=status}}.gif"/>&nbsp{{=$ctx.doI18N(status)}}</td>
+	<td>{{=closeDate}}</td>
 	<td>
-		<a id='editloanproduct{{=id}}' class='editloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+		<a id='editloanproduct{{=id}}' class='editloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>&nbsp;
+		{{#if status == "loanProduct.inActive"}}
+		<a id='editloanproductclosedate{{=id}}' class='editloanproductclosedate' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.active")}}</a>
+		{{/if}}
 	</td>
 </tr>
 {{/each}}
@@ -6971,6 +6978,7 @@ $(document).ready(function() {
 <form id="entityform" style="height:100%">
 	<div id="formerrors"></div>
 
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
 	<div id="loanproducttabs{{=id}}" class="loanproducttabs" style="height:100%">
@@ -7003,8 +7011,15 @@ $(document).ready(function() {
 				</td>
 			</tr>
 			{{/if}}
-
+			
 			<tr>
+				<td>{{=$ctx.doI18N("form.label.startDate")}}</td>
+                <td>
+                    <input id="startDate" name="startDate" title="" type="text" value="{{=$ctx.globalDate(startDate)}}" class="datepickerfieldnoconstraint" />&nbsp;&nbsp;
+					{{=$ctx.doI18N("form.label.closeDate")}}
+                    <input id="closeDate" name="closeDate" title="" type="text" value="{{=$ctx.globalDate(closeDate)}}" class="datepickerfieldnoconstraint" />
+                </td>
+			</tr>
 				<td>
 					{{#if includeInBorrowerCycle}}
 						<input type="checkbox" name="includeInBorrowerCycle" id="includeInBorrowerCycle" value="{{=includeInBorrowerCycle}}" checked />
@@ -7013,7 +7028,7 @@ $(document).ready(function() {
 					{{/if}}
 				</td>
 				<td>
-					{{=$ctx.doI18N("label.include.client.loan.cycle")}}
+					{{=$ctx.doI18N("label.include.borrower.loan.cycle")}}
 				</td>
 			</tr>
 			</table>
