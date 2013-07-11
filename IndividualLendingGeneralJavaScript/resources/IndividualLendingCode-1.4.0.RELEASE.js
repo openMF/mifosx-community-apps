@@ -4472,6 +4472,20 @@ function showCenter(centerId){
 				e.preventDefault();
 			});
 
+			$("a.edit" + tableName + "closedate").click( function(e) {
+				var linkId = this.id;
+				var loanProductId = linkId.replace("edit" + tableName + "closedate", "");
+				var searializedArray= {};
+				searializedArray["closeDate"]= "";
+				var newFormData =JSON.stringify(searializedArray);
+
+				var successFunction =  function(data, textStatus, jqXHR) {
+					listLoanProducts();
+				};
+
+				executeAjaxRequest('loanproducts/' + loanProductId, "PUT", newFormData, successFunction);
+			});
+
 			var oTable = displayListTable(tableName + "stable");
 		  };
 	
