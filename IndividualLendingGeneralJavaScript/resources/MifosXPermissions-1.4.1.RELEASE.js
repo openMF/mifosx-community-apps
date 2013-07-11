@@ -5,7 +5,7 @@ Generate permissions tabs via javascript because didn't know how to do it effect
 The UI needs to order the 'actions' (headers) and 'groupings' (tabs)
 This could have been done by adding meta data to the back-end but decided to pay for it in the UI instead
 
-This plug-in due expects doI18N function to be available
+This plug-in expects doI18N function to be available
 */
 	var specialRolePermissionTab = 'special';
 	var reportingRolePermissionTab = 'report';
@@ -15,6 +15,7 @@ This plug-in due expects doI18N function to be available
 	permissionActionOrder.push('READ');
 	permissionActionOrder.push('UPDATE');
 	permissionActionOrder.push('DELETE');
+	permissionActionOrder.push('ACTIVATE');
 	permissionActionOrder.push('CREATEHISTORIC');
 	permissionActionOrder.push('UPDATEHISTORIC');
 	permissionActionOrder.push('BULKREASSIGN');
@@ -30,6 +31,7 @@ This plug-in due expects doI18N function to be available
 	permissionActionOrder.push('DISBURSALUNDO');
 	permissionActionOrder.push('REPAYMENT');
 	permissionActionOrder.push('REPAYMENTINPAST');
+	permissionActionOrder.push('DEPOSIT');
 	permissionActionOrder.push('WITHDRAWAL');
 	permissionActionOrder.push('INTEREST');
 	permissionActionOrder.push('ADJUST');
@@ -42,12 +44,26 @@ This plug-in due expects doI18N function to be available
 	permissionActionOrder.push('PERMISSIONS');
 	permissionActionOrder.push('REGISTER');
 	permissionActionOrder.push('DEREGISTER');
+	permissionActionOrder.push('ASSIGNROLE');
+	permissionActionOrder.push('UNASSIGNROLE');
+	permissionActionOrder.push('UPDATEROLE');
+	permissionActionOrder.push('ASSOCIATECLIENTS');
+	permissionActionOrder.push('DISASSOCIATECLIENTS');
+	permissionActionOrder.push('ASSIGNSTAFF');
+	permissionActionOrder.push('UNASSIGNSTAFF');
+	permissionActionOrder.push('SAVECOLLECTIONSHEET');
+
+
 	
 	var permissionGrouping = [];
 	permissionGrouping.push('special');
 	permissionGrouping.push('portfolio');
+	permissionGrouping.push('portfolio_group');
+	permissionGrouping.push('portfolio_center');
 	permissionGrouping.push('transaction_loan');
+	permissionGrouping.push('transaction_savings');
 	permissionGrouping.push('transaction_deposit');
+	permissionGrouping.push('accounting');
 	permissionGrouping.push('organisation');
 	permissionGrouping.push('configuration');
 	permissionGrouping.push('authorisation');
@@ -146,7 +162,6 @@ var displayPermissionsTabs = function(permissionUsageData, outerDiv, isReadOnly)
 	var html = '<div id="' + innerDiv + '"><ul>' + tabsHtml + '</ul>' + tabsContentHtml + '</div>';
 	$(outerDiv).html(html);
     	$("#" + innerDiv).tabs();
-    	$("#" + innerDiv).tabs('select', 0);
 }
 
 var nameFoundInArray = function(compareName, compareArray) {
@@ -237,7 +252,7 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, is
 //for all other cases	
 	var tableWidth = '100%';
 	if (currentGrouping == reportingRolePermissionTab) tableWidth = '50%';
-	contentHtml = '<table width="' + tableWidth + '"><tr><td></td>';
+	contentHtml = '<table class=permissionsList width="' + tableWidth + '"><tr><td></td>';
 	for (var i in currentTabData.actionNamesOrdered)
 	{
 		contentHtml += '<td valign="top"><b>' + doI18N(i) + '</b></td>';
@@ -266,16 +281,23 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, is
 }
 
 var fillTaskCell = function(permissionCode, permissionCodeArray, isReadOnly) {
-
-	var taskCellHtml = htmlCheckBox(permissionCode, permissionCodeArray[permissionCode], isReadOnly);
+	
+	var taskCellHtml = "";
 	
 	var checkerPermissionCode = permissionCode + '_CHECKER';
 	if (permissionCodeArray.hasOwnProperty(checkerPermissionCode)) 
 	{
-		taskCellHtml += '&nbsp;&nbsp;&nbsp;<img border="0" src="resources/img/RubberStamp16_iconki.com.png" alt="' + doI18N("Checker Permission") + '" >' + htmlCheckBox(checkerPermissionCode, permissionCodeArray[checkerPermissionCode], isReadOnly);
+		taskCellHtml += '<table class=permissionsListInner><tr><td>' 
+			+ htmlCheckBox(permissionCode, permissionCodeArray[permissionCode], isReadOnly)
+			+ '</td><td>&nbsp;</td><td>&nbsp;</td><td><table class=permissionsListInner><tr><td><img border="0" src="resources/img/RubberStamp16_iconki.com.png" alt="' 
+			+ doI18N("Checker Permission") + '" ></td><td>' 
+			+ htmlCheckBox(checkerPermissionCode, permissionCodeArray[checkerPermissionCode], isReadOnly) 
+			+ "</td></tr></table></td></tr></table>";
 	}
+	else taskCellHtml = htmlCheckBox(permissionCode, permissionCodeArray[permissionCode], isReadOnly);
 
-	return taskCellHtml ;
+
+	return taskCellHtml;
 }
 
 var htmlCheckBox = function(code, val, isReadOnly) {
