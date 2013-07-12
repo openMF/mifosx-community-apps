@@ -91,7 +91,9 @@ crudData = {
 		},
 		datatable: {
 				editTemplateNeeded: false,
-				refreshListNeeded: true
+				refreshListNeeded: true,
+				dialogWidth: 600,
+				dialogHeight: 275
 			},
 		datatableCreate: {
 				editTemplateNeeded: false,
@@ -738,9 +740,6 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 		predefinedAccountingEntriesTabHtml = $("#predefinedAccountingRuleJournalEntriesTemplate").render(baseObject);
 		$("#predefinedpostings-tab").html(predefinedAccountingEntriesTabHtml);
 
-		/***yyyy-mm-dd format for date picker feilds***/
-		$('.datepickerfieldforaccounting').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'yy-mm-dd'});
-
 		/** Onclick function for adding a new Journal Entry */
 		$("#addpredefinedjournalentries").button({
 			icons : {
@@ -950,7 +949,7 @@ function handleJournalEntriesTabSelection(officesObject) {
 		$("#accountId").combobox();
 
 		/***yyyy-mm-dd format for date picker feilds***/
-		$('.datepickerfieldforaccounting').datepicker({constrainInput: true, maxDate: 0, dateFormat: 'yy-mm-dd'});
+		$('.datepickerfieldforaccounting').datepicker({constrainInput: true, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 
 		/** Onclick function for adding a new Journal Entry */
 		$("#addjournalentry").button({
@@ -1066,7 +1065,9 @@ function handleJournalEntriesTabSelection(officesObject) {
 			}
 			if (todate != undefined && todate != "") {
 				data.toDate = todate;
-			}		
+			}	
+			data.dateFormat= custom.helperFunctions.currentDateFormat();
+            data.locale= custom.helperFunctions.currentLocale();	
 		
 		var journalEntriesTablesHtml = $("#journalEntriesTableTemplate").render();
 		$("#journalentriessearchresults").html(journalEntriesTablesHtml);
@@ -7914,7 +7915,12 @@ var cancelButton = doI18N('dialog.button.cancel');
 var buttonsOpts = {};		
 
 buttonsOpts[saveButton] = function() {
-	var registerUrl = "datatables/register/" + document.registerDatatableForm.registeredTableName.value + "/" + document.registerDatatableForm.applicationTableName.value;
+	var registeredTableName=document.registerDatatableForm.registeredTableName.value ;
+	if(!registeredTableName){
+		alert(doI18N('validation.msg.datatable.name.mandatory'));
+		return;
+	}
+	var registerUrl = "datatables/register/" + registeredTableName + "/" + document.registerDatatableForm.applicationTableName.value;
 	executeAjaxRequest(registerUrl, "POST", {}, saveSuccessFunction, formErrorFunction);
 };
 buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
