@@ -3234,8 +3234,15 @@ $(document).ready(function() {
 	<label for="registeredTableName">{{=$ctx.doI18N("form.label.registeredTableName")}}</label>
 	<input id="registeredTableName" name="registeredTableName" title="" type="text" value="{{=registeredTableName}}" size="75"/>
 
-	   <label for="applicationTableName">{{=$ctx.doI18N("form.label.applicationTableName")}}</label>
-	<input id="applicationTableName" name="applicationTableName" title="" type="text" value="{{=applicationTableName}}" size="75"/>
+	<label for="applicationTableName">{{=$ctx.doI18N("form.label.applicationTableName")}}</label>
+    <select id="applicationTableName" name="applicationTableName">
+        <option value="m_client">{{=$ctx.doI18N("apptable.m.client")}}</option>
+        <option value="m_group">{{=$ctx.doI18N("apptable.m.group")}}</option>
+        <option value="m_center">{{=$ctx.doI18N("apptable.m.center")}}</option>
+        <option value="m_loan">{{=$ctx.doI18N("apptable.m.loan")}}</option>
+        <option value="m_office">{{=$ctx.doI18N("apptable.m.office")}}</option>
+        <option value="m_savings_account">{{=$ctx.doI18N("apptable.m.savings.account")}}</option>
+    </select>
 </form>
 </script>
 
