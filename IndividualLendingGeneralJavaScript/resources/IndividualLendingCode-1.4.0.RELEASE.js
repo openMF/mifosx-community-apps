@@ -5623,7 +5623,7 @@ function loadLoan(loanId, parenttab) {
 						
 						var templateSelector = "#guarantorFormTemplate";
 						var width = 600; 
-						var height = 350;
+						var height = 390;
 						
 						
 						eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
@@ -5657,7 +5657,7 @@ function loadLoan(loanId, parenttab) {
 							var getUrl = 'loans/'+loanId+'/guarantors/' + val.id +'?template=true';
 							var templateSelector = "#guarantorFormTemplate";
 							var width = 600;
-							var height = 350;
+							var height = 390;
 							eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 							popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.guarantor", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
 							e.preventDefault();
