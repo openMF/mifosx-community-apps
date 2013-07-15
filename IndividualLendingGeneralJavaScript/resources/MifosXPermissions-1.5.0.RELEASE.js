@@ -53,8 +53,6 @@ This plug-in expects doI18N function to be available
 	permissionActionOrder.push('UNASSIGNSTAFF');
 	permissionActionOrder.push('SAVECOLLECTIONSHEET');
 
-
-	
 	var permissionGrouping = [];
 	permissionGrouping.push('special');
 	permissionGrouping.push('portfolio');
@@ -62,16 +60,13 @@ This plug-in expects doI18N function to be available
 	permissionGrouping.push('portfolio_center');
 	permissionGrouping.push('transaction_loan');
 	permissionGrouping.push('transaction_savings');
-	permissionGrouping.push('transaction_deposit');
 	permissionGrouping.push('accounting');
 	permissionGrouping.push('organisation');
 	permissionGrouping.push('configuration');
 	permissionGrouping.push('authorisation');
 	permissionGrouping.push('report');
 	permissionGrouping.push('datatable');
-
-
-
+	
 	$.MifosXPermissions = {};
 
 	$.MifosXPermissions.addRolePermissionsTabs = function(data, outerDiv) {

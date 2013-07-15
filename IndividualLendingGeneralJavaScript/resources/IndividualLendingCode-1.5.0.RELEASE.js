@@ -4957,37 +4957,33 @@ function showCenter(centerId){
 	// end of savings product
 	
 	// start of savings account
+	function displayTabbedSavingsAccountForm(data, container) {
+		
+		var formHtml = $("#savingsAccountDialogTemplate").render(data);
+		container.html(formHtml);
+		
+		var loanapplicationtabs = $(".savingsaccounttabs").tabs({
+			create: function(event, ui) {
+				var curTab = $('.savingsaccounttabs .ui-tabs-panel[aria-hidde="false"]');
+      			var curTabID = curTab.prop("id");
+			},
+			beforeActivate: function( event, ui ) {
+			}
+		});
+		
+		$("#productId").change(function() {
+			var savingsProductId = $("#productId").val();
+			loadTabbedSavingsAccountForm(container, data.clientId, savingsProductId);
+		});
+		
+		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+	}
+	
 	function loadTabbedSavingsAccountForm(container, clientId, productId, groupId) {
 		
 		var loadTabsOnSuccessFunction = function(data, textStatus, jqXHR) {
-			var formHtml = $("#savingsAccountDialogTemplate").render(data);
-			container.html(formHtml);
-			
-			var loanapplicationtabs = $(".savingsaccounttabs").tabs({
-				create: function(event, ui) {
-					var curTab = $('.savingsaccounttabs .ui-tabs-panel[aria-hidde="false"]');
-	      			var curTabID = curTab.prop("id");
-				},
-				beforeActivate: function( event, ui ) {
-				}
-			});
-			
-			$("#productId").change(function() {
-				var savingsProductId = $("#productId").val();
-				loadTabbedSavingsAccountForm(container, data.clientId, savingsProductId);
-			});
-			
-			$("#activeCheckbox").change(function() {
-				var selected = this.checked;
-				if (selected) {
-					$("#activationDate").removeAttr("disabled");
-				} else {
-					$("#activationDate").attr("disabled", "disabled");
-				}
-			});
-			
-			$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
-			$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+			displayTabbedSavingsAccountForm(data, container);
 		};
 		
 		// load savings account template providing selected client and product infomation
@@ -5059,8 +5055,88 @@ function showCenter(centerId){
 		  	}).dialog('open');		
 	};
 	
+	function submitTabbedSavingsApplicationForUpdate(divContainer, savingsId, clientId, group) {
+		
+		var serializationOptions = {};
+		serializationOptions["checkboxesAsBools"] = true;
+		
+		var serializedArray = {};
+		serializedArray = $('#entityform').serializeObject(serializationOptions);	
+
+        //If JLG loan, send group id and calendar id
+        if(!(group === undefined)){
+            serializedArray["groupId"] = group.id;//This is group loan
+            serializedArray["calendarId"] = $("#calendarId").val();
+        }
+
+		var newFormData = JSON.stringify(serializedArray);
+		
+		var successFunction =  function(data, textStatus, jqXHR) {
+			divContainer.dialog("close");
+			if(data.groupId) {
+				// not handled.
+			} else {
+				loadSavingAccount(savingsId); // "clientdatatabs"
+			}
+		};
+		
+		executeAjaxRequest('savingsaccounts/' + savingsId , "PUT", newFormData, successFunction, formErrorFunction);	  
+	}
+	
 	function launchSavingsAccountDialog(clientId) {
 		executeAjaxRequest('savingsaccounts/template?clientId=' + clientId, 'GET', "", launchSavingsAccountDialogOnSuccessFunction, formErrorFunction);	
+	}
+	
+	var launchModifySavingsAccountDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var saveButton = doI18N('dialog.button.save');
+		var cancelButton = doI18N('dialog.button.cancel');
+		
+		var buttonsOpts = {};
+		buttonsOpts[saveButton] = function() {
+			submitTabbedSavingsApplicationForUpdate(dialogDiv, data.id, data.clientId, data.groupId);
+		};
+		// end of buttonsOpts for save button
+		
+		buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+		
+		dialogDiv.dialog({
+		  		title: doI18N('dialog.title.modifySavingsAccount'), 
+		  		width: 1100, 
+		  		height: 450, 
+		  		modal: true,
+		  		buttons: buttonsOpts,
+		  		close: function() {
+		  			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+		  			$(this).remove();
+				},
+		  		open: function (event, ui) {
+		  			
+		  			displayTabbedSavingsAccountForm(data, dialogDiv);
+					
+					$("#productId").change(function() {
+						var savingsProductId = $("#productId").val();
+					//	loadTabbedSavingsAccountForm(dialogDiv, data.clientId, savingsProductId, data.groupId);
+					});
+					
+					$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+					
+					$('.noyeardatepickerfield').datepicker(
+					{
+						constrainInput: true, 
+						defaultDate: 0, 
+						dateFormat: 'dd MM',
+						changeMonth: true,
+				        changeYear: false,
+				        showButtonPanel: true
+				    });
+		  		}
+		  	}).dialog('open');		
+	};
+	
+	function launchModifySavingsAccountDialog(savingsId) {
+		executeAjaxRequest('savingsaccounts/' + savingsId + '?template=true', 'GET', "", launchModifySavingsAccountDialogOnSuccessFunction, formErrorFunction);	
 	}
 	
 	function launchGroupSavingsAccountDialog(groupId) {
@@ -8353,7 +8429,6 @@ function setCultureReshowFirstPage(cultureVal) {
 
 function setCulture(cultureVal) {
 	currentCulture = cultureVal;
-	console.log("culture: " + currentCulture);
 
 	Globalize.culture(currentCulture);
 	
@@ -8715,7 +8790,6 @@ function loadSavingAccount(accountId) {
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
     	handleXhrError(jqXHR, status, errorThrown, "#formErrorsTemplate", "#formerrors");
-        //$(anchor.hash).html("error occured while ajax loading.");
 	};
 	
 	var successFunction = function(data, status, xhr) {
@@ -8724,13 +8798,43 @@ function loadSavingAccount(accountId) {
     	
     	var tableHtml = $("#savingAccountDataTabTemplate").render(data);
     	
-    	var data = new Object();
-		
 		var currentTab = $("#clientdatatabs").children(".ui-tabs-panel").not('[aria-hidden="true"]');
 		currentTab.html(tableHtml);
 
 		var curTabID = currentTab.prop("id");
 		
+		var offsetToSubmittedDate = 0;
+		var offsetToApprovalDate = 0;
+		var offsetToExpectedDisbursementDate = 0;
+    	var offsetToDisbursalDate = 0;
+    	var maxOffset = 0; // today
+		
+		var dateParts = data.timeline.submittedOnDate;
+		if (undefined != dateParts) {
+			var year = dateParts[0];
+			var month = parseInt(dateParts[1]) - 1; // month is zero indexed
+			var day = dateParts[2];
+
+			var today = new Date();
+			var offsetDate = new Date();
+			offsetDate.setFullYear(year, month, day);
+
+			offsetToSubmittedDate = Date.daysBetween(today, offsetDate);
+		}
+		
+		dateParts = data.timeline.approvedOnDate;
+		if (undefined != dateParts) {
+			var year = dateParts[0];
+			var month = parseInt(dateParts[1]) - 1; // month is zero indexed
+			var day = dateParts[2];
+
+			var today = new Date();
+			var offsetDate = new Date();
+			offsetDate.setFullYear(year, month, day);
+
+			offsetToApprovalDate = Date.daysBetween(today, offsetDate);
+		}
+
 		var $savingtabs = $("#savingtabs" + accountId).tabs({
 			create: function(event, ui) {
 				var curTab = $('#savingtabs .ui-tabs-panel[aria-hidden="false"]');
@@ -8738,16 +8842,107 @@ function loadSavingAccount(accountId) {
 			}
 		});
 		
+		$('.savingsaccountmodify'+accountId).unbind('click');	
+     	$('.savingsaccountmodify'+accountId).button({icons: {primary: "ui-icon-document"}}).click(function(e) {
+			launchModifySavingsAccountDialog(accountId);
+
+			e.preventDefault();
+		});
+		$('button.savingsaccountmodify span').text(doI18N('button.application.modify'));
+		
+		$('#editsavingsaccountnobtn'+accountId).button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
+
+			var putUrl = 'savingsaccounts/' + accountId;
+			var getUrl = 'savingsaccounts/' + accountId;
+
+			var templateSelector = "#editAccountNoFormTemplate";
+			var width = 425; 
+			var height = 225;
+
+			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.accountno", templateSelector, width,  height, saveSuccessFunctionReloadSaving);
+		    e.preventDefault();
+		});
+		$('button.editaccountnobtn span').text(doI18N('link.action.edit'));
+		
+		$('.savingsaccountdelete'+accountId).button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
+			var url = 'savingsaccounts/' + accountId;
+			var width = 400; 
+			var height = 225;
+									
+			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
+		    e.preventDefault();
+		});
+		$('button.savingsaccountdelete span').text(doI18N('button.delete'));
+     		
+     	$('.savingsaccountreject'+accountId).button({icons: {primary: "ui-icon-circle-close"}}).click(function(e) {
+			var postUrl = 'savingsaccounts/' + accountId + '?command=reject';
+			var templateSelector = "#loanApplicationRejectionTemplate";
+			var width = 500; 
+			var height = 350;
+			var defaultOffset = offsetToSubmittedDate;
+
+			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.reject.savingsaccount', templateSelector, width, height, saveSuccessFunctionReloadClient, offsetToSubmittedDate, defaultOffset, maxOffset);
+		    e.preventDefault();
+		});
+     	$('button.savingsaccountreject span').text(doI18N('button.application.reject'));
+				
+		$('.savingsaccountwithdrawnbyapplicant'+accountId).button({icons: {primary: "ui-icon-circle-close"}}).click(function(e) {
+				var postUrl = 'savingsaccounts/' + accountId + '?command=withdrawnByApplicant';
+				var templateSelector = "#loanApplicationWithdrawnTemplate";
+				var width = 500; 
+				var height = 350;
+				var defaultOffset = offsetToSubmittedDate;
+				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.withdrawnbyapplicant.savingsaccount', templateSelector, width, height, saveSuccessFunctionReloadClient,  offsetToSubmittedDate, defaultOffset, maxOffset)
+			    e.preventDefault();
+		});
+		$('button.savingsaccountwithdrawnbyapplicant span').text(doI18N('button.application.withdrawnByApplicant'));
+		
+		$('.savingsaccountapprove'+accountId).button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
+			var postUrl = 'savingsaccounts/' + accountId + '?command=approve';
+			var templateSelector = "#loanApplicationApprovalTemplate";
+			var width = 500; 
+			var height = 350;
+			var defaultOffset = offsetToSubmittedDate;
+			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.approve.savingsaccount', templateSelector, width, height, saveSuccessFunctionReloadSaving,  offsetToSubmittedDate, defaultOffset, maxOffset)
+		    e.preventDefault();
+		});
+		$('button.savingsaccountapprove span').text(doI18N('button.application.approve'));
+			
+		$('.savingsaccountundoapprove'+accountId).button({icons: {primary: "ui-icon-arrowreturnthick-1-w"}}).click(function(e) {
+				var postUrl = 'savingsaccounts/' + accountId + '?command=undoapproval';
+				var templateSelector = "#undoStateTransitionLoanFormTemplate";
+				var width = 500; 
+				var height = 350;
+				var defaultOffset = offsetToSubmittedDate;
+				eval(genSaveSuccessFunctionReloadSaving(accountId));
+				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undoapproval.savingsaccount', templateSelector, width, height, saveSuccessFunctionReloadSaving, offsetToSubmittedDate, defaultOffset, maxOffset)
+			    e.preventDefault();
+		});
+		$('button.undoapproveloan span').text(doI18N('button.application.undoApproval'));
+		
+		$('.savingsaccountactivate'+accountId).button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
+			var postUrl = 'savingsaccounts/' + accountId + '?command=activate';
+			var templateSelector = "#activationTemplate";
+			var width = 400; 
+			var height = 225;
+			
+			var defaultOffset = offsetToApprovalDate;
+			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.activation', templateSelector, width, height, saveSuccessFunctionReloadSaving, offsetToApprovalDate, defaultOffset, maxOffset);
+		    e.preventDefault();
+		});
+		$('button.savingsaccountactivate span').text(doI18N('button.activate'));
+		
 		$('.savingsaccountdeposit'+accountId).button({icons: {primary: "ui-icon-arrowthick-1-e"}}).click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingsaccountdepositbtn", "");
 			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=deposit';
 			var getUrl = 'savingsaccounts/' + savingAccountId + '/transactions/template?command=deposit';
 			var templateSelector = "#savingsAccountTransactionFormTemplate";
 			var width = 400; 
 			var height = 280;
 
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId));
 			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.deposit', templateSelector, width, height, saveSuccessFunctionReloadSaving);
 		    
 			e.preventDefault();
@@ -8796,50 +8991,6 @@ function loadSavingAccount(accountId) {
 		});
 		$('button.savingsaccountinterestpost span').text(doI18N('button.postInterest'));
 		
-		$('.savingsaccountactivate'+accountId).button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingsaccountactivatebtn", "");
-			var getUrl = 'savingsaccounts/' + savingAccountId + '?command=activate&template=true';
-			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=activate';
-			var templateSelector = "#activationTemplate";
-			var width = 400; 
-			var height = 225;
-			
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
-			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.activation', templateSelector, width, height, saveSuccessFunctionReloadSaving);
-		    e.preventDefault();
-		});
-		$('button.savingsaccountactivate span').text(doI18N('button.activate'));
-		
-		$('.savingsaccountdelete'+accountId).button({icons: {primary: "ui-icon-trash"}}).click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingsaccountdeletebtn", "");
-			var url = 'savingsaccounts/' + savingAccountId;
-			var width = 400; 
-			var height = 225;
-									
-			popupConfirmationDialogAndPost(url, 'DELETE', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClient);
-		    e.preventDefault();
-		});
-		$('button.savingsaccountdelete span').text(doI18N('button.delete'));
-		
-		$('.editsavingsaccountnobtn'+accountId).button({icons: {primary: "ui-icon-pencil"}}).click(function(e){
-
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("editsavingsaccountnobtn", "");
-			var putUrl = 'savingsaccounts/' + savingAccountId;
-			var getUrl = 'savingsaccounts/' + savingAccountId;
-
-			var templateSelector = "#editAccountNoFormTemplate";
-			var width = 425; 
-			var height = 225;
-
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
-			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.accountno", templateSelector, width,  height, saveSuccessFunctionReloadSaving);
-		    e.preventDefault();
-		});
-		$('button.editaccountnobtn span').text(doI18N('link.action.edit'));
-
 		/*
 		 * This works but not showing savings datatables by default yet.  When ready just uncomment
 		 * custom.showRelatedDataTableInfo($savingtabs, "m_savings_account", accountId); 

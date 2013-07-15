@@ -6534,18 +6534,25 @@ $(document).ready(function() {
 			</tr>
 
 			<tr>
+				<td valign="top">{{=$ctx.doI18N("label.fieldOfficer")}}</td>
 				<td valign="top">
-				{{=$ctx.doI18N("label.active")}}
-				</td>
-				<td valign="top">
-				<input id="activeCheckbox" type="checkbox" name="active" value="true" checked />
+					<select name="fieldOfficerId" id="fieldOfficerId">
+						<option value="">{{=$ctx.doI18N("option.fieldOfficer.first.choice")}}</option>
+					{{#each fieldOfficerOptions}}
+						{{#if $ctx.number($parent.parent.data.fieldOfficerId)===$ctx.number(id)}}
+						<option value="{{=id}}" selected="selected">{{=displayName}}</option>
+						{{#else}}
+						<option value="{{=id}}">{{=displayName}}</option>
+						{{/if}}
+					{{/each}}
+					</select>
 				</td>
 
 				<td valign="top">&nbsp;</td>
 
-				<td valign="top">{{=$ctx.doI18N("label.activationDate")}}</td>
+				<td valign="top">{{=$ctx.doI18N("label.submitted.on")}}</td>
 				<td valign="top">
-					<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}" />
+					<input id="submittedOnDate" name="submittedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(timeline.submittedOnDate)}}" />
 				</td>
 			</tr>
 	</table>
@@ -6726,14 +6733,49 @@ $(document).ready(function() {
 		<tr><td align="center">
 			<span id="toolbar" class="ui-widget-header ui-corner-all">
 			{{#if status.active}}
-			<button id="savingsaccountdepositbtn{{=id}}" class="savingsaccountdeposit{{=id}}">{{=$ctx.doI18N("button.deposit")}}</button>
-			<button id="savingsaccountwithdrawalbtn{{=id}}" class="savingsaccountwithdrawal{{=id}}">{{=$ctx.doI18N("button.withdrawal")}}</button>
-			<button id="savingsaccountinterestcalcbtn{{=id}}" class="savingsaccountinterestcalc{{=id}}">{{=$ctx.doI18N("button.calculateInterest")}}</button>
-			<button id="savingsaccountinterestpostbtn{{=id}}" class="savingsaccountinterestpost{{=id}}">{{=$ctx.doI18N("button.postInterest")}}</button>
+				{{#if $ctx.showTask("DEPOSITSAVINGSACCOUNT")}}
+				<button id="savingsaccountdepositbtn{{=id}}" class="savingsaccountdeposit{{=id}}">{{=$ctx.doI18N("button.deposit")}}</button>
+				{{/if}}
+
+				{{#if $ctx.showTask("WITHDRAWALSAVINGSACCOUNT")}}
+				<button id="savingsaccountwithdrawalbtn{{=id}}" class="savingsaccountwithdrawal{{=id}}">{{=$ctx.doI18N("button.withdrawal")}}</button>
+				{{/if}}
+
+				{{#if $ctx.showTask("CALCULATEINTERESTSAVINGSACCOUNT")}}
+				<button id="savingsaccountinterestcalcbtn{{=id}}" class="savingsaccountinterestcalc{{=id}}">{{=$ctx.doI18N("button.calculateInterest")}}</button>
+				{{/if}}
+
+				{{#if $ctx.showTask("POSTINTERESTSAVINGSACCOUNT")}}
+				<button id="savingsaccountinterestpostbtn{{=id}}" class="savingsaccountinterestpost{{=id}}">{{=$ctx.doI18N("button.postInterest")}}</button>
+				{{/if}}
 			{{/if}}
-			{{#if status.unactivated}}
-			<button id="savingsaccountactivatebtn{{=id}}" class="savingsaccountactivate{{=id}}">{{=$ctx.doI18N("button.activate")}}</button>
-			<button id="savingsaccountdeletebtn{{=id}}" class="savingsaccountdelete{{=id}}">{{=$ctx.doI18N("button.delete")}}</button>
+
+			{{#if status.approved}}
+				{{#if $ctx.showTask("UDNOSAVINGSACCOUNTAPPLICATIONAPPROVAL")}}
+				<button id="savingsaccountundoapprovebtn{{=id}}" class="savingsaccountundoapprove{{=id}}">{{=$ctx.doI18N("button.application.undoApproval")}}</button>
+				{{/if}}
+				
+				{{#if $ctx.showTask("ACTIVATESAVINGSACCOUNT")}}
+				<button id="savingsaccountactivatebtn{{=id}}" class="savingsaccountactivate{{=id}}">{{=$ctx.doI18N("button.activate")}}</button>
+				{{/if}}
+			{{/if}}
+
+			{{#if status.submittedAndPendingApproval}}
+				{{#if $ctx.showTask("MODIFYSAVINGSACCOUNTAPPLICATION")}}
+				<button id="savingsaccountmodifybtn{{=id}}" class="savingsaccountmodify{{=id}}">{{=$ctx.doI18N("button.application.modify")}}</button>
+				{{/if}}
+				{{#if $ctx.showTask("APPROVESAVINGSACCOUNTAPPLICATION")}}
+				<button id="savingsaccountapprovebtn{{=id}}" class="savingsaccountapprove{{=id}}">{{=$ctx.doI18N("button.application.approve")}}</button>
+				{{/if}}
+				{{#if $ctx.showTask("REJECTSAVINGSACCOUNTAPPLICATION")}}
+				<button id="savingsaccountrejectbtn{{=id}}" class="savingsaccountreject{{=id}}">{{=$ctx.doI18N("button.application.reject")}}</button>
+				{{/if}}
+				{{#if $ctx.showTask("WITHDRAWSAVINGSACCOUNTAPPLICATION")}}
+				<button id="savingsaccountwithdrawnbyapplicantbtn{{=id}}" class="savingsaccountwithdrawnbyapplicant{{=id}}">{{=$ctx.doI18N("button.application.withdrawnByApplicant")}}</button>
+				{{/if}}
+				{{#if $ctx.showTask("DELETESAVINGSACCOUNTAPPLICATION")}}
+				<button id="savingsaccountdeletebtn{{=id}}" class="savingsaccountdelete{{=id}}">{{=$ctx.doI18N("button.application.delete")}}</button>
+				{{/if}}
 			{{/if}}
 			</span>
 		</td></tr>
@@ -6762,7 +6804,6 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.externalId")}}</span>
 			<span class="rowvalue">
 			{{=externalId}}
-			<button id="editsavingsaccountnobtn{{=id}}" class="editsavingsaccountnobtn"><span>Edit</span></button>
 			</span>
 		</div>
 		{{/if}}
@@ -8295,8 +8336,8 @@ $(document).ready(function() {
 			<td>
 				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-				<label for="activationDate">{{=$ctx.doI18N("label.activationDate")}}</label>
-				<input id="activationDate" name="activationDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activationDate)}}"/>
+				<label for="activatedOnDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+				<input id="activatedOnDate" name="activatedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activatedOnDate)}}"/>
 			</td>
 		</tr>
 	</table>
@@ -8633,14 +8674,10 @@ $(document).ready(function() {
 								</div>
 							</td>
 						</tr>
-					
-						<tr colspan="2">
-							<td valign="top">
-								<div id="clientaccountssummary"></div>
-							</td>
-						</tr>
 					</table>
-				<!-- end of inside table -->
+					<!-- end of inside table -->
+
+					<div id="clientaccountssummary"></div>
 			</td>
 
 			<!-- right pane -->
@@ -8682,98 +8719,93 @@ $(document).ready(function() {
 </script>
 
 <script id="clientAccountSummariesTemplate" type="text/x-jquery-tmpl">
+{{#if $ctx.showTask("VIEWLOANS")}}
 <p><b>{{=$ctx.doI18N("heading.loanaccount.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(pendingApprovalLoanCount)}}
-<div class="row">
-	<span class="longrowlabel"><img src="resources/img/loanStatusType.submitted.and.pending.approval.gif"/>&nbsp;{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalLoanCount)}}):</span>
-	<span class="rowvalue">
-	{{#each pendingApprovalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}'); return false;" >{{=productName}}: &#35;{{=accountNo}}
-		({{=$ctx.doI18N(loanType.code)}})
-		</a>
-		</span>
-	{{/each}}
-	</span>
-</div>
+<table id="loanaccountstable" class="pretty displayschedule">
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.productname")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.loantype")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.status")}}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each pendingApprovalLoans}}
+		<tr>
+			<td>{{=productName}}</td>
+			<td>{{=$ctx.doI18N(loanType.code)}}</td>
+			<td><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+			<td><img src="resources/img/loanStatusType.submitted.and.pending.approval.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
+		</tr>
+		{{/each}}
+
+		{{#each awaitingDisbursalLoans}}
+		<tr>
+			<td>{{=productName}}</td>
+			<td>{{=$ctx.doI18N(loanType.code)}}</td>
+			<td><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+			<td><img src="resources/img/loanStatusType.approved.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
+		</tr>
+		{{/each}}
+
+		{{#each openLoans}}
+		<tr>
+			<td>{{=productName}}</td>
+			<td>{{=$ctx.doI18N(loanType.code)}}</td>
+			<td><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+			<td><img src="resources/img/loanStatusType.active.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
+		</tr>
+		{{/each}}
+
+		{{#each closedLoans}}
+		<tr>
+			<td>{{=productName}}</td>
+			<td>{{=$ctx.doI18N(loanType.code)}}</td>
+			<td><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+			<td><img src="resources/img/loanStatusType.closed.obligations.met.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
+		</tr>
+		{{/each}}
+	</tbody>
+</table>
 {{/if}}
 
-{{#if $ctx.numberGreaterThanZero(awaitingDisbursalLoanCount)}}
-<div class="row">
-	<span class="longrowlabel"><img src="resources/img/loanStatusType.approved.gif"/>&nbsp;{{=$ctx.doI18N("label.pending.disbursal")}} ({{=$ctx.number(awaitingDisbursalLoanCount)}}):</span>
-	<span class="rowvalue">
-	{{#each awaitingDisbursalLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}
-			({{=$ctx.doI18N(loanType.code)}})
-			</a>
-		</span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(activeLoanCount)}}
-<div class="row">
-	<span class="longrowlabel"><img src="resources/img/loanStatusType.active.gif"/>&nbsp;{{=$ctx.doI18N("label.active")}} ({{=$ctx.number(activeLoanCount)}}):</span>
-	<span class="rowvalue">
-	{{#each openLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}
-			({{=$ctx.doI18N(loanType.code)}})
-			</a>
-		</span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
-{{#if $ctx.numberGreaterThanZero(closedLoanCount)}}
-<div class="row">
-	<div class="longrowlabel"><img src="resources/img/loanStatusType.closed.obligations.met.gif"/>&nbsp;{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedLoanCount)}}):</div>
-	<div class="rowvalue">
-	{{#each closedLoans}}
-		<span class="loanaccount"><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=productName}}', '{{=accountNo}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}
-			({{=$ctx.doI18N(loanType.code)}})
-			</a>
-		</span>
-	{{/each}}
-	</div>
-</div>
-{{/if}}
-
-{{#if $ctx.showTask("VIEWSAVINGPRODUCTS")}}
+{{#if $ctx.showTask("VIEWSAVINGACCOUNTS")}}
 <p><b>{{=$ctx.doI18N("heading.savingaccount.overview")}}</b></p>
-{{#if $ctx.numberGreaterThanZero(pendingApprovalSavingAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel"><img src="resources/img/savingStatusType.submitted.and.pending.approval.gif"/>&nbsp;{{=$ctx.doI18N("label.pending.approval")}} ({{=$ctx.number(pendingApprovalSavingAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each pendingApprovalSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
+<table id="savingsaccountstable" class="pretty displayschedule">
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.productname")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.status")}}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each pendingApprovalSavingAccounts}}
+		<tr>
+			<td>{{=productName}}</td>
+			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+			<td><img src="resources/img/savingsAccountStatusType.submitted.and.pending.approval.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
+		</tr>
+		{{/each}}
 
-{{#if $ctx.numberGreaterThanZero(approvedSavingAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel"><img src="resources/img/savingStatusType.active.gif"/>&nbsp;{{=$ctx.doI18N("label.approved")}} ({{=$ctx.number(approvedSavingAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each approvedSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
+		{{#each approvedSavingAccounts}}
+		<tr>
+			<td>{{=productName}}</td>
+			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+			<td><img src="resources/img/savingsAccountStatusType.active.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
+		</tr>
+		{{/each}}
 
-{{#if $ctx.numberGreaterThanZero(closedSavingAccountsCount)}}
-<div class="row">
-	<span class="longrowlabel">{{=$ctx.doI18N("label.closed")}} ({{=$ctx.number(closedSavingAccountsCount)}}):</span>
-	<span class="rowvalue">
-	{{#each closedSavingAccounts}}
-		<span class="savingaccount"><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=productName}}: &#35;{{=accountNo}}</a></span>
-	{{/each}}
-	</span>
-</div>
-{{/if}}
-
+		{{#each closedSavingAccounts}}
+		<tr>
+			<td>{{=productName}}</td>
+			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+			<td><img src="resources/img/savingsAccountStatusType.closed.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
+		</tr>
+		{{/each}}
+	</tbody>
+</table>
 {{/if}}
 </script>
 
