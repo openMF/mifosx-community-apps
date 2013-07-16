@@ -6458,6 +6458,23 @@ $(document).ready(function() {
 <!-- end of savings products templates -->
 
 <!-- new savings accounts templates -->
+<script id="savingsAccountActivationTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	</div>
+	<table cellspacing="4px" cellpadding="8px">
+		<tr>
+			<td>
+				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+				<label for="activatedOnDate">{{=$ctx.doI18N("label.activationDate")}}</label>
+				<input id="activatedOnDate" name="activatedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(activatedOnDate)}}"/>
+			</td>
+		</tr>
+	</table>
+</form>
+</script>
+
 <script id="savingsAccountSelectProductDialogTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>
@@ -6820,7 +6837,49 @@ $(document).ready(function() {
 			</span>
 		</div>
 		{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
+			<span class="rowvalue"><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.fieldOfficer")}}</span>
+			<span class="rowvalue">{{=fieldOfficerName}}</span>
+		</div>
+		{{#if activationDate}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.activationDate")}}</span>
+			<span class="rowvalue">{{=$ctx.globalDate(activationDate)}}</span>
+		</div>
+		{{/if}}
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.accountBalance")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.accountBalance)}}</span>
+		</div>
 		<br/>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalDeposits")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalDeposits)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalWithdrawals")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalWithdrawals)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalWithdrawalFees")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalWithdrawalFees)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalAnnualFees")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalAnnualFees)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestEarned")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalInterestEarned)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestPosted")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalInterestPosted)}}</span>
+		</div>
 		<br/>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.product")}}</span>
@@ -6871,48 +6930,6 @@ $(document).ready(function() {
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.annualFeeNextDueDate")}}</span>
 			<span class="rowvalue">{{=$ctx.globalDate(annualFeeNextDueDate)}}</span>
-		</div>
-		<br/>
-		<br/>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.status")}}</span>
-			<span class="rowvalue">{{=$ctx.doI18N(status.code)}}</span>
-		</div>
-		{{#if activationDate}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.activationDate")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(activationDate)}}</span>
-		</div>
-		{{/if}}
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.accountBalance")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.accountBalance)}}</span>
-		</div>
-		<br/>
-		<br/>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.totalDeposits")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalDeposits)}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.totalWithdrawals")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalWithdrawals)}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.totalWithdrawalFees")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalWithdrawalFees)}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.totalAnnualFees")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalAnnualFees)}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestEarned")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalInterestEarned)}}</span>
-		</div>
-		<div class="row">
-			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestPosted")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalInterestPosted)}}</span>
 		</div>
 	</div>
 		

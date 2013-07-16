@@ -8962,7 +8962,7 @@ function loadSavingAccount(accountId) {
 		
 		$('.savingsaccountactivate'+accountId).button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
 			var postUrl = 'savingsaccounts/' + accountId + '?command=activate';
-			var templateSelector = "#activationTemplate";
+			var templateSelector = "#savingsAccountActivationTemplate";
 			var width = 400; 
 			var height = 225;
 			
