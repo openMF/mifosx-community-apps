@@ -7009,7 +7009,7 @@ $(document).ready(function() {
 	<td>{{=fundName}}</td>
 	{{/if}}
 	<td><img src="resources/img/{{=status}}.gif"/>&nbsp{{=$ctx.doI18N(status)}}</td>
-	<td>{{=closeDate}}</td>
+	<td>{{=$ctx.globalDate(closeDate)}}</td>
 	<td>
 		<a id='editloanproduct{{=id}}' class='editloanproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>&nbsp;
 		{{#if status == "loanProduct.inActive"}}
