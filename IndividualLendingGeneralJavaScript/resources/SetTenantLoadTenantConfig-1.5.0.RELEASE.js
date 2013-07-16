@@ -255,6 +255,9 @@ custom.helperFunctions = {
 			return commandAsJson;
 		}
 	},
+	statusIsNotClosed : function(status) {
+    	return status.closed == false;
+	},
 	getDataTableFieldEntry : function(data, fieldName, displayMode, updateColumnTagExtra) {
 
 		return jQuery.stretchyDataTables.getDataTableFieldEntry(data, 

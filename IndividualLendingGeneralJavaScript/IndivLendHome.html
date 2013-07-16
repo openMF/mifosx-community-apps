@@ -6758,6 +6758,7 @@ $(document).ready(function() {
 </script>
 
 <script id="savingAccountDataTabTemplate" type="text/x-jquery-tmpl">
+{{#if $ctx.statusIsNotClosed(status)}}
 <div id="savingaccountactions">
 	<table width="100%">
 		<tr><td align="center">
@@ -6811,6 +6812,7 @@ $(document).ready(function() {
 		</td></tr>
 	</table>
 </div>
+{{/if}}
 
 <div id="savingtabs{{=id}}" class="savingtabs">
 	<ul>
@@ -6825,7 +6827,9 @@ $(document).ready(function() {
 			<span class="longrowlabel">{{=$ctx.doI18N("label.accountNo")}}</span>
 			<span class="rowvalue">
 			{{=accountNo}}
+			{{#if status.submittedAndPendingApproval}}
 			<button id="editsavingsaccountnobtn{{=id}}" class="editsavingsaccountnobtn"><span>Edit</span></button>
+			{{/if}}
 			</span>
 		</div>
 		{{/if}}
@@ -8815,7 +8819,7 @@ $(document).ready(function() {
 		<tr>
 			<td>{{=productName}}</td>
 			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/savingsAccountStatusType.submitted.and.pending.approval.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
+			<td><img src="resources/img/{{=savingAccountStatus.code}}.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
 		</tr>
 		{{/each}}
 
@@ -8823,7 +8827,7 @@ $(document).ready(function() {
 		<tr>
 			<td>{{=productName}}</td>
 			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/savingsAccountStatusType.active.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
+			<td><img src="resources/img/{{=savingAccountStatus.code}}.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
 		</tr>
 		{{/each}}
 
@@ -8831,7 +8835,7 @@ $(document).ready(function() {
 		<tr>
 			<td>{{=productName}}</td>
 			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/savingsAccountStatusType.closed.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
+			<td><img src="resources/img/{{=savingAccountStatus.code}}.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
 		</tr>
 		{{/each}}
 	</tbody>
