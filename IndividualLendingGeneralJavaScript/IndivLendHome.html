@@ -3142,7 +3142,7 @@ $(document).ready(function() {
             <tr>
                 <td><div class="ui-state-default ui-corner-all" data-handle="handle"><span class="ui-icon ui-icon-triangle-2-n-s"</span></div></td>
                 <td><input type="text" name="columnName" /></td>
-                <td>
+                <td> 
                     <select name="columnType">
                         <option value="String">{{=$ctx.doI18N("column.type.string")}}</option>
                         <option value="Number">{{=$ctx.doI18N("column.type.number")}}</option>
@@ -3154,7 +3154,7 @@ $(document).ready(function() {
                 </td>
                 <td><input type="checkbox" name="columnMandatory" /></td>
                 <td><input type="text" name="columnLength" /></td>
-                <td><input type="text" name="columnCode" disabled="disabled" /></td>
+				<td id="codeValues"></td>
                 <td><button>{{=$ctx.doI18N("form.button.datatable.column.delete")}}</button></td>
             </tr>
         </tbody>
@@ -3165,6 +3165,14 @@ $(document).ready(function() {
         </tfoot>
     </table>
 </form>
+</script>
+
+<script id="codeValuedatatableTemplate" type="text/x-jquery-tmpl">
+<select id="columnCodeValue" name="columnCode"  disabled="disabled">
+	{{#each crudRows}}
+		<option value="{{=name}}">{{=name}}</option>
+	{{/each}}
+</select>
 </script>
 
 <script id="datatableUpdateFormTemplate" type="text/x-jquery-tmpl">
@@ -3214,8 +3222,13 @@ $(document).ready(function() {
                 </td>
                 <td><input type="checkbox" name="columnMandatory" /></td>
                 <td><input type="text" name="columnLength" /></td>
-                <td><input type="text" name="columnCode" disabled="disabled" /></td>
-                <td><input type="text" name="columnNewCode" disabled="disabled" /></td>
+                <td>
+                	<div id="columnCodeInputType">
+                		<input type="text" name="columnCode" disabled="disabled" />
+                	</div>
+                	<div id="columnCodeSelectType"/>
+                	</td>	
+                <td id="columnNewCode"></td>
                 <td><button>{{=$ctx.doI18N("form.button.datatable.column.delete")}}</button></td>
             </tr>
         </tbody>
