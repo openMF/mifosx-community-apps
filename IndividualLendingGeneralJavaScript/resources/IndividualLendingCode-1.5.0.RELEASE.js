@@ -7427,7 +7427,7 @@ function validateCreateDatatableRow(row, index, validationErrors) {
     var name = $(row).find("input[name=columnName]").val();
     var type = $(row).find("select[name=columnType]").val();
     var length = $(row).find("input[name=columnLength]").val();
-    var code = $(row).find("input[name=columnCode]").val();
+    var code = $(row).find("select[name=columnCode]").val();
 
     validationErrors[index] = new Object();
     if (name.length <= 0 || !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,}[a-zA-Z0-9]$/.test(name))) {
@@ -7453,7 +7453,7 @@ function validateUpdateDatatableRow(row, validationErrors) {
     var type = $(row).find("select[name=columnType]").val();
     var length = $(row).find("input[name=columnLength]").val();
     var code = $(row).find("input[name=columnCode]").val();
-    var newCode = $(row).find("input[name=columnNewCode]").val();
+    var newCode = $(row).find("select[name=columnCode]").val();
 
     validationErrors[id] = new Object();
     if (name.length <= 0 || !(/^[a-zA-Z][a-zA-Z0-9\-_\s]{0,}[a-zA-Z0-9]$/.test(name))) {
@@ -7506,7 +7506,7 @@ buttonsOpts[saveButton] = function() {
             column.length = $(this).find("input[name=columnLength]").val();
         }
         if (column.type == "Dropdown") {
-            column.code = $(this).find("input[name=columnCode]").val();
+            column.code = $(this).find("select[name=columnCode]").val();
         }
 
         validateCreateDatatableRow($(this), index, validationErrors);
@@ -7559,7 +7559,17 @@ dialogDiv.dialog({
   		}
   }).dialog('open');
 
-var templateTableRow = $("table#createDatatableColumns tbody tr").first().clone();
+var templateTableRow ="";
+
+var successFunction = function(data, textStatus, jqXHR) {
+	var crudObject = new Object();
+	crudObject.crudRows = data;
+	var html = $('#codeValuedatatableTemplate').render(crudObject);
+	$('#codeValues').html(html);
+	templateTableRow = $("table#createDatatableColumns tbody tr").first().clone();
+};	
+executeAjaxRequest('codes', 'GET', "", successFunction, formErrorFunction);
+
 var rowDeleteFunction = function(e) {
     e.preventDefault();
     $(this).parent().parent().remove();
@@ -7570,8 +7580,8 @@ var changeTypeFunction = function(e) {
 
     var type = $(this).val();
     $(this).parent().parent().find("input[name=columnLength]").prop("disabled", (type != "String")).removeClass("ui-state-error");
-    $(this).parent().parent().find("input[name=columnCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
-
+    $(this).parent().parent().find("select[name=columnCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
+    
     return false;
 }
 
@@ -7620,7 +7630,7 @@ function getDatatableColumnNewName(datatableRowObject) {
     var type = $(datatableRowObject).find("select[name=columnType]").val();
 
     if (type == "Dropdown") {
-        var newCode =  $(datatableRowObject).find("input[name=columnNewCode]").val();
+        var newCode =  $(datatableRowObject).find("select[name=columnCode]").val();
         var code = (newCode.length > 0) ? newCode : $(datatableRowObject).find("input[name=columnCode]").val();
 
         name = code + "_cd_" + name;
@@ -7629,7 +7639,7 @@ function getDatatableColumnNewName(datatableRowObject) {
     return name;
 }
 
-function insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns) {
+function insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns, crudObject) {
     var newRow = $(templateTableRow).clone().appendTo("table#updateDatatableColumns tbody");
     $(newRow).find("button").click({ array: dropColumns }, rowDeleteFunction);
     $(newRow).find("select").change(changeTypeFunction);
@@ -7641,7 +7651,10 @@ function insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, c
     $(newRow).find("input[name=columnMandatory]").prop("checked", columnData.mandatory);
     $(newRow).find("input[name=columnLength]").val(columnData["length"]).prop("disabled", (columnData.type != "String"));
     $(newRow).find("input[name=columnCode]").val(columnData.code).prop("disabled", (columnData.type != "Dropdown" || columnData.action == "change"));
-    $(newRow).find("input[name=columnNewCode]").val(columnData.newCode).prop("disabled", (columnData.type != "Dropdown" || columnData.action == "add"));
+
+    var html = $('#codeValuedatatableTemplate').render(crudObject);
+	$(newRow).find('#columnNewCode').html(html);
+	$(newRow).find("select[name=columnCode]").prop("disabled", (columnData.type != "Dropdown"));
 
     if (columnData.action == "change") {
         $(newRow).find("input[name=columnName]").attr("data-original-name", getDatatableColumnRealName($(newRow)));
@@ -7654,7 +7667,12 @@ function insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, c
 function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDeleteFunction, templateTableRow, dropColumns, enteredFormData, validationErrors) {
     $("#updateDatatableColumns tbody").empty();
 
+    var crudObject = new Object();
+	var successFunction = function(data, textStatus, jqXHR) {
+		crudObject.crudRows = data;
+
     var populateSuccessFunction = function(data) {
+
         var datatableData = JSON.parse(JSON.stringify(data));
         var typeMap = {};
         typeMap["varchar"] = "String";
@@ -7692,7 +7710,7 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
                     mandatory = data.mandatory;
                     length = (data["length"]) ? data["length"] : "";
                     code = (data.code) ? data.code : "";
-                    newCode = (data.newCode) ? data.newCode : "";
+                    newCode = "";
                     action = data.action;
                     id = data.id;
 
@@ -7719,7 +7737,8 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
                     index: index,
                     id: id
                 };
-                insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns);
+
+                insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns, crudObject);
             });
         }
         $.each(enteredFormData, function(index, item) {
@@ -7739,7 +7758,7 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
                 after: item.after,
                 id: item.id
             };
-            insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns);
+            insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, changeTypeFunction, rowDeleteFunction, dropColumns , crudObject);
         });
 
         if (validationErrors) {
@@ -7759,13 +7778,17 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
                     $(row).find("input[name=columnCode]").addClass("ui-state-error");
                 }
                 if (item.newCode) {
-                    $(row).find("input[name=columnNewCode]").addClass("ui-state-error");
+                    $(row).find("select[name=columnCode]").addClass("ui-state-error");
                 }
             });
         }
     };
 
     executeAjaxRequest("datatables/" + datatableName, "GET", {}, populateSuccessFunction);
+    };
+
+	executeAjaxRequest('codes', 'GET', "", successFunction, formErrorFunction);
+	
 }
 
 function popupUpdateDatatableDialog(titleCode, datatableName, templateSelector, width, height, saveSuccessFunction) {
@@ -7826,11 +7849,16 @@ var changeTypeFunction = function(e) {
     $(this).parent().parent().find("input[name=columnLength]").prop("disabled", (type != "String")).removeClass("ui-state-error");
 
     if (indexOfCD > -1) {
-        $(this).parent().parent().find("input[name=columnNewCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
+        $(this).parent().parent().find("select[name=columnCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
     } else {
         $(this).parent().parent().find("input[name=columnCode]").prop("disabled", (type != "Dropdown")).removeClass("ui-state-error");
     }
 
+    if (type == "Dropdown") {
+    	$(this).parent().parent().find("select[name=columnCode]").prop("disabled", (type != "Dropdown"));
+    } else {
+    	$(this).parent().parent().find("select[name=columnCode]").attr("disabled", "disabled");
+    }
     return false;
 }
 
@@ -7847,6 +7875,16 @@ $("table#updateDatatableColumns tfoot button").click(function(e) {
     $(newRow).find("button").click({ array: dropColumns }, rowDeleteFunction);
     $(newRow).find("select").change(changeTypeFunction);
     $(newRow).attr("id", id);
+
+    var crudObject = new Object();
+	var successFunction = function(data, textStatus, jqXHR) {
+		crudObject.crudRows = data;
+		$(newRow).find('#columnCodeInputType').hide();
+		var html = $('#codeValuedatatableTemplate').render(crudObject);
+		$(newRow).find('#columnCodeSelectType').html(html);
+	};
+
+	executeAjaxRequest('codes', 'GET', "", successFunction, formErrorFunction);
 
     return false;
 });
@@ -7896,7 +7934,7 @@ $("div[class=ui-dialog-buttonset]").children().first().click({ array: dropColumn
             addObject.length = $(this).find("input[name=columnLength]").val();
         }
         if (addObject.type == "Dropdown") {
-            addObject.code = $(this).find("input[name=columnCode]").val();
+            addObject.code = $(this).find("select[name=columnCode]").val();
         }
 
         var prev = $(this).prevAll("tr[data-original-index]");
@@ -7940,7 +7978,7 @@ $("div[class=ui-dialog-buttonset]").children().first().click({ array: dropColumn
         }
         if (type == "Dropdown") {
             changeObject.code = $(this).find("input[name=columnCode]").val();
-            changeObject.newCode = $(this).find("input[name=columnNewCode]").val();
+            changeObject.newCode = $(this).find("select[name=columnCode]").val();
         }
 
         var prev = $(this).prev();
