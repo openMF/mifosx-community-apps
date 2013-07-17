@@ -2776,14 +2776,6 @@ function showILClient(clientId) {
 					});
 					$('button.newindividualloanbtn span').text(doI18N('dialog.button.new.loan.application'));
 					
-					$('.newdepositbtn').button({icons: {
-               			 primary: "ui-icon-document-b"}
-                	}).click(function(e) {
-						addILDeposit(clientId);
-						e.preventDefault();
-					});
-					$('button.newdepositbtn span').text(doI18N('dialog.button.new.deposit.application'));
-					
 					$('.newsavingbtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 						launchSavingsAccountDialog(clientId);
 					    e.preventDefault();
@@ -8974,8 +8966,8 @@ function loadSavingAccount(accountId) {
 		$('button.savingsaccountactivate span').text(doI18N('button.activate'));
 		
 		$('.savingsaccountdeposit'+accountId).button({icons: {primary: "ui-icon-arrowthick-1-e"}}).click(function(e) {
-			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=deposit';
-			var getUrl = 'savingsaccounts/' + savingAccountId + '/transactions/template?command=deposit';
+			var postUrl = 'savingsaccounts/' + accountId + '/transactions?command=deposit';
+			var getUrl = 'savingsaccounts/' + accountId + '/transactions/template?command=deposit';
 			var templateSelector = "#savingsAccountTransactionFormTemplate";
 			var width = 400; 
 			var height = 280;
