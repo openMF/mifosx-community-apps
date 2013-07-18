@@ -3827,7 +3827,7 @@ function showCenter(centerId){
 			var tableHtml = $("#clientAccountSummariesTemplate").render(data);
 			$("#clientaccountssummary").html(tableHtml);
 		}
-  		executeAjaxRequest(clientUrl + '/loans', 'GET', "", successFunction, formErrorFunction);	  	
+  		executeAjaxRequest(clientUrl + '/accounts', 'GET', "", successFunction, formErrorFunction);	  	
 	}
 	
 	// function to retrieve and display group loan summary information in it placeholder

@@ -8787,39 +8787,12 @@ $(document).ready(function() {
 		</tr>
 	</thead>
 	<tbody>
-		{{#each pendingApprovalLoans}}
+		{{#each loanAccounts}}
 		<tr>
 			<td>{{=productName}}</td>
 			<td>{{=$ctx.doI18N(loanType.code)}}</td>
 			<td><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/loanStatusType.submitted.and.pending.approval.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
-		</tr>
-		{{/each}}
-
-		{{#each awaitingDisbursalLoans}}
-		<tr>
-			<td>{{=productName}}</td>
-			<td>{{=$ctx.doI18N(loanType.code)}}</td>
-			<td><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/loanStatusType.approved.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
-		</tr>
-		{{/each}}
-
-		{{#each openLoans}}
-		<tr>
-			<td>{{=productName}}</td>
-			<td>{{=$ctx.doI18N(loanType.code)}}</td>
-			<td><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/loanStatusType.active.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
-		</tr>
-		{{/each}}
-
-		{{#each closedLoans}}
-		<tr>
-			<td>{{=productName}}</td>
-			<td>{{=$ctx.doI18N(loanType.code)}}</td>
-			<td><a href="unknown.html" onclick="showILLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/loanStatusType.closed.obligations.met.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
+			<td><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
 		</tr>
 		{{/each}}
 	</tbody>
@@ -8834,30 +8807,16 @@ $(document).ready(function() {
 			<th>{{=$ctx.doI18N("table.heading.productname")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.status")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.balance")}}</th>
 		</tr>
 	</thead>
 	<tbody>
-		{{#each pendingApprovalSavingAccounts}}
+		{{#each savingsAccounts}}
 		<tr>
 			<td>{{=productName}}</td>
 			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/{{=savingAccountStatus.code}}.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
-		</tr>
-		{{/each}}
-
-		{{#each approvedSavingAccounts}}
-		<tr>
-			<td>{{=productName}}</td>
-			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/{{=savingAccountStatus.code}}.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
-		</tr>
-		{{/each}}
-
-		{{#each closedSavingAccounts}}
-		<tr>
-			<td>{{=productName}}</td>
-			<td><a href="unknown.html" onclick="showSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/{{=savingAccountStatus.code}}.gif"/>&nbsp;{{=$ctx.doI18N(savingAccountStatus.code)}}</td>
+			<td><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
+			<td>{{=$ctx.moneyFormatted(currency, accountBalance)}}</td>
 		</tr>
 		{{/each}}
 	</tbody>
