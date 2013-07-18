@@ -8996,30 +8996,51 @@ function loadSavingAccount(accountId) {
 		$('button.savingsaccountwithdrawal span').text(doI18N('button.withdrawal'));
 		
 		$('.savingsaccountinterestcalc'+accountId).button({icons: {primary: "ui-icon-calculator"}}).click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingsaccountinterestcalcbtn", "");
-			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=calculateInterest';
+			var postUrl = 'savingsaccounts/' + accountId + '?command=calculateInterest';
 			var width = 400; 
 			var height = 280;
 			
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId));
 			popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.calculateInterest', width, height, 0, saveSuccessFunctionReloadSaving);
 			e.preventDefault();
 		});
 		$('button.savingsaccountinterestcalc span').text(doI18N('button.calculateInterest'));
 		
 		$('.savingsaccountinterestpost'+accountId).button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingsaccountinterestpostbtn", "");
-			var postUrl = 'savingsaccounts/' + savingAccountId + '?command=postInterest';
+			var postUrl = 'savingsaccounts/' + accountId + '?command=postInterest';
 			var width = 400; 
 			var height = 280;
 			
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId));
 			popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.postInterest', width, height, 0, saveSuccessFunctionReloadSaving);
 			e.preventDefault();
 		});
 		$('button.savingsaccountinterestpost span').text(doI18N('button.postInterest'));
+		
+		$('.undotransaction').button({icons : {primary : "ui-icon-trash"},text : false}).click(function(e) {
+			
+			var linkId = this.id;
+			var transactionAndAccountId = linkId.replace("undotransactionbtn", "");
+			var ids = transactionAndAccountId.split("_");
+			var transactionId = ids[0];
+			var savingsAccountId = ids[1];
+			var postURL = 'savingsaccounts/' + savingsAccountId + '/transactions/' + transactionId + '?command=undo';
+			 
+            var templateSelector = "#transactionLoanFormTemplate";
+            var width = 500;
+            var height = 250;
+            
+            var searializedArray = {};
+            searializedArray["dateFormat"] = custom.helperFunctions.currentDateFormat();
+            searializedArray["locale"] = custom.helperFunctions.currentLocale();
+            searializedArray["transactionDate"] = $.datepicker.formatDate(custom.datePickerDateFormat, new Date());
+            searializedArray["transactionAmount"] = 0;
+            var jsonString = JSON.stringify(searializedArray);
+        
+            eval(genSaveSuccessFunctionReloadSaving(accountId));
+            popupConfirmationDialogAndPost(postURL, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadSaving, jsonString);
+            e.preventDefault();
+        }); 
 		
 		/*
 		 * This works but not showing savings datatables by default yet.  When ready just uncomment

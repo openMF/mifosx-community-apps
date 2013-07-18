@@ -6895,7 +6895,7 @@ $(document).ready(function() {
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.nominalAnnualInterestRate")}}</span>
-			<span class="rowvalue">{{=nominalAnnualInterestRate}}%</span>
+			<span class="rowvalue">{{=$ctx.decimal(nominalAnnualInterestRate, 6)}}%</span>
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.interestCompoundingPeriodType")}}</span>
@@ -6945,15 +6945,37 @@ $(document).ready(function() {
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.amount")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.debit")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.credit")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.balance")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.action")}}</th>
 		</tr>
 	</thead>
 	<tbody>
 	{{#each transactions}}
+		{{#if reversed}}
+		<tr style="color:red; background: transparent url('resources/img/strike.png') 0 50% repeat-x;">
+		{{#else}}
 		<tr>
+		{{/if}}
 			<td>{{=$ctx.globalDate(date)}}</td>
 			<td>{{=$ctx.doI18N(transactionType.code)}}</td>
-			<td>{{=$ctx.monetaryValue($parent.parent.data.currency, amount)}}</td>
+			{{#if $ctx.isCredit(transactionType)}}
+			<td>&nbsp;</td>
+			<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
+			{{#else}}
+			<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
+			<td>&nbsp;</td>
+			{{/if}}
+			<td>{{=$ctx.monetaryValue(currency, runningBalance)}}</td>
+
+			{{#if reversed}}
+			<td>&nbsp;</td>
+			{{#else}}
+			<td>
+			<button id="undotransactionbtn{{=id}}_{{=accountId}}" class="undotransaction">{{=$ctx.doI18N("button.undo")}}</button>
+			</td>
+			{{/if}}
 		</tr>
 	{{/each}}
 	</tbody>

@@ -258,6 +258,9 @@ custom.helperFunctions = {
 	statusIsNotClosed : function(status) {
     	return status.closed == false;
 	},
+	isCredit : function(savingsTransactionType) {
+    	return savingsTransactionType.deposit == true || savingsTransactionType.interestPosting == true;
+	},
 	getDataTableFieldEntry : function(data, fieldName, displayMode, updateColumnTagExtra) {
 
 		return jQuery.stretchyDataTables.getDataTableFieldEntry(data, 
