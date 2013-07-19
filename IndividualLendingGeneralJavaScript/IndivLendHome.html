@@ -10739,6 +10739,72 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="officesTemplate" type="text/x-jquery-tmpl">
+	{{#if crudRows.length > 1 }}
+		<div style="width:100%">
+				<label for="office">{{=$ctx.doI18N("label.offices")}}
+					<select id="officeId" name="officeId">
+						{{#each crudRows}}
+							<option value="{{=id}}">{{=nameDecorated}}</option>
+						{{/each}}
+					</select>
+				</label>
+		</div>
+	{{/if}}
+</script>
+
+<script  id="holidaysFetchOnInputs" type="text/x-jquery-tmpl">
+	<hr>
+	<table id = "holidaysFetchOnInputs">
+		<tr>
+			<td id = "officesdropdown">&nbsp;&nbsp;</td>
+			<td>
+				<label for="fromDate"  style="margin-left: 50px">{{=$ctx.doI18N("label.fromDate")}}</label>
+			</td>
+			<td>
+				<input id="fromDate" name="fromDate" title="" type="text" class="datepickerfieldnoconstraint" value="" />
+			</td>
+			<td>
+				<label for="toDate" style="margin-left: 20px">{{=$ctx.doI18N("label.toDate")}}</label>
+			</td>
+			<td>
+				<input id="toDate" name="toDate" title="" type="text" class="datepickerfieldnoconstraint" value=""/>
+			</td>
+			<td>
+				<button class="searchHolidays" style="width: 74px; height: 23px">{{=$ctx.doI18N("link.action.holiday.search")}}</button>
+            </td>
+		</tr>
+	</table>
+	<div id="holidaytablediv">
+	</div>
+</script>
+<script id="holidayListTemplate" type="text/x-jquery-tmpl">
+<table id='holidaystable' width='100%'>
+	<thead>
+		<tr>
+			<th>{{=$ctx.doI18N("table.heading.holiday.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.holiday.from.date")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.holiday.to.date")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.holiday.repayment.schedule.date")}}</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#if crudRows}}
+			{{#each crudRows}}
+			<tr>
+				<td>{{=name}}</td>
+				<td>{{=$ctx.globalDate(fromDate)}}</td>
+				<td>{{=$ctx.globalDate(toDate)}}</td>
+				<td>{{=$ctx.globalDate(repaymentsScheduleTO)}}</td>
+				<td></td>
+			</tr>
+			{{/each}}
+		{{/if}}
+	</tbody>
+</table>
+</script>
+
 <script id="assignStaffFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>

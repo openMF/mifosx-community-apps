@@ -600,7 +600,11 @@ function setOrgAdminContent(divName) {
 		htmlOptions2 += ' | <a href="unknown.html" onclick="refreshTableView(' + "'accountingrule'" + ');return false;" id="viewaccountingrule">' + doI18N("administration.link.view.accountingrule") + '</a>';
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addAccountingRuleUrl + '" id="addaccountingrule">' + doI18N("administration.link.add.accountingrule") + '</a>';
 	}
-		
+	
+	if (jQuery.MifosXUI.showTask("ViewHoliday") == true) {
+		htmlOptions2 += ' | <a href="unknown.html" onclick="listHolidays();return false;" id="viewHoliday">' + doI18N("administration.link.view.Holiday") + '</a>';
+	}
+
 	if (jQuery.MifosXUI.showTask("AddHoliday") == true) {
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addHolidayUrl + '" id="addHoliday">' + doI18N("administration.link.add.Holiday") + '</a>';
 	}
@@ -8718,7 +8722,7 @@ function simpleOptionsHtml(htmlOptions) {
 	htmlVar += htmlOptions;
 	htmlVar += '</span>';
 	htmlVar += '</div>';
-	htmlVar += '<br><br>';
+	htmlVar += '<br><br><br>';
 	htmlVar += '<div id="listplaceholder" ></div>';
 	return htmlVar;
 }
@@ -10115,5 +10119,64 @@ function launchProductMixDialog(loanProductId) {
 	} else {
 		executeAjaxRequest('loanproducts/template?isProductMixTemplate=true', 'GET', "", launchLoanProductMixDialogOnSuccessFunction, formErrorFunction);
 	}
+}
+
+function listHolidays() {
+
+	var officeSearchSuccessFunction =  function(data) {
+		var officeSearchObject = new Object();
+	    officeSearchObject.crudRows = data;
+		
+		var html = $("#holidaysFetchOnInputs").render();
+		$("#listplaceholder").html(html);
+
+		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+		
+		var tableHtml = $("#officesTemplate").render(officeSearchObject);
+		$("#officesdropdown").html(tableHtml);
+		
+		var holidayListSuccessFunction = function(data) {
+			
+			var holidayListObject = new Object();
+	    	holidayListObject.crudRows = data;
+			
+			var html = $("#holidayListTemplate").render(holidayListObject);
+			$("#holidaytablediv").html(html);
+
+			displayListTable("holidaystable");
+		}
+
+		var officeId = "";
+		var fromDate = "";
+		var toDate = "";
+		var dateFormat = "";
+		var locale = "";
+		$(".searchHolidays").button({
+			icons : {
+				primary : "ui-icon-search"
+			}
+		}).click(function(){
+
+			var temp = "";
+			var getUrl = 'holidays?officeId=';
+			dateFormat = "dd MMMM yyyy";
+			locale = "en";
+
+			officeId = $("#officeId").val();
+			getUrl += officeId;
+			fromDate =  $("input[name=fromDate]").val();
+			getUrl += fromDate.length > 1 ? '&fromDate='+fromDate : "";
+			toDate =  $("input[name=toDate]").val();
+			getUrl += toDate.length > 1 ? '&toDate='+toDate : "";
+
+			if (fromDate != "" || toDate != "") {
+				getUrl += '&locale='+locale+'&dateFormat='+dateFormat
+			}
+
+			executeAjaxRequest(getUrl, 'GET', "", holidayListSuccessFunction, formErrorFunction);	
+		});
+  	};
+
+  	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);	
 }
 
