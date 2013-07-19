@@ -605,6 +605,13 @@ function setOrgAdminContent(divName) {
 		htmlOptions2 += ' | <a href="unknown.html" onclick="' + addHolidayUrl + '" id="addHoliday">' + doI18N("administration.link.add.Holiday") + '</a>';
 	}
 
+	if (jQuery.MifosXUI.showTask("ViewLoanProducts"))
+		htmlOptions2 += ' | <a href="unknown.html" onclick="listProductMix();return false;" id="viewproductmix">' + doI18N("administration.link.view.product.mix") + '</a>';
+		
+	if (jQuery.MifosXUI.showTask("AddLoanProduct")) {
+		htmlOptions2 += ' | <a href="#" id="addproductmix">' + doI18N("administration.link.add.product.mix") + '</a>';
+	}
+
 	if (htmlOptions2 > "")
 	{
 		htmlOptions2 = htmlOptions2.substring(3)
@@ -619,6 +626,11 @@ function setOrgAdminContent(divName) {
 	
 	$('#addsavingsproduct').click(function(e) {
 		launchSavingsProductDialog(null);
+    	e.preventDefault();
+	});
+
+	$('#addproductmix').click(function(e) {
+		launchProductMixDialog(null);
     	e.preventDefault();
 	});
 }
@@ -7407,6 +7419,14 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	$('#removecreditTags').click(function() {  
 		return !$('#creditTags option:selected').remove().appendTo('#notSelectedcreditTags');  
 	});
+
+	$('#removeRestrictedProduct').click(function() {  
+        return !$('#restrictedProducts option:selected').remove().appendTo('#allowedProducts');  
+    });
+
+    $('#addToRestrictedProduct').click(function() {  
+        return !$('#allowedProducts option:selected').remove().appendTo('#restrictedProducts');  
+    });
 	
 	$('.datepickerfield').datepicker({constrainInput: true, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 	$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -8592,7 +8612,8 @@ $.fn.serializeObject = function(serializationOptions)
 		
 		if (this.name === 'notSelectedCurrencies' || this.name === 'notSelectedRoles' 
 	    		|| this.name === 'notSelectedClients' || this.name === 'notSelectedCharges'
-	    		|| this.name === 'notSelecteddebitTags' || this.name === 'notSelectedcreditTags') {
+	    		|| this.name === 'notSelecteddebitTags' || this.name === 'notSelectedcreditTags'
+	    		|| this.name === 'allowedProducts') {
 			// do not serialize
 		} else if (this.name.indexOf('[') !== -1) { //serialize as separate object
 			arrayName = this.name.substring(0, this.name.indexOf("["));
@@ -8617,7 +8638,8 @@ $.fn.serializeObject = function(serializationOptions)
 		    } else {
 		    	
 		    	if (this.name === 'selectedItems' || this.name === 'notSelectedItems' || this.name === 'currencies'  
-	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges' || this.name === 'loans' || this.name === 'creditTags' || this.name === 'debitTags') {
+	        		|| this.name === 'roles' || this.name === 'clientMembers' || this.name === 'charges' || this.name === 'loans' || this.name === 'creditTags' || this.name === 'debitTags'
+	        		|| this.name === 'restrictedProducts') {
 		    		o[this.name] = new Array();
 		    		o[this.name].push(this.value || '');
 		    	} else {
@@ -9946,5 +9968,152 @@ function addHoliday() {
 	    $('#offices').jqxTree({ height: '300px', hasThreeStates: true,checkboxes: true, width: '440px'});   
    	}
   	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);
+}
+
+function listProductMix() {
+
+	var tableName='productmix';
+
+	var successFunction = function(data, textStatus, jqXHR) {
+
+		var crudObject = new Object();
+		crudObject.crudRows = data;
+		
+		var html = $("#" + tableName + "ListTemplate").render(crudObject);
+		$("#listplaceholder").html(html);  
+
+		$("a.edit" + tableName).click( function(e) {
+			var linkId = this.id;
+			var entityId = linkId.replace("edit" + tableName, "");
+			launchProductMixDialog(entityId);
+			e.preventDefault();
+		});
+
+		$("a.delete" + tableName).click( function(e) {
+			var linkId = this.id;
+			var entityId = linkId.replace("delete" + tableName, "");
+			var resourceUrl = 'loanproducts/' + entityId + '/productmix';
+			var width = 400; 
+			var height = 150;
+			var saveSuccessFunction = function(data, textStatus, jqXHR) {
+			  	$("#dialog-form").dialog("close");
+			  	listProductMix();
+			};
+			popupConfirmationDialogAndPost(resourceUrl, 'DELETE', 'dialog.title.confirmation.required', width, height, entityId, saveSuccessFunction);
+			e.preventDefault();
+		});
+
+		var oTable = displayListTable(tableName + "table");
+	};
+
+	executeAjaxRequest('loanproducts?associations=productMixes', 'GET', "", successFunction, formErrorFunction);
+}
+
+function loadProductMixForm(container, productId, templateIdentifier) {
+	
+	var renderOnSuccessFunction = function(data, textStatus, jqXHR) {
+		data.productId = productId;
+		var formHtml = $(templateIdentifier).render(data);
+		container.html(formHtml);
+		
+		$("#dialog-form #productId").change(function() {
+			var selectedValue = $(this).find(":selected").val();
+			loadProductMixForm(container, selectedValue, templateIdentifier);
+		});
+
+		$('.multiadd').click(function() {  
+            return !$('.multiNotSelectedItems option:selected').remove().appendTo('#restrictedProducts');  
+        });
+        
+        $('.multiremove').click(function() {  
+            return !$('.multiSelectedItems option:selected').remove().appendTo('#allowedProducts');  
+        });
+	};
+	
+	executeAjaxRequest('loanproducts/' + productId + '/productmix?template=true', 'GET', "", renderOnSuccessFunction, formErrorFunction);
+}
+
+function saveProductMix(divContainer, submitType, productId) {
+	var serializationOptions = {};
+	serializationOptions["checkboxesAsBools"] = true;
+	var serializedArray = {};
+	serializedArray = $('#entityform').serializeObject(serializationOptions);
+	
+	var newFormData = JSON.stringify(serializedArray);
+	
+	var successFunction =  function(data, textStatus, jqXHR) {
+		divContainer.dialog("close");
+		listProductMix();
+	};
+
+	if (submitType === "POST") {
+		productId = $("#productId").val();
+	}
+
+	if (productId === "-1" || productId === undefined || productId === "" || productId === null) {
+		alert("Please select a product for mix");
+	} else {
+		executeAjaxRequest('loanproducts/' + productId + '/productmix', submitType, newFormData, successFunction, formErrorFunction);
+	}
+}
+
+var launchLoanProductMixDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+	var templateIdentifier = "#productMixFormTemplate";
+
+	var saveButton = doI18N('dialog.button.save');
+	var cancelButton = doI18N('dialog.button.cancel');
+	
+	var buttonsOpts = {};
+	var titleCode = 'dialog.title.add.product.mix';
+	if (data.productName){
+		titleCode = 'dialog.title.product.mix.details';
+	}
+	var productId = data.productId;
+	var openProductMixDialogFunc = function (event, ui) {
+		var formHtml = $(templateIdentifier).render(data);
+		$("#dialog-form").html(formHtml);
+
+		$("#productId").change(function() {
+			var selectedValue = $(this).find(":selected").val();
+			loadProductMixForm(dialogDiv, selectedValue, templateIdentifier);
+		});
+		if (data.productName) {
+			$("#productId").attr("disabled", "disabled");
+		} else{
+			$("#productId").removeAttr("disabled");
+		};
+		
+
+		$('.multiSelectedItems option').each(function(i) {  
+			$(this).prop("selected", "selected");  
+	    });
+
+		$('.multiadd').click(function() {  
+            return !$('.multiNotSelectedItems option:selected').remove().appendTo('#restrictedProducts');  
+        });
+        
+        $('.multiremove').click(function() {  
+            return !$('.multiSelectedItems option:selected').remove().appendTo('#allowedProducts');  
+        });
+	}
+	var saveProductMixFunc = function() {
+		var submitType = "POST";
+		if (data.productName) {
+			submitType = "PUT";
+		};
+		saveProductMix(dialogDiv, submitType, productId);
+	};
+	var dialog = gernericDialog(dialogDiv, titleCode, 580, 340, openProductMixDialogFunc, saveProductMixFunc);
+};
+
+function launchProductMixDialog(loanProductId) {
+		
+	if (loanProductId) {
+		executeAjaxRequest('loanproducts/' + loanProductId + '/productmix?template=true', 'GET', "", launchLoanProductMixDialogOnSuccessFunction, formErrorFunction);
+	} else {
+		executeAjaxRequest('loanproducts/template?isProductMixTemplate=true', 'GET', "", launchLoanProductMixDialogOnSuccessFunction, formErrorFunction);
+	}
 }
 
