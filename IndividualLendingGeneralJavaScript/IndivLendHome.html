@@ -10771,5 +10771,85 @@ $(document).ready(function() {
 <script id="msgLoanSyncCheckbox" type="text/x-jquery-tmpl">
 	{{=$ctx.doI18N("msg.checkSynRepayment.mandatory.show")}}
 </script>
+
+<script id="productMixFormTemplate" type="text/x-jquery-tmpl">
+	<form id="entityform">
+	    <div id="formerrors"></div>
+
+	    <fieldset>
+	        <legend>{{=$ctx.doI18N("form.legend.product.mix.details")}}</legend>
+	        <table>
+	            <tr>
+	                <td>
+	                    {{=$ctx.doI18N("label.product.mix.loan.product.name")}}
+	                </td>
+	                <td>
+	                    <select id="productId" class="productId">
+	                        <option value="-1">{{=$ctx.doI18N("option.product.first.choice")}}</option>
+	                        {{#each productOptions}}
+	                            {{#if $ctx.number($parent.parent.data.productId)===$ctx.number(id)}}
+	                            <option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+	                            {{#else}}
+	                            <option value="{{=$ctx.number(id)}}">{{=name}}</option>
+	                            {{/if}}
+	                        {{/each}}
+	                    </select>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <div class="multiselectwidget">
+	                        <label for="restrictedProducts">{{=$ctx.doI18N("form.label.product.mix.restrictedProducts")}}</label>
+	                        <select id="restrictedProducts" name="restrictedProducts" title="Restricted Products." class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:240px;height:125px;">
+	                        {{#each restrictedProducts}}
+	                            <option value="{{=id}}" selected="selected">{{=name}}</option>
+	                        {{/each}}
+	                        </select>
+	                        <a href="#" id="removeRestrictedProduct" class="multiselectwidget multiremove">{{=$ctx.doI18N("widget.multiselect.button.remove")}} &gt;&gt;</a>
+	                    </div>
+	                </td>
+	                <td>
+	                    <div class="multiselectwidget">
+	                        <label for="allowedProducts">{{=$ctx.doI18N("form.label.product.mix.allowedProducts")}}</label>
+	                        <select id="allowedProducts" name="allowedProducts" title="Allowed Products." class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:240px;height:125px;">
+	                            {{#each allowedProducts}}
+	                                <option value="{{=id}}">{{=name}}</option>
+	                            {{/each}}
+	                        </select>
+	                        <a href="#" id="addToRestrictedProduct" class="multiselectwidget multiadd">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.add")}}</a>  
+	                    </div>                    
+	                </td>
+	            </tr>
+	        </table>
+	    </fieldset>
+	</form>    
+</script>
+<script id="productmixListTemplate" type="text/x-jquery-tmpl">
+<table id='productmixtable' width='100%'>
+    <thead>
+        <tr>
+            <th>{{=$ctx.doI18N("table.heading.product.name")}}</th>
+            <th>{{=$ctx.doI18N("table.heading.restricted.products")}}</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead
+    <tbody>
+        {{#each crudRows}}
+        <tr>
+            <td>{{=productName}}</td>
+            <td>
+            	{{#each restrictedProducts}}
+            		{{=name}},
+            	{{/each}}
+            </td>
+            <td>
+                <a id='editproductmix{{=productId}}' class='editproductmix' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
+                <a id='deleteproductmix{{=productId}}' class='deleteproductmix' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.delete")}}</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</script>
 </body>
 </html>
