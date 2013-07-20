@@ -10919,5 +10919,161 @@ $(document).ready(function() {
     </tbody>
 </table>
 </script>
+
+<script id="batchJobFormTemplate" type="text/x-jquery-tmpl">
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.job.details")}}</legend>
+		<br/><br/>
+		<div id="schedularjobsSentForExecution"></div>
+		<div id="selectAllDiv" style="background-color:#b0c4de;">
+			<table>
+				<td class="paddingL65 paddingR65"><input type = "checkbox" id="selectAllJobs" class="selectAllJobs"/></td>
+				<td><label for="selectAll"><b>{{=$ctx.doI18N("label.batchjob.selectAll")}}</b></label></td> 
+			</table>
+		</div>
+		<br/><br/>
+		<div id="jobDetails">
+			<table>
+				{{#each crudRows}}
+					<tr>
+						<td class="paddingL65 paddingR65"><input type="checkbox" class="scheduleJob" id="jobId{{=jobId}}" value="{{=jobId}}"/></td>
+						<td>
+							<b>{{=displayName}}</b>
+						</td>
+						<td class="paddingL65">
+							<button id="editjob{{=jobId}}" class="editjobbtn">{{=$ctx.doI18N("label.batchjob.edit.job.details")}}</button>&nbsp;
+							<button id="jobHistory{{=jobId}}" class="jobHistory">{{=$ctx.doI18N("label.batchjob.view.history")}}</button>&nbsp;
+							{{#if lastRunHistory}}
+								{{#if lastRunHistory.status === "failed"}}
+									<button id="errorinfo{{=jobId}}" class="errorinfobtn">{{=$ctx.doI18N("label.batchjob.view.error.info")}}</button>
+								{{/if}}
+							{{/if}}
+							 &nbsp;&nbsp;</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							{{=$ctx.doI18N("form.label.schedularjobs.nextRunTime")}} {{=$ctx.globalDateTime(nextRunTime)}}
+						</td>
+						<td class="paddingL65">
+							{{=$ctx.doI18N("form.label.schedularjobs.previous.run.status")}} 
+							{{#if lastRunHistory}}
+								{{=lastRunHistory.status}}
+							{{/if}}
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>
+							{{=$ctx.doI18N("form.label.schedularjobs.lastRunTime")}} 
+							{{#if lastRunHistory}}
+								{{=$ctx.globalDateTime(lastRunHistory.jobRunStartTime)}}
+							{{/if}}
+						</td>
+						<td class="paddingL65">
+							{{=$ctx.doI18N("form.label.schedularjobs.currentlyRunning")}} 
+							{{#if currentlyRunning}}
+								{{=$ctx.doI18N("schedularjob.currently.running.yes")}}
+							{{#else}}
+								{{=$ctx.doI18N("schedularjob.currently.running.no")}}
+							{{/if}}
+						</td>
+					</tr>
+				{{/each}}
+			</table>
+		</div>
+		<br/><br/>
+		<div id="executeBatchDiv">
+			<table>
+				<td class="paddingL65 paddingR65">&nbsp;</td>
+				<td class="alignCenter paddingR65"><button id="runSelectedJobs" class="runSelectedJobs">{{=$ctx.doI18N("form.button.schedularjobs.run.jobs")}}</button></td>
+				<td class ="paddingL65"><button id="refreshSchedulerJobPage" class="refreshSchedulerJobPage">{{=$ctx.doI18N("form.button.schedularjobs.refresh.page")}}</button></td>
+			</table>
+		</div>
+	</fieldset>
+</script>
+
+<script id="schedularJobErrorDialogFormTemplate" type="text/x-jquery-tmpl">
+	<span class="ui-icon ui-icon-alert floatleft" style="margin: 0 7px 20px 0;"></span> 
+	{{=$ctx.doI18N("error.msg.select.atleast.one.schedule.job")}}
+</script>
+
+<script id="executingJobDetailsFormTemplate" type="text/x-jquery-tmpl">
+	<fieldset>
+		<legend>{{=$ctx.doI18N("form.legend.jobs.sent.for.execution")}}</legend>
+		<table>
+		{{#each jobDetails}}
+			<tr>
+				<td><span class="ui-icon ui-icon-circle-check floatleft"></span> </td>
+				<td>{{=name}}</td>
+			</tr>
+		{{/each}}
+	</table>
+	<br/><br/>
+	</fieldset>
+</script>
+
+<script id="viewJobHistoryFormTemplate" type="text/x-jquery-tmpl">
+	<div id="jobHistoryDetails"></div>
+</script>
+
+<script id="jobHistoryTableTemplate" type="text/x-jquery-tmpl">
+	<table id='schedulerjobstable' width='100%' class="display">
+		<thead>
+			<tr>
+				<th>{{=$ctx.doI18N("table.heading.schedulerjob.version")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.schedulerjob.start.time")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.schedulerjob.status")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.schedulerjob.type")}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td colspan="5" class="dataTables_empty">Loading data from server</td>
+			</tr>
+		</tbody>
+	</table>
+</script>
+
+<script id="viewJobErrorInfoFormTemplate" type="text/x-jquery-tmpl">
+	<form>
+		<fieldset>
+			<legend>{{=jobRunErrorMessage}}</legend>
+			<br/><br/>
+			{{=jobRunErrorLog}}
+		</fieldset>
+	</form>
+</script>
+
+<script id="editSchedulerJobFormTemplate" type="text/x-jquery-tmpl">
+	<form id="entityform">
+		<div id="formerrors"></div>
+		<fieldset>
+			<legend>{{=$ctx.doI18N("form.legend.job.details")}}</legend>
+			<table>
+				<tr>
+					<td><label for="displayName">{{=$ctx.doI18N("label.job.name")}}</label></td>
+					<td><input id="displayName" name="displayName" title="" type="text" value="{{=displayName}}" style="width: 250px"/></td>
+				</tr>
+				<tr>
+					<td><label for="cronExpression">{{=$ctx.doI18N("label.job.expression")}}</label></td>
+					<td><input id="cronExpression" name="cronExpression" title="" type="text" value="{{=cronExpression}}" style="width: 250px"/></td>
+				</tr>
+				<tr>
+					<td><label for="active">{{=$ctx.doI18N("label.job.is.active")}}</label></td>
+					<td>
+						{{#if active}}
+							<input type = "checkbox" id="active" name="active" value="{{=active}}" checked=checked/>
+						{{#else}}
+							<input type = "checkbox" id="active" name="active" value="{{=active}}" />
+						{{/if}}
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</form>
+</script>
+
 </body>
 </html>
