@@ -9927,6 +9927,7 @@ function loadCollectionSheet(postUrl){
 
 function addHoliday() {
 
+	setOrgAdminContent('content');
 	var officeSearchSuccessFunction =  function(data) {
 		var finalJson = [];
 		
@@ -10126,6 +10127,7 @@ function launchProductMixDialog(loanProductId) {
 
 function listHolidays() {
 
+	setOrgAdminContent('content');
 	var officeSearchSuccessFunction =  function(data) {
 		var officeSearchObject = new Object();
 	    officeSearchObject.crudRows = data;
