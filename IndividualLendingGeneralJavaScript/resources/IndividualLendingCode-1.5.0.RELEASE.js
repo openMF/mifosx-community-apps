@@ -670,6 +670,7 @@ function setSysAdminContent(divName) {
 	var createDatatableUrl = "maintainTable('datatableCreate', 'datatables', 'POST'); return false;";
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST'); return false;";
 	var addReportUrl = "launchReportDialog(null);return false;";
+	var batchJobUrl = "showBatchJobDetails();return false;"
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("VIEWDATATABLES") == true)
@@ -704,6 +705,8 @@ function setSysAdminContent(divName) {
 
 	if (jQuery.MifosXUI.showTask("AddReport") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + addReportUrl + '" id="addreport">' + doI18N("administration.link.add.report") + '</a>';
+
+		htmlOptions += ' | <a href="unknown.html" onclick="' + batchJobUrl + '" id="batchjob">' + doI18N("administration.link.batchjobs") + '</a>';
 	
 	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
 
@@ -10180,3 +10183,144 @@ function listHolidays() {
   	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);	
 }
 
+function showBatchJobDetails() {
+	var schedulerJobsSuccessFunction = function(data, textStatus, jqXHR) {
+		var crudObject = new Object();
+		crudObject.crudRows = data;
+
+		var html = $("#batchJobFormTemplate").render(crudObject);
+		$("#listplaceholder").html(html);
+		$("#schedularjobsSentForExecution").html("");
+
+		$("#selectAllJobs:checkbox").change(function(){
+			$(this).closest('fieldset').find(':checkbox').prop('checked', this.checked);
+		});
+
+		$(".runSelectedJobs").button().click(function(e){
+			var selectedJobs = [];
+			var jobsSentForExecution = [];
+			$(".scheduleJob:checked").each(function() {
+				selectedJobs.push($(this).val());
+			});
+			if (selectedJobs.length > 0) {
+				for (var i = 0; i < selectedJobs.length; i++) {
+					executeAjaxRequest('jobs/'+selectedJobs[i]+'/executeJob', 'POST', "", "", formErrorFunction);
+					for (var j = 0; j < data.length; j++) {
+						var currentJobObj = data[j];
+						if (currentJobObj.jobId == selectedJobs[i]) {
+							var job = new Object();
+							job.name = currentJobObj.displayName;
+							jobsSentForExecution.push(job);
+						}
+					}
+					var executingJobs = new Object();
+					executingJobs.jobDetails = jobsSentForExecution;
+					var jobDetailsHtml = $("#executingJobDetailsFormTemplate").render(executingJobs);
+					$("#schedularjobsSentForExecution").html(jobDetailsHtml);
+				}
+				$(this).closest('fieldset').find(':checkbox').prop('checked', false);
+			} else{
+				errorDialog(200, 400, "schedularJobErrorDialogFormTemplate");
+			}
+			e.preventDefault();
+		});
+
+		$(".jobHistory").button({
+        icons : {
+            primary : "ui-icon-disk"
+        },
+        text: false
+        }).click(function(e){
+			var linkId = this.id;
+			var jobId = linkId.replace("jobHistory", "");
+			var getUrl = "jobs/"+jobId+"/history";
+			var templateSelector = "#viewJobHistoryFormTemplate";
+			var width = 1210;
+			var height = 560;
+			popupDialogWithReadOnlyFormViewData(null,"dialog.title.view.job.history", templateSelector, width, height);
+			var schedulerHistotyHtml = $("#jobHistoryTableTemplate").render();
+			$("#jobHistoryDetails").html(schedulerHistotyHtml);
+			var oTable = $("#schedulerjobstable").dataTable(custom.jqueryDataTableServerSide.paginated("schedulerjobstable"+jobId));
+			initTableConf("schedulerjobstable",oTable);
+			e.preventDefault();
+		});
+
+		$(".errorinfobtn").button({
+        icons : {
+            primary : "ui-icon-info"
+        },
+        text: false
+        }).click(function(e){
+			var linkId = this.id;
+			var jobId = linkId.replace("errorinfo", "");
+			var templateSelector = "#viewJobErrorInfoFormTemplate";
+			var width = 775;
+			var height = 350;
+			for (var i = 0; i < data.length; i++) {
+				var currentJobObj = data[i];
+				if (currentJobObj.jobId == jobId) {
+					if (currentJobObj.lastRunHistory) {
+						if (currentJobObj.lastRunHistory.status == "failed") {
+							var errorObj = new Object();
+							errorObj.jobRunErrorMessage = currentJobObj.lastRunHistory.jobRunErrorMessage;
+							errorObj.jobRunErrorLog = currentJobObj.lastRunHistory.jobRunErrorLog;
+							popupDialogWithReadOnlyFormViewData(errorObj ,"dialog.title.view.error.info", templateSelector, width, height);
+						}
+					}
+					break;
+				}
+			}
+			e.preventDefault();
+        });
+
+        $(".refreshSchedulerJobPage").button({
+        icons : { primary : "ui-icon-arrowrefresh-1-e" }
+        }).click(function(e){
+			showBatchJobDetails();
+			e.preventDefault();
+		});
+
+		$(".editjobbtn").button({
+        icons : {
+            primary : "ui-icon-pencil"
+        },
+        text: false
+        }).click(function(e){
+			var linkId = this.id;
+			var jobId = linkId.replace("editjob", "");
+			var getUrl = "jobs/"+jobId;
+			var putUrl = "jobs/"+jobId;
+			var templateSelector = "#editSchedulerJobFormTemplate";
+			var width = 450;
+			var height = 250;
+			var saveSuccessFunction = function(data, textStatus, jqXHR) {
+				$("#dialog-form").dialog("close");
+				showBatchJobDetails();
+			}
+			popupDialogWithFormView(getUrl, putUrl, 'PUT', 'dialog.title.scheduler.job.details', templateSelector, width, height, saveSuccessFunction);
+			e.preventDefault();
+		});
+	}
+	executeAjaxRequest('jobs', 'GET', "", schedulerJobsSuccessFunction, formErrorFunction);
+}
+
+function errorDialog (height, width, templateIdentifier) {
+	var dialogErrordiv = $( '<div id="dialog-confirm" title="Errors"> </div>');
+	dialogErrordiv.dialog({
+			resizable: true,
+			height:height,
+			width:width,
+			modal: true,
+			buttons: {
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			close: function() {
+			},
+			open: function (event, ui) {
+				var errorHtml = $("#"+templateIdentifier).render();
+				dialogErrordiv.html(errorHtml);
+			}
+		}).dialog('open');
+}

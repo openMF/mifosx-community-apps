@@ -324,7 +324,8 @@ custom.sDom = {
 	"loanstable" : '<"H"lfr<"#clientstablecustom">>t<"F"ip>',
 	"savingsaccountstable" : '<"H"lfr<"#loanstablecustom">>t<"F"ip>',	
 	"journalentriestable": '<"H"lr>t<"F"ip>',
-	"groupsstatstable" : '<"H"lfr<"#groupsstatstablecustom">>t<"F"ip>'
+	"groupsstatstable" : '<"H"lfr<"#groupsstatstablecustom">>t<"F"ip>',
+	"schedulerjobstable": '<"H"lr>t<"F"ip>',
 }
 
 custom.searchQuery = {
@@ -615,7 +616,28 @@ custom.datatablePresentation2 = {
 					    {
     					"mDataProp": "portfolioAtRisk",
     					"aTargets": [10]
-					    }]
+					    }],
+	"schedulerjobstable":	[{
+								"mDataProp": "version",
+								"aTargets":  [0]
+							},
+							{
+								"mDataProp": "jobRunStartTime",
+								"aTargets": [1],
+								"fnCreatedCell":function(nTd,sData,oData,iRow,iCol)
+								{
+									$(nTd).html(custom.helperFunctions.globalDateTime(sData));
+								}
+							},
+							{
+								"mDataProp": "status",
+								"aTargets": [2]
+							},
+							{
+								"mDataProp": "triggerType",
+								"aTargets": [3]
+							}
+							]
 }
 
 custom.showRelatedDataTableInfo = function(tabVar, appTableName,
@@ -800,6 +822,11 @@ custom.fitPopupHeight = function() {
 custom.jqueryDataTableServerSide = {
 
 	paginated:function(tableId,data) {
+		var tempId;
+		if (tableId.indexOf("scheduler") > -1) {
+			tempId = tableId;
+			tableId = "schedulerjobstable";
+		};
 			return{
 			"bSort": true,
 			"aaSorting": [], //disable initial sort
@@ -818,7 +845,7 @@ custom.jqueryDataTableServerSide = {
 			"sPaginationType": "full_numbers",
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": tableId.replace("table",""),
+			"sAjaxSource": tableId.indexOf("scheduler") > -1 ? "jobs/"+tempId.replace("schedulerjobstable","")+"/runhistory" : tableId.replace("table",""),
 			"fnServerData": serverData(data),
 			"fnDrawCallback":function() {
 				$("#"+tableId+" tr").click(function() {
