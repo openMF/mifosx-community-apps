@@ -6142,7 +6142,7 @@ function refreshLoanDocuments(loanId) {
 
 						var resourceUrl = tableName + "s/" + entityId;
 						var width = 400; 
-						var height = 150;
+						var height = 170;
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 						  	$("#dialog-form").dialog("close");
 						  	refreshTableView(tableName);
