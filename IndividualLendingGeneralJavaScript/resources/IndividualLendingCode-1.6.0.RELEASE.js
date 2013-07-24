@@ -4012,6 +4012,10 @@ function showCenter(centerId){
             serializedArray["calendarId"] = $("#calendarId").val();
         }
 
+        if (!$('#syncRepaymentsWithMeeting').is(':checked') && !$('#syncDisbursementWithMeeting').is(':checked')) {
+        	delete serializedArray["calendarId"];
+        }
+
 		var newFormData = JSON.stringify(serializedArray);
 
 		var successFunction =  function(data, textStatus, jqXHR) {
@@ -4051,6 +4055,10 @@ function showCenter(centerId){
         if(!(group === undefined)){
             serializedArray["groupId"] = group.id;//This is group loan
             serializedArray["calendarId"] = $("#calendarId").val();
+        }
+
+        if (!$('#syncRepaymentsWithMeeting').is(':checked') && !$('#syncDisbursementWithMeeting').is(':checked')) {
+        	delete serializedArray["calendarId"];
         }
 
 		var newFormData = JSON.stringify(serializedArray);
@@ -4409,7 +4417,7 @@ function showCenter(centerId){
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
 
 		if(!$("#syncRepaymentsWithMeeting").is(':checked') && !$("#syncDisbursementWithMeeting").is(':checked')){
-			serializedArray["calendarId"] = "";	
+			delete serializedArray["calendarId"];	
 		}
 
 		var newFormData = JSON.stringify(serializedArray);
