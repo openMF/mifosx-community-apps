@@ -2692,6 +2692,7 @@ function showILClient(clientId) {
 					{
 						refreshLoanSummaryInfo(clientUrl);
 						refreshNoteWidget(clientUrl, 'clienttabrightpane');
+						refreshClientSummary(clientId);
 
 						clientDirty = false;
 					}
@@ -2740,6 +2741,9 @@ function showILClient(clientId) {
 					
 					// retrieve accounts summary info
 					refreshLoanSummaryInfo(clientUrl);
+
+					//retrieve client summary
+					refreshClientSummary(clientId);
 					
 					// bind click listeners to buttons.
 					$('.activateclient').button({icons: {primary: "ui-icon-circle-check"}}).click(function(e) {
@@ -3847,6 +3851,27 @@ function showCenter(centerId){
 			$("#clientaccountssummary").html(tableHtml);
 		}
   		executeAjaxRequest(clientUrl + '/accounts', 'GET', "", successFunction, formErrorFunction);	  	
+	}
+
+	function refreshClientSummary(clientId) {
+		var clientSummaryTabHtml = $("#clientSummaryListTemplate").render();
+		$("#clientsummarypane").html(clientSummaryTabHtml);
+		var clientSummarySuccessFunction =  function(data, textStatus, jqXHR) {
+			$("#loanCycle").text(data[0].loanCycle);
+			$("#activeLoans").text(data[0].activeLoans);
+			$("#lastLoanAmount").text(data[0].lastLoanAmount);
+			$("#totalSavings").text(data[0].totalSavings);
+			$("#activeSavings").text(data[0].activeSavings);
+		}
+		executeAjaxRequest('runreports/ClientSummary?genericResultSet=false&R_clientId='+clientId, 'GET', "", clientSummarySuccessFunction, formErrorFunction);
+
+		var getLoanCycleSuccessFunction = function(data, textStatus, jqXHR) {
+			var crudObject = new Object();
+			crudObject.crudRows = data;
+			var tableHtml = $("#clientLoanCyclePerProductListTemplate").render(crudObject);
+			$("#clientloancyclespane").html(tableHtml);
+		}
+		executeAjaxRequest('runreports/LoanCyclePerProduct?genericResultSet=false&R_clientId='+clientId, 'GET', "", getLoanCycleSuccessFunction, formErrorFunction);
 	}
 	
 	// function to retrieve and display group loan summary information in it placeholder
