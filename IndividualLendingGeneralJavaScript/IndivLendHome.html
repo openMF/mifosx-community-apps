@@ -8739,7 +8739,9 @@ $(document).ready(function() {
 			</td>
 
 			<!-- right pane -->
-			<td valign="top" style="max-width:400px; width:400px;">
+			<td valign="top" class="paddingL10" style="max-width:400px; width:400px;">
+				<!-- placeholder for client summary -->
+				<div id="clientsummarypane"></div>
 				<!-- placeholder for notes content -->
 				<div id="clienttabrightpane"></div>
 			</td>
@@ -11075,5 +11077,29 @@ $(document).ready(function() {
 	</form>
 </script>
 
+<script id="clientSummaryListTemplate" type="text/x-jquery-tmpl">
+	<div class="ui-widget .ui-widget-content ui-corner-all clientsummarycontainer paddingB10">
+		<div class="ui-widget-header">
+			<span class="ui-icon ui-icon-info" style="float: left; margin-right: 5px;" ></span>
+			<span>{{=$ctx.doI18N("widget.client.performance.history")}}</span>
+		</div>
+		<div class="ui-widget ui-widget-content ui-corner-all">
+			<span class="newLine">{{=$ctx.doI18N("label.client.loancycle")}}<span id="loanCycle"></span></span>
+			<span class="newLine">{{=$ctx.doI18N("label.client.last.loan.amount")}}<span id="lastLoanAmount"></span></span>
+			<span class="newLine">{{=$ctx.doI18N("label.client.active.loans")}}<span id="activeLoans"></span></span>
+			<span class="newLine">{{=$ctx.doI18N("label.client.total.savings")}}<span id="totalSavings"></span></span>
+			<span class="newLine">{{=$ctx.doI18N("label.client.active.savings")}}<span id="activeSavings"></span></span>
+			<div id="clientloancyclespane"></div>
+		</div>
+	</div>
+</script>
+<script id="clientLoanCyclePerProductListTemplate" type="text/x-jquery-tmpl">
+	{{#if crudRows.length > 0}}
+		<span class="newLine">{{=$ctx.doI18N("label.client.loancycle.per.product")}}</span>
+		{{#each crudRows}}
+			<span class="paddingL10 newLine">{{=productName}}&nbsp;:<span id="{{=productName}}_{{=loanProductCycle}}">{{=loanProductCycle}}</span></span>
+		{{/each}}
+	{{/if}}
+</script>
 </body>
 </html>
