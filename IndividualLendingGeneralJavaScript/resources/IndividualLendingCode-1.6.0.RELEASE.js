@@ -10335,6 +10335,29 @@ function showBatchJobDetails() {
 			popupDialogWithFormView(getUrl, putUrl, 'PUT', 'dialog.title.scheduler.job.details', templateSelector, width, height, saveSuccessFunction);
 			e.preventDefault();
 		});
+
+		$(".initializingErrorInfo").button({
+        icons : {
+            primary : "ui-icon-info"
+        },
+        text: false
+        }).click(function(e){
+			var linkId = this.id;
+			var jobId = linkId.replace("initializingErrorInfo", "");
+			var templateSelector = "#viewJobInitializingErrorFormTemplate";
+			var width = 1100;
+			var height = 480;
+			for (var i = 0; i < data.length; i++) {
+				var currentJobObj = data[i];
+				if (currentJobObj.jobId == jobId) {
+					if (currentJobObj.initializingError) {
+						popupDialogWithReadOnlyFormViewData(currentJobObj ,"dialog.title.view.job.initialization.error.info", templateSelector, width, height);
+					}
+					break;
+				}
+			}
+			e.preventDefault();
+        });
 	}
 	executeAjaxRequest('jobs', 'GET', "", schedulerJobsSuccessFunction, formErrorFunction);
 }
