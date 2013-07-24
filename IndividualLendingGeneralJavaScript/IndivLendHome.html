@@ -17,6 +17,13 @@
 <link rel="stylesheet" type="text/css"	href="resources/IndividualLendingCode-1.6.0.RELEASE.css" />
 <link rel="stylesheet" type="text/css"  href="resources/libs/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css"  href="resources/libs/jWizard/jquery.jWizard.css" />
+
+<style>
+.hide-year-label .ui-datepicker-title .ui-datepicker-year {
+	display: none;
+}
+</style>
+
 <!-- JQuery/JQuery UI is used. JQuery data tables are used to display rows of data - especially in reporting (stretchyreporting) -->
 <script type="text/javascript" src="resources/libs/jquery-1.9.1.min.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -6785,6 +6792,10 @@ $(document).ready(function() {
 				{{#if $ctx.showTask("POSTINTERESTSAVINGSACCOUNT")}}
 				<button id="savingsaccountinterestpostbtn{{=id}}" class="savingsaccountinterestpost{{=id}}">{{=$ctx.doI18N("button.postInterest")}}</button>
 				{{/if}}
+
+				{{#if $ctx.showTask("APPLYANNUALFEESAVINGSACCOUNT")}}
+				<button id="savingsaccountapplyannualfeebtn{{=id}}" class="savingsaccountapplyannualfee{{=id}}">{{=$ctx.doI18N("button.applyAnnualFee")}}</button>
+				{{/if}}
 			{{/if}}
 
 			{{#if status.approved}}
@@ -6989,6 +7000,30 @@ $(document).ready(function() {
 	</div>
 	{{/if}}
 </div>
+</script>
+
+<script id="savingsAccountApplyAnnualFeeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<table>
+		<tr>
+			<td>{{=$ctx.doI18N("label.transactionDate")}}</td>
+			<td><input id="annualFeeTransactionDate" name="annualFeeTransactionDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(annualFeeNextDueDate)}}"/></td>
+		</tr>
+<!--
+		<tr>
+		<td><label for="transactionDate">{{=$ctx.doI18N("label.transactionDate")}}</label></td>
+		<td><select id="transactionDate" name="transactionDate" title="" >
+			{{#each annualFeeTransactionDateOptions}}
+				<option value="{{=$ctx.globalDate(date)}}">{{=$ctx.globalDate(date)}}</option>
+			{{/each}}
+		</select></td>
+		</tr>
+-->
+	</table>
+</form>
 </script>
 
 <script id="savingsAccountTransactionFormTemplate" type="text/x-jquery-tmpl">

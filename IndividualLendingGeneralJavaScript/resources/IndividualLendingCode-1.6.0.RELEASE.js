@@ -4984,7 +4984,13 @@ function showCenter(centerId){
 						dateFormat: 'dd MM',
 						changeMonth: true,
 				        changeYear: false,
-				        showButtonPanel: true
+				        showButtonPanel: false,
+				        beforeShow : function(input, inst) {
+				        	$('#ui-datepicker-div').addClass('hide-year-label');
+				        },
+				        onClose: function() {
+				        	$('#ui-datepicker-div').removeClass('hide-year-label');
+				        }
 				    });
 		  		}
 		  	}).dialog('open');		
@@ -5022,6 +5028,22 @@ function showCenter(centerId){
 		
 		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 		$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+		
+		$('.noyeardatepickerfield').datepicker(
+		{
+			constrainInput: true, 
+			defaultDate: 0, 
+			dateFormat: 'dd MM',
+			changeMonth: true,
+	        changeYear: false,
+	        showButtonPanel: false,
+	        beforeShow : function(input, inst) {
+	        	$('#ui-datepicker-div').addClass('hide-year-label');
+	        },
+	        onClose: function() {
+	        	$('#ui-datepicker-div').removeClass('hide-year-label');
+	        }
+	    });
 	}
 	
 	function loadTabbedSavingsAccountForm(container, clientId, productId, groupId) {
@@ -5160,7 +5182,6 @@ function showCenter(centerId){
 					
 					$("#productId").change(function() {
 						var savingsProductId = $("#productId").val();
-					//	loadTabbedSavingsAccountForm(dialogDiv, data.clientId, savingsProductId, data.groupId);
 					});
 					
 					$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -5173,7 +5194,13 @@ function showCenter(centerId){
 						dateFormat: 'dd MM',
 						changeMonth: true,
 				        changeYear: false,
-				        showButtonPanel: true
+				        showButtonPanel: false,
+				        beforeShow : function(input, inst) {
+				        	$('#ui-datepicker-div').addClass('hide-year-label');
+				        },
+				        onClose: function() {
+				        	$('#ui-datepicker-div').removeClass('hide-year-label');
+				        }
 				    });
 		  		}
 		  	}).dialog('open');		
@@ -9078,6 +9105,21 @@ function loadSavingAccount(accountId) {
 			e.preventDefault();
 		});
 		$('button.savingsaccountinterestpost span').text(doI18N('button.postInterest'));
+		
+		$('.savingsaccountapplyannualfee'+accountId).button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
+			
+			var postUrl = 'savingsaccounts/' + accountId + '?command=applyAnnualFees';
+			var getUrl = 'savingsaccounts/' + accountId + '/?template=true';
+			var templateSelector = "#savingsAccountApplyAnnualFeeFormTemplate";
+			var width = 400; 
+			var height = 280;
+
+			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.applyAnnualFee', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    
+			e.preventDefault();
+		});
+		$('button.savingsaccountapplyannualfee span').text(doI18N('button.applyAnuualFee'));
 		
 		$('.undotransaction').button({icons : {primary : "ui-icon-trash"},text : false}).click(function(e) {
 			
