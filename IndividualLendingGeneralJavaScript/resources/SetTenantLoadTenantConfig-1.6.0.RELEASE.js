@@ -532,7 +532,11 @@ custom.datatablePresentation2 = {
 							],	
 	"loanstable" : [{
 				        "mDataProp": "accountNo",
-				        "aTargets":  [0]
+				        "aTargets":  [0],
+				         "fnCreatedCell":function(nTd,sData,oData,iRow,iCol)//not supported in datatables 1.8.x
+				        {
+				        	$(nTd).html('<a id="navigateToLoan'+ oData.id +'" href="#" onclick="showLoanFromSearch('+ oData.clientId + ','+ oData.id + ', &quot;'+ oData.loanProductName + '&quot; ,'+ oData.accountNo +');">'+ oData.accountNo +'</a>');
+				        }
 				    },
 				    {
 				        "mDataProp": "status",
