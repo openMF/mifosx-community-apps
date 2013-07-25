@@ -2686,6 +2686,7 @@ function showILClient(clientId) {
 	$newtabs = $("#clientdatatabs").tabs({
 	    	beforeActivate: function(event, tab) 
 	    	{
+	    		showILClient(clientId);
 				if (tab.newTab.index() == 0)
 				{
 					if (clientDirty == true)
