@@ -10121,6 +10121,9 @@ function saveProductMix(divContainer, submitType, productId) {
 	serializationOptions["checkboxesAsBools"] = true;
 	var serializedArray = {};
 	serializedArray = $('#entityform').serializeObject(serializationOptions);
+	if(!("restrictedProducts" in serializedArray)){
+		serializedArray["restrictedProducts"] = [];
+	}
 	
 	var newFormData = JSON.stringify(serializedArray);
 	
@@ -10186,6 +10189,9 @@ var launchLoanProductMixDialogOnSuccessFunction = function(data, textStatus, jqX
 		if (data.productName) {
 			submitType = "PUT";
 		};
+		$('.multiSelectedItems option').each(function(i) {
+			$(this).prop("selected", "selected");
+		});
 		saveProductMix(dialogDiv, submitType, productId);
 	};
 	var dialog = gernericDialog(dialogDiv, titleCode, 580, 340, openProductMixDialogFunc, saveProductMixFunc);
