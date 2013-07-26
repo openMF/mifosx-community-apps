@@ -10275,6 +10275,9 @@ function showBatchJobDetails() {
 		$("#listplaceholder").html(html);
 		$("#schedularjobsSentForExecution").html("");
 
+		//get scheduler job status
+		showSchedulerStatus();
+
 		$("#selectAllJobs:checkbox").change(function(){
 			$(this).closest('fieldset').find(':checkbox').prop('checked', this.checked);
 		});
@@ -10287,7 +10290,7 @@ function showBatchJobDetails() {
 			});
 			if (selectedJobs.length > 0) {
 				for (var i = 0; i < selectedJobs.length; i++) {
-					executeAjaxRequest('jobs/'+selectedJobs[i]+'/executeJob', 'POST', "", "", formErrorFunction);
+					executeAjaxRequest('jobs/'+selectedJobs[i]+'?command=executeJob', 'POST', "", "", formErrorFunction);
 					for (var j = 0; j < data.length; j++) {
 						var currentJobObj = data[j];
 						if (currentJobObj.jobId == selectedJobs[i]) {
@@ -10429,4 +10432,30 @@ function errorDialog (height, width, templateIdentifier) {
 				dialogErrordiv.html(errorHtml);
 			}
 		}).dialog('open');
+}
+
+function showSchedulerStatus () {
+	var getSchedulerStatusSuccessFunction = function(data, textStatus, jqXHR) {
+
+		var html = $("#showSchedulerStatusFormTemplate").render(data);
+		$("#showschedulerstatus").html(html);
+
+		$(".suspendScheduler").button({
+		icons : { primary : "ui-icon-circle-close" }
+		}).click(function(e){
+			executeAjaxRequest('scheduler?command=stop', 'POST', "", "", formErrorFunction);
+			showBatchJobDetails();
+			e.preventDefault();
+		});
+
+		$(".activateScheduler").button({
+		icons : { primary : "ui-icon-circle-check" }
+		}).click(function(e){
+			executeAjaxRequest('scheduler?command=start', 'POST', "", "", formErrorFunction);
+			showBatchJobDetails();
+			e.preventDefault();
+		});
+
+	}
+	executeAjaxRequest('scheduler', 'GET', "", getSchedulerStatusSuccessFunction, formErrorFunction);
 }
