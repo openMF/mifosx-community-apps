@@ -10965,7 +10965,7 @@ $(document).ready(function() {
 
 	<fieldset>
 		<legend>{{=$ctx.doI18N("form.legend.job.details")}}</legend>
-		<br/><br/>
+		<div id="showschedulerstatus"></div>
 		<div id="schedularjobsSentForExecution"></div>
 		<div id="selectAllDiv" style="background-color:#b0c4de;">
 			<table>
@@ -11113,6 +11113,8 @@ $(document).ready(function() {
 					</td>
 				</tr>
 			</table>
+			<br/>
+			<span class="newLine">{{=$ctx.doI18N("resource.link.for.generating.cron.expression")}}</span>
 		</fieldset>
 	</form>
 </script>
@@ -11146,6 +11148,28 @@ $(document).ready(function() {
 	<span class="ui-icon ui-icon-alert floatleft" style="margin: 0 7px 20px 0;"></span>
 	<legend>{{=$ctx.doI18N("error.msg.job.initialization.failed")}}</legend>
 	<span style="display: block;">{{=initializingError}}</span>
+</script>
+
+<script id="showSchedulerStatusFormTemplate" type="text/x-jquery-tmpl">
+	<table>
+		<tr>
+			<td width="450px" align="right"><b>{{=$ctx.doI18N("label.scheduler.job.status.label")}}</b></td>
+			<td>
+				{{#if active}}&nbsp;
+					{{=$ctx.doI18N("label.scheduler.job.status.active")}}
+				{{#else}}&nbsp;
+					{{=$ctx.doI18N("label.scheduler.job.status.standby")}}
+				{{/if}}
+			</td>
+			<td align="right" width="150px">
+				{{#if active}}
+					<button id="suspendScheduler" class="suspendScheduler">{{=$ctx.doI18N("button.job.suspend.scheduler")}}</button>
+				{{#else}}
+					<button id="activateScheduler" class="activateScheduler">{{=$ctx.doI18N("button.job.activate.scheduler")}}</button>
+				{{/if}}
+			</td>
+		</tr>
+	</table>
 </script>
 
 </body>
