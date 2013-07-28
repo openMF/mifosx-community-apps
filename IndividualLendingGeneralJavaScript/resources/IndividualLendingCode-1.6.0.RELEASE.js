@@ -6779,6 +6779,17 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 					}
 				}
 
+				if (templateSelector == "#userFormTemplate") 
+				{
+					$('#sendPasswordToEmail').change(function(){
+        				if((!$(this).is(':checked'))){
+            				$('#passworddiv').show();
+			        	}else{
+			        		$('#passworddiv').hide();
+			        	}
+			    	});
+				}	
+					
 				//End group create specific code
 		  	};
 
