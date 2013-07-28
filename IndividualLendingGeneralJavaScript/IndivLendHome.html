@@ -3037,6 +3037,16 @@ $(document).ready(function() {
 		<label for="email">{{=$ctx.doI18N("label.email")}}</label>
 		<input id="email" name="email" title="" type="text" value="{{=email}}" size="75"/>
 
+		<div id="passworddiv" style="display: none;">
+			<label for="password">{{=$ctx.doI18N("label.password")}}</label>
+			<input id="password" name="password" type="password"/>
+			<label for="repeatPassword">{{=$ctx.doI18N("label.repeatPassword")}}</label>
+			<input id="repeatPassword" name="repeatPassword" type="password"/>
+		</div>
+
+		<label for="sendPasswordToEmail">{{=$ctx.doI18N("label.generate.password.send.to.email")}}</label>
+		<input id="sendPasswordToEmail" type="checkbox" name="sendPasswordToEmail" value="true" checked/>
+
 		<label for="officeId">{{=$ctx.doI18N("label.office")}}</label>
 		<select id="officeId" name="officeId" title="">
 			<option value="-1">{{=$ctx.doI18N("option.office.first.choice")}}</option>
