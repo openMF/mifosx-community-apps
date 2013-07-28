@@ -4089,6 +4089,7 @@ function showCenter(centerId){
 		var newFormData = JSON.stringify(serializedArray);
 		
 		var successFunction =  function(data, textStatus, jqXHR) {
+			clientDirty = true;
 			divContainer.dialog("close");
 			if(data.groupId) {
 				loadILLoan(loanId, "groupdatatabs");
