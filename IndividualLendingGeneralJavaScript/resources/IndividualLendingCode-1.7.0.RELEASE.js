@@ -6790,7 +6790,13 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 			        	}
 			    	});
 				}	
-					
+				
+				if (templateSelector == "#userFormTemplate" && submitType == "PUT") 
+				{
+					$('#sendPasswordToEmail').remove();
+        			$('#passworddiv').remove();
+				}	
+
 				//End group create specific code
 		  	};
 
