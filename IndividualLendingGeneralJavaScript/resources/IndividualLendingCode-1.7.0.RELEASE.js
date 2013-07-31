@@ -286,7 +286,8 @@ function showMainContainer(containerDivName, username) {
 		
 		if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
 			htmlVar += '      		<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Accounting' + "'" + ');return false;">' + doI18N("link.reports.accounting") + '</a></li>';
-		
+
+		htmlVar += '			<li><a href="unknown.html" onclick="showXBRLReporting();return false;">' + doI18N("link.reports.xbrl") + '</a></li>';
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
@@ -744,6 +745,64 @@ function setAccountingContent(divName) {
 		fetchAccountingTabContent(selected);
 	}
 	executeAjaxRequest('offices', 'GET', "", getOfficesSuccessFunction, formErrorFunction);
+}
+
+function setXBRLContent(divName) {
+	//get a list of all offices (as this is required by most accounting subtabs)
+	var taxonomyList;
+	var getTaxonomyListSuccessFunction = function(data, textStatus, jqXHR) {
+		taxonomyList = data;
+		$("#" + divName).html($("#xbrlConfigTemplate").render());
+		$("#xbrlconfigtabs").tabs({
+			beforeActivate : function(event, tab) {
+				fetchXBRLTabContent(tab.newTab.index());
+			}
+		});
+		var fetchXBRLTabContent = function(index) {
+			handleXBRLConfigTabSelection(taxonomyList, index)
+		}
+		//determine which tab is initially selected and load data for the same
+		var selected = $("#xbrlconfigtabs").tabs('option', 'active');
+		fetchXBRLTabContent(selected);
+
+		$("#saveconfig").button().click(function(e) {
+			executeAjaxRequest('xbrlmapping', 'POST', "", null, formErrorFunction);
+		})
+
+		$("#runreport").button().click(function(e) {
+			var startDate = $('#startDate').val();
+			var endDate = $('#endondate').val();
+			executeAjaxRequest('xbrlreport?startDate='+startDate+'&endDate='+endDate, 'GET', "", null, formErrorFunction);
+		})
+	}
+	executeAjaxRequest('taxonomy', 'GET', "", getTaxonomyListSuccessFunction, formErrorFunction);
+}
+
+function handleXBRLConfigTabSelection(taxonomyList, tab) {
+	var showlist = new Array();
+	for (var i = taxonomyList.length - 1; i >= 0; i--) {
+		if (taxonomyList[i].type == tab)
+			showlist.push(taxonomyList[i]);
+	}
+	var templateSelector = $("#xbrlTaxonomyListTemplate").render(showlist);
+	switch (tab) {
+		case 0:
+			$("#portfolio-tab").html(templateSelector);
+			break;
+		case 1:
+			$("#balancesheet-tab").html(templateSelector);
+			break;
+		case 2:
+			$("#incomes-tab").html(templateSelector);
+			break;
+		case 3:
+			$("#expenses-tab").html(templateSelector);
+			break;
+		default:
+			break;
+
+	}
+	
 }
 
 function reverseJournalEntrySuccessFunction(data, textStatus, jqXHR) {
@@ -6475,6 +6534,10 @@ var launchReportDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
 	
 
 /* reports code */
+
+function showXBRLReporting(){
+    setXBRLContent("content")
+}
 
 function showILReporting(reportCategory) {
 	setReportingContent("content");

@@ -9434,6 +9434,51 @@ $(document).ready(function() {
 	{{/each}}
 </script>
 
+<script id="xbrlConfigTemplate" type="text/x-jquery-tmpl">
+<div id="xbrlconfigtabs">
+	<ul>
+		<li><a href="#portfolio-tab">{{=$ctx.doI18N("Portfolio")}}</a></li>
+		<li><a href="#balancesheet-tab">{{=$ctx.doI18N("Balance Sheet")}}</a></li>
+		<li><a href="#incomes-tab">{{=$ctx.doI18N("Incomes")}}</a></li>
+		<li><a href="#expenses-tab">{{=$ctx.doI18N("Expenses")}}</a></li>
+	</ul>
+	<div id="portfolio-tab">
+	</div>
+	<div id="balancesheet-tab">
+	</div>
+	<div id="incomes-tab">
+	</div>
+	<div id="expenses-tab">
+	</div>
+	<br>
+	<br>        
+	<div style="text-align:right;">
+		<button id="saveconfig" >{{=$ctx.doI18N("button.save")}}</button>
+
+		<button id="runreport" >{{=$ctx.doI18N("Run")}}</button>
+	</div>
+</div>
+</script>
+
+<script id="xbrlTaxonomyListTemplate" type="text/x-jquery-tmpl">
+	<div>
+	   <input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	   <input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+		
+		<table width="100%">
+			<tr>
+				<td width="20%">
+					<label for="taonomyId">{{=name}}</label>
+				</td>
+				<td>
+					<input type="text" id="taxonomyId" />
+				</td>
+			</tr>
+
+		</table>
+	</div>	
+</script>
+
 <script id="reportListTemplate" type="text/x-jquery-tmpl">
 <table id='reportstable' width='100%'>
 	<thead>
