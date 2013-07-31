@@ -5168,6 +5168,13 @@ $(document).ready(function() {
 				</tr>
 					{{/if}}
 				{{/if}}
+				{{#if timeline.writeOffOnDate}}
+				<tr>
+					<td>{{=$ctx.doI18N("label.writtenoff.on")}}</td>
+					<td>{{=$ctx.globalDate(timeline.writeOffOnDate)}}</td>
+					<td> {{=timeline.writeOffByUsername}}</td>
+				</tr>
+				{{/if}}
 			</tbody>
 		</table>
 
