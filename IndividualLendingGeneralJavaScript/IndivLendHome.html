@@ -9457,6 +9457,16 @@ $(document).ready(function() {
 
 		<button id="runreport" >{{=$ctx.doI18N("Run")}}</button>
 	</div>
+    <div>
+        <tr>
+            <td>{{=$ctx.doI18N("form.label.startDate")}}</td>
+            <td>
+                <input id="startDate" name="startDate" title="" type="text" class="datepickerfield" />&nbsp;&nbsp;
+                {{=$ctx.doI18N("form.label.endDate")}}
+                <input id="endDate" name="endDate" title="" type="text" class="datepickerfield" />
+            </td>
+        </tr>
+    </div>
 </div>
 </script>
 
@@ -9468,7 +9478,7 @@ $(document).ready(function() {
 		<table width="100%">
 			<tr>
 				<td width="20%">
-					<label for="taonomyId">{{=name}}</label>
+					<label for="taxonomyId">{{=name}}</label>
 				</td>
 				<td>
 					<input type="text" id="taxonomyId" />

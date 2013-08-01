@@ -748,11 +748,12 @@ function setAccountingContent(divName) {
 }
 
 function setXBRLContent(divName) {
-	//get a list of all offices (as this is required by most accounting subtabs)
+	//get a list of all taxonomies
 	var taxonomyList;
 	var getTaxonomyListSuccessFunction = function(data, textStatus, jqXHR) {
 		taxonomyList = data;
 		$("#" + divName).html($("#xbrlConfigTemplate").render());
+        $('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'yy-mm-dd'});
 		$("#xbrlconfigtabs").tabs({
 			beforeActivate : function(event, tab) {
 				fetchXBRLTabContent(tab.newTab.index());
@@ -771,7 +772,7 @@ function setXBRLContent(divName) {
 
 		$("#runreport").button().click(function(e) {
 			var startDate = $('#startDate').val();
-			var endDate = $('#endondate').val();
+			var endDate = $('#endDate').val();
 			executeAjaxRequest('xbrlreport?startDate='+startDate+'&endDate='+endDate, 'GET', "", null, formErrorFunction);
 		})
 	}
