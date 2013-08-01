@@ -1723,6 +1723,12 @@ $(document).ready(function() {
 					<span style="margin-left:10px;"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">
 					{{=$ctx.doI18N("label.group.unassign.staff")}}</a></span>
 				</div>
+				{{#else}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.group.staff")}}</span>
+					<span class="rowvalue"><a href="#" id="assignstafftogroup{{=id}}" class="assignstafftogroup">
+					{{=$ctx.doI18N("label.group.assign.staff")}}</a></span>
+				</div>
 				{{/if}}
 				<br>
                 {{#if $ctx.showTask("VIEWACCOUNTSDETAILS")}}
@@ -9778,6 +9784,12 @@ $(document).ready(function() {
 					<span class="rowvalue">{{=staffName}}</span>
 					<span style="margin-left:10px;"><a href="#" id="unassignstafftogroup{{=id}}" class="unassignstafftogroup">
 					{{=$ctx.doI18N("label.group.unassign.staff")}}</a></span>
+				</div>
+				{{#else}}
+				<div class="row">
+					<span class="longrowlabel">{{=$ctx.doI18N("label.group.staff")}}</span>
+					<span class="rowvalue"><a href="#" id="assignstafftogroup{{=id}}" class="assignstafftogroup">
+					{{=$ctx.doI18N("label.group.assign.staff")}}</a></span>
 				</div>
 				{{/if}}
 				<br>
