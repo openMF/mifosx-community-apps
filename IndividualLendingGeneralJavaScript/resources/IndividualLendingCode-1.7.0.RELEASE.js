@@ -3345,6 +3345,24 @@ function showGroup(groupId){
 
 						e.preventDefault();
 			});
+			
+			$('.assignstafftogroup').button().click(function(e){
+				var linkId = this.id;
+				var groupId = linkId.replace("assignstafftogroup", "");
+				var postUrl = 'groups/' + groupId +'?command=assignStaff';
+				var getUrl = 'groups/' + groupId + '?template=true';
+
+				var templateSelector = "#assignStaffFormTemplate";
+				var width = 400; 
+				var height = 225;
+
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						$("#dialog-form").dialog("close");
+						showGroup(groupId);
+				}	
+				popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.staff", templateSelector, width,  height, saveSuccessFunction);
+				e.preventDefault();
+			});
 
 			$('.addgroupnotebtn').button({icons: {
                          primary: "ui-icon-comment"}
@@ -3703,6 +3721,24 @@ function showCenter(centerId){
 						e.preventDefault();
 			});
 
+			$('.assignstafftogroup').button().click(function(e){
+				var linkId = this.id;
+				var centerId = linkId.replace("assignstafftogroup", "");
+				var postUrl = 'groups/' + centerId +'?command=assignStaff';
+				var getUrl = 'groups/' + centerId + '?template=true';
+
+				var templateSelector = "#assignStaffFormTemplate";
+				var width = 400; 
+				var height = 225;
+
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+						$("#dialog-form").dialog("close");
+						showCenter(centerId);
+				}	
+				popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.staff", templateSelector, width,  height, saveSuccessFunction);
+				e.preventDefault();
+			});
+			
 		});
 		
 	}
