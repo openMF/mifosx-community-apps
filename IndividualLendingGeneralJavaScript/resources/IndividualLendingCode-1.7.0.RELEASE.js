@@ -9683,10 +9683,75 @@ function showCollectionSheet() {
         },
         create: function(event, ui) {
 
+			var tableHtml = $("#collectionSheetTabTemplate").render();
+			$("#collectionsheettab").html(tableHtml);
+			var postUrl;
+
+			$(".collectionsheettabs").jWizard({
+				buttons: {
+					next: {
+						text: "Continue"
+					}
+				},
+				cancel: function(event, ui) {
+					$('#collectionsheettabs').html("<label><b>Collection Sheet operation cancelled</b></label>");
+				},
+				finish: function(e, ui) {
+					var saveCollectionSheetTransactions = function(postUrl){
+					var serializedArray = {};
+					serializedArray["locale"] = $('#locale').val();
+					serializedArray["dateFormat"] = $('#dateFormat').val();
+					serializedArray["transactionDate"] = $('#dueDate').val();
+					serializedArray["actualDisbursementDate"] = $('#dueDate').val();
+					serializedArray["note"] = $('#note').val();
+					serializedArray["bulkRepaymentTransactions"] = new Array();
+					$.each($('.grouptotaldue'), function(i){
+						var transactionAmount = $(this).val();
+						var loanId = this.id.replace("totaldue_", "");
+						var tempObject = new Object();
+						tempObject.loanId = loanId;
+						tempObject.transactionAmount = transactionAmount;
+						serializedArray["bulkRepaymentTransactions"][i] = tempObject;
+					});
+
+					serializedArray["bulkDisbursementTransactions"] = new Array();
+					$.each($('.grouptotaldisbursal'), function(i){
+						var transactionAmount = $(this).val();
+						var loanId = this.id.replace("disbursement_", "");
+						var tempObject = new Object();
+						tempObject.loanId = loanId;
+						tempObject.transactionAmount = transactionAmount;
+						serializedArray["bulkDisbursementTransactions"][i] = tempObject;
+					});
+
+					var saveSuccessFunction = function(data){
+						$('#collectionsheettabs').html("<label><b>Collection Sheet saved successfully</b></label>");
+					}
+
+					var newFormData = JSON.stringify(serializedArray);
+					executeAjaxRequest(postUrl + '?command=saveCollectionSheet', "post", newFormData, saveSuccessFunction, formErrorFunction);
+				}
+					saveCollectionSheetTransactions(postUrl);
+				},
+				effects: { enable: true }
+			}).validate();
+
+			$("#enterdetails").on("stephide", function (e) {
+				if (!$(this).find(":input").valid()) {
+					return false;
+				}
+				var centerId = $('#centerId').val();
+				var groupId = $('#groupId').val();
+				if(!(centerId === undefined || centerId === "0") && (groupId === undefined || groupId === "0")){
+					loadCenterCollectionSheet(centerId);
+					postUrl = 'centers/' + centerId;
+				}else{
+					loadGroupCollectionSheet(groupId);
+					postUrl = 'groups/' + groupId;
+				}
+			});
+
             var initCollectionSheet =  function() {
-            //render page markup
-                var tableHtml = $("#collectionSheetTabTemplate").render();
-                $("#collectionsheettab").html(tableHtml);
                 //fetch all Offices 
                 var officeSuccessFunction =  function(data) {
                     var officeObject = new Object();
@@ -9709,23 +9774,6 @@ function showCollectionSheet() {
                 executeAjaxRequest('offices', 'GET', "", officeSuccessFunction, formErrorFunction);
 
                 $('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
-
-                $('#continuebtn').button({
-                    icons: {
-                        primary: "ui-icon-circle-arrow-e"
-                    }
-                 }).click(function(e){
-                 	var centerId = $('#centerId').val();
-                 	var groupId = $('#groupId').val();
-                 	if(!(centerId === undefined || centerId === "0") && (groupId === undefined || groupId === "0")){
-                 		loadCenterCollectionSheet(centerId);	
-                 	}else{
-                 		loadGroupCollectionSheet(groupId);
-                 	}
-                     e.preventDefault();
-                 });
-
-                 $('#continuebtn').prop('disabled','disabled');
             }
             initCollectionSheet();
         }
@@ -9993,59 +10041,6 @@ function loadCollectionSheet(postUrl){
             var data = collections.crudRows;
             sumTotalDue(data); 
         });
-
-        var saveCollectionSheetTransactions = function(postUrl){
-            var serializedArray = {};
-            serializedArray["locale"] = $('#locale').val();
-            serializedArray["dateFormat"] = $('#dateFormat').val();
-            serializedArray["transactionDate"] = $('#dueDate').val();
-            serializedArray["actualDisbursementDate"] = $('#dueDate').val();
-            serializedArray["note"] = $('#note').val();
-            serializedArray["bulkRepaymentTransactions"] = new Array();
-            $.each($('.grouptotaldue'), function(i){
-                var transactionAmount = $(this).val();
-                var loanId = this.id.replace("totaldue_", "");
-                var tempObject = new Object();
-                tempObject.loanId = loanId;
-                tempObject.transactionAmount = transactionAmount;
-                serializedArray["bulkRepaymentTransactions"][i] = tempObject;
-            });
-            
-            serializedArray["bulkDisbursementTransactions"] = new Array();
-            $.each($('.grouptotaldisbursal'), function(i){
-                var transactionAmount = $(this).val();
-                var loanId = this.id.replace("disbursement_", "");
-                var tempObject = new Object();
-                tempObject.loanId = loanId;
-                tempObject.transactionAmount = transactionAmount;
-                serializedArray["bulkDisbursementTransactions"][i] = tempObject;
-            });
-            
-            var saveSuccessFunction = function(data){
-                $('#collectionSheetContent').html("<label><b>Collection Sheet saved successfully</b></label>");
-            }
-            
-            var newFormData = JSON.stringify(serializedArray);
-            executeAjaxRequest(postUrl + '?command=saveCollectionSheet', "post", newFormData, saveSuccessFunction, formErrorFunction);
-        }
-
-        $('#savebtn').button({
-            icons : {
-                primary : "ui-icon-disk"
-            }
-         }).click(function(e){
-             saveCollectionSheetTransactions(postUrl);
-             e.preventDefault();
-         });
-         
-         $('#cancelbtn').button({
-            icons : {
-                primary : "ui-icon-close"
-            }
-         }).click(function(e){
-             $('#collectionSheetContent').html("");
-             e.preventDefault();
-         });
         
         $(".collections td:last-child").addClass('righthighlightcolheader');
         $(".collections th:last-child").addClass('righthighlightcolheader');
