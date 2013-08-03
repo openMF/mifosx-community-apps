@@ -181,6 +181,7 @@ $.widget("db.jWizard", {
         }
 
         function goback() {
+			wizard._enableButtons();
             wizard._enter(wizard.$current).then(dfd.resolve, dfd.reject);
         }
 

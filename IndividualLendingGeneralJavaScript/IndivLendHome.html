@@ -26,6 +26,7 @@
 
 <!-- JQuery/JQuery UI is used. JQuery data tables are used to display rows of data - especially in reporting (stretchyreporting) -->
 <script type="text/javascript" src="resources/libs/jquery-1.9.1.min.js"></script>
+<script type="text/javascript"	src="resources/libs/jquery.validate.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js"></script>
 <script type="text/javascript"	src="resources/libs/DataTables-1.9.4/media/js/jquery.dataTables.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery.dataTables.TitleNumeric.js"></script>
@@ -40,7 +41,6 @@
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/i18n/jquery.ui.datepicker-pt.js"></script>
 <script type="text/javascript"	src="resources/libs/jquery-ui-1.10.3.custom/js/i18n/jquery.ui.datepicker-zh.js"></script>
 <script type="text/javascript"  src="resources/libs/jquery.multiselect.js"></script>
-
 
 <!-- 
 JQuery plugins:
@@ -9182,73 +9182,78 @@ $(document).ready(function() {
 </script>
 
 <script id="collectionSheetTabTemplate" type="text/x-jquery-tmpl">
-		<div style="width:100%">
-			<h1 align="center">{{=$ctx.doI18N("tab.collection.sheet.title")}}</h1>
+	<div id="collectionsheettabs" class="collectionsheettabs" style="height:100%">
+		<div id="enterdetails" style="margin-top: 5px;" title="{{=$ctx.doI18N("tab.enter.collectionsheet.details")}}">
+			<div style="width:100%">
+				<h1 align="center">{{=$ctx.doI18N("tab.collection.sheet.title")}}</h1>
+			</div>
+			<form id="entityform">
+				<div id="formerrors"></div>
+				<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
+				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+				<div style="margin-top: 5px;">
+				<fieldset id="formData">
+					<table>
+						<tr>
+							<td>
+								<label for="office">{{=$ctx.doI18N("label.collection.sheet.office")}}</label>
+							</td>
+							<td>
+								<select id="officeId" name="officeId" required>
+									<option value=0>{{=$ctx.doI18N("collection.sheet.office.first.choice")}}</option>
+								</select>
+							</td>
+						</tr>
+						{{#if $ctx.showTask("ViewCenter")}}
+						<tr>
+							<td>
+								<label for="center">{{=$ctx.doI18N("label.collection.sheet.center")}}</label>
+							</td>
+							<td>
+								<select id="centerId" name="centerId">
+									<option value=0>{{=$ctx.doI18N("collection.sheet.center.first.choice")}}</option>
+								</select>
+							</td>
+						</tr>
+						{{/if}}
+						<tr>
+							<td>
+								<label for="group">{{=$ctx.doI18N("label.collection.sheet.group")}}</label>
+							</td>
+							<td>
+								<select id="groupId" name="groupId">
+									<option value=0>{{=$ctx.doI18N("collection.sheet.group.first.choice")}}</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="calendar">{{=$ctx.doI18N("label.collection.sheet.meeting")}}</label>
+							</td>
+							<td>
+								<select id="calendarId" name="calendarId">
+									<option value=0>{{=$ctx.doI18N("collection.sheet.meeting.first.choice")}}</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="dueDate">{{=$ctx.doI18N("label.collection.sheet.date.of.transaction")}}</label>
+							</td>
+							<td>
+								<input id="dueDate" name="dueDate" title="" type="text" class="datepickerfieldnoconstraint" value="" required/>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				</div>
+			</form>
 		</div>
-	<form id="entityform">
-		<div id="formerrors"></div>
-		<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
-		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-		<div style="margin-top: 5px;">
-		<table>
-			<tr>
-				<td>
-					<label for="office">{{=$ctx.doI18N("label.collection.sheet.office")}}</label>
-				</td>
-				<td>
-					<select id="officeId" name="officeId">
-						<option value=0>{{=$ctx.doI18N("collection.sheet.office.first.choice")}}</option>
-					</select>
-				</td>
-			</tr>
-			{{#if $ctx.showTask("ViewCenter")}}
-			<tr>
-				<td>
-					<label for="center">{{=$ctx.doI18N("label.collection.sheet.center")}}</label>
-				</td>
-				<td>
-					<select id="centerId" name="centerId">
-						<option value=0>{{=$ctx.doI18N("collection.sheet.center.first.choice")}}</option>
-					</select>
-				</td>
-			</tr>
-			{{/if}}
-			<tr>
-				<td>
-					<label for="group">{{=$ctx.doI18N("label.collection.sheet.group")}}</label>
-				</td>
-				<td>
-					<select id="groupId" name="groupId">
-						<option value=0>{{=$ctx.doI18N("collection.sheet.group.first.choice")}}</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label for="calendar">{{=$ctx.doI18N("label.collection.sheet.meeting")}}</label>
-				</td>
-				<td>
-					<select id="calendarId" name="calendarId">
-						<option value=0>{{=$ctx.doI18N("collection.sheet.meeting.first.choice")}}</option>
-					</select>
-				</td>
-			</tr>  
-			<tr>
-				<td>
-					<label for="dueDate">{{=$ctx.doI18N("label.collection.sheet.date.of.transaction")}}</label>
-				</td>
-				<td>
-					<input id="dueDate" name="dueDate" title="" type="text" class="datepickerfieldnoconstraint" value="" />
-				</td>
-			</tr>    
-		</table>
+
+		<div id="showcollectionsheet" style="margin-top: 5px;" title="{{=$ctx.doI18N("tab.show.collectionsheet.details")}}">
+			<div id="collectionSheetContent"> </div>
 		</div>
-		
-	</form>
-	<button id="continuebtn">{{=$ctx.doI18N("button.continue")}}</button> 
-		<br>
-		<hr>
-		<div id="collectionSheetContent"> </div>
+	</div>
 </script>
 
 <script id="collectionSheetTemplate" type="text/x-jquery-tmpl">
@@ -9258,7 +9263,6 @@ $(document).ready(function() {
 		<div id="formerrors"></div>
 		<div style="margin-top: 5px; width:100%">
 		<table class="collections pretty displaypayments">
-		<caption>{{=$ctx.doI18N("table.caption.collectionsheet")}}</caption>
 				<thead>
 					<tr>
 						<th class="empty" scope="colgroup"> </th>
@@ -9396,12 +9400,6 @@ $(document).ready(function() {
 		<div> 
 			<label for="note">{{=$ctx.doI18N("label.note")}}</label>
 			<textarea rows="5" cols="50" id="note" name="note" cssClass="text ui-widget-content ui-corner-all">{{=note}}</textarea>
-		</div>
-		<br>
-		<br>        
-		<div style="text-align:right;">
-			<button id="savebtn" >{{=$ctx.doI18N("button.save")}}</button>
-			<button id="cancelbtn" >{{=$ctx.doI18N("button.cancel")}}</button>
 		</div>
 	</form>
 </script>
