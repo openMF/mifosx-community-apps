@@ -105,6 +105,9 @@ JQuery plugins:
 <!-- This is a single Page javascript app - IndividualLendingCode.js has functions which switch functionality by replacing the html in the #container div -->
 <script type="text/javascript" src="resources/IndividualLendingCode-1.8.0.RELEASE.js"></script>
 <script type="text/javascript" src="resources/SetTenantLoadTenantConfig-1.8.0.RELEASE.js"></script>
+
+<script type="text/javascript"  src="resources/libs/ckeditor/ckeditor.js"></script>
+
 </head>
 
 <body>
@@ -11151,6 +11154,7 @@ $(document).ready(function() {
 				-<span onCLick="viewAbove({{=root.coordinator.organisational_role_enum}},{{=root.coordinator.id}})"> {{=root.coordinator.fullName}} </span>
 				{{/if}}
 			{{/if}}
+
 			{{#if root.fieldAgent.fullName !== ''}}
 				{{#if root.fieldAgent.top}}
 				<span onCLick="viewAbove({{=root.fieldAgent.organisational_role_enum}},{{=root.fieldAgent.id}})"> Start </span>

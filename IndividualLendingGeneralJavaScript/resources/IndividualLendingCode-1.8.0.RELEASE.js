@@ -262,7 +262,7 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '	<li><a href="unknown.html" onclick="auditSearch(' + "'makerchecker'" + ');return false;">' + doI18N("link.topnav.makercheckerinbox") + '</a></li>';
 	}
 	
-	if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true || jQuery.MifosXUI.showMenu("OrgAdminMenu") == true || jQuery.MifosXUI.showMenu("SysAdminMenu") == true) {
+	if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true || jQuery.MifosXUI.showMenu("OrgAdminMenu") == true || jQuery.MifosXUI.showMenu("SysAdminMenu") == true || jQuery.MifosXUI.showMenu("TemplateAdminMenu") == true) {
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.topnav.administration") + '</a>';
 		htmlVar += '		<ul>';
 		
@@ -274,6 +274,9 @@ function showMainContainer(containerDivName, username) {
 		
 		if (jQuery.MifosXUI.showMenu("SysAdminMenu") == true)
 			htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
+		
+		if (jQuery.MifosXUI.showMenu("TemplateAdminMenu") == true)
+			htmlVar += '	<li><a href="unknown.html" onclick="setTemplateAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.template") + '</a></li>';
 		
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
@@ -719,6 +722,63 @@ function setSysAdminContent(divName) {
 	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
 
 	$("#" + divName).html(simpleOptionsHtml(htmlOptions));
+}
+
+function setTemplateAdminContent(divName) {
+	
+	var htmlOptions = 
+		'<form id="doctemplateform" >'+
+			'<label>Template Name:</label>'+
+			'<input type="text" name="name" /> <br/>'+
+			
+			'<label>Mapper Key:</label>'+
+			'<input type="text" name="mappers.key" /> <br/>'+
+			
+			'<label>Mapper Value:</label>'+
+			'<input type="text" name="mappers.value" /> <br/>'+
+			
+			'<label>Mapper Key:</label>'+
+			'<input type="text" name="mappers.key" /> <br/>'+
+			
+			'<label>Mapper Value:</label>'+
+			'<input type="text" name="mappers.value" /> <br/>'+
+			
+			'<textarea id="templateeditor" name="text"></textarea>'+
+			'<input type="button" onclick="saveTemplate()" value="create">'+
+		'</form>';
+	
+	htmlOptions += '<script> CKEDITOR.replace( "templateeditor" ); </script>';
+
+	$("#" + divName).html(simpleOptionsHtml(htmlOptions));
+}
+
+function mergeMaps(keymap, valuemap) { 
+    var map = new Object(); 
+    
+    $.each(keymap, function(index, value) {
+        map[value] = valuemap[index];
+    })
+    return map;
+}
+
+function saveTemplate() {
+	
+	CKupdate();
+	
+	var formData = $('#doctemplateform').serializeObject();
+	
+	var mapper = mergeMaps(formData['mappers.key'], formData['mappers.value']);
+	
+	formData.mappers = mapper;
+	delete formData['mappers.key'];
+	delete formData['mappers.value'];
+
+	executeAjaxRequest('templates', "POST", JSON.stringify(formData), null, null);
+}
+
+function CKupdate(){
+    for ( instance in CKEDITOR.instances )
+        CKEDITOR.instances[instance].updateElement();
 }
 
 function setAccountingContent(divName) {
