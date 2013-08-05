@@ -3383,24 +3383,12 @@ function showGroup(groupId){
                 e.preventDefault();
             });
 
-            $('.groupsavingsbtn').button({icons: {
-               			 primary: "ui-icon-document-b"}
-                	}).click(function(e) {
-                var linkId = this.id;
-                var groupId = linkId.replace("addgroupnotebtn", "");
-                var postUrl = 'groups/' + groupId + '/notes';
-                var templateSelector = "#noteFormTemplate";
-                var width = 600;
-                var height = 400;
-
-                var saveSuccessFunction = function(data, textStatus, jqXHR) {
-                    $("#dialog-form").dialog("close");
-                    refreshNoteWidget('groups/' + groupId, 'groupnotes');
-                }
-
-                popupDialogWithFormView("", postUrl, 'POST', "dialog.title.add.note", templateSelector, width, height,  saveSuccessFunction);
-                e.preventDefault();
-            });
+            $('.newgroupsavingsbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
+				var linkId = this.id;
+				var groupId = linkId.replace("newgroupsavingsbtn", "");
+				launchGroupSavingsAccountDialog(groupId);
+			    e.preventDefault();
+			});
 
             $('button.addgroupnotebtn span').text(doI18N('dialog.button.add.note'));
 
@@ -4005,7 +3993,7 @@ function showCenter(centerId){
 					e.preventDefault();
 			});
 		}
-  		executeAjaxRequest(groupUrl + '/loans', 'GET', "", successFunction, formErrorFunction);	  	
+  		executeAjaxRequest(groupUrl + '/accounts', 'GET', "", successFunction, formErrorFunction);	  	
 	}
 
 	function reloadGroupLoanSummarySaveSuccessFunction(groupUrl){
@@ -5095,7 +5083,9 @@ function showCenter(centerId){
 		}
 		else if(!(groupId === undefined)){
 			executeAjaxRequest('savingsaccounts/template?groupId=' + groupId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
-		}	
+		}else if(!(clientId === undefined) && !(groupId === undefined)) {
+			executeAjaxRequest('savingsaccounts/template?clientId=' + clientId + '&groupId=' + groupId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+		};
 	}
 	
 	function submitTabbedSavingsAccount(divContainer, clientId, groupId) {
@@ -5250,6 +5240,11 @@ function showCenter(centerId){
 	function launchGroupSavingsAccountDialog(groupId) {
 		executeAjaxRequest('savingsaccounts/template?groupId=' + groupId, 'GET', "", launchSavingsAccountDialogOnSuccessFunction, formErrorFunction);
 	}
+
+	function launchJLGSavingsAccountDialog(clientId,groupId) {
+		executeAjaxRequest('savingsaccounts/template?groupId=' + groupId, 'GET', "", launchSavingsAccountDialogOnSuccessFunction, formErrorFunction);
+	}
+
 	// end of savings account
 	
 	function removeLoanCharge(loanId, loanChargeId, parenttab) {
@@ -8929,35 +8924,54 @@ function postInterest(){
 	popupConfirmationDialogAndPost(url, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadClientListing);
 }
 
-function showSavingAccount(accountId, accountNo, productName) {
+function showILSavingAccount(loanId, product, loanAccountNo) {
+	showSavingAccount(loanId, product, loanAccountNo, 'clientdatatabs');	
+}
+
+function showGroupSavingAccount(loanId, product, loanAccountNo) {
+	showSavingAccount(loanId, product, loanAccountNo, 'groupdatatabs');	
+}
+
+
+function showSavingAccount(accountId, accountNo, productName,parenttab) {
 	
 	var newSavingTabId='saving'+accountId+'tab';
 	
 	//show existing tab if this Id is already present
-	if(tabExists('clientdatatabs', newSavingTabId)){
-		var index = $('#clientdatatabs a[href="#'+ newSavingTabId +'"]').parent().index(); 
-		$('#clientdatatabs').tabs("option", "active", index);
+	if(tabExists(parenttab, newSavingTabId)){
+		var index = $('#'+ parenttab +' a[href="#'+ newSavingTabId +'"]').parent().index(); 
+		$('#'+ parenttab).tabs("option", "active", index);
 	}
 	//else create new tab and set identifier properties
 	else{
 		var title = productName + ": #" + accountNo;			    
 		// $newtabs.tabs( "add", "unknown.html", title); Deprecated
 		$newtabs.addTab(newSavingTabId, title);
-		$newtabs.tabs( "option", "active", $('#clientdatatabs > ul > li').length-1);
-		loadSavingAccount(accountId);
+		$newtabs.tabs( "option", "active", $('#'+ parenttab +' > ul > li').length-1);
+		loadSavingAccount(accountId,parenttab);
 		}
 }
 
-function genSaveSuccessFunctionReloadSaving(savingAccountId) {
+function genSaveSuccessFunctionReloadLoan(loanId, parenttab) {
+		return 'var saveSuccessFunctionReloadLoan = function(data, textStatus, jqXHR) { ' + 
+						  	' $("#dialog-form").dialog("close");' +
+						  	' var contentTab = ' + parenttab + ';' +
+							' loadLoan(' + loanId + ', "' + parenttab + '");' +
+							' clientDirty = true;' +
+							' groupDirty = true;' +
+						'};';
+	}
+
+function genSaveSuccessFunctionReloadSaving(savingAccountId,parenttab) {
 
 	return 'var saveSuccessFunctionReloadSaving = function(data, textStatus, jqXHR) { ' +
 	' $("#dialog-form").dialog("close");' +
-	' loadSavingAccount(' + savingAccountId + ');' +
+	' loadSavingAccount(' + savingAccountId + ', "' + parenttab + '");' +
 	' clientDirty = true;' +
 	'};';
 }
 
-function loadSavingAccount(accountId) {
+function loadSavingAccount(accountId,parenttab) {
 	
 	var accountUrl = 'savingsaccounts/' + accountId+ "?associations=all";
 
@@ -8971,7 +8985,7 @@ function loadSavingAccount(accountId) {
     	
     	var tableHtml = $("#savingAccountDataTabTemplate").render(data);
     	
-		var currentTab = $("#clientdatatabs").children(".ui-tabs-panel").not('[aria-hidden="true"]');
+		var currentTab = $("#"+parenttab).children(".ui-tabs-panel").not('[aria-hidden="true"]');
 		currentTab.html(tableHtml);
 
 		var curTabID = currentTab.prop("id");
@@ -9032,7 +9046,7 @@ function loadSavingAccount(accountId) {
 			var width = 425; 
 			var height = 225;
 
-			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 			popupDialogWithFormView(getUrl, putUrl, 'PUT', "dialog.title.edit.accountno", templateSelector, width,  height, saveSuccessFunctionReloadSaving);
 		    e.preventDefault();
 		});
@@ -9077,7 +9091,7 @@ function loadSavingAccount(accountId) {
 			var width = 500; 
 			var height = 350;
 			var defaultOffset = offsetToSubmittedDate;
-			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.approve.savingsaccount', templateSelector, width, height, saveSuccessFunctionReloadSaving,  offsetToSubmittedDate, defaultOffset, maxOffset)
 		    e.preventDefault();
 		});
@@ -9089,7 +9103,7 @@ function loadSavingAccount(accountId) {
 				var width = 500; 
 				var height = 350;
 				var defaultOffset = offsetToSubmittedDate;
-				eval(genSaveSuccessFunctionReloadSaving(accountId));
+				eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 				popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.undoapproval.savingsaccount', templateSelector, width, height, saveSuccessFunctionReloadSaving, offsetToSubmittedDate, defaultOffset, maxOffset)
 			    e.preventDefault();
 		});
@@ -9102,7 +9116,7 @@ function loadSavingAccount(accountId) {
 			var height = 225;
 			
 			var defaultOffset = offsetToApprovalDate;
-			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.title.activation', templateSelector, width, height, saveSuccessFunctionReloadSaving, offsetToApprovalDate, defaultOffset, maxOffset);
 		    e.preventDefault();
 		});
@@ -9115,7 +9129,7 @@ function loadSavingAccount(accountId) {
 			var width = 400; 
 			var height = 280;
 
-			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.deposit', templateSelector, width, height, saveSuccessFunctionReloadSaving);
 		    
 			e.preventDefault();
@@ -9131,7 +9145,7 @@ function loadSavingAccount(accountId) {
 			var width = 400; 
 			var height = 280;
 
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId));
+			eval(genSaveSuccessFunctionReloadSaving(savingAccountId,parenttab));
 			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdrawal', templateSelector, width, height, saveSuccessFunctionReloadSaving);
 		    
 			e.preventDefault();
@@ -9143,7 +9157,7 @@ function loadSavingAccount(accountId) {
 			var width = 400; 
 			var height = 280;
 			
-			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 			popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.calculateInterest', width, height, 0, saveSuccessFunctionReloadSaving);
 			e.preventDefault();
 		});
@@ -9154,7 +9168,7 @@ function loadSavingAccount(accountId) {
 			var width = 400; 
 			var height = 280;
 			
-			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 			popupConfirmationDialogAndPost(postUrl, 'POST', 'dialog.title.postInterest', width, height, 0, saveSuccessFunctionReloadSaving);
 			e.preventDefault();
 		});
@@ -9168,7 +9182,7 @@ function loadSavingAccount(accountId) {
 			var width = 400; 
 			var height = 280;
 
-			eval(genSaveSuccessFunctionReloadSaving(accountId));
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.applyAnnualFee', templateSelector, width, height, saveSuccessFunctionReloadSaving);
 		    
 			e.preventDefault();
@@ -9195,7 +9209,7 @@ function loadSavingAccount(accountId) {
             searializedArray["transactionAmount"] = 0;
             var jsonString = JSON.stringify(searializedArray);
         
-            eval(genSaveSuccessFunctionReloadSaving(accountId));
+            eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
             popupConfirmationDialogAndPost(postURL, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadSaving, jsonString);
             e.preventDefault();
         }); 
