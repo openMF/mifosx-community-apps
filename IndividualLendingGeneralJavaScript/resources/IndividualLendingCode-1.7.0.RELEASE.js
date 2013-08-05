@@ -6810,6 +6810,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 						}	
 					}
 				}
+				//End group create specific code
 
 				if (templateSelector == "#userFormTemplate") 
 				{
@@ -6820,6 +6821,9 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 			        		$('#passworddiv').hide();
 			        	}
 			    	});
+					if (submitType == "PUT") {
+						$('#sendPasswordCheckboxDiv').hide();
+					};
 				}	
 				
 				if (templateSelector == "#userFormTemplate" && submitType == "PUT") 
@@ -6828,7 +6832,6 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
         			$('#passworddiv').remove();
 				}	
 
-				//End group create specific code
 		  	};
 
 		if (getUrl == "") {
@@ -7121,6 +7124,13 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			delete serializedArray.debitRuleType;
 			delete serializedArray.creditRuleType;
 		}
+
+		if (templateSelector == '#userFormTemplate') {
+			if (serializedArray.password === "") {
+				delete serializedArray.password;
+			}
+		}
+
 		var newFormData = JSON.stringify(serializedArray);
 		if (postUrl.toLowerCase().indexOf("permissions") > -1) {
 			var permissions = {};
