@@ -3408,6 +3408,14 @@ function showGroup(groupId){
             launchJLGLoanApplicationDialog(clientId, groupId);
             e.preventDefault();
 		});
+		$('.addnewjlgsavingstn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
+			var linkId = this.id;
+            var clientId = linkId.replace("addnewjlgsavingstn", "");
+            var groupId = currentGroupId;
+            launchJLGSavingsAccountDialog(clientId, groupId);
+            e.preventDefault();
+		});
+
 		$('.disassociateClient	').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
 			var linkId = this.id;
             var clientId = linkId.replace("disassociateClient", "");
@@ -5078,13 +5086,13 @@ function showCenter(centerId){
 		};
 		
 		// load savings account template providing selected client and product infomation
-		if(!(clientId === undefined)) {
+		if(!(clientId === undefined) && !(groupId === undefined)) {
+			executeAjaxRequest('savingsaccounts/template?clientId=' + clientId + '&groupId=' + groupId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
+		}else if(!(clientId === undefined)) {
 			executeAjaxRequest('savingsaccounts/template?clientId=' + clientId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
 		}
 		else if(!(groupId === undefined)){
 			executeAjaxRequest('savingsaccounts/template?groupId=' + groupId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
-		}else if(!(clientId === undefined) && !(groupId === undefined)) {
-			executeAjaxRequest('savingsaccounts/template?clientId=' + clientId + '&groupId=' + groupId + '&productId=' + productId, 'GET', "", loadTabsOnSuccessFunction, formErrorFunction);
 		};
 	}
 	
@@ -5242,7 +5250,7 @@ function showCenter(centerId){
 	}
 
 	function launchJLGSavingsAccountDialog(clientId,groupId) {
-		executeAjaxRequest('savingsaccounts/template?groupId=' + groupId, 'GET', "", launchSavingsAccountDialogOnSuccessFunction, formErrorFunction);
+		executeAjaxRequest('savingsaccounts/template?clientId=' + clientId +'&groupId=' + groupId, 'GET', "", launchSavingsAccountDialogOnSuccessFunction, formErrorFunction);
 	}
 
 	// end of savings account
@@ -8978,6 +8986,7 @@ function genSaveSuccessFunctionReloadSaving(savingAccountId,parenttab) {
 	' $("#dialog-form").dialog("close");' +
 	' loadSavingAccount(' + savingAccountId + ', "' + parenttab + '");' +
 	' clientDirty = true;' +
+	' groupDirty = true;' +
 	'};';
 }
 
