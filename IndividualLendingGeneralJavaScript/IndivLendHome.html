@@ -1431,7 +1431,7 @@ $(document).ready(function() {
 		<button id="newbulkloanbtn{{=id}}" class="newbulkloanbtn">{{=$ctx.doI18N("label.group.new.bulk.loan.account")}}</button>
         {{/if}}
         {{#if $ctx.showTask("AddGroupSavings")}}
-        <!-- <button id="newgroupsavingsbtn{{=id}}" class="newgroupsavingsbtn">{{=$ctx.doI18N("label.group.new.saving.account")}}</button>-->
+         <button id="newgroupsavingsbtn{{=id}}" class="newgroupsavingsbtn">{{=$ctx.doI18N("label.group.new.saving.account")}}</button>
         {{/if}}
 
 	{{#else}}
@@ -1444,7 +1444,7 @@ $(document).ready(function() {
 			<button id="editstandardgroupbtn{{=id}}" class="editstandardgroupbtn">{{=$ctx.doI18N("label.group.edit")}}</button>
 		{{/if}}
 		<button id="deletegroupbtn{{=id}}" class="deletegroupbtn">{{=$ctx.doI18N("label.group.delete")}}</button>
-		{{/if}}
+	{{/if}}
         <button id="associateclientbtn{{=id}}" class="associateclientbtn">{{=$ctx.doI18N("label.group.associate.clients")}}</button>
         <button id="addclientbtn{{=id}}" class="addclientbtn">{{=$ctx.doI18N("label.group.add.client")}}</button>
         {{#if centerId}}
@@ -1483,6 +1483,11 @@ $(document).ready(function() {
 					<td>
 					{{#if activationDate}}
 					<button id="addnewjlgloanbtn{{=id}}" class="addnewjlgloanbtn">{{=$ctx.doI18N("label.group.new.client.loan.account")}}</button>
+					{{/if}}
+					</td>
+					<td>
+					{{#if activationDate}}
+					<button id="addnewjlgsavingstn{{=id}}" class="addnewjlgsavingstn">{{=$ctx.doI18N("label.group.new.client.savings.account")}}</button>
 					{{/if}}
 					</td>
 					<td>
@@ -6526,11 +6531,12 @@ $(document).ready(function() {
 	<table>
 			<tr>
 				<td valign="top">
-				{{=$ctx.doI18N("label.applicant")}}
+				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}<br><br>{{/if}}
+				{{#if groupName}}{{=$ctx.doI18N("label.group")}}{{/if}}
 				</td>
 				<td valign="top">
 				{{#if clientName}}
-				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" /><br><br>
 				{{/if}}
 				{{#if groupName}}
 				<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
@@ -6574,11 +6580,12 @@ $(document).ready(function() {
 	<table>
 			<tr>
 				<td valign="top">
-				{{=$ctx.doI18N("label.applicant")}}
+				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}<br><br>{{/if}}
+				{{#if groupName}}{{=$ctx.doI18N("label.group")}}{{/if}}
 				</td>
 				<td valign="top">
 				{{#if clientName}}
-				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" />
+				<input id="clientname" name="clientName" title="" type="text" value="{{=clientName}}" disabled="disabled" style="width: 300px;" /><br><br>
 				{{/if}}
 				{{#if groupName}}
 				<input id="groupname" name="groupName" title="" type="text" value="{{=groupName}}" disabled="disabled" style="width: 300px;" />
@@ -8873,6 +8880,7 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.productname")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.accounttype")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.status")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.balance")}}</th>
@@ -8882,6 +8890,7 @@ $(document).ready(function() {
 		{{#each savingsAccounts}}
 		<tr>
 			<td>{{=productName}}</td>
+			<td>{{=$ctx.doI18N(accountType.code)}}</td>
 			<td><a href="unknown.html" onclick="showILSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
 			<td><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
 			<td>{{=$ctx.moneyFormatted(currency, accountBalance)}}</td>
