@@ -5164,9 +5164,12 @@ function showCenter(centerId){
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);	
 
+		var groupId = null;
+		
         //If JLG loan, send group id and calendar id
         if(!(group === undefined)){
-            serializedArray["groupId"] = group.id;//This is group loan
+        	groupId = group.id;
+            serializedArray["groupId"] = groupId;
             serializedArray["calendarId"] = $("#calendarId").val();
         }
 
@@ -5177,7 +5180,7 @@ function showCenter(centerId){
 			if(data.groupId) {
 				// not handled.
 			} else {
-				loadSavingAccount(savingsId); // "clientdatatabs"
+				loadSavingAccount(savingsId, 'clientdatatabs');
 			}
 		};
 		
@@ -8967,7 +8970,7 @@ function showSavingAccount(accountId, accountNo, productName,parenttab) {
 		$newtabs.addTab(newSavingTabId, title);
 		$newtabs.tabs( "option", "active", $('#'+ parenttab +' > ul > li').length-1);
 		loadSavingAccount(accountId,parenttab);
-		}
+	}
 }
 
 function genSaveSuccessFunctionReloadLoan(loanId, parenttab) {
@@ -8991,7 +8994,10 @@ function genSaveSuccessFunctionReloadSaving(savingAccountId,parenttab) {
 }
 
 function loadSavingAccount(accountId,parenttab) {
-	
+
+	var clientId = null;
+	var groupId = null;
+
 	var accountUrl = 'savingsaccounts/' + accountId+ "?associations=all";
 
 	var errorFunction = function(jqXHR, status, errorThrown, index, anchor) {
@@ -8999,6 +9005,10 @@ function loadSavingAccount(accountId,parenttab) {
 	};
 	
 	var successFunction = function(data, status, xhr) {
+		
+		clientId = data.clientId;
+		groupId = data.groupId;
+		
 		var currentTabIndex = $newtabs.tabs('option', 'active');
     	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
     	
@@ -9156,15 +9166,13 @@ function loadSavingAccount(accountId,parenttab) {
 		$('button.savingsaccountdeposit span').text(doI18N('button.deposit'));
 		
 		$('.savingsaccountwithdrawal'+accountId).button({icons: {primary: "ui-icon-arrowthick-1-w"}}).click(function(e) {
-			var linkId = this.id;
-			var savingAccountId = linkId.replace("savingsaccountwithdrawalbtn", "");
-			var postUrl = 'savingsaccounts/' + savingAccountId + '/transactions?command=withdrawal';
-			var getUrl = 'savingsaccounts/' + savingAccountId + '/transactions/template?command=withdrawal';
+			var postUrl = 'savingsaccounts/' + accountId + '/transactions?command=withdrawal';
+			var getUrl = 'savingsaccounts/' + accountId + '/transactions/template?command=withdrawal';
 			var templateSelector = "#savingsAccountTransactionFormTemplate";
 			var width = 400; 
 			var height = 280;
 
-			eval(genSaveSuccessFunctionReloadSaving(savingAccountId,parenttab));
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
 			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.withdrawal', templateSelector, width, height, saveSuccessFunctionReloadSaving);
 		    
 			e.preventDefault();
@@ -9208,6 +9216,21 @@ function loadSavingAccount(accountId,parenttab) {
 		});
 		$('button.savingsaccountapplyannualfee span').text(doI18N('button.applyAnuualFee'));
 		
+		$('.savingsaccountfundstransfer'+accountId).button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
+			
+			var postUrl = 'accounttransfers/';
+			var getUrl = 'accounttransfers/template?fromClientId=' + clientId + '&fromAccountId=' + accountId + '&fromAccountType=2';
+			var templateSelector = "#accounttransfersFormTemplate";
+			var width = 800; 
+			var height = 300;
+
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
+			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.transferFunds', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    
+			e.preventDefault();
+		});
+		$('button.savingsaccountfundstransfer span').text(doI18N('button.transferFunds'));
+		
 		$('.undotransaction').button({icons : {primary : "ui-icon-trash"},text : false}).click(function(e) {
 			
 			var linkId = this.id;
@@ -9233,6 +9256,15 @@ function loadSavingAccount(accountId,parenttab) {
             e.preventDefault();
         }); 
 		
+		$('.showtransferdetails').button({icons : {primary : "ui-icon-info"},text : false}).click(function(e) {
+			
+			var linkId = this.id;
+			var transferId = linkId.replace("showtransferdetailsbtn", "");
+			
+			viewTransferDetails(transferId);
+            e.preventDefault();
+        }); 
+		
 		/*
 		 * This works but not showing savings datatables by default yet.  When ready just uncomment
 		 * custom.showRelatedDataTableInfo($savingtabs, "m_savings_account", accountId); 
@@ -9240,6 +9272,36 @@ function loadSavingAccount(accountId,parenttab) {
 	}
 		
 	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
+}
+
+function viewTransferDetails(transferId) {
+
+	var url = 'accounttransfers/' + transferId;
+
+	var successFunction = function(data, textStatus, jqXHR) {
+
+		var dialogDiv = $("<div id='dialog-form'></div>");
+		var html = $("#accounttransfersDetailsTemplate").render(data);
+		dialogDiv.append(html);
+		
+		var closeButton = doI18N('dialog.button.close');
+		var buttonsOpts = {};	
+		buttonsOpts[closeButton] = function() {$(this).dialog( "close" );};
+		
+		dialogDiv.dialog({
+		  		title: doI18N("dialog.title.transferdetails"), 
+				width : custom.fitPopupWidth(),
+				height : custom.fitPopupHeight(),
+		  		modal: true,
+		  		buttons: buttonsOpts,
+	  			close: function() {
+	  				$(this).remove();
+				}
+		  }).dialog('open');
+
+	};
+		
+	executeAjaxRequest(url, 'GET', "", successFunction, formErrorFunction);
 }
 
 function checkSubmit(e, logonDivName, username, password)

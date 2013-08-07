@@ -6828,6 +6828,10 @@ $(document).ready(function() {
 				{{#if $ctx.showTask("APPLYANNUALFEESAVINGSACCOUNT")}}
 				<button id="savingsaccountapplyannualfeebtn{{=id}}" class="savingsaccountapplyannualfee{{=id}}">{{=$ctx.doI18N("button.applyAnnualFee")}}</button>
 				{{/if}}
+
+				{{#if $ctx.showTask("APPLYANNUALFEESAVINGSACCOUNT")}}
+				<button id="savingsaccountfundstransferbtn{{=id}}" class="savingsaccountfundstransfer{{=id}}">{{=$ctx.doI18N("button.transferFunds")}}</button>
+				{{/if}}
 			{{/if}}
 
 			{{#if status.approved}}
@@ -6994,6 +6998,7 @@ $(document).ready(function() {
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.transfer")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.debit")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.credit")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.balance")}}</th>
@@ -7009,6 +7014,13 @@ $(document).ready(function() {
 		{{/if}}
 			<td>{{=$ctx.globalDate(date)}}</td>
 			<td>{{=$ctx.doI18N(transactionType.code)}}</td>
+            
+			{{#if transfer}}
+			<td><button id="showtransferdetailsbtn{{=transfer.id}}" class="showtransferdetails" title="{{=transfer.transferDescription}}">{{=$ctx.doI18N("button.info")}}</button></td>
+			{{#else}}
+			<td>&nbsp;</td>
+			{{/if}}
+
 			{{#if $ctx.isCredit(transactionType)}}
 			<td>&nbsp;</td>
 			<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
@@ -7018,13 +7030,18 @@ $(document).ready(function() {
 			{{/if}}
 			<td>{{=$ctx.monetaryValue(currency, runningBalance)}}</td>
 
-			{{#if reversed}}
-			<td>&nbsp;</td>
+			{{#if transfer}}
+				<td>&nbsp;</td>
 			{{#else}}
-			<td>
-			<button id="undotransactionbtn{{=id}}_{{=accountId}}" class="undotransaction">{{=$ctx.doI18N("button.undo")}}</button>
-			</td>
+				{{#if reversed}}
+					<td>&nbsp;</td>
+				{{#else}}
+				<td>
+				<button id="undotransactionbtn{{=id}}_{{=accountId}}" class="undotransaction">{{=$ctx.doI18N("button.undo")}}</button>
+				</td>
+				{{/if}}
 			{{/if}}
+			
 		</tr>
 	{{/each}}
 	</tbody>
@@ -7032,6 +7049,188 @@ $(document).ready(function() {
 	</div>
 	{{/if}}
 </div>
+</script>
+
+<script id="accounttransfersDetailsTemplate" type="text/x-jquery-tmpl">
+<div id="accounttransferDetails">
+	<b>Transaction Details</b>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.amount")}}</span>
+		<span class="rowvalue">{{=$ctx.moneyFormatted(currency, transferAmount)}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.transactionDate")}}</span>
+		<span class="rowvalue">{{=$ctx.globalDate(transferDate)}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.description")}}</span>
+		<span class="rowvalue">{{=transferDescription}}</span>
+	</div>
+	<br/>
+	<b>Transferred from:</b>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
+		<span class="rowvalue">{{=fromOffice.name}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client")}}</span>
+		<span class="rowvalue">{{=fromClient.displayName}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.account")}}</span>
+		<span class="rowvalue">{{=fromAccount.accountNo}}</span>
+	</div>
+	<br/>
+	<b>Transferred to:</b>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.office")}}</span>
+		<span class="rowvalue">{{=toOffice.name}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.client")}}</span>
+		<span class="rowvalue">{{=toClient.displayName}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.account")}}</span>
+		<span class="rowvalue">{{=toAccount.accountNo}}</span>
+	</div>
+</div>
+</script>
+
+<script id="accounttransfersFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+
+    <input type="hidden" id="fromOfficeIdHidden" name="fromOfficeId" value="{{=$ctx.number(fromOffice.id)}}" />
+	<input type="hidden" id="fromClientIdHidden" name="fromClientId" value="{{=$ctx.number(fromClient.id)}}" />
+	<input type="hidden" id="fromAccountIdHidden" name="fromAccountId" value="{{=$ctx.number(fromAccount.id)}}" />
+    <input type="hidden" id="fromAccountTypeHidden" name="fromAccountType" value="2" />
+	<input type="hidden" id="toAccountTypeHidden" name="toAccountType" value="2" />
+
+	<table>
+		<tr>
+			<td valign="top">
+				<table>
+					<tr>
+					<td>{{=$ctx.doI18N("label.office")}}</td>
+					<td>
+						<select id="fromOfficeId" name="fromOfficeId" title="" disabled=disabled>
+					<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+					{{#each fromOfficeOptions}}
+						{{#if $ctx.number($parent.parent.data.fromOffice.id)===$ctx.number(id)}}
+							<option value="{{=id}}" selected="selected">{{=name}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=name}}</option>
+						{{/if}}
+					{{/each}}
+						</select>
+					</td>
+					</tr>
+					<tr>
+					<td>{{=$ctx.doI18N("label.client")}}</td>
+					<td>
+						<select id="fromClientId" name="fromClientId" title="" disabled=disabled>
+						<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+						{{#each fromClientOptions}}
+						{{#if $ctx.number($parent.parent.data.fromClient.id)===$ctx.number(id)}}
+							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=displayName}}</option>
+						{{/if}}
+						{{/each}}
+						</select>
+					</td>
+					</tr>
+					<tr>
+					<td>{{=$ctx.doI18N("label.account")}}</td>
+					<td>
+						<select id="fromAccountId" name="fromAccountId" title="" disabled=disabled>
+						<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+						{{#each fromAccountOptions}}
+						{{#if $ctx.number($parent.parent.data.fromAccount.id)===$ctx.number(id)}}
+							<option value="{{=id}}" selected="selected">{{=savingsProductName}} - {{=accountNo}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=savingsProductName}} - {{=accountNo}}</option>
+						{{/if}}
+						{{/each}}
+						</select>
+					</td>
+					</tr>
+					<tr>
+						<td>{{=$ctx.doI18N("label.amount")}}</td>
+						<td><input id="transferAmount" name="transferAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, transferAmount)}}" /></td>
+					</tr>
+					<tr>
+						<td>{{=$ctx.doI18N("label.transactionDate")}}</td>
+						<td><input id="transferDate" name="transferDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(transferDate)}}"/></td>
+					</tr>
+					<tr>
+						<td>{{=$ctx.doI18N("label.description")}}</td>
+						<td><input id="transferDescription" name="transferDescription" title="" value="{{=transferDescription}}"/></td>
+					</tr>
+				</table>
+			</td>
+
+			<td>&nbsp; - &nbsp;</td>
+
+			<td valign="top">
+				<table>
+					<tr>
+					<td>{{=$ctx.doI18N("label.office")}}</td>
+					<td>
+						<select id="toOfficeId" name="toOfficeId" title="">
+							<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each toOfficeOptions}}
+						{{#if $ctx.number($parent.parent.data.toOffice.id)===$ctx.number(id)}}
+							<option value="{{=id}}" selected="selected">{{=name}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=name}}</option>
+						{{/if}}
+					{{/each}}
+						</select>
+					</td>
+					</tr>
+					<tr>
+					<td>{{=$ctx.doI18N("label.client")}}</td>
+					<td>
+						<select id="toClientId" name="toClientId" title="">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each toClientOptions}}
+						{{#if $ctx.number($parent.parent.data.toClient.id)===$ctx.number(id)}}
+							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=displayName}}</option>
+						{{/if}}
+							{{/each}}
+						</select>
+					</td>
+					</tr>
+					<tr>
+					<td>{{=$ctx.doI18N("label.account")}}</td>
+					<td>
+						<select id="toAccountId" name="toAccountId" title="">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each toAccountOptions}}
+							{{#if $parent.parent.data.toAccount}}
+								{{#if $ctx.number($parent.parent.data.toAccount.id)===$ctx.number(id)}}
+									<option value="{{=id}}" selected="selected">{{=savingsProductName}} - {{=accountNo}}</option>
+								{{#else}}
+									<option value="{{=id}}">{{=savingsProductName}} - {{=accountNo}}</option>
+								{{/if}}
+							{{#else}}
+								<option value="{{=id}}">{{=savingsProductName}} - {{=accountNo}}</option>
+							{{/if}}
+							{{/each}}
+						</select>
+					</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>
 </script>
 
 <script id="savingsAccountApplyAnnualFeeFormTemplate" type="text/x-jquery-tmpl">
@@ -7044,16 +7243,6 @@ $(document).ready(function() {
 			<td>{{=$ctx.doI18N("label.transactionDate")}}</td>
 			<td><input id="annualFeeTransactionDate" name="annualFeeTransactionDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(annualFeeNextDueDate)}}"/></td>
 		</tr>
-<!--
-		<tr>
-		<td><label for="transactionDate">{{=$ctx.doI18N("label.transactionDate")}}</label></td>
-		<td><select id="transactionDate" name="transactionDate" title="" >
-			{{#each annualFeeTransactionDateOptions}}
-				<option value="{{=$ctx.globalDate(date)}}">{{=$ctx.globalDate(date)}}</option>
-			{{/each}}
-		</select></td>
-		</tr>
--->
 	</table>
 </form>
 </script>
