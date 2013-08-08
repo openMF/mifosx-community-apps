@@ -9255,6 +9255,29 @@ function loadSavingAccount(accountId,parenttab) {
             popupConfirmationDialogAndPost(postURL, 'POST', 'dialog.title.confirmation.required', width, height, 0, saveSuccessFunctionReloadSaving, jsonString);
             e.preventDefault();
         }); 
+
+		$('.adjusttransaction').button({
+                icons : {
+                    primary : "ui-icon-pencil"
+                },
+                text : false
+            }).click(function(e) {
+				var linkId = this.id;
+				var transactionAndAccountId = linkId.replace("adjusttransaction", "");
+				var ids = transactionAndAccountId.split("_");
+				var transactionId = ids[0];
+				var savingsAccountId = ids[1];
+				var postURL = 'savingsaccounts/' + savingsAccountId + '/transactions/' + transactionId + '?command=modify';
+				var getUrl = 'savingsaccounts/' + savingsAccountId + '/transactions/' + transactionId + '?template=true';
+				var templateSelector = "#savingsAccountTransactionFormTemplate";
+				var width = 400; 
+				var height = 280;
+				var defaultOffset = offsetToApprovalDate;
+
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
+			popupDialogWithFormView(getUrl, postURL, 'POST', 'dialog.title.adjust', templateSelector, width, height, saveSuccessFunctionReloadSaving);
+		    
+			e.preventDefault();		});
 		
 		$('.showtransferdetails').button({icons : {primary : "ui-icon-info"},text : false}).click(function(e) {
 			

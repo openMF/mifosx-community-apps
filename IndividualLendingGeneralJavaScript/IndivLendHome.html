@@ -7036,12 +7036,14 @@ $(document).ready(function() {
 				{{#if reversed}}
 					<td>&nbsp;</td>
 				{{#else}}
-				<td>
-				<button id="undotransactionbtn{{=id}}_{{=accountId}}" class="undotransaction">{{=$ctx.doI18N("button.undo")}}</button>
-				</td>
+					<td>
+						{{#if transactionType.deposit or transactionType.withdrawal}}
+						<button id="adjusttransaction{{=id}}_{{=accountId}}" class="adjusttransaction">{{=$ctx.doI18N("ADJUST")}}</button>
+						{{/if}}
+						<button id="undotransactionbtn{{=id}}_{{=accountId}}" class="undotransaction">{{=$ctx.doI18N("button.undo")}}</button>
+					</td>
 				{{/if}}
 			{{/if}}
-			
 		</tr>
 	{{/each}}
 	</tbody>
@@ -7259,14 +7261,24 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td>{{=$ctx.doI18N("label.amount")}}</td>
-			<td><input id="transactionAmount" name="transactionAmount" title="" type="text" value="{{=$ctx.moneyFormatted(currency, amount)}}" /></td>
+			<td><input id="transactionAmount" name="transactionAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" /></td>
 		</tr>
 		<tr>
 		<td><label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label></td>
 		<td><select id="paymentTypeId" name="paymentTypeId" title="" >
+		{{#if paymentDetailData}}
+			{{#each paymentTypeOptions}}
+				{{#if $parent.parent.data.paymentDetailData.paymentType.id === id)}}
+					<option value="{{=id}}" selected="true">{{=$ctx.doI18N(name)}}</option>
+				{{#else}}
+					 <option value="{{=id}}">{{=$ctx.doI18N(name)}}</option>
+				{{/if}}
+			{{/each}}
+		{{#else}}
 			{{#each paymentTypeOptions}}
 					<option value="{{=id}}">{{=$ctx.doI18N(name)}}</option>
 			{{/each}}
+		{{/if}}
 		</select></td>
 		</tr>
 		
@@ -7277,28 +7289,48 @@ $(document).ready(function() {
 
 		<tr>
 		<td><label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label></td>
-		<td><input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail"/></td>
+		{{#if paymentDetailData}}
+				<td><input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail" value="{{=paymentDetailData.accountNumber}}"/></td>
+		{{#else}}
+				<td><input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail"/></td>
+		{{/if}}
 		</tr> 
 
 		<tr>
 		<td><label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label></td>
-		<td><input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail"/></td>
+		{{#if paymentDetailData}}
+				<td><input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail" value="{{=paymentDetailData.checkNumber}}"/></td>
+		{{#else}}
+				<td><input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail"/></td>
+		{{/if}}
+
 		</tr> 
 
 		<tr>
 		<td><label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label></td>
-		<td><input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail"/></td>
+		{{#if paymentDetailData}}
+			<td><input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail" value="{{=paymentDetailData.routingCode}}"/></td>
+		{{#else}}
+			<td><input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail"/></td>
+		{{/if}}
 		</tr> 
 		
 		<tr>
 		<td><label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label></td>
-		<td><input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail"/></td>
+		{{#if paymentDetailData}}
+				<td><input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail" value="{{=paymentDetailData.receiptNumber}}"/></td>
+		{{#else}}
+				<td><input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail"/></td>
+		{{/if}}
 		</tr> 
 		
-
 		<tr>
 		<td><label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label></td>
-		<td><input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail"/></td>
+		{{#if paymentDetailData}}
+				<td><input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail" value="{{=paymentDetailData.bankNumber}}"/></td>
+		{{#else}}
+				<td><input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail"/></td>
+		{{/if}}
 		</tr> 
 	</table>
 </form>
