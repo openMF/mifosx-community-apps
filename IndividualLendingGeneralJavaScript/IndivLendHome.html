@@ -1756,52 +1756,55 @@ $(document).ready(function() {
 </script>
 
 <script id="groupAccountSummariesTemplate" type="text/x-jquery-tmpl">
-{{#if $ctx.showTask("VIEWLOANS")}}
-<p><b>{{=$ctx.doI18N("heading.loanaccount.overview")}}</b></p>
-<table id="loanaccountstable" class="pretty displayschedule">
-	<thead>
-		<tr>
-			<th>{{=$ctx.doI18N("table.heading.productname")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.status")}}</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{#each loanAccounts}}
-		<tr>
-			<td>{{=productName}}</td>
-			<td><a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
-		</tr>
-		{{/each}}
-	</tbody>
-</table>
-{{/if}}
+	{{#if $ctx.showTask("VIEWLOANS")}}
+		{{#if loanAccounts}}
+			<p><b>{{=$ctx.doI18N("heading.loanaccount.overview")}}</b></p>
+			<table id="loanaccountstable" class="pretty displayschedule">
+				<thead>
+					<tr>
+						<th>{{=$ctx.doI18N("table.heading.productname")}}</th>
+						<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
+						<th>{{=$ctx.doI18N("table.heading.status")}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each loanAccounts}}
+					<tr>
+						<td>{{=productName}}</td>
+						<td><a href="unknown.html" onclick="showGroupLoan({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+						<td><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		{{/if}}
+	{{/if}}
 
-{{#if $ctx.showTask("VIEWSAVINGACCOUNTS")}}
-<p><b>{{=$ctx.doI18N("heading.savingaccount.overview")}}</b></p>
-<table id="savingsaccountstable" class="pretty displayschedule">
-	<thead>
-		<tr>
-			<th>{{=$ctx.doI18N("table.heading.productname")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.status")}}</th>
-			<th>{{=$ctx.doI18N("table.heading.balance")}}</th>
-		</tr>
-	</thead>
-	<tbody>
-		{{#each savingsAccounts}}
-		<tr>
-			<td>{{=productName}}</td>
-			<td><a href="unknown.html" onclick="showGroupSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
-			<td><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
-			<td>{{=$ctx.moneyFormatted(currency, accountBalance)}}</td>
-		</tr>
-		{{/each}}
-	</tbody>
-</table>
-{{/if}}
-
+	{{#if $ctx.showTask("VIEWSAVINGACCOUNTS")}}
+		{{#if savingsAccounts}}
+			<p><b>{{=$ctx.doI18N("heading.savingaccount.overview")}}</b></p>
+			<table id="savingsaccountstable" class="pretty displayschedule">
+				<thead>
+					<tr>
+						<th>{{=$ctx.doI18N("table.heading.productname")}}</th>
+						<th>{{=$ctx.doI18N("table.heading.accountno")}}</th>
+						<th>{{=$ctx.doI18N("table.heading.status")}}</th>
+						<th>{{=$ctx.doI18N("table.heading.balance")}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each savingsAccounts}}
+					<tr>
+						<td>{{=productName}}</td>
+						<td><a href="unknown.html" onclick="showGroupSavingAccount({{=id}}, '{{=accountNo}}', '{{=productName}}');return false ;" >{{=accountNo}}</a></td>
+						<td><img src="resources/img/{{=status.code}}.gif"/>&nbsp;{{=$ctx.doI18N(status.code)}}</td>
+						<td>{{=$ctx.moneyFormatted(currency, accountBalance)}}</td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		{{/if}}
+	{{/if}}
 </script>
 
 <script id="memberLoanDetailsPartialTemplate" type="text/x-jquery-tmpl">
@@ -6532,7 +6535,13 @@ $(document).ready(function() {
 			<tr>
 				<td valign="top">
 				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}<br><br>{{/if}}
-				{{#if groupName}}{{=$ctx.doI18N("label.group")}}{{/if}}
+				{{#if groupName}}
+					{{#if isCenterSavingAccount}}
+						{{=$ctx.doI18N("label.center")}}
+					{{#else}}
+						{{=$ctx.doI18N("label.group")}}
+					{{/if}}
+				{{/if}}
 				</td>
 				<td valign="top">
 				{{#if clientName}}
@@ -6581,7 +6590,13 @@ $(document).ready(function() {
 			<tr>
 				<td valign="top">
 				{{#if clientName}}{{=$ctx.doI18N("label.applicant")}}<br><br>{{/if}}
-				{{#if groupName}}{{=$ctx.doI18N("label.group")}}{{/if}}
+				{{#if groupName}}
+					{{#if isCenterSavingAccount}}
+						{{=$ctx.doI18N("label.center")}}
+					{{#else}}
+						{{=$ctx.doI18N("label.group")}}
+					{{/if}}
+				{{/if}}
 				</td>
 				<td valign="top">
 				{{#if clientName}}
@@ -6643,7 +6658,7 @@ $(document).ready(function() {
 			<table>
 				<tr>
 					<td>{{=$ctx.doI18N("label.currency")}}</td>
-					<td>{{=$ctx.doI18N(currency.nameCode)}}</td>
+					<td>{{=$ctx.doI18N(currency.name)}}({{=currency.displaySymbol}})</td>
 				</tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.decimalplaces")}}</td>
@@ -10002,6 +10017,8 @@ $(document).ready(function() {
 				<div class="row">
 					<span class="rowvalue heading">{{=$ctx.doI18N("label.group.account.information")}}</span>
 				</div>
+				<br/>
+				<div id="groupaccountssummary"></div>
                 {{/if}}
 				<br/>
 
@@ -10038,6 +10055,9 @@ $(document).ready(function() {
 	                        {{#if $ctx.showTask("AddGroupNote")}}
     	                    <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
         	                {{/if}}
+							{{#if $ctx.showTask("AddGroupSavings")}}
+								<button id="newcentersavingsbtn{{=id}}" class="newcentersavingsbtn">{{=$ctx.doI18N("label.center.new.saving.account")}}</button>
+							{{/if}}
 						{{#else}}
 							{{#if $ctx.showTask("ActivateCenter")}}
 							<button id="activatecenter{{=id}}" class="activatecenter">Activate</button>
