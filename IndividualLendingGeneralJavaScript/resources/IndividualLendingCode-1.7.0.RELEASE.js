@@ -119,8 +119,16 @@ crudData = {
 		};
 
 saveSuccessFunctionReloadClient =  function(data, textStatus, jqXHR) {
-  	$("#dialog-form").dialog("close");
-	showILClient(currentClientId );
+	$("#dialog-form").dialog("close");
+	if (data.clientId) {
+		showILClient(data.clientId);
+	} else{
+		if (isCenterSaving) {
+			showCenter(data.groupId);
+		} else{
+			showGroup(data.groupId);
+		}
+	}
 };
 
 saveSuccessFunctionReloadClientListing =  function(data, textStatus, jqXHR) {
@@ -3187,6 +3195,7 @@ function refreshClientDocuments(clientUrl) {
 	
 
 function showGroup(groupId){
+	isCenterSaving = false;
 	var groupUrl = "groups/"+groupId;
 	setGroupContent("content");
 
@@ -3386,6 +3395,7 @@ function showGroup(groupId){
             $('.newgroupsavingsbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
 				var linkId = this.id;
 				var groupId = linkId.replace("newgroupsavingsbtn", "");
+				isCenterSaving = false;
 				launchGroupSavingsAccountDialog(groupId);
 			    e.preventDefault();
 			});
@@ -3545,6 +3555,7 @@ function disassociateClientFromGroup(clientId, groupId){
 }
 
 function showCenter(centerId){
+	isCenterSaving = true;
 	var centerUrl = "centers/"+centerId;
 	setCenterContent("content");
 
@@ -3734,7 +3745,14 @@ function showCenter(centerId){
 				popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.assign.staff", templateSelector, width,  height, saveSuccessFunction);
 				e.preventDefault();
 			});
-			
+
+			$('.newcentersavingsbtn').button({icons: {primary: "ui-icon-document-b"}}).click(function(e) {
+				var linkId = this.id;
+				var centerId = linkId.replace("newcentersavingsbtn", "");
+				isCenterSaving = true;
+				launchGroupSavingsAccountDialog(centerId);
+				e.preventDefault();
+			});
 		});
 		
 	}
@@ -5041,7 +5059,7 @@ function showCenter(centerId){
 	
 	// start of savings account
 	function displayTabbedSavingsAccountForm(data, container) {
-		
+		data.isCenterSavingAccount=isCenterSaving;
 		var formHtml = $("#savingsAccountDialogTemplate").render(data);
 		container.html(formHtml);
 		
@@ -5056,7 +5074,7 @@ function showCenter(centerId){
 		
 		$("#productId").change(function() {
 			var savingsProductId = $("#productId").val();
-			loadTabbedSavingsAccountForm(container, data.clientId, savingsProductId);
+			loadTabbedSavingsAccountForm(container, data.clientId, savingsProductId, data.groupId);
 		});
 		
 		$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
@@ -5110,7 +5128,11 @@ function showCenter(centerId){
 			if (clientId) {
 				showILClient(clientId);
 			} else {
-				showGroup(groupId);
+				if (isCenterSaving) {
+					showCenter(groupId);
+				} else{
+					showGroup(groupId);
+				}
 			}
 		};
 		
@@ -5121,6 +5143,7 @@ function showCenter(centerId){
 		var dialogDiv = $("<div id='dialog-form'></div>");
 		var saveButton = doI18N('dialog.button.save');
 		var cancelButton = doI18N('dialog.button.cancel');
+		data.isCenterSavingAccount = isCenterSaving;
 		
 		var buttonsOpts = {};
 		buttonsOpts[saveButton] = function() {
@@ -5172,13 +5195,22 @@ function showCenter(centerId){
             serializedArray["groupId"] = groupId;
             serializedArray["calendarId"] = $("#calendarId").val();
         }
+        if (serializedArray.annualFeeOnMonthDay === "") {
+			delete serializedArray.annualFeeOnMonthDay;
+		}
 
 		var newFormData = JSON.stringify(serializedArray);
 		
 		var successFunction =  function(data, textStatus, jqXHR) {
 			divContainer.dialog("close");
 			if(data.groupId) {
-				// not handled.
+				if (isCenterSaving) {
+					loadSavingAccount(savingsId);
+					centerDirty=true;
+				} else{
+					loadSavingAccount(savingsId);
+					groupDirty=true;
+				}
 			} else {
 				loadSavingAccount(savingsId, 'clientdatatabs');
 			}
@@ -5199,6 +5231,8 @@ function showCenter(centerId){
 		var buttonsOpts = {};
 		buttonsOpts[saveButton] = function() {
 			submitTabbedSavingsApplicationForUpdate(dialogDiv, data.id, data.clientId, data.groupId);
+			groupDirty=true;
+			centerDirty=true;
 		};
 		// end of buttonsOpts for save button
 		
@@ -8950,11 +8984,15 @@ function showILSavingAccount(loanId, product, loanAccountNo) {
 }
 
 function showGroupSavingAccount(loanId, product, loanAccountNo) {
-	showSavingAccount(loanId, product, loanAccountNo, 'groupdatatabs');	
+	if (isCenterSaving) {
+		showSavingAccount(loanId, product, loanAccountNo, 'centerdatatabs');
+	} else{
+		showSavingAccount(loanId, product, loanAccountNo, 'groupdatatabs');
+	}
 }
 
 
-function showSavingAccount(accountId, accountNo, productName,parenttab) {
+function showSavingAccount(accountId, accountNo, productName, parenttab) {
 	
 	var newSavingTabId='saving'+accountId+'tab';
 	
@@ -8987,9 +9025,11 @@ function genSaveSuccessFunctionReloadSaving(savingAccountId,parenttab) {
 
 	return 'var saveSuccessFunctionReloadSaving = function(data, textStatus, jqXHR) { ' +
 	' $("#dialog-form").dialog("close");' +
+	' var contentTab = ' + parenttab + ';' +
 	' loadSavingAccount(' + savingAccountId + ', "' + parenttab + '");' +
 	' clientDirty = true;' +
 	' groupDirty = true;' +
+	' centerDirty = true;' +
 	'};';
 }
 
