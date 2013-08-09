@@ -6172,6 +6172,10 @@ $(document).ready(function() {
 					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 50px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
 				</tr>
 				<tr>
+					<td>{{=$ctx.doI18N("label.multiplesofDecimal")}}</td>
+					<td><input id="multiplesofDecimal" name="multiplesofDecimal" title="" style="width: 50px;" value="{{=$ctx.number(currency.multiplesofDecimal)}}" /></td>
+				</tr>
+				<tr>
 					<td>{{=$ctx.doI18N("label.nominalAnnualInterestRate")}}</td>
 					<td>
 						<input id="nominalAnnualInterestRate" name="nominalAnnualInterestRate" title="" type="text" 
@@ -6663,6 +6667,10 @@ $(document).ready(function() {
 				<tr>
 					<td>{{=$ctx.doI18N("label.decimalplaces")}}</td>
 					<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 50px;" value="{{=$ctx.number(currency.decimalPlaces)}}" disabled="disabled"/></td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.multiplesofDecimal")}}</td>
+					<td><input id="multiplesofDecimal" name="multiplesofDecimal" title="" style="width: 50px;" value="{{=$ctx.number(currency.multiplesofDecimal)}}" disabled="disabled"/></td>
 				</tr>
 				<tr>
 					<td>{{=$ctx.doI18N("label.nominalAnnualInterestRate")}}</td>
@@ -7467,6 +7475,10 @@ $(document).ready(function() {
 						<tr>
 							<td>{{=$ctx.doI18N("label.decimalplaces")}}</td>
 							<td><input id="digitsAfterDecimal" name="digitsAfterDecimal" title="" style="width: 100px;" value="{{=$ctx.number(currency.decimalPlaces)}}" /></td>
+						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.multiplesofDecimal")}}</td>
+							<td><input id="multiplesofDecimal" name="multiplesofDecimal" title="" style="width: 100px;" value="{{=$ctx.number(currency.multiplesofDecimal)}}" /></td>
 						</tr>
 						<tr>
 							<td class="withsubdesc">{{=$ctx.doI18N("label.principal")}}</td>
