@@ -157,6 +157,21 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 			}); 
 }
 
+function executeAjaxRequestForXMLDownload(url, verbType,successFunction, errorFunction) {
+
+    var jqxhr = $.ajax({
+        url : baseApiUrl + url,
+        type: verbType, //POST, GET, PUT or DELETE
+        data: null,
+        beforeSend : function(xhr) {
+            if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier);
+            if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64);
+        },
+        success : successFunction,
+        error : errorFunction
+    });
+}
+
 function executeAjaxRequestForImageDownload(url, verbType,successFunction, errorFunction) { 
 
 	var jqxhr = $.ajax({ 
@@ -259,7 +274,7 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		<ul>';
 		
 		if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true)
-			htmlVar += '	<li><a href="unknown.hgtml" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
+			htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 		
 		if (jQuery.MifosXUI.showMenu("OrgAdminMenu") == true)
 			htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
@@ -752,31 +767,114 @@ function setXBRLContent(divName) {
 	var taxonomyList;
 	var getTaxonomyListSuccessFunction = function(data, textStatus, jqXHR) {
 		taxonomyList = data;
-		$("#" + divName).html($("#xbrlConfigTemplate").render());
-        $('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'yy-mm-dd'});
-		$("#xbrlconfigtabs").tabs({
-			beforeActivate : function(event, tab) {
-				fetchXBRLTabContent(tab.newTab.index());
-			}
-		});
-		var fetchXBRLTabContent = function(index) {
-			handleXBRLConfigTabSelection(taxonomyList, index)
-		}
-		//determine which tab is initially selected and load data for the same
-		var selected = $("#xbrlconfigtabs").tabs('option', 'active');
-		fetchXBRLTabContent(selected);
 
-		$("#saveconfig").button().click(function(e) {
-			executeAjaxRequest('xbrlmapping', 'POST', "", null, formErrorFunction);
-		})
+        var getTaxonomyMapSuccessFunction = function(data, textStatus, jqXHR) {
+            var mappingJson = data["config"];
+            if (mappingJson.length > 0)
+            {
+                for (var i = taxonomyList.length - 1; i >= 0; i--) {
+                    var taxonomyId = taxonomyList[i]["id"];
+                    var mapping = ($.parseJSON(mappingJson))[''+taxonomyId];
+                    if (mapping != undefined)
+                        taxonomyList[i].mapping = mapping;
+                }
 
-		$("#runreport").button().click(function(e) {
-			var startDate = $('#startDate').val();
-			var endDate = $('#endDate').val();
-			executeAjaxRequest('xbrlreport?startDate='+startDate+'&endDate='+endDate, 'GET', "", null, formErrorFunction);
-		})
+            }
+
+
+            $("#" + divName).html($("#xbrlConfigTemplate").render());
+            $('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'yy-mm-dd'});
+            $("#xbrlconfigtabs").tabs({
+                beforeActivate : function(event, tab) {
+                    fetchXBRLTabContent(tab.newTab.index());
+                }
+            });
+            var fetchXBRLTabContent = function(index) {
+                handleXBRLConfigTabSelection(taxonomyList, index)
+            }
+            //determine which tab is initially selected and load data for the same
+            var selected = $("#xbrlconfigtabs").tabs('option', 'active');
+            fetchXBRLTabContent(selected);
+
+            $("#saveconfig").button().click(function(e) {
+                var postTaxonomyMappingSuccessFunction = function(data, textStatus, jqXHR) {
+                    var dialogDiv = $("<div id='dialog-form'></div>");
+                    dialogDiv.dialog({
+                        width: 400,
+                        height: 200,
+                        modal: true,
+                        close: function() {
+                            // if i dont do this, theres a problem with errors being appended to dialog view second time round
+                            $(this).remove();
+                        },
+                        open: function (event, ui) {
+                            setTimeout( function() {dialogDiv.dialog('close'); },2000); // 3000 = 3 secs
+                            var html="<p>Saved Successfully!</p>";
+
+                            dialogDiv.html(html);
+                        }
+                    }).dialog('open');
+                }
+                var config = {};
+                var serialObject = {};
+                for (var i = taxonomyList.length - 1; i >= 0; i--) {
+                    var taxonomyId = taxonomyList[i]["id"];
+                    var value = $('#taxonomyId'+taxonomyId).val();
+                    if (value.length > 0)
+                        config[""+taxonomyId] = value;
+
+                }
+                serialObject["config"] = JSON.stringify(config);
+                serialObject["identifier"] = "default";
+                var formdata = JSON.stringify(serialObject);
+                alert(formdata);
+                executeAjaxRequest('xbrlmapping', 'PUT', formdata, postTaxonomyMappingSuccessFunction, formErrorFunction);
+            })
+
+            var getReportSuccessFunction = function(data, textStatus, jqXHR) {
+                showXBRLReport(data);
+            }
+            $("#runreport").button().click(function(e) {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                executeAjaxRequestForXMLDownload('xbrlreport?startDate='+startDate+'&endDate='+endDate, 'GET', getReportSuccessFunction, formErrorFunction);
+            })
+        }
+        executeAjaxRequest('xbrlmapping', 'GET', "", getTaxonomyMapSuccessFunction, formErrorFunction);
 	}
 	executeAjaxRequest('taxonomy', 'GET', "", getTaxonomyListSuccessFunction, formErrorFunction);
+}
+
+function showXBRLReport(xmlData) {
+    var dialogDiv = $("<div id='dialog-form'></div>");
+    var buttonsOpts = {};
+    var titleCode = 'XBRL Report';
+    dialogDiv.dialog({
+        title: doI18N(titleCode),
+        width: 900,
+        height: 450,
+        modal: true,
+        buttons: buttonsOpts,
+        close: function() {
+            // if i dont do this, theres a problem with errors being appended to dialog view second time round
+            $(this).remove();
+        },
+        open: function (event, ui) {
+
+            var html="<table border='1'><tr><th>Title</th><th>Dimension</th><th>Value</th></tr>";
+            $(xmlData).find("*[contextRef]").each(function(i){
+                var contextId = $(this).attr("contextRef");
+                var context = $(xmlData).find("#"+contextId).find("scenario").text();
+                html += '<tr>';
+                html += '<td>' + this.tagName + '</td>';
+                html += '<td>' + context + '</td>';
+                html += '<td><input type="text" id="'+ this.tagName + '" value="' + $(this).text() + '" ></td>';
+                html += '</tr>';
+
+            });
+            dialogDiv.html(html);
+        }
+    }).dialog('open');
 }
 
 function handleXBRLConfigTabSelection(taxonomyList, tab) {
