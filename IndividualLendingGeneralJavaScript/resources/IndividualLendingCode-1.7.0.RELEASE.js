@@ -2687,6 +2687,7 @@ function showLoanFromSearch(clientId, loanId, product, loanAccountNo){
 }
 
 function showILClient(clientId) {
+	isCenterSaving = false;
 	var clientUrl = 'clients/' + clientId
 
 	setClientContent("content");
@@ -5059,7 +5060,7 @@ function showCenter(centerId){
 	
 	// start of savings account
 	function displayTabbedSavingsAccountForm(data, container) {
-		data.isCenterSavingAccount= false; //isCenterSaving;
+		data.isCenterSavingAccount= isCenterSaving;
 		var formHtml = $("#savingsAccountDialogTemplate").render(data);
 		container.html(formHtml);
 		
@@ -5143,7 +5144,7 @@ function showCenter(centerId){
 		var dialogDiv = $("<div id='dialog-form'></div>");
 		var saveButton = doI18N('dialog.button.save');
 		var cancelButton = doI18N('dialog.button.cancel');
-		data.isCenterSavingAccount = false; // isCenterSaving;
+		data.isCenterSavingAccount = isCenterSaving;
 		
 		var buttonsOpts = {};
 		buttonsOpts[saveButton] = function() {
