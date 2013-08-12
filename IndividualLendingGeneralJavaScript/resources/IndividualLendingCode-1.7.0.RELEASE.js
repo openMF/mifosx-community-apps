@@ -3511,10 +3511,19 @@ function refreshGroupSummaryInfo(groupId){
 		var crudObject = new Object();
 		crudObject.crudRows = data;
 		var groupSummaryAmount = $("#groupSummaryAmountContentTemplate").render(crudObject);
-		$("#groupsummaryrightcontent").html(groupSummaryAmount);
+		$("#groupsummaryloanamount").html(groupSummaryAmount);
 	}
 	executeAjaxRequest(groupSummaryAmountsUrl, 'GET', "", groupSummaryAmountSuccessFunction, formErrorFunction);
 
+	var groupSavingSummarysUrl = 'runreports/GroupSavingSummary?genericResultSet=false&R_groupId=' + groupId;
+
+	var groupSavingSummarySuccessFunction = function(data, status, xhr){
+		var crudObject = new Object();
+		crudObject.crudRows = data;
+		var groupSavingSummary = $("#groupSavingSummaryContentTemplate").render(crudObject);
+		$("#groupsavingsummary").html(groupSavingSummary);
+	}
+	executeAjaxRequest(groupSavingSummarysUrl, 'GET', "", groupSavingSummarySuccessFunction, formErrorFunction);
 }
 
 function refreshCenterSummaryInfo(centerId){
@@ -3532,10 +3541,19 @@ function refreshCenterSummaryInfo(centerId){
 		var crudObject = new Object();
 		crudObject.crudRows = data;
 		var centerSummaryAmount = $("#centerSummaryAmountContentTemplate").render(crudObject);
-		$("#centersummaryrightcontent").html(centerSummaryAmount);
+		$("#centersummaryloanamount").html(centerSummaryAmount);
 	}
 	executeAjaxRequest(centerSummaryAmountsUrl, 'GET', "", centerSummaryAmountSuccessFunction, formErrorFunction);
 
+	var centerSavingSummarysUrl = 'runreports/GroupSavingSummary?genericResultSet=false&R_groupId=' + centerId;
+
+	var centerSavingSummarySuccessFunction = function(data, status, xhr){
+		var crudObject = new Object();
+		crudObject.crudRows = data;
+		var centerSavingSummary = $("#groupSavingSummaryContentTemplate").render(crudObject);
+		$("#centersavingsummary").html(centerSavingSummary);
+	}
+	executeAjaxRequest(centerSavingSummarysUrl, 'GET', "", centerSavingSummarySuccessFunction, formErrorFunction);
 }
 
 function disassociateClientFromGroup(clientId, groupId){
