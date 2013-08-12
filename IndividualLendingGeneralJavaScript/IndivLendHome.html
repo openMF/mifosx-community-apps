@@ -1481,7 +1481,7 @@ $(document).ready(function() {
 					<span class="loanaccount"><a href="#" onCLick="showILClient({{=id}});"><span class="rowvalue">{{=displayName}} : # {{=accountNo}}</span></a></span>
 					</td>
 					<td>
-					{{#if activationDate}}
+					{{#if status.code == "clientStatusType.active"}}
 					<button id="addnewjlgloanbtn{{=id}}" class="addnewjlgloanbtn">{{=$ctx.doI18N("label.group.new.client.loan.account")}}</button>
 					{{/if}}
 					</td>
