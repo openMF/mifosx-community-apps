@@ -5595,6 +5595,7 @@ $(document).ready(function() {
 		<caption>{{=$ctx.doI18N("table.transactions.caption")}}</caption>
 			<thead>
 				<tr>
+				<th>{{=$ctx.doI18N("table.heading.transaction.id")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.amount")}}</th>
@@ -5605,6 +5606,7 @@ $(document).ready(function() {
 			<tbody>
 				{{#each transactions}}
 				<tr>
+				<td>{{=$ctx.number(id)}}</td>
 				<td>{{=$ctx.globalDate(date)}}</td>
 				<td>{{=$ctx.doI18N(type.code)}}</td>
 				<td>{{=$ctx.monetaryValue(currency, amount)}}</td>
@@ -7053,6 +7055,7 @@ $(document).ready(function() {
 	<caption>{{=$ctx.doI18N("savingsaccount.transactions.caption")}}</caption>
 	<thead>
 		<tr>
+			<th>{{=$ctx.doI18N("table.heading.transaction.id")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
 			<th>{{=$ctx.doI18N("table.heading.transfer")}}</th>
@@ -7069,6 +7072,7 @@ $(document).ready(function() {
 		{{#else}}
 		<tr>
 		{{/if}}
+			<td>{{=$ctx.number(id)}}</td>
 			<td>{{=$ctx.globalDate(date)}}</td>
 			<td>{{=$ctx.doI18N(transactionType.code)}}</td>
             
