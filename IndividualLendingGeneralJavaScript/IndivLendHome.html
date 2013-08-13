@@ -1501,14 +1501,19 @@ $(document).ready(function() {
 </script>
 
 <script id="groupSummaryTabTemplate" type="text/x-jquery-tmpl">
-    <div class="groupsummarycontainer">
-        <div id="groupsummaryrightcontent" class="right clearright" style="width:50%">
-            &nbsp;
-        </div>
-        <div id="groupsummaryleftcontent" class="left" style="width:45%">
-        &nbsp;
-        </div>
-    </div>
+	<div class="groupsummarycontainer">
+		<div id="groupsummaryrightcontent" class="right clearright" style="width:50%">
+			<div id="groupsummaryloanamount" class="paddingB65">
+				&nbsp;
+			</div>
+			<div id="groupsavingsummary">
+				&nbsp;
+			</div>
+		</div>
+		<div id="groupsummaryleftcontent" class="left" style="width:45%">
+		&nbsp;
+		</div>
+	</div>
 </script>
 
 <script id="addGroupRuleFormTemplate" type="text/x-jquery-tmpl">
@@ -1668,6 +1673,35 @@ $(document).ready(function() {
     </tbody>
 </table>
 
+</script>
+
+<script id="groupSavingSummaryContentTemplate" type="text/x-jquery-tmpl">
+	<table id="groupsavingsummarytable" class="pretty displayschedule">
+		{{#if crudRows.length > 0}}
+			<thead>
+				<tr>
+					<th class="empty"></th>
+					{{#each crudRows}}
+						<th>{{=currency}}</th>
+					{{/each}}
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>{{=$ctx.doI18N("label.group.total.savings")}}</th>
+					{{#each crudRows}}
+						<td>{{=$ctx.number(totalSavings)}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>{{=$ctx.doI18N("label.group.total.active.saving.count")}}</th>
+					{{#each crudRows}}
+						<td>{{=$ctx.number(totalSavingAccounts)}}</td>
+					{{/each}}
+				</tr>
+			</tbody>
+		{{/if}}
+	</table>
 </script>
 
 <script id="groupDataTabTemplate" type="text/x-jquery-tmpl">
@@ -10236,14 +10270,20 @@ $(document).ready(function() {
 
 <script id="centerSummaryTabTemplate" type="text/x-jquery-tmpl">
 	<div class="centersummarycontainer">
-        <div id="centersummaryrightcontent" class="right clearright" style="width:50%">
-            &nbsp;
-        </div>
-        <div id="centersummaryleftcontent" class="left" style="width:45%">
-        &nbsp;
-        </div>
-    </div>
+		<div id="centersummaryrightcontent" class="right clearright" style="width:50%">
+			<div id="centersummaryloanamount" class="paddingB65">
+				&nbsp;
+			</div>
+			<div id="centersavingsummary">
+				&nbsp;
+			</div>
+		</div>
+		<div id="centersummaryleftcontent" class="left" style="width:45%">
+			&nbsp;
+		</div>
+	</div>
 </script>
+
 <script id="centerSummaryCountContentTemplate" type="text/x-jquery-tmpl">
 
 <table id="centersummarycounttable" class="pretty displayschedule">
@@ -10334,6 +10374,35 @@ $(document).ready(function() {
     </tbody>
 </table>
 
+</script>
+
+<script id="centerSavingSummaryContentTemplate" type="text/x-jquery-tmpl">
+	<table id="centersavingsummarytable" class="pretty displayschedule">
+		{{#if crudRows.length > 0}}
+			<thead>
+				<tr>
+					<th class="empty"></th>
+					{{#each crudRows}}
+						<th>{{=currency}}</th>
+					{{/each}}
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>{{=$ctx.doI18N("label.group.total.savings")}}</th>
+					{{#each crudRows}}
+						<td>{{=$ctx.number(totalSavings)}}</td>
+					{{/each}}
+				</tr>
+				<tr>
+					<th>{{=$ctx.doI18N("label.group.total.active.saving.count")}}</th>
+					{{#each crudRows}}
+						<td>{{=$ctx.number(totalSavingAccounts)}}</td>
+					{{/each}}
+				</tr>
+			</tbody>
+		{{/if}}
+	</table>
 </script>
 
 <!-- end of centers api -->
