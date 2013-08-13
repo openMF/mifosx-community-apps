@@ -9,6 +9,7 @@ div#content {margin-left:5px; margin-right:5px;}
 .paddingL65{padding-left:60px;}
 .paddingR65{padding-right:65px;}
 .paddingB10{padding-bottom:10px}
+.paddingB65{padding-bottom:65px}
 .newLine{display: block;}
 /*top navigation*/
 #nav, #nav ul {padding:0;margin:0;list-style:none;}  
