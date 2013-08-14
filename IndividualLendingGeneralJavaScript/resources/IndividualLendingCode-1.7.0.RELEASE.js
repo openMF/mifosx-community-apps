@@ -7098,12 +7098,13 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					}
 				}
 			}	
-		}	
-	
-	   //Caledar form data
+		}
+
+		//Caledar form data
         if (postUrl.toLowerCase().indexOf("calendars") > 0){
             
-            var rrule = convertToRfc5545();
+            //var rrule = convertToRfc5545();
+            var freq = $("#repeats").val();
             serializedArray = {};
             serializedArray["locale"] = $('#locale').val();
             serializedArray["dateFormat"] = $('#dateFormat').val();
@@ -7117,7 +7118,21 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             serializedArray["typeId"] = 1;
             serializedArray["startDate"] = $('#startDate').val();
             serializedArray["repeating"] = $('#repeating').val()==="on"?true:false;
-            serializedArray["recurrence"] = rrule;
+            serializedArray["repeats"] = $("#repeats").val();
+            serializedArray["repeatsEvery"] = $('#repeatsEvery').val();
+
+			if(freq == "Weekly"){
+				//Get weekly details
+				var values = new Array();
+				$.each($("input[name='repeatson[]']:checked"), function() {
+					values.push($(this).val());
+				});
+
+				if (values) {
+					serializedArray["repeatsOnDay"] =  values.toString();
+				}
+			}
+            //serializedArray["recurrence"] = rrule;
             
             if($('input:checkbox[name=repeating]').is(':checked')){
                 if($('#endson').is(':checked')){
@@ -7136,7 +7151,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             }
             */
             
-        }
+		}
 	
 		if (templateSelector === "#accountingruleFormTemplate") {
 			if (serializedArray.name === "") {
@@ -9678,7 +9693,7 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
     executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
 
 }
-
+/*
 function convertToRfc5545(){
     // RRULE TEMPLATES
     
@@ -9728,7 +9743,7 @@ function convertToRfc5545(){
     }
         
     return rrule;
-}
+}*/
 
 function loadAvailableCalendars(allAttachedCalendars, meetingCalendar, loanId, syncDisbursementWithMeeting){
     var calendars = new Object();
