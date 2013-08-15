@@ -7136,6 +7136,10 @@ $(document).ready(function() {
 		<span class="rowvalue">{{=fromClient.displayName}}</span>
 	</div>
 	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.accountType")}}</span>
+		<span class="rowvalue">{{=$ctx.doI18N(fromAccountType.code)}}</span>
+	</div>
+	<div class="row">
 		<span class="longrowlabel">{{=$ctx.doI18N("label.account")}}</span>
 		<span class="rowvalue">{{=fromAccount.accountNo}}</span>
 	</div>
@@ -7148,6 +7152,10 @@ $(document).ready(function() {
 	<div class="row">
 		<span class="longrowlabel">{{=$ctx.doI18N("label.client")}}</span>
 		<span class="rowvalue">{{=toClient.displayName}}</span>
+	</div>
+	<div class="row">
+		<span class="longrowlabel">{{=$ctx.doI18N("label.accountType")}}</span>
+		<span class="rowvalue">{{=$ctx.doI18N(toAccountType.code)}}</span>
 	</div>
 	<div class="row">
 		<span class="longrowlabel">{{=$ctx.doI18N("label.account")}}</span>
@@ -7164,9 +7172,8 @@ $(document).ready(function() {
 
     <input type="hidden" id="fromOfficeIdHidden" name="fromOfficeId" value="{{=$ctx.number(fromOffice.id)}}" />
 	<input type="hidden" id="fromClientIdHidden" name="fromClientId" value="{{=$ctx.number(fromClient.id)}}" />
+	<input type="hidden" id="fromAccountTypeHidden" name="fromAccountType" value="2" />
 	<input type="hidden" id="fromAccountIdHidden" name="fromAccountId" value="{{=$ctx.number(fromAccount.id)}}" />
-    <input type="hidden" id="fromAccountTypeHidden" name="fromAccountType" value="2" />
-	<input type="hidden" id="toAccountTypeHidden" name="toAccountType" value="2" />
 
 	<table>
 		<tr>
@@ -7203,27 +7210,52 @@ $(document).ready(function() {
 					</td>
 					</tr>
 					<tr>
+					<td>{{=$ctx.doI18N("label.accountType")}}</td>
+					<td>
+						<select id="fromAccountType" name="fromAccountType" title="" disabled=disabled>
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each fromAccountTypeOptions}}
+								{{#if $ctx.number(id)===$ctx.number(2)}}
+									<option value="{{=id}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+								{{#else}}
+									<option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+							{{/each}}
+						</select>
+					</td>
+					</tr>
+					<tr>
 					<td>{{=$ctx.doI18N("label.account")}}</td>
 					<td>
 						<select id="fromAccountId" name="fromAccountId" title="" disabled=disabled>
 						<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 						{{#each fromAccountOptions}}
 						{{#if $ctx.number($parent.parent.data.fromAccount.id)===$ctx.number(id)}}
-							<option value="{{=id}}" selected="selected">{{=savingsProductName}} - {{=accountNo}}</option>
+							<option value="{{=id}}" selected="selected">{{=productName}} - {{=accountNo}}</option>
 						{{#else}}
-							<option value="{{=id}}">{{=savingsProductName}} - {{=accountNo}}</option>
+							<option value="{{=id}}">{{=productName}} - {{=accountNo}}</option>
 						{{/if}}
 						{{/each}}
 						</select>
 					</td>
 					</tr>
 					<tr>
+						<td>{{=$ctx.doI18N("label.currency")}}</td>
+						<td><input id="currency_code" name="currency_code" title="" type="text" value="{{=currency.code}}" disabled="disabled" size="3"/>
+							{{=$ctx.doI18N(currency.name)}}
+						</td>
+					</tr>
+					<tr>
 						<td>{{=$ctx.doI18N("label.amount")}}</td>
-						<td><input id="transferAmount" name="transferAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, transferAmount)}}" /></td>
+						<td>
+						<input id="currency_symbol" name="currency_symbol" title="" type="text" value="{{=currency.displaySymbol}}" disabled="disabled" size="3"/>
+
+						<input id="transferAmount" name="transferAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, transferAmount)}}" size="10"/></td>
 					</tr>
 					<tr>
 						<td>{{=$ctx.doI18N("label.transactionDate")}}</td>
-						<td><input id="transferDate" name="transferDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(transferDate)}}"/></td>
+						<td><input id="transferDate" name="transferDate" title="" 
+						class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(transferDate)}}"/></td>
 					</tr>
 					<tr>
 						<td>{{=$ctx.doI18N("label.description")}}</td>
@@ -7242,8 +7274,12 @@ $(document).ready(function() {
 						<select id="toOfficeId" name="toOfficeId" title="">
 							<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
 					{{#each toOfficeOptions}}
-						{{#if $ctx.number($parent.parent.data.toOffice.id)===$ctx.number(id)}}
-							<option value="{{=id}}" selected="selected">{{=name}}</option>
+						{{#if $parent.parent.data.toOffice}}
+							{{#if $ctx.number($parent.parent.parent.data.toOffice.id)===$ctx.number(id)}}
+								<option value="{{=id}}" selected="selected">{{=name}}</option>
+							{{#else}}
+								<option value="{{=id}}">{{=name}}</option>
+							{{/if}}
 						{{#else}}
 							<option value="{{=id}}">{{=name}}</option>
 						{{/if}}
@@ -7256,16 +7292,41 @@ $(document).ready(function() {
 					<td>
 						<select id="toClientId" name="toClientId" title="">
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#each toClientOptions}}
-						{{#if $ctx.number($parent.parent.data.toClient.id)===$ctx.number(id)}}
-							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
-						{{#else}}
-							<option value="{{=id}}">{{=displayName}}</option>
-						{{/if}}
+						{{#each toClientOptions}}
+							{{#if $parent.parent.data.toClient}}
+								{{#if $ctx.number($parent.parent.parent.data.toClient.id)===$ctx.number(id)}}
+								<option value="{{=id}}" selected="selected">{{=displayName}}</option>
+								{{#else}}
+								<option value="{{=id}}">{{=displayName}}</option>
+								{{/if}}
+							{{#else}}
+								<option value="{{=id}}">{{=displayName}}</option>
+							{{/if}}
+						{{/each}}
+						</select>
+					</td>
+					</tr>
+
+					<tr>
+					<td>{{=$ctx.doI18N("label.accountType")}}</td>
+					<td>
+						<select id="toAccountType" name="toAccountType" title="">
+							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+							{{#each toAccountTypeOptions}}
+							{{#if $parent.parent.data.toAccountType}}
+								{{#if $ctx.number($parent.parent.parent.data.toAccountType.id)===$ctx.number(id)}}
+									<option value="{{=id}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+								{{#else}}
+									<option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+								{{/if}}
+							{{#else}}
+								<option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
+							{{/if}}
 							{{/each}}
 						</select>
 					</td>
 					</tr>
+
 					<tr>
 					<td>{{=$ctx.doI18N("label.account")}}</td>
 					<td>
@@ -7273,13 +7334,13 @@ $(document).ready(function() {
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each toAccountOptions}}
 							{{#if $parent.parent.data.toAccount}}
-								{{#if $ctx.number($parent.parent.data.toAccount.id)===$ctx.number(id)}}
-									<option value="{{=id}}" selected="selected">{{=savingsProductName}} - {{=accountNo}}</option>
+								{{#if $ctx.number($parent.parent.parent.data.toAccount.id)===$ctx.number(id)}}
+									<option value="{{=id}}" selected="selected">{{=productName}} - {{=accountNo}}</option>
 								{{#else}}
-									<option value="{{=id}}">{{=savingsProductName}} - {{=accountNo}}</option>
+									<option value="{{=id}}">{{=productName}} - {{=accountNo}}</option>
 								{{/if}}
 							{{#else}}
-								<option value="{{=id}}">{{=savingsProductName}} - {{=accountNo}}</option>
+								<option value="{{=id}}">{{=productName}} - {{=accountNo}}</option>
 							{{/if}}
 							{{/each}}
 						</select>

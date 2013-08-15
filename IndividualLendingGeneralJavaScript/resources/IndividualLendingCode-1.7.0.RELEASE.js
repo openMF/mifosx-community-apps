@@ -9276,16 +9276,7 @@ function loadSavingAccount(accountId,parenttab) {
 		$('button.savingsaccountapplyannualfee span').text(doI18N('button.applyAnuualFee'));
 		
 		$('.savingsaccountfundstransfer'+accountId).button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
-			
-			var postUrl = 'accounttransfers/';
-			var getUrl = 'accounttransfers/template?fromClientId=' + clientId + '&fromAccountId=' + accountId + '&fromAccountType=2';
-			var templateSelector = "#accounttransfersFormTemplate";
-			var width = 800; 
-			var height = 300;
-
-			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
-			popupDialogWithFormView(getUrl, postUrl, 'POST', 'dialog.title.transferFunds', templateSelector, width, height, saveSuccessFunctionReloadSaving);
-		    
+			launchAccountTransferDialog(accountId,parenttab);
 			e.preventDefault();
 		});
 		$('button.savingsaccountfundstransfer span').text(doI18N('button.transferFunds'));
@@ -9354,6 +9345,108 @@ function loadSavingAccount(accountId,parenttab) {
 	}
 		
 	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
+}
+
+function launchAccountTransferDialog(accountId, parenttab) {
+
+	var postUrl = 'accounttransfers/';
+	var getUrl = 'accounttransfers/template?fromAccountId=' + accountId + '&fromAccountType=2';
+	var templateSelector = "#accounttransfersFormTemplate";
+	var width = 800; 
+	var height = 300;
+
+	var onSaveFunction = function() {
+		var serializationOptions = {};
+		serializationOptions["checkboxesAsBools"] = true;
+
+		var serializedArray = {};
+		serializedArray = $('#entityform').serializeObject(serializationOptions);
+
+		var newFormData = JSON.stringify(serializedArray);
+		
+		eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
+		executeAjaxRequest(postUrl, 'POST', newFormData, saveSuccessFunctionReloadSaving, formErrorFunction);
+	};
+
+	var openDialogFunction = function (event, ui) {
+
+		var renderFormOnSuccess = function(data, textStatus, jqXHR) {
+			var dialogFormSelector = "#dialog-form";
+			rerenderAccountTransferDialogForm(dialogFormSelector, templateSelector, data);
+		}
+
+		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
+	}
+
+	// open dialog
+	var titleCode = 'dialog.title.transferFunds';
+	openAccountTransferDialog(titleCode, width, height, onSaveFunction, openDialogFunction);
+}
+
+function rerenderAccountTransferDialogForm(dialogFormSelector, templateSelector, data) {
+	var formHtml = $(templateSelector).render(data);
+	$(dialogFormSelector).html(formHtml);
+
+	var renderFormOnSuccess = function(data, textStatus, jqXHR) {
+		var dialogFormSelector = "#dialog-form";
+		rerenderAccountTransferDialogForm(dialogFormSelector, templateSelector, data);
+	}
+
+	$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+
+	$("#toOfficeId").change(function() {
+		var toOfficeId = $("#toOfficeId").val();
+		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType=2&toOfficeId=' + toOfficeId;
+		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
+	});
+
+	$("#toClientId").change(function() {
+		var toOfficeId = $("#toOfficeId").val();
+		var toClientId = $("#toClientId").val();
+		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType=2&toClientId=' + toClientId + '&toOfficeId=' + toOfficeId;
+		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
+	});
+
+	$("#toAccountType").change(function() {
+		var toOfficeId = $("#toOfficeId").val();
+		var toClientId = $("#toClientId").val();
+		var toAccountType = $("#toAccountType").val();
+		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType=2&toClientId=' + toClientId + '&toOfficeId=' + toOfficeId + '&toAccountType=' + toAccountType;
+		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
+	});
+
+	$("#toAccountId").change(function() {
+		var toOfficeId = $("#toOfficeId").val();
+		var toClientId = $("#toClientId").val();
+		var toAccountType = $("#toAccountType").val();
+		var toAccountId = $("#toAccountId").val();
+		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType=2&toAccountId=' + toAccountId + '&toAccountType=' + toAccountType;
+		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
+	});
+}
+
+function openAccountTransferDialog(titleCode, width, height, onSaveFunction, loadFormViewFunction)  {
+
+	var dialogDiv = $("<div id='dialog-form'></div>");
+	var saveButton = doI18N('dialog.button.save');
+	var cancelButton = doI18N('dialog.button.cancel');
+	
+	var buttonsOpts = {};
+	buttonsOpts[saveButton] = onSaveFunction;
+	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+	
+	dialogDiv.dialog({
+		title: doI18N(titleCode), 
+		width: width, 
+		height: height, 
+		modal: true,
+		buttons: buttonsOpts,
+		close: function() {
+			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+			$(this).remove();
+		},
+		open: loadFormViewFunction
+	}).dialog('open');
 }
 
 function viewTransferDetails(transferId) {
