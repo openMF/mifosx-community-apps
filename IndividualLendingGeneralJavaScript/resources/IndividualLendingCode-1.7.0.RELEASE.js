@@ -3245,6 +3245,7 @@ function showGroup(groupId){
 
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'groups', 'centerCalendarContent');
+        refreshAttendanceWidget(currentGroupId, 'groups');
 
         custom.showRelatedDataTableInfo($newtabs, "m_group", groupId);
 
@@ -3409,6 +3410,13 @@ function showGroup(groupId){
 			var linkId = this.id;
             var groupId = linkId.replace("addcalendarbtn", "");
             addCalendar(groupId, 'groups', 'centerCalendarContent');
+            e.preventDefault();
+		});
+
+		$('.addattendancebtn').button({icons: {primary: "ui-icon-calendar"}}).click(function(e) {
+			var linkId = this.id;
+            var groupId = linkId.replace("addattendancebtn", "");
+            addAttendance(groupId, 'groups', data.collectionMeetingCalendar);
             e.preventDefault();
 		});
 
@@ -3617,6 +3625,7 @@ function showCenter(centerId){
 		refreshCenterSummaryInfo(currentGroupId);
         refreshNoteWidget('groups/' + currentGroupId, 'groupnotes' );
         refreshCalendarWidget(currentGroupId, 'centers', 'centerCalendarContent');
+        refreshAttendanceWidget(currentGroupId, 'centers');
         custom.showRelatedDataTableInfo($newtabs, "m_center", currentGroupId);
 		//improper use of document.ready, correct way is send these function as call back
 		$(document).ready(function() {
@@ -3683,6 +3692,13 @@ function showCenter(centerId){
 				e.preventDefault();
 
 			});
+
+			$('.addattendancebtn').button({icons: {primary: "ui-icon-calendar"}}).click(function(e) {
+				var linkId = this.id;
+	            var centerId = linkId.replace("addattendancebtn", "");
+	            addAttendance(centerId, 'centers', data.collectionMeetingCalendar);
+	            e.preventDefault();
+			});			
 
 			$('.addcalendarbtn').button({icons: {primary: "ui-icon-calendar"}}).click(function(e) {
 				var linkId = this.id;
@@ -3781,7 +3797,7 @@ function showCenter(centerId){
         $(anchor.hash).html("error occured while ajax loading.");
     };
 
-	executeAjaxRequest(centerUrl + '?associations=groupMembers', 'GET', "", successFunction, errorFunction);
+	executeAjaxRequest(centerUrl + '?associations=groupMembers,collectionMeetingCalendar', 'GET', "", successFunction, errorFunction);
 }
 
 	function jlgBulkMembersLoanWizard(groupId){
@@ -7556,6 +7572,29 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		}
 	}
 
+	if (templateSelector === "#attendanceFormTemplate") {
+		var availableDate = function(date) {
+  
+		    var recurringDatesArr = [];
+		    var recurringDates = data.calendarData.recurringDates;
+		    $.each(recurringDates, function(n,i){
+		        var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
+		        //alert(newdate);
+		        recurringDatesArr[n] = newdate;
+		    });
+		    
+		    var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
+
+		    if ($.inArray(ymd, recurringDatesArr) < 0 ) {
+		        return [false, "","Not a meeting date"];
+		    } else {
+		        return [true,"","Available meeting date"];
+		    }
+		}
+
+		$('#meetingDate').datepicker({ dateFormat: custom.datePickerDateFormat, beforeShowDay: availableDate});	
+	}
+
 	$('#addclientmembers').click(function() {  
 		return !$('#notSelectedClients option:selected').remove().appendTo('#clientMembers');  
 	});
@@ -9547,7 +9586,7 @@ return 'var successFunction = function(data, textStatus, jqXHR) {   ' +
             ' recdataDiv.show();' +
             ' e.preventDefault();' + 
             ' }); ' +
-    
+    	
             ' $(".recurhide").click(function(e){' +
             ' var linkId = this.id;' +
             ' var calendarId = linkId.replace("recurhide", "");' +
@@ -10777,4 +10816,68 @@ function showSchedulerStatus () {
 
 	}
 	executeAjaxRequest('scheduler', 'GET', "", getSchedulerStatusSuccessFunction, formErrorFunction);
+}
+
+function addAttendance(resourceId, resource, collectionMeetingCalendar){
+    var postUrl = resource + "/" + resourceId + "/meetings";
+    var getUrl = resource + "/" + resourceId + "/meetings/template";
+    if(collectionMeetingCalendar !== undefined) {
+    	postUrl += "?calendarId=" + collectionMeetingCalendar.id;
+    	getUrl += "?calendarId=" + collectionMeetingCalendar.id;
+    }
+
+    var dialogTitle = 'dialog.title.add.attendance';
+    var templateSelector = "#attendanceFormTemplate";
+    var width = 700;
+    var height = 580;
+
+	var successFunction = function(data, textStatus, jqXHR) {
+        var saveSuccessFunction = function(data, textStatus, jqXHR) {
+            $("#dialog-form").dialog("close");
+            refreshAttendanceWidget(resourceId, resource);
+        }
+        popupDialogWithFormViewData(data, postUrl, "POST", dialogTitle, templateSelector, width, height, saveSuccessFunction);
+
+	}
+
+    executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
+}
+
+function editAttendance(resourceId, resource, meetingId){
+    var postUrl = resource + "/" + resourceId + "/meetings/" + meetingId + "?command=saveOrUpdateAttendance";
+    var getUrl = resource + "/" + resourceId + "/meetings/" + meetingId;
+
+    var dialogTitle = 'dialog.title.edit.attendance';
+    var templateSelector = "#attendanceEditFormTemplate";
+    var width = 700;
+    var height = 580;
+
+	var successFunction = function(data, textStatus, jqXHR) {
+        var saveSuccessFunction = function(data, textStatus, jqXHR) {
+            $("#dialog-form").dialog("close");
+            refreshAttendanceWidget(resourceId, resource);
+        }
+        popupDialogWithFormViewData(data, postUrl, "POST", dialogTitle, templateSelector, width, height, saveSuccessFunction);
+
+	}
+
+    executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
+}
+
+function refreshAttendanceWidget(resourceId, resource) {
+	var successFunction = function(data, textStatus, jqXHR) {
+		var meetings = new Object();
+		meetings.crudRows = data;
+		var html = $("#attendanceWidgetFormTemplate").render(meetings);
+		var attendanceContainer = resource + "AttendanceContent";
+		$("#" + attendanceContainer).html(html);	
+
+		$('.editattendance').click(function(e) {
+			var linkId = this.id;
+			var meetingId = linkId.replace("editattendance", "");
+			editAttendance(resourceId, resource, meetingId);
+			e.preventDefault();
+		});
+	}
+	executeAjaxRequest(resource + '/' + resourceId + '/meetings?limit=5', 'GET', "", successFunction, formErrorFunction);
 }
