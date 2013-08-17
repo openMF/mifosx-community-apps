@@ -1829,22 +1829,26 @@ $(document).ready(function() {
                 </tbody>
             </table>
             <br>
-            <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
-                <tbody>
-                    <tr>
-                        <td class="bluetablehead05">
-                            <span class="fontnormalbold">{{=$ctx.doI18N("label.group.meeting.attendance.details")}}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div id="groupsAttendanceContent">
-                            	Attendance details.....
-                            </div>
-                        </td>
-                    </tr>                     
-                </tbody>
-            </table>
+            {{#if centerId}}
+
+            {{#else}}
+	            <table width="100%" cellspacing="0" cellpadding="2" border="0" class="bluetableborder">
+	                <tbody>
+	                    <tr>
+	                        <td class="bluetablehead05">
+	                            <span class="fontnormalbold">{{=$ctx.doI18N("label.group.meeting.attendance.details")}}</span>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td>
+	                            <div id="groupsAttendanceContent">
+	                            	Attendance details.....
+	                            </div>
+	                        </td>
+	                    </tr>                     
+	                </tbody>
+	            </table>
+        	{{/if}}    
         </div>
         {{/if}}
     </div>
@@ -9811,27 +9815,19 @@ $(document).ready(function() {
 								</select>
 							</td>
 						</tr>
+
 						<tr>
 							<td>
-								<label for="calendar">{{=$ctx.doI18N("label.collection.sheet.meeting")}}</label>
+								<label for="transactionDate">{{=$ctx.doI18N("label.collection.sheet.date.of.transaction")}}</label>
 							</td>
 							<td>
-								<select id="calendarId" name="calendarId">
-									<option value=0>{{=$ctx.doI18N("collection.sheet.meeting.first.choice")}}</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<label for="dueDate">{{=$ctx.doI18N("label.collection.sheet.date.of.transaction")}}</label>
-							</td>
-							<td>
-								<input id="dueDate" name="dueDate" title="" type="text" class="datepickerfieldnoconstraint" value="" required/>
+								<input id="transactionDate" name="transactionDate" title="" type="text" class="datepickerfieldnoconstraint" value=""/>
 							</td>
 						</tr>
 					</table>
 				</fieldset>
 				</div>
+				<input type="hidden" id="calendarId" name="calendarId" value="0">
 			</form>
 		</div>
 
@@ -9842,7 +9838,7 @@ $(document).ready(function() {
 </script>
 
 <script id="collectionSheetTemplate" type="text/x-jquery-tmpl">
-	<form id="entityform">
+	<form id="collectionSheetEntityform">
 		<input type="hidden" id="dateFormat" name="dateFormat" value="dd MMMM yyyy" />
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		<div id="formerrors"></div>
@@ -9853,6 +9849,7 @@ $(document).ready(function() {
 						<th class="empty" scope="colgroup"> </th>
 						<th class="highlightcol" scope="colgroup" colspan="{{=crudRows.loanProducts.length}}">{{=$ctx.doI18N("label.collection.sheet.due.collections")}}</th>
 						<th class="highlightcol" scope="colgroup" colspan="{{=crudRows.loanProducts.length}}">{{=$ctx.doI18N("label.collection.sheet.issues.withdrawls")}}</th>
+						<th class="empty" scope="colgroup"> </th>
 					</tr>
 					<tr>
 						<th>{{=$ctx.doI18N("label.collection.sheet.borrower.name")}}</th>
@@ -9879,6 +9876,7 @@ $(document).ready(function() {
 
 							</th>
 						{{/each}}
+						<th class="lefthighlightcolheader">{{=$ctx.doI18N("label.collection.sheet.attendance")}}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -9890,6 +9888,7 @@ $(document).ready(function() {
 						</td>
 						<td class="lefthighlightcolheader cellalignright" scope="colgroup" colspan="{{=$parent.parent.data.loanProducts.length}}">&nbsp;</td>
 						<td class="righthighlightcolheader" scope="colgroup" colspan="{{=$parent.parent.data.loanProducts.length}}">&nbsp;</td>
+						<td colspan="1" scope="colgroup">&nbsp;</td>
 					</tr>
 						{{#each clients}}
 							<tr>
@@ -9922,6 +9921,25 @@ $(document).ready(function() {
 										{{/each}}
 									</td>
 								{{/each}}
+								<td class="lefthighlightcolheader">
+									
+									<input id="clientsAttendance[{{=$itemNumber}}][clientId]" name="clientsAttendance[{{=$itemNumber}}][clientId]" title="" type="hidden" value="{{=clientId}}" size="30"/>
+
+									<select id="clientsAttendance[{{=$itemNumber}}][attendanceType]" name="clientsAttendance[{{=$itemNumber}}][attendanceType]" title="" value="{{=$ctx.number(attendanceType.id)}}">
+										{{#each $parent.parent.parent.parent.data.attendanceTypeOptions}}
+											{{#if $parent.parent.data.attendanceType.id === id}}
+												<option selected=selected value="{{=$ctx.number(id)}}">
+													{{=value}}
+												</option>
+											{{#else}}
+												<option value="{{=$ctx.number(id)}}">
+													{{=value}}
+												</option>
+											{{/if}}								
+											
+										{{/each}}
+									</select>
+								</td>
 							</tr>
 						{{/each}}
 
