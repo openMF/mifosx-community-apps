@@ -3402,6 +3402,13 @@ function showGroup(groupId){
 			    e.preventDefault();
 			});
 
+			$('.transfferclientsbtn').button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
+				var linkId = this.id;
+				var groupId = linkId.replace("transfferclientsbtn", "");
+				launchTransferClientsDialog(groupId);
+				e.preventDefault();
+			});
+
             $('button.addgroupnotebtn span').text(doI18N('dialog.button.add.note'));
 
 		});
@@ -3579,6 +3586,70 @@ function disassociateClientFromGroup(clientId, groupId){
 
     var newFormData = JSON.stringify(serializedArray);
     executeAjaxRequest(postUrl, "post", newFormData, saveSuccessFunction, saveErrorFunction);
+}
+
+function transferClients(divContainer, groupId) {
+	var serializationOptions = {};
+	serializationOptions["checkboxesAsBools"] = true;
+
+	var serializedArray = {};
+	serializedArray = $('#entityform').serializeObject(serializationOptions);
+	var clients = new Array();
+	for (var i in serializedArray["clientMembers"]) {
+		var temp = new Object();
+		temp.id = serializedArray["clientMembers"][i];
+		clients.push(temp);
+	};
+	serializedArray["clients"]=clients;
+	delete serializedArray.clientMembers;
+
+	var newFormData = JSON.stringify(serializedArray);
+
+	var successFunction =  function(data, textStatus, jqXHR) {
+		divContainer.dialog("close");
+
+		if (groupId === undefined || groupId == null) {
+			groupId = data.resourceId;
+		}
+		showGroup(groupId);
+	};
+	executeAjaxRequest('groups/'+groupId+'?command=transferClients', "POST", newFormData, successFunction, formErrorFunction);
+}
+
+var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
+
+	var dialogDiv = $("<div id='dialog-form'></div>");
+
+	var groupId = data.groupId;
+
+	var templateIdentifier = "#transferClientsBetweenGroupsFormTemplate";
+
+	var openClientTransferDialogFunc = function (event, ui) {
+		var formHtml = $(templateIdentifier).render(data);
+		$("#dialog-form").html(formHtml);
+
+		$('.multiadd').click(function() {
+			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#clientMembers');
+		});
+
+		$('.multiremove').click(function() {
+			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');
+		});
+
+		$("#entityform textarea").first().focus();
+		$('#entityform input').first().focus();
+
+	}
+
+	var saveClientTransferFunc = function() {
+		transferClients(dialogDiv, groupId);
+	};
+
+	var dialog = gernericDialog(dialogDiv, 'dialog.title.transfer.clients.between.groups', 900, 450, openClientTransferDialogFunc, saveClientTransferFunc);
+};
+
+function launchTransferClientsDialog (groupId) {
+	executeAjaxRequest('groups/' + groupId + '/clientstransfertemplate', 'GET', "", launchTransferClientDialogOnSuccessFunction, formErrorFunction);
 }
 
 function showCenter(centerId){

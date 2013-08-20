@@ -1096,6 +1096,80 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="transferClientsBetweenGroupsFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<table>
+		<tr>
+			<td class="paddingB10">
+				<div class="multiselectwidget">
+					<label for="notSelectedClients">{{=$ctx.doI18N("form.label.group.available.clients")}}</label>
+					<select id="notSelectedClients" name="notSelectedClients" title="" class="multiselectwidget multiNotSelectedItems" multiple="multiple" style="width:300px;height:125px;">
+					{{#each clientOptions}}
+						<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+					{{/each}}
+					</select>
+					<a href="#" id="addclientmembers" class="multiselectwidget multiadd">{{=$ctx.doI18N("widget.multiselect.button.add")}} &gt;&gt;</a>
+				</div>
+			</td>
+			<td class="paddingB10">
+				<div class="multiselectwidget">
+					<label for="clientMembers">{{=$ctx.doI18N("form.label.group.selected.clients")}}</label>
+					<select id="clientMembers" name="clientMembers" title="" class="multiselectwidget multiSelectedItems" multiple="multiple" style="width:300px;height:125px;">
+					{{#each clientMembers}}
+						{{#if officeName}}
+							<option value="{{=id}}">{{=displayName}}, {{=officeName}}</option>
+						{{else}}
+							<option value="{{=id}}">{{=displayName}}, {{=$parent.parent.parent.data.officeName}}</option>
+						{{/if}}
+					{{/each}}
+					</select>
+					<a href="#" id="removeclientmembers" class="multiselectwidget multiremove">&lt;&lt; {{=$ctx.doI18N("widget.multiselect.button.remove")}}</a>  
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="destinationGroupId">{{=$ctx.doI18N("label.select.destination.group")}}</label>
+			</td>
+			<td>
+				<select id="destinationGroupId" name="destinationGroupId" title="">
+					<option value="">{{=$ctx.doI18N("option.group.search.first.choice")}}</option>
+					{{#each groupOptions}}
+						<option value="{{=id}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{{#if}}
+					<input id="transferActiveLoans" type="checkbox" name="transferActiveLoans" value="{{=transferActiveLoans}}" checked/>
+				{{#else}}
+					<input id="transferActiveLoans" type="checkbox" name="transferActiveLoans" value="{{=transferActiveLoans}}"/>
+				{{/if}}
+			</td>
+			<td>
+				<label for="transferActiveLoans">{{=$ctx.doI18N("label.transferActiveLoans")}}</label>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{{#if}}
+					<input id="inheritDefinationGroupLoanOfficer" type="checkbox" name="inheritDestinationGroupLoanOfficer" value="{{=inheritDefinationGroupLoanOfficer}}" checked/>
+				{{#else}}
+					<input id="inheritDefinationGroupLoanOfficer" type="checkbox" name="inheritDestinationGroupLoanOfficer" value="{{=inheritDefinationGroupLoanOfficer}}"/>
+				{{/if}}
+			</td>
+			<td>
+				<label for="inheritDefinationGroupLoanOfficer">{{=$ctx.doI18N("label.inheritDefinationGroupLoanOfficer")}}</label>
+			</td>
+		</tr>
+	</table>
+</form>
+</script>
+
 <script id="centerFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>
@@ -1432,6 +1506,9 @@ $(document).ready(function() {
         {{/if}}
         {{#if $ctx.showTask("AddGroupSavings")}}
          <button id="newgroupsavingsbtn{{=id}}" class="newgroupsavingsbtn">{{=$ctx.doI18N("label.group.new.saving.account")}}</button>
+        {{/if}}
+        {{#if $ctx.showTask("TransferClients")}}
+			<button id="transfferclientsbtn{{=id}}" class="transfferclientsbtn">{{=$ctx.doI18N("label.group.transffer.clients")}}</button>
         {{/if}}
 
 	{{#else}}
