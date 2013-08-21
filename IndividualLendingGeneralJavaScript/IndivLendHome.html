@@ -9516,7 +9516,11 @@ $(document).ready(function() {
 			<tr>
 				<td>
 					<label for="repeat" style="display: inline">{{=$ctx.doI18N("label.calendar.repeat")}}</label>
-					<input type="checkbox" id="repeating" name="repeating" title="" />
+					{{#if repeating}}
+					<input type="checkbox" id="repeating" name="repeating" title="" checked/>
+					{{#else}}
+					<input type="checkbox" id="repeating" name="repeating" title=""/>
+					{{/if}}
 				</td>                
 				<td>
 				
