@@ -3649,7 +3649,7 @@ var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqX
 };
 
 function launchTransferClientsDialog (groupId) {
-	executeAjaxRequest('groups/' + groupId + '/clientstransfertemplate', 'GET', "", launchTransferClientDialogOnSuccessFunction, formErrorFunction);
+	executeAjaxRequest('groups/' + groupId + '?templateType=clientstransfertemplate', 'GET', "", launchTransferClientDialogOnSuccessFunction, formErrorFunction);
 }
 
 function showCenter(centerId){
