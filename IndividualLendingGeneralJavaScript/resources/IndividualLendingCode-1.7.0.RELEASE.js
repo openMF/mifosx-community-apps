@@ -769,6 +769,14 @@ function setXBRLContent(divName) {
 		taxonomyList = data;
 
         var getTaxonomyMapSuccessFunction = function(data, textStatus, jqXHR) {
+        	
+            
+
+
+            $("#" + divName).html($("#xbrlConfigTemplate").render());
+            $('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'yy-mm-dd'});
+            $("#xbrlconfigtabs").tabs();
+            //determine which tab is initially selected and load data for the same
             var mappingJson = data["config"];
             if (mappingJson.length > 0)
             {
@@ -777,25 +785,36 @@ function setXBRLContent(divName) {
                     var mapping = ($.parseJSON(mappingJson))[''+taxonomyId];
                     if (mapping != undefined)
                         taxonomyList[i].mapping = mapping;
+
                 }
 
             }
 
-
-            $("#" + divName).html($("#xbrlConfigTemplate").render());
-            $('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'yy-mm-dd'});
-            $("#xbrlconfigtabs").tabs({
-                beforeActivate : function(event, tab) {
-                    fetchXBRLTabContent(tab.newTab.index());
-                }
-            });
-            var fetchXBRLTabContent = function(index) {
-                handleXBRLConfigTabSelection(taxonomyList, index)
-            }
-            //determine which tab is initially selected and load data for the same
-            var selected = $("#xbrlconfigtabs").tabs('option', 'active');
-            fetchXBRLTabContent(selected);
-
+            for (var tab = 0; tab < 4; tab++) {
+            	var showlist = new Array();
+				for (var i = taxonomyList.length - 1; i >= 0; i--) {
+					if (taxonomyList[i].type == tab)
+						showlist.push(taxonomyList[i]);
+				}
+				var templateSelector = $("#xbrlTaxonomyListTemplate").render(showlist);
+				switch (tab) {
+					case 0:
+						$("#portfolio-tab").html(templateSelector);
+						break;
+					case 1:
+						$("#balancesheet-tab").html(templateSelector);
+						break;
+					case 2:
+						$("#incomes-tab").html(templateSelector);
+						break;
+					case 3:
+						$("#expenses-tab").html(templateSelector);
+						break;
+					default:
+						break;
+			        }
+			    }
+			    
             $("#saveconfig").button().click(function(e) {
                 var postTaxonomyMappingSuccessFunction = function(data, textStatus, jqXHR) {
                     var dialogDiv = $("<div id='dialog-form'></div>");
@@ -827,7 +846,7 @@ function setXBRLContent(divName) {
                 serialObject["config"] = JSON.stringify(config);
                 serialObject["identifier"] = "default";
                 var formdata = JSON.stringify(serialObject);
-                alert(formdata);
+                // alert(formdata);
                 executeAjaxRequest('xbrlmapping', 'PUT', formdata, postTaxonomyMappingSuccessFunction, formErrorFunction);
             })
 
@@ -861,7 +880,7 @@ function showXBRLReport(xmlData) {
         },
         open: function (event, ui) {
 
-            var html="<table border='1'><tr><th>Title</th><th>Dimension</th><th>Value</th></tr>";
+            var html="<table width='100%' border='1'><tr><th>Title</th><th>Dimension</th><th>Value</th></tr>";
             $(xmlData).find("*[contextRef]").each(function(i){
                 var contextId = $(this).attr("contextRef");
                 var context = $(xmlData).find("#"+contextId).find("scenario").text();
