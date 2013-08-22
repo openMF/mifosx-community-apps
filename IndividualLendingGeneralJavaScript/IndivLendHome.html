@@ -1144,7 +1144,7 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td>
-				{{#if}}
+				{{#if transferActiveLoans}}
 					<input id="transferActiveLoans" type="checkbox" name="transferActiveLoans" value="{{=transferActiveLoans}}" checked/>
 				{{#else}}
 					<input id="transferActiveLoans" type="checkbox" name="transferActiveLoans" value="{{=transferActiveLoans}}"/>
@@ -1156,7 +1156,7 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td>
-				{{#if}}
+				{{#if inheritDestinationGroupLoanOfficer}}
 					<input id="inheritDefinationGroupLoanOfficer" type="checkbox" name="inheritDestinationGroupLoanOfficer" value="{{=inheritDefinationGroupLoanOfficer}}" checked/>
 				{{#else}}
 					<input id="inheritDefinationGroupLoanOfficer" type="checkbox" name="inheritDestinationGroupLoanOfficer" value="{{=inheritDefinationGroupLoanOfficer}}"/>
@@ -9118,6 +9118,60 @@ $(document).ready(function() {
 </form>
 </script>
 
+
+<script id="transferClientsBetweenBranchesFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+	<table>
+		<tr>
+			<td>
+				<label for="destinationOfficeId">{{=$ctx.doI18N("label.office")}}</label>
+			</td>
+			<td>
+				<select id="destinationOfficeId" name="destinationOfficeId" title="" >
+					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+					{{#each officeOptions}}
+						{{#if $ctx.number($parent.parent.data.officeId)===$ctx.number(id)}}
+							<option value="{{=id}}" selected="selected">{{=nameDecorated}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=nameDecorated}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="newStaffId">{{=$ctx.doI18N("label.client.staff")}}</label>
+			</td>
+			<td>
+				<select id="newStaffId" name="newStaffId" title="">
+					<option value="">{{=$ctx.doI18N("option.client.select.staff.first.choice")}}</option>
+					{{#each staffOptions}}
+						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
+							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
+						{{#else}}
+							<option value="{{=id}}">{{=displayName}}</option>
+						{{/if}}
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input id="transferActiveLoans" type="checkbox" name="transferActiveLoans" checked/>
+			</td>
+			<td>
+				<label for="transferActiveLoans">{{=$ctx.doI18N("label.transferActiveLoans")}}</label>
+			</td>
+		</tr>
+	</table>
+</form>
+</script>
+
 <script id="clientToolbarTemplate" type="text/x-jquery-tmpl">
 <div style="padding-bottom: 4px;">
 <table style="width:100%">
@@ -9157,6 +9211,10 @@ $(document).ready(function() {
 
 			{{#if $ctx.showTask("AddSavingAccount")}}
 				<button id="newsavingbtn" class="newsavingbtn">New savings account</button>
+			{{/if}}
+
+			{{#if $ctx.showTask("TransferClients")}}
+				<button id="transferclientsbtn{{=id}}" class="transferclientsbtn">{{=$ctx.doI18N("label.clients.transfer")}}</button>
 			{{/if}}
 		{{/if}}
 		{{#if $ctx.showTask("ClientClose")}}

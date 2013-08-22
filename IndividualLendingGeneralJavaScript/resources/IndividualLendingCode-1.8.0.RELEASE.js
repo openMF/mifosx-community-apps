@@ -2814,6 +2814,24 @@ function showILClient(clientId) {
 					});
 					$('button.newsavingbtn span').text(doI18N('dialog.button.new.savings.account'));
 
+					$('.transferclientsbtn').button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
+						var linkId = this.id;
+						var clientId = linkId.replace("transferclientsbtn", "");
+						var getUrl = 'clients/' + clientId + '?template=true';
+						var postUrl = 'clients/' + clientId + '?command=transfer';
+						var templateSelector = "#transferClientsBetweenBranchesFormTemplate";
+						var width = 400; 
+						var height = 225;
+
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+							$("#dialog-form").dialog("close");
+							showILClient(clientId);
+						}
+
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.transfer.clients", templateSelector, width, height,  saveSuccessFunction);
+						e.preventDefault();
+					});
+
 					$('.clientclosebtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 						var clientClose = 'close';
 						var getUrl = 'clients/template?commandParam=' + clientClose;
@@ -7641,6 +7659,17 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		} else if (data.chargeCalculationType.id == "2") {
 			$("label[for='amount']").text(doI18N('label.percentage'));
 		}
+	}
+
+	if (templateSelector === "#transferClientsBetweenBranchesFormTemplate") {
+		$("#destinationOfficeId").change(function(e){
+			var selectedOfficeId = $(this).val();
+			var officeIdChangeSuccess = function(clientData, textStatus, jqXHR){
+				clientData['officeId'] = selectedOfficeId;
+				repopulateOpenPopupDialogWithFormViewData(clientData, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+			}
+			executeAjaxRequest("clients/" + data['id'] + "?template=true&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);
+		});
 	}
 
 	if (templateSelector === "#attendanceFormTemplate") {
