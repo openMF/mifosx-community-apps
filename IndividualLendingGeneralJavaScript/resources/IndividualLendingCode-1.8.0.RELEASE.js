@@ -7924,14 +7924,6 @@ $("table#createDatatableColumns tbody").sortable({ helper: fixHelper,
 function getDatatableColumnRealName(datatableRowObject) {
 
     var name = $(datatableRowObject).find("input[name=columnName]").val();
-    var type = $(datatableRowObject).find("select[name=columnType]").val();
-
-    if (type == "Dropdown") {
-        var code =  $(datatableRowObject).find("input[name=columnCode]").val();
-
-        name = code + "_cd_" + name;
-    }
-
     return name;
 }
 
@@ -7939,15 +7931,6 @@ function getDatatableColumnNewName(datatableRowObject) {
 
     var newName = $(datatableRowObject).find("input[name=columnNewName]").val();
     var name = (newName.length > 0) ? newName : $(datatableRowObject).find("input[name=columnName]").val();
-    var type = $(datatableRowObject).find("select[name=columnType]").val();
-
-    if (type == "Dropdown") {
-        var newCode =  $(datatableRowObject).find("select[name=columnCode]").val();
-        var code = (newCode.length > 0) ? newCode : $(datatableRowObject).find("input[name=columnCode]").val();
-
-        name = code + "_cd_" + name;
-    }
-
     return name;
 }
 
@@ -7963,10 +7946,11 @@ function insertUpdateDatatableColumnFromTemplate(columnData, templateTableRow, c
     $(newRow).find("input[name=columnMandatory]").prop("checked", columnData.mandatory);
     $(newRow).find("input[name=columnLength]").val(columnData["length"]).prop("disabled", (columnData.type != "String"));
     $(newRow).find("input[name=columnCode]").val(columnData.code).prop("disabled", (columnData.type != "Dropdown" || columnData.action == "change"));
-
+	
     var html = $('#codeValuedatatableTemplate').render(crudObject);
 	$(newRow).find('#columnNewCode').html(html);
 	$(newRow).find("select[name=columnCode]").prop("disabled", (columnData.type != "Dropdown"));
+	$(newRow).find("select[name=columnCode] option[value='" + columnData.code + "']").attr("selected", "selected");
 
     if (columnData.action == "change") {
         $(newRow).find("input[name=columnName]").attr("data-original-name", getDatatableColumnRealName($(newRow)));
@@ -8028,12 +8012,12 @@ function populateUpdateDatatableDialog(datatableName, changeTypeFunction, rowDel
 
                     delete enteredFormData[column.columnName];
                 } else {
-                    var indexOfCD = column.columnName.indexOf("_cd_");
-                    name = (indexOfCD > -1) ? column.columnName.substring(indexOfCD + 4, column.columnName.length) : column.columnName;
-                    type = (indexOfCD > -1) ? "Dropdown" : typeMap[column.columnType.toLowerCase()];
+                    
+                    name = column.columnName;
+                    type = (column.columnCode == null) ? typeMap[column.columnType.toLowerCase()] : "Dropdown";
                     mandatory = !column.isColumnNullable;
                     length = (type == "String") ? column.columnLength : "";
-                    code = (indexOfCD > -1) ? column.columnName.substring(0, indexOfCD) : "";
+                    code = (column.columnCode == null) ? "" : column.columnCode;
                     id = new Date().getTime();
                 }
 
@@ -8155,7 +8139,8 @@ var changeTypeFunction = function(e) {
     e.preventDefault();
 
     var attr = $(this).parent().parent().find("input[name=columnName]").attr("data-original-name");
-    var indexOfCD = (attr) ? attr.indexOf("_cd_") : -1;
+    var code = $(this).parent().parent().find("input[name=code]").attr("data-original-name");
+    var indexOfCD = (code) ? 1 : -1;
     var type = $(this).val();
 
     $(this).parent().parent().find("input[name=columnLength]").prop("disabled", (type != "String")).removeClass("ui-state-error");
@@ -8168,6 +8153,7 @@ var changeTypeFunction = function(e) {
 
     if (type == "Dropdown") {
     	$(this).parent().parent().find("select[name=columnCode]").prop("disabled", (type != "Dropdown"));
+
     } else {
     	$(this).parent().parent().find("select[name=columnCode]").attr("disabled", "disabled");
     }
@@ -8257,7 +8243,7 @@ $("div[class=ui-dialog-buttonset]").children().first().click({ array: dropColumn
         prev = (prev.length) ? getDatatableColumnRealName($(prev)) : fkFieldName;
         addObject.after = prev;
 
-        var fullName = (addObject.code) ? addObject.code + "_cd_" + addObject.name : addObject.name;
+        var fullName = addObject.name;
         enteredFormData[fullName] = new Object();
         enteredFormData[fullName].name = addObject.name;
         enteredFormData[fullName].type = addObject.type;
@@ -8297,7 +8283,7 @@ $("div[class=ui-dialog-buttonset]").children().first().click({ array: dropColumn
         prev = (prev.length) ? getDatatableColumnNewName($(prev)) : fkFieldName;
         changeObject.after = prev;
 
-        var fullName = (changeObject.code) ? changeObject.code + "_cd_" + changeObject.name : changeObject.name;
+        var fullName = changeObject.name;
         enteredFormData[fullName] = new Object();
         enteredFormData[fullName].name = changeObject.name;
         enteredFormData[fullName].newName = changeObject.newName;
