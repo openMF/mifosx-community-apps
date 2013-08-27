@@ -3622,6 +3622,9 @@ function transferClients(divContainer, groupId) {
 		clients.push(temp);
 	};
 	serializedArray["clients"]=clients;
+	if ($("input[name='transfertype']:radio:checked").val() == 'intraBranch') {
+		delete serializedArray.destinationOfficeId;
+	}
 	delete serializedArray.clientMembers;
 	delete serializedArray.transfertype;
 
@@ -3643,6 +3646,7 @@ var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqX
 	var tempObject = new Object();
 	tempObject.clientOptions = currentGroupClients || [];
 	tempObject.officeOptions = data;
+	tempObject.currentGroupOfficeId = currentGroupOffice;
 
 	var groupId = currentGroup;
 	var dialogDiv = $("<div id='dialog-form'></div>");
@@ -3663,12 +3667,13 @@ var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqX
 				return output;
 			});
 		}
-		var temporaryVarible = $("input[name='transfertype']:radio:checked").val();
+
 		if ($("input[name='transfertype']:radio:checked").val() == 'intraBranch') {
 			$(".officedetailsdiv").hide();
 			executeAjaxRequest('groups?templateType=clientstransfertemplate&officeId='+officeId+'&groupId='+groupId, 'GET', "", fetchGroupsSuccessFunction, formErrorFunction);
 		} else if ($("input[name='transfertype']:radio:checked").val() == 'interBranch') {
 			$(".officedetailsdiv").show();
+			$('select.destinationGroupId').empty();
 			$("#destinationOfficeId").change(function(e){
 				var selectedOfficeId = $(this).val();
 				executeAjaxRequest('groups?templateType=clientstransfertemplate&officeId='+selectedOfficeId+'&groupId='+groupId, 'GET', "", fetchGroupsSuccessFunction, formErrorFunction);
@@ -3681,6 +3686,7 @@ var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqX
 				executeAjaxRequest('groups?templateType=clientstransfertemplate&officeId='+officeId+'&groupId='+groupId, 'GET', "", fetchGroupsSuccessFunction, formErrorFunction);
 			} else if ($("input[name='transfertype']:radio:checked").val() == 'interBranch') {
 				$(".officedetailsdiv").show();
+				$('select.destinationGroupId').empty();
 				$("#destinationOfficeId").change(function(e){
 					var selectedOfficeId = $(this).val();
 					executeAjaxRequest('groups?templateType=clientstransfertemplate&officeId='+selectedOfficeId+'&groupId='+groupId, 'GET', "", fetchGroupsSuccessFunction, formErrorFunction);
@@ -7718,7 +7724,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				tempObject.officeOptions = offices;
 				tempObject.staffOptions = staffData;
 				tempObject.clientOfficeId = currentClientOffice;
-				console.log(tempObject);
 				repopulateOpenPopupDialogWithFormViewData(tempObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 			}
 			executeAjaxRequest("staff?staffInOfficeHierarchy=true&fields=id,displayName&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);
