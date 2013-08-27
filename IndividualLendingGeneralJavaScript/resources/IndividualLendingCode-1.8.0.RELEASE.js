@@ -7257,12 +7257,13 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 					}
 				}
 			}	
-		}	
-	
-	   //Caledar form data
+		}
+
+		//Caledar form data
         if (postUrl.toLowerCase().indexOf("calendars") > 0){
             
-            var rrule = convertToRfc5545();
+            //var rrule = convertToRfc5545();
+            var freq = $("#repeats").val();
             serializedArray = {};
             serializedArray["locale"] = $('#locale').val();
             serializedArray["dateFormat"] = $('#dateFormat').val();
@@ -7275,8 +7276,26 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             //serializedArray["typeId"] = $('#meetingTypeId').val();
             serializedArray["typeId"] = 1;
             serializedArray["startDate"] = $('#startDate').val();
-            serializedArray["repeating"] = $('#repeating').val()==="on"?true:false;
-            serializedArray["recurrence"] = rrule;
+            if($('input:checkbox[name=repeating]').is(':checked')){
+				serializedArray["repeating"] = "true";
+            }else{
+				serializedArray["repeating"] = "false";
+            }
+            serializedArray["repeats"] = $("#repeats").val();
+            serializedArray["repeatsEvery"] = $('#repeatsEvery').val();
+
+			if(freq == "Weekly"){
+				//Get weekly details
+				var values = new Array();
+				$.each($("input[name='repeatson[]']:checked"), function() {
+					values.push($(this).val());
+				});
+
+				if (values) {
+					serializedArray["repeatsOnDay"] =  values.toString();
+				}
+			}
+            //serializedArray["recurrence"] = rrule;
             
             if($('input:checkbox[name=repeating]').is(':checked')){
                 if($('#endson').is(':checked')){
@@ -7295,7 +7314,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             }
             */
             
-        }
+		}
 	
 		if (templateSelector === "#accountingruleFormTemplate") {
 			if (serializedArray.name === "") {
@@ -9852,14 +9871,15 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
             });
             return output;
         });
-                
-        repeatsEvery.empty().append(function() {
-            var output = '';
-            for(i=1; i<=30; i++){
-                output += '<option value="' + i + '">' + i + '</option>';
-            }
-            return output;
-        });
+
+        var repeatsEveryLimit=3;
+		repeatsEvery.empty().append(function() {
+			var output = '';
+			for(i=1; i<=repeatsEveryLimit; i++){
+				output += '<option value="' + i + '">' + i + '</option>';
+			}
+			return output;
+		});
         
         repeats.change(function() {
             var textOpt = repeatsOptions[repeats.val()];
@@ -9869,6 +9889,18 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
             }else{
                 $('#weeklyoptions').hide();
             }
+			if(repeats.val() == "Monthly"){
+				repeatsEveryLimit = 11;
+			}else{
+				repeatsEveryLimit = 3;
+			}
+			repeatsEvery.empty().append(function() {
+				var output = '';
+				for(i=1; i<=repeatsEveryLimit; i++){
+					output += '<option value="' + i + '">' + i + '</option>';
+				}
+				return output;
+			});
         });
     	
         $('#meetingTypeId').change(function() {
@@ -9981,7 +10013,7 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
     executeAjaxRequest(getUrl, "GET", "", successFunction, formErrorFunction);
 
 }
-
+/*
 function convertToRfc5545(){
     // RRULE TEMPLATES
     
@@ -10031,7 +10063,7 @@ function convertToRfc5545(){
     }
         
     return rrule;
-}
+}*/
 
 function loadAvailableCalendars(allAttachedCalendars, meetingCalendar, loanId, syncDisbursementWithMeeting){
     var calendars = new Object();
