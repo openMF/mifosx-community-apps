@@ -6678,6 +6678,29 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="savingsAccountCloseTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	</div>
+	<table cellspacing="4px" cellpadding="8px">
+		<tr>
+			<td>
+				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+				<label for="closedOnDate">{{=$ctx.doI18N("form.label.closeDate")}}</label>
+				<input id="closedOnDate" name="closedOnDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(closedOnDate)}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+				<textarea rows="3" cols="53" id="note" name="note"></textarea>
+			</td>
+		</tr>
+	</table>
+</form>
+</script>
+
 <script id="savingsAccountSelectProductDialogTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>
@@ -7007,6 +7030,9 @@ $(document).ready(function() {
 
 				{{#if $ctx.showTask("APPLYANNUALFEESAVINGSACCOUNT")}}
 				<button id="savingsaccountfundstransferbtn{{=id}}" class="savingsaccountfundstransfer{{=id}}">{{=$ctx.doI18N("button.transferFunds")}}</button>
+				{{/if}}
+				{{#if $ctx.showTask("CLOSE_SAVINGSACCOUNT")}}
+				<button id="savingsaccountclosebtn{{=id}}" class="savingsaccountclose{{=id}}">{{=$ctx.doI18N("CLOSE")}}</button>
 				{{/if}}
 			{{/if}}
 
