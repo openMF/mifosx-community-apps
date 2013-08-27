@@ -9406,6 +9406,19 @@ function loadSavingAccount(accountId,parenttab) {
 		    e.preventDefault();
 		});
 		$('button.savingsaccountactivate span').text(doI18N('button.activate'));
+
+		$('.savingsaccountclose'+accountId).button({icons: {primary: "ui-icon-circle-close"}}).click(function(e) {
+			var postUrl = 'savingsaccounts/' + accountId + '?command=close';
+			var templateSelector = "#savingsAccountCloseTemplate";
+			var width = 500; 
+			var height = 350;
+			
+			var defaultOffset = offsetToApprovalDate;
+			popupDialogWithPostOnlyFormView(postUrl, 'POST', 'dialog.button.close', templateSelector, width, height, saveSuccessFunctionReloadClient, offsetToApprovalDate, defaultOffset, maxOffset);
+		    e.preventDefault();
+		});
+		$('button.savingsaccountclose span').text(doI18N('CLOSE'));
+
 		
 		$('.savingsaccountdeposit'+accountId).button({icons: {primary: "ui-icon-arrowthick-1-e"}}).click(function(e) {
 			var postUrl = 'savingsaccounts/' + accountId + '/transactions?command=deposit';
