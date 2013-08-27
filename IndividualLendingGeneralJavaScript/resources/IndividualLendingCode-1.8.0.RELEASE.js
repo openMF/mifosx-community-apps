@@ -149,6 +149,7 @@ generalErrorFunction = function(jqXHR, textStatus, errorThrown) {
 
 function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
 
+	console.log(verbType);
 	var jqxhr = $.ajax({ 
 				url : baseApiUrl + url, 
 				type : verbType, //POST, GET, PUT or DELETE 
@@ -163,6 +164,29 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 				success : successFunction, 
 				error : errorFunction 
 			}); 
+}
+
+function executeSynchroneAjaxRequest(url, verbType, jsonData, successFunction, errorFunction) { 
+
+	console.log(verbType);
+	var resp = $.ajax({ 
+		async : false,
+		url : baseApiUrl + url, 
+		type : verbType, //POST, GET, PUT or DELETE 
+		contentType : "application/json; charset=utf-8", 
+		dataType : 'json', 
+		data : jsonData, 
+		cache : false, 
+		beforeSend : function(xhr) { 
+				if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier); 
+				if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64); 
+			}, 
+		success : successFunction, 
+		error : errorFunction 
+	}).responseText;
+	
+	console.log(resp);
+	return resp; 
 }
 
 function executeAjaxRequestForImageDownload(url, verbType,successFunction, errorFunction) { 
@@ -276,7 +300,7 @@ function showMainContainer(containerDivName, username) {
 			htmlVar += '	<li><a href="unknown.html" onclick="setSysAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.system") + '</a></li>';
 		
 		if (jQuery.MifosXUI.showMenu("TemplateAdminMenu") == true)
-			htmlVar += '	<li><a href="unknown.html" onclick="setTemplateAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.template") + '</a></li>';
+			htmlVar += '	<li><a href="unknown.html" onclick="setTemplateEntityAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.template") + '</a></li>';
 		
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
@@ -481,7 +505,8 @@ function setClientContent(divName) {
 	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
 	htmlVar += '<li><a href="#clientidentifiertab" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
 	htmlVar += '<li><a href="#clientdocumenttab" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
-	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div></div></div>';
+	htmlVar += '<li><a href="#clientdocumentttemplateab" title="clienttemplatetabname" class="topleveltab"><span id="clientdocumenttemplatetabname">' + "Template Documents"  + '</span></a></li>';
+	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div><div id="clienttemplatetab"></div></div></div>';
 	$("#" + divName).html(htmlVar);
 }
 
@@ -724,56 +749,168 @@ function setSysAdminContent(divName) {
 	$("#" + divName).html(simpleOptionsHtml(htmlOptions));
 }
 
-function setTemplateAdminContent(divName) {
+function setTemplateEntityAdminContent(divName) {
 	
-	var htmlOptions = 
-		'<form id="doctemplateform" >'+
-			'<label>Template Name:</label>'+
-			'<input type="text" name="name" /> <br/>'+
-			
-			'<label>Mapper Key:</label>'+
-			'<input type="text" name="mappers.key" /> <br/>'+
-			
-			'<label>Mapper Value:</label>'+
-			'<input type="text" name="mappers.value" /> <br/>'+
-			
-			'<label>Mapper Key:</label>'+
-			'<input type="text" name="mappers.key" /> <br/>'+
-			
-			'<label>Mapper Value:</label>'+
-			'<input type="text" name="mappers.value" /> <br/>'+
-			
-			'<textarea id="templateeditor" name="text"></textarea>'+
-			'<input type="button" onclick="saveTemplate()" value="create">'+
-		'</form>';
+	var assignmentObject = new Object();
+	assignmentObject.templates = jQuery.parseJSON(executeSynchroneAjaxRequest('templateassignment', 'GET', "", null, null));
+	templateEntityTypeAssignmentTemplateHTML = $("#templateEntityTypeAssignmentTemplate").render(assignmentObject);
+	$("#" + divName).html(templateEntityTypeAssignmentTemplateHTML);
 	
-	htmlOptions += '<script> CKEDITOR.replace( "templateeditor" ); </script>';
+	$("#createTemplateWithEntityAndType").button().click(function(e) {
+		
+		assignmentObject.entities = jQuery.parseJSON(executeSynchroneAjaxRequest('templateassignment/entities', 'GET', "", null, null));
+		assignmentObject.types = jQuery.parseJSON(executeSynchroneAjaxRequest('templateassignment/types', 'GET', "", null, null));
+		templateEntityTypeAssignmentTemplateHTML = $("#templateCreateFormTemplate").render(assignmentObject);
+		$("#"+divName).html(templateEntityTypeAssignmentTemplateHTML);
+		
+		
+		$("#entitySelect").change(function (e) {
+			if($(this).val() == 0) {
+				showClientKeys();
+			} else if ($(this).val() == 1)
+				showLoanKeys();
+			
+			$("#templateKeys label").click(function() {
+				CKEDITOR.instances.templateeditor.insertText($(this).text());	
+			} );
+			$("#templateKeys label").css({
+				"cursor": "pointer",
+				"color" : "rgb(255, 255, 255)", 
+				"line-height" : "1" ,
+				"text-align" : "center", 
+				"vertical-align" : "baseline", 
+				"white-space": "nowrap", 
+				"background-color" : "rgb(66, 139, 202)", 
+				"margin" : "10px 0px", 
+				"border-radius" : "0.25em 0.25em 0.25em 0.25em", 
+				"font-weight" : "bold", 
+				"padding" : "0.3em 0.6em 0.4em"
+			});
+		});
 
-	$("#" + divName).html(simpleOptionsHtml(htmlOptions));
+		CKEDITOR.replace( "templateeditor", {
+			width : 800
+		} );
+		
+		$("#createTemplate").button().click(function(e) {
+			CKupdate();
+			var formData = $("#templateform").serializeObject();
+			var mapper = mergeMaps(formData.mapperskey, formData.mappersvalue);
+			formData.mappers = mapper;
+
+			delete formData['mappers.key'];
+			delete formData['mappers.value'];
+			entityId = $("#entitySelect").val(); 
+			typeId = $("#typeSelect").val();
+			executeSynchroneAjaxRequest('templateassignment?entityId='+entityId+'&typeId='+typeId, "POST", JSON.stringify(formData), null, null);
+			setTemplateEntityAdminContent(divName);
+		});
+	});
+	
+	$("a[id^=template]").click(function(e) {
+		e.preventDefault();
+		var tmpid = $(this).attr('id').replace('template','');
+		var assUrl = $(this).attr('href');
+		showTemplateEdit(assUrl, tmpid, divName);
+	});
+}
+
+function showTemplateEdit(assUrl, id, divName) {
+	
+	var assignmentObject = new Object();
+	assignmentObject.assignment = jQuery.parseJSON(executeSynchroneAjaxRequest(assUrl, 'GET', "", null, null));
+	assignmentObject.entities = jQuery.parseJSON(executeSynchroneAjaxRequest('templateassignment/entities', 'GET', "", null, null));
+	assignmentObject.types = jQuery.parseJSON(executeSynchroneAjaxRequest('templateassignment/types', 'GET', "", null, null));
+	
+	assignmentObject.mappers = [];
+	$.each( assignmentObject.assignment.template.mappers , function(i, n){
+		assignmentObject.mappers.push({"name":i,"value":n});
+	});
+	
+	templateUpdateFormTemplate = $("#templateUpdateFormTemplate").render(assignmentObject);
+	$("#"+divName).html(templateUpdateFormTemplate);
+	CKEDITOR.replace( "templateeditor", {
+		width : 800
+	} );
+	
+	$("#entitySelect").val(assignmentObject.assignment.entity.id);
+	$("#typeSelect").val(assignmentObject.assignment.type.id);
+	
+	$("#entitySelect").change(function (e) {
+		if($(this).val() == 0) {
+			showClientKeys();
+		} else if ($(this).val() == 1)
+			showLoanKeys();
+		
+		$("label").click(function() {
+			CKEDITOR.instances.templateeditor.insertText($(this).text());	
+		} );
+		
+		$("#templateKeys label").css({
+			"cursor": "pointer",
+			"color" : "rgb(255, 255, 255)", 
+			"line-height" : "1" ,
+			"text-align" : "center", 
+			"vertical-align" : "baseline", 
+			"white-space": "nowrap", 
+			"background-color" : "rgb(66, 139, 202)", 
+			"margin" : "10px 0px", 
+			"border-radius" : "0.25em 0.25em 0.25em 0.25em", 
+			"font-weight" : "bold", 
+			"padding" : "0.3em 0.6em 0.4em"
+		});
+	}).change();
+	
+	templateId = assignmentObject.assignment.template.id;
+	id = assignmentObject.assignment.id;
+	
+	$("#saveTemplate").button().click(function(e) {
+		CKupdate();
+		var formData = $("#templateform").serializeObject();
+		var mapper = mergeMaps(formData.mapperskey, formData.mappersvalue);
+		formData.mappers = mapper;
+
+		delete formData['mappers.key'];
+		delete formData['mappers.value'];
+		entityId = $("#entitySelect").val(); 
+		typeId = $("#typeSelect").val();
+		
+		executeSynchroneAjaxRequest('templateassignment/'+id+'?entityId='+entityId+'&typeId='+typeId+'&templateId='+templateId, 'PUT', JSON.stringify(formData), null, null);
+		setTemplateEntityAdminContent(divName);
+	});
+	
+	$("#deleteTemplate").button().click(function(e) {
+		executeSynchroneAjaxRequest('templateassignment/'+id, 'DELETE', "",null, null);
+		setTemplateEntityAdminContent(divName);
+	});
+
+}
+
+
+
+
+function showClientKeys() {
+	$("#templateKeys").html("<label>{{client.accountNo}}</label>"+
+							"<label>{{client.status.value}}</label>"+
+							"<label>{{client.fullname}}</label>"+
+							"<label>{{client.displayName}}</label>"+
+							"<label>{{client.officeName}}</label>"+
+							"<label>{{#client.groups}} <br> {{/client.groups}}</label>");
+}
+function showLoanKeys() {
+	$("#templateKeys").html("<label>{{loan.accountNo}}</label><label>{{loan.status.value}}</label>");
 }
 
 function mergeMaps(keymap, valuemap) { 
     var map = new Object(); 
-    
-    $.each(keymap, function(index, value) {
-        map[value] = valuemap[index];
-    })
+    if($.isArray(keymap)) {
+    	$.each(keymap, function(index, value) {
+            map[value] = valuemap[index];
+        })
+    } else {
+    	map[keymap] = valuemap;
+    }
     return map;
-}
-
-function saveTemplate() {
-	
-	CKupdate();
-	
-	var formData = $('#doctemplateform').serializeObject();
-	
-	var mapper = mergeMaps(formData['mappers.key'], formData['mappers.value']);
-	
-	formData.mappers = mapper;
-	delete formData['mappers.key'];
-	delete formData['mappers.value'];
-
-	executeAjaxRequest('templates', "POST", JSON.stringify(formData), null, null);
 }
 
 function CKupdate(){
@@ -2773,6 +2910,9 @@ function showILClient(clientId) {
 				else if (tab.newTab.index() == 2){
 					refreshClientDocuments(clientUrl);
 				}
+				else if (tab.newTab.index() == 3){
+					refreshClientTemplates(clientUrl);
+				}
 	    	},
 //		"add": function( event, ui ) {
 //				$newtabs.tabs('select', '#' + ui.panel.id);
@@ -3184,6 +3324,37 @@ function refreshClientIdentifierDocuments(clientIdentifierId) {
 			});			
 		}
   		executeAjaxRequest("client_identifiers/"+ clientIdentifierId + '/documents', 'GET', "", successFunction, formErrorFunction);	 
+}
+
+function refreshClientTemplates(clientUrl) {
+	
+	var crudObject = new Object();
+	crudObject.clientDocuments = jQuery.parseJSON(executeSynchroneAjaxRequest('templateassignment?entityId=0&typeId=0', 'GET', "", null, null));
+	crudObject.clientId = clientUrl.replace("clients/", ""); 
+	var tableHtml = $("#clientTemplateDocumentsTemplate").render(crudObject);
+	$("#clienttemplatetab").html(tableHtml);
+}
+
+function createDocumentForTemplate(title, templateId, clientId) {
+	
+	var content = executeSynchroneAjaxRequest('templates/'+templateId+'?clientId='+clientId, "POST", "{}", null, null);
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+	dialogDiv.html(content);
+	
+	dialogDiv.dialog({
+		title: title, 
+		width: 600, 
+		height: "auto", 
+		modal: true,
+		buttons: [ { text: "Save", click: function() { $( this ).dialog( "close" ); } },
+		           { text: "Print", click: function() { $( this ).printThis(); } }
+		],
+		close: function() {
+			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+			$(this).remove();
+		}
+	}).dialog('open');	
 }
 
 function refreshClientDocuments(clientUrl) {
@@ -6340,7 +6511,7 @@ function refreshLoanDocuments(loanId) {
 				if (tableName == "configuration") {
 					crudObject.crudRows = data.globalConfiguration;
 				}
-				
+				console.log(crudObject)
 				var html = $("#" + tableName + "ListTemplate").render(crudObject);
 				$("#listplaceholder").html(html);  
 

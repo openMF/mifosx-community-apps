@@ -434,7 +434,7 @@ $(document).ready(function() {
 		</div>
 	{{/if}}
 </script>
-
+            
 <script id="clientsTableTemplate" type="text/x-jquery-tmpl">
 	<table id='clientstable' width='100%' class="display">
 		<thead>
@@ -1479,6 +1479,18 @@ $(document).ready(function() {
 		</tr>
 	</table>
  </form>
+</script>
+
+<script id="clientTemplateDocumentsTemplate" type="text/x-jquery-tmpl">
+	<table>
+		{{#each clientDocuments}}
+		<tr>
+			<td>
+				<a href="#" onclick="createDocumentForTemplate('{{=template.name}}',{{=template.id}}, {{=$parent.parent.data.clientId}});">{{=template.name}}</a>
+			</td>
+		</tr>
+		{{/each}}
+	</table>
 </script>
 
 <script id="groupDetailsTemplate" type="text/x-jquery-tmpl">
@@ -11853,6 +11865,175 @@ $(document).ready(function() {
 	{{/each}}
 </script>
 
+<script id="templateEntityTypeAssignmentTemplate" type="text/x-jquery-tmpl">
+
+	<button id="createTemplateWithEntityAndType" >create new template</button>
+	
+	<div id="templatesListDiv">
+		<table>
+		<thead>
+			<tr>
+				<th>ENTITY</th>
+				<th>TYPE</th>
+				<th>NAME</th>
+			</tr>
+		</thead>
+		<tbody>
+		{{#each templates}}
+			<tr>
+				<td>{{=entity}}</td>
+				<td>{{=type}}</td>
+				<td>
+					<a href="templateassignment/{{=id}}" id="template{{=template.id}}">{{=template.name}}</a> 
+				</td>
+			</tr>
+		{{/each}}
+		</tbody>
+		</table>
+		
+	</div>
+</script>
+
+<script id="templateCreateFormTemplate" type="text/x-jquery-tmpl">
+
+<div style="width:1000px">
+	<div style="float:right" id="templateKeys"></div>
+
+	<table>
+		<tr>
+			<td><label>Entity:</label></td>
+			<td><label>Type:</label></td>
+		</tr>
+		<tr>
+			<td>
+				<select id="entitySelect"> 
+					<option></option>
+					{{#each entities}}
+						<option value="{{=id undef 0}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<select id="typeSelect">
+					<option></option>
+					{{#each types}}
+						<option value="{{=id undef 0}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	</table>
+
+	<form id="templateform" >
+	<table>
+		<tr>
+			<td colspan="2"><label>Template Name:</label></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="text" name="name" /></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+
+		<tr>
+			<td><label>Mapper Key:</label></td>
+			<td><label>Mapper Value:</label></td>
+		</tr>
+		<tr>
+			<td><input type="text" name="mapperskey" /></td>
+			<td><input type="text" name="mappersvalue" /></td>
+		</tr>
+		<tr>
+			<td><label>Mapper Key:</label></td>
+			<td><label>Mapper Value:</label></td>
+		</tr>
+		<tr>
+			<td><input type="text" name="mapperskey" /></td>
+			<td><input type="text" name="mappersvalue" /></td>
+		</tr>
+
+	</table>
+
+	<br />
+			
+	<textarea id="templateeditor" name="text"></textarea>
+
+	<br />
+
+	<button id="createTemplate"> create template </button>
+</form>
+</div>
+</script>
+
+<script id="templateUpdateFormTemplate" type="text/x-jquery-tmpl">
+<div style="width:1000px">
+	<div style="float:right" id="templateKeys"></div>
+
+	<table>
+		<tr>
+			<td><label>Entity:</label></td>
+			<td><label>Type:</label></td>
+		</tr>
+		<tr>
+			<td>
+				<select id="entitySelect"> 
+					<option></option>
+					{{#each entities}}
+						<option value="{{=id undef 0}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<select id="typeSelect">
+					<option></option>
+					{{#each types}}
+						<option value="{{=id undef 0}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	</table>
+
+	<form id="templateform" >
+	<table>
+		<tr>
+			<td colspan="2"><label>Template Name:</label></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="text" name="name" value="{{=assignment.template.name}}" /></td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+
+		{{#each mappers}}
+		<tr>
+			<td><label>Mapper Key:</label></td>
+			<td><label>Mapper Value:</label></td>
+		</tr>
+		<tr>
+			<td><input type="text" name="mapperskey" value="{{=name}}" /></td>
+			<td><input type="text" name="mappersvalue" value="{{=value}}"/></td>
+		</tr>
+		{{/each}}
+	</table>
+
+	<br />
+
+	<textarea id="templateeditor" name="text">{{=assignment.template.text}}</textarea>
+
+	<br />
+
+	<button id="saveTemplate"> save </button>
+	<button id="deleteTemplate"> delete </button>	
+	</form>
+</div>
+</script>
 
 </body>
 </html>
