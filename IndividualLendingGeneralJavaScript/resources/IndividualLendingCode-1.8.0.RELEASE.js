@@ -4810,6 +4810,7 @@ function showCenter(centerId){
 	  				$("#receivableInterestAccountId").combobox();
 	  				$("#receivableFeeAccountId").combobox();
 	  				$("#receivablePenaltyAccountId").combobox();
+					$("#transfersInSuspenseAccountId").combobox();
 	  				
 	  				var showCashFinancialPlaceholders = function() {
 	  					 $("#accountingPlaceholdersDiv").show();
