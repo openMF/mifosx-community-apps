@@ -818,14 +818,6 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 						$("#debitLabel").hide();
 						$("#debitaccounts").hide();
 					}
-					//hide the amount field if both credit and debit accounts are predefined i.e. debitAccounts & creditAccounts empty.
-					if(creditAccountsLength > 0  && debitAccountsLength > 0) {
-						$("#amountLabel").hide();
-						$("#amountDiv").hide();
-					} else {
-						$("#amountLabel").show();
-						$("#amountDiv").show();
-					}
 
 					//initialize default comboboxes in popup
 					$("#debitAccountId01").combobox();
@@ -7236,11 +7228,6 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 						ruleObject = tempObject;
 					}
 				}
-				if (ruleObject.creditAccounts != undefined && ruleObject.debitAccounts != undefined) {
-					if (!(ruleObject.creditAccounts.length>0 && ruleObject.debitAccounts.length>0)) {
-						serializedArray["amount"] = $('#amount').val();
-					}
-				} 
 				serializedArray["accountingRule"] = $('#accountingRule').val();
 				
 				if (ruleObject.creditAccounts != undefined) {

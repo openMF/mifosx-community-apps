@@ -10745,8 +10745,10 @@ $(document).ready(function() {
                     {{/each}}
                 </td>
                 <td>
-                    {{#if debitAccountHead}}
-                        {{=debitAccountHead.name}}({{=debitAccountHead.glCode}})
+                	{{#if debitAccounts}}
+                    {{#each debitAccounts}}
+                        {{=name}}({{=glCode}})
+                    {{/each}}
                     {{/if}}
                 </td>
                 <td>
@@ -10757,8 +10759,10 @@ $(document).ready(function() {
                     {{/each}}
                 </td>
                 <td>
-                    {{#if creditAccountHead}}
-                        {{=creditAccountHead.name}}({{=creditAccountHead.glCode}})
+                	{{#if creditAccounts}}
+                    {{#each creditAccounts}}
+                        {{=name}}({{=glCode}})
+                    {{/each}}
                     {{/if}}
                 </td>
                 <td>
@@ -11067,18 +11071,6 @@ $(document).ready(function() {
                 {{/each}}
             </select></td>
         </tr>
-        <tr>
-            <td>
-                <div id="amountLabel">
-                    <label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
-                </div>
-            </td>
-            <td>
-                <div id="amountDiv">
-                    <input id="amount" name="amount" title="" type="text" value="{{=amount}}" />
-                </div>
-            </td>
-        </tr> 
         <tr>
             <td><label for="referenceNumber">{{=$ctx.doI18N("label.referenceNumber")}}</label></td>
             <td>
