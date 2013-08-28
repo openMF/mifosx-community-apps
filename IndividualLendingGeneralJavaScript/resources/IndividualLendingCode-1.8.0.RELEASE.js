@@ -7744,7 +7744,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		    var recurringDates = data.calendarData.recurringDates;
 		    $.each(recurringDates, function(n,i){
 		        var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
-		        //alert(newdate);
 		        recurringDatesArr[n] = newdate;
 		    });
 		    
@@ -9833,7 +9832,6 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
             var repeatdetails = $('#repeatingdetails');
             var checked = this.checked ? repeatdetails.show(): repeatdetails.hide();
             //collection meeting never ends
-            //alert($('#meetingTypeId').val());
             if($('#meetingTypeId').val() == "1"){
             	$('.endsafter').hide();
 		    	$('.endson').hide();
@@ -10119,7 +10117,6 @@ function loadAvailableCalendars(allAttachedCalendars, meetingCalendar, loanId, s
         var recurringDates = attachedCalendarData.recurringDates;
         $.each(recurringDates, function(n,i){
             var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
-            //alert(newdate);
             recurringDatesArr[n] = newdate;
         });
         
@@ -10199,12 +10196,15 @@ function showCollectionSheet() {
 				finish: function(e, ui) {
 					var saveCollectionSheetTransactions = function(postUrl){
 					var serializedArray = {};
+					var serializedFormData = $('#collectionSheetEntityform').serializeObject();
 					serializedArray["locale"] = $('#locale').val();
 					serializedArray["dateFormat"] = $('#dateFormat').val();
-					serializedArray["transactionDate"] = $('#dueDate').val();
-					serializedArray["actualDisbursementDate"] = $('#dueDate').val();
+					serializedArray["transactionDate"] = $('#transactionDate').val();
+					serializedArray["actualDisbursementDate"] = $('#transactionDate').val();
+					serializedArray["calendarId"] = $('#calendarId').val();
 					serializedArray["note"] = $('#note').val();
 					serializedArray["bulkRepaymentTransactions"] = new Array();
+					serializedArray["clientsAttendance"] = serializedFormData["clientsAttendance"];
 					$.each($('.grouptotaldue'), function(i){
 						var transactionAmount = $(this).val();
 						var loanId = this.id.replace("totaldue_", "");
@@ -10304,48 +10304,110 @@ function loadCentersAssociatedToOffice(officeId){
         });        
 
         $("#centerId").change(function(){
-            loadCenterMeetingCalendarForCollectionsheet($(this).val());
-            loadGroupsAssociatedToCenter($(this).val());
+            loadCenterDetails($(this).val());
+            //loadCenterMeetingCalendarForCollectionsheet($(this).val());
+            //loadGroupsAssociatedToCenter($(this).val());
             $('#continuebtn').removeAttr('disabled');
         })
 
+        /*
         if(centerObject.crudRows.length === 1){
         	$('select[name=centerId] option:eq(1)').prop('selected', 'selected');
         	$('#centerId').trigger('change');	
         }
-        
+        */
     };
-    clearMeetingCalendarsAndDueDate();
+    clearMeetingCalendarsAndTransactionDate();
     executeAjaxRequest('centers?officeId=' + officeId, 'GET', "", centersSuccessFunction, formErrorFunction);
 }
 
-function loadGroupsAssociatedToCenter(centerId){
+//used for collectionsheet
+function loadCenterDetails(centerId){
+	var csCenterDetailsSuccessFunction = function(data){
+		var centerObject = data;
+		var recudatearr = centerObject.collectionMeetingCalendar.recurringDates;
+		var nextTenRecurringDates = centerObject.collectionMeetingCalendar.nextTenRecurringDates;
+		var recentEligibleMeetingDate = centerObject.collectionMeetingCalendar.recentEligibleMeetingDate;
+		var recurringDates = [];
+        $.each(recudatearr, function(n,i){
+            var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
+            recurringDates[n] = newdate;
+        });
+		
+		$('#calendarId').val(centerObject.collectionMeetingCalendar.id);
+		var availableDate = function(date) {
+	        var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
+	        if ($.inArray(ymd, recurringDates) < 0 ) {
+	            return [false, "","unAvailable"];
+	        } else {
+	            return [true,"","Available"];
+	        }
+	    }
 
-    var csGroupSearchSuccessFunction =  function(data) {
-        var groupObject = new Object();
-        groupObject.crudRows = data.pageItems;
+	    $( '#transactionDate' ).datepicker( "destroy" );
+	    $('#transactionDate').datepicker({ dateFormat: custom.datePickerDateFormat, maxDate: 0, beforeShowDay: availableDate});
+	    $( '#transactionDate' ).val(custom.helperFunctions.globalDate(recentEligibleMeetingDate));
 
-        $('#groupId').empty().append(function(){
+		$('#groupId').empty().append(function(){
             var output = '<option value=0> -- Select a Group -- </option>';
-            $.each(groupObject.crudRows, function(key, value){
+            var groups = centerObject.groupMembers;
+            $.each(groups, function(key, value){
                output += '<option value=' + value.id + '>' + value.name + '</option>';
             });
             return output;
-        });    
+        });		
 
+		
         $("#groupId").change(function(){
-			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
+			loadGroupDetails($(this).val());
+			//loadGroupMeetingCalendarForCollectionsheet($(this).val());            
 			$('#continuebtn').removeAttr('disabled');
         })    
-
-        if(groupObject.crudRows.length === 1){
+		
+		/*
+        if(centerObject.groupMembers.length === 1){
         	$('select[name=groupId] option:eq(1)').prop('selected', 'selected');
         	$('#groupId').trigger('change');	
         }
-    };
-    clearMeetingCalendarsAndDueDate();
-    executeAjaxRequest('groups?sqlSearch=g.parent_id = ' + centerId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
+        */
+	}	
+	clearMeetingCalendarsAndTransactionDate();
+	executeAjaxRequest('centers/' + centerId + '?associations=groupMembers,collectionMeetingCalendar', 'GET', "", csCenterDetailsSuccessFunction, formErrorFunction);	
 }
+
+//used for collectionsheet
+
+function loadGroupDetails(groupId){
+	var csGroupDetailsSuccessFunction = function(data){
+		var groupObject = data;
+		var recudatearr = groupObject.collectionMeetingCalendar.recurringDates;
+		var nextTenRecurringDates = groupObject.collectionMeetingCalendar.nextTenRecurringDates;
+		var recentEligibleMeetingDate = groupObject.collectionMeetingCalendar.recentEligibleMeetingDate;
+		var recurringDates = [];
+        $.each(recudatearr, function(n,i){
+            var newdate = i[0] + "-" + ("0"+(i[1])).slice(-2) + "-" + ("0"+(i[2])).slice(-2);
+            recurringDates[n] = newdate;
+        });
+		
+		$('#calendarId').val(groupObject.collectionMeetingCalendar.id);
+		var availableDate = function(date) {
+	        var ymd = date.getFullYear() + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + ("0"+date.getDate()).slice(-2);
+	        if ($.inArray(ymd, recurringDates) < 0 ) {
+	            return [false, "","unAvailable"];
+	        } else {
+	            return [true,"","Available"];
+	        }
+	    }
+
+	    $( '#transactionDate' ).datepicker( "destroy" );
+	    $('#transactionDate').datepicker({ dateFormat: custom.datePickerDateFormat, maxDate: 0, beforeShowDay: availableDate});
+	    $( '#transactionDate' ).val(custom.helperFunctions.globalDate(recentEligibleMeetingDate));
+
+	}
+	clearMeetingCalendarsAndTransactionDate();
+	executeAjaxRequest('groups/' + groupId + '?associations=collectionMeetingCalendar', 'GET', "", csGroupDetailsSuccessFunction, formErrorFunction);	
+}
+
 
 function loadGroupsAssociatedToOffice(officeId){
 
@@ -10362,13 +10424,16 @@ function loadGroupsAssociatedToOffice(officeId){
         });    
 
         $("#groupId").change(function(){
-			loadGroupMeetingCalendarForCollectionsheet($(this).val());            
+			//loadGroupMeetingCalendarForCollectionsheet($(this).val());
+			loadGroupDetails($(this).val());
 			$('#continuebtn').removeAttr('disabled');
         })    
+        
     };
     executeAjaxRequest('groups?officeId=' + officeId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
 }
 
+/*
 function loadCenterMeetingCalendarForCollectionsheet(centerId){
 	var getUrl = 'centers/' + centerId + '/calendars';
 	loadMeetingCalendarForCollectionsheet(getUrl);
@@ -10464,13 +10529,11 @@ function loadMeetingCalendarForCollectionsheet(getUrl){
 
 	executeAjaxRequest(getUrl, 'GET', "", calendarSuccessFunction, formErrorFunction);
 }
+*/
 
-function clearMeetingCalendarsAndDueDate(){
+function clearMeetingCalendarsAndTransactionDate(){
 
-	    $('#calendarId').empty().append(function(){
-			var output = '<option value=0> -- Select a meeting -- </option>';	        
-	        return output;
-	    });		
+	    $('#calendarId').val('');
 	    $('.datepickerfieldnoconstraint').datepicker( "destroy" );
 	    $('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 	    $('.datepickerfieldnoconstraint').datepicker('setDate', null);
@@ -10488,11 +10551,11 @@ function loadGroupCollectionSheet(groupId){
 
 function loadCollectionSheet(postUrl){
 	removeErrors('#formerrors');
-
 	var serializedArray = {};
 	serializedArray["locale"] = $('#locale').val();
    	serializedArray["dateFormat"] = $('#dateFormat').val();
-    serializedArray["dueDate"] = $('#dueDate').val();
+    serializedArray["transactionDate"] = $('#transactionDate').val();
+    serializedArray["calendarId"] = $('#calendarId').val();
     var newFormData = JSON.stringify(serializedArray);
     $("#collectionSheetContent").html("");
     var successFunction = function(data){
