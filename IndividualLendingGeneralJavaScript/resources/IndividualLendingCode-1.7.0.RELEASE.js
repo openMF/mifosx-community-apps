@@ -864,9 +864,25 @@ function setXBRLContent(divName) {
 	executeAjaxRequest('taxonomy', 'GET', "", getTaxonomyListSuccessFunction, formErrorFunction);
 }
 
+function  updateField(xmlData,tag, ref ,value) {
+    $(xmlData).find(tag+"[contextRef="+ref+"]").text(value);
+}
+
 function showXBRLReport(xmlData) {
     var dialogDiv = $("<div id='dialog-form'></div>");
-    var buttonsOpts = {};
+    var saveButton = doI18N('dialog.button.save');
+	var cancelButton = doI18N('dialog.button.cancel');
+	
+	var downloadFunc = function () {
+		var string = (new XMLSerializer()).serializeToString(xmlData);
+		window.location.href='data:Application/octet-stream;Content-Disposition:attachment;filename=file.xml,'+escape(string);
+
+	}
+	var buttonsOpts = {};
+	buttonsOpts[saveButton] = downloadFunc;
+	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+
+
     var titleCode = 'XBRL Report';
     dialogDiv.dialog({
         title: doI18N(titleCode),
@@ -880,6 +896,7 @@ function showXBRLReport(xmlData) {
         },
         open: function (event, ui) {
 
+        	
             var html="<table width='100%' border='1'><tr><th>Title</th><th>Dimension</th><th>Value</th></tr>";
             $(xmlData).find("*[contextRef]").each(function(i){
                 var contextId = $(this).attr("contextRef");
@@ -887,13 +904,22 @@ function showXBRLReport(xmlData) {
                 html += '<tr>';
                 html += '<td>' + this.tagName + '</td>';
                 html += '<td>' + context + '</td>';
-                html += '<td><input type="text" id="'+ this.tagName + '" value="' + $(this).text() + '" ></td>';
+                var inputId = this.tagName + "|" + contextId;
+                html += '<td><input type="text" class="report" id="'+ inputId + '" value="' + $(this).text() + '" ></td>';
                 html += '</tr>';
 
             });
+
             dialogDiv.html(html);
+
+            $(".report[type='text']").change(function() {
+            	var tag = $(this).attr("id").split("|")[0];
+            	var contextId = $(this).attr("id").split("|")[1];
+            	$(xmlData).find("[contextRef="+contextId+"]").text(this.value);
+            }); 
         }
     }).dialog('open');
+	
 }
 
 function handleXBRLConfigTabSelection(taxonomyList, tab) {
