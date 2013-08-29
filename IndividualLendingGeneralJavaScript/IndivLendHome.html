@@ -2681,13 +2681,13 @@ $(document).ready(function() {
 		<table cellspacing="4px" cellpadding="8px">
 			<tr>
 				<td>
-					<input type="hidden" id="fromLoanOfficerId" name="fromLoanOfficerId" value="{{=fromLoanOfficerId}}" />
+					<input type="hidden" id="fromLoanOfficerId" name="fromLoanOfficerId" value="{{=loanOfficerId}}" />
 					<label for="toLoanOfficer">{{=$ctx.doI18N("form.label.loan.officer.to")}}</label>
 					<select id="toLoanOfficerId" name="toLoanOfficerId" title="">
 						<option value="">{{=$ctx.doI18N("option.loanOfficer.first.choice")}}</option>
 						{{#each loanOfficerOptions}}
-							{{#if $ctx.number($parent.parent.data.fromLoanOfficerId)===$ctx.number(id)}}
-								<option value="{{=id)}}" selected="selected">{{=displayName}}</option>
+							{{#if $ctx.number($parent.parent.data.loanOfficerId)===$ctx.number(id)}}
+
 							{{#else}}
 								<option value="{{=id)}}">{{=displayName}}</option>
 							{{/if}}

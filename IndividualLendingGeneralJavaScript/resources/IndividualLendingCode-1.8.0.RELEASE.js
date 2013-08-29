@@ -6061,7 +6061,7 @@ function loadLoan(loanId, parenttab) {
 						var linkId = this.id;
 						var loanId = linkId.replace("assignloanofficerbtn", "");
 						var postUrl = 'loans/' + loanId + '?command=assignloanofficer';
-						var getUrl = 'loans/' + loanId + '/assign/template';
+						var getUrl = 'loans/' + loanId + '?template=true&fields=id,loanOfficerId,loanOfficerOptions';
 
 						var templateSelector = "#loanReassignmentFormTemplate";
 						var width = 425; 
