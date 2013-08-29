@@ -5717,6 +5717,7 @@ $(document).ready(function() {
 			<thead>
 				<tr>
 				<th>{{=$ctx.doI18N("table.heading.transaction.id")}}</th>
+				<th>{{=$ctx.doI18N("table.heading.transaction.office")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.transactiondate")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.transactionType")}}</th>
 				<th>{{=$ctx.doI18N("table.heading.amount")}}</th>
@@ -5728,6 +5729,7 @@ $(document).ready(function() {
 				{{#each transactions}}
 				<tr>
 				<td>{{=$ctx.number(id)}}</td>
+				<td>{{=$ctx.doI18N(officeName)}}</td>
 				<td>{{=$ctx.globalDate(date)}}</td>
 				<td>{{=$ctx.doI18N(type.code)}}</td>
 				<td>{{=$ctx.monetaryValue(currency, amount)}}</td>
