@@ -5088,6 +5088,7 @@ $(document).ready(function() {
 				{{#if $ctx.showTask("LOANREPAYMENT")}}
 				<button id="repaymentbtn{{=id}}" class="repaymentloan{{=id}}">{{=$ctx.doI18N("button.loan.repayment")}}</button>
 				{{/if}}
+
 				{{#if $ctx.showTask("WAIVEINTERESTPORTIONOFLOAN")}}
 				<button id="waiveinterestbtn{{=id}}" class="waiveinterestloan{{=id}}">{{=$ctx.doI18N("button.loan.waiveInterest")}}</button>
 				{{/if}}
@@ -5101,6 +5102,11 @@ $(document).ready(function() {
 				<button id="closebtn{{=id}}" class="closeloan{{=id}}">{{=$ctx.doI18N("button.loan.close")}}</button>
 				{{/if}}
 			{{/if}}
+
+			{{#if status.overpaid}}
+				<button id="loaaccountfundstransfer{{=id}}" class="loaaccountfundstransfer{{=id}}">{{=$ctx.doI18N("button.transferFunds")}}</button>
+			{{/if}}	
+
 			</span>
 		</td>
 	</table>
@@ -7323,7 +7329,7 @@ $(document).ready(function() {
 
     <input type="hidden" id="fromOfficeIdHidden" name="fromOfficeId" value="{{=$ctx.number(fromOffice.id)}}" />
 	<input type="hidden" id="fromClientIdHidden" name="fromClientId" value="{{=$ctx.number(fromClient.id)}}" />
-	<input type="hidden" id="fromAccountTypeHidden" name="fromAccountType" value="2" />
+	<input type="hidden" id="fromAccountTypeHidden" name="fromAccountType" value="{{=$ctx.number(fromAccountType.id)}}" />
 	<input type="hidden" id="fromAccountIdHidden" name="fromAccountId" value="{{=$ctx.number(fromAccount.id)}}" />
 
 	<table>
@@ -7366,7 +7372,7 @@ $(document).ready(function() {
 						<select id="fromAccountType" name="fromAccountType" title="" disabled=disabled>
 							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 							{{#each fromAccountTypeOptions}}
-								{{#if $ctx.number(id)===$ctx.number(2)}}
+								{{#if $ctx.number(id)===$ctx.number($parent.parent.data.fromAccountType.id)}}
 									<option value="{{=id}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
 								{{#else}}
 									<option value="{{=id}}">{{=$ctx.doI18N(code)}}</option>
