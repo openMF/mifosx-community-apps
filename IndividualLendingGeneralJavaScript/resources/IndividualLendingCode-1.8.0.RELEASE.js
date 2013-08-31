@@ -2825,6 +2825,25 @@ function showILClient(clientId) {
 						e.preventDefault();
 					});
 
+					$('.acceptClientsTransferbtn').button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
+						var linkId = this.id;
+						var officeId = linkId.replace("acceptClientsTransferbtn", "");
+						currentClientOffice = officeId;
+						var getUrl = 'offices?fields=id,name';
+						var postUrl = 'clients/' + clientId + '?command=acceptTransfer';
+						var templateSelector = "#transferClientsBetweenBranchesFormTemplate";
+						var width = 400; 
+						var height = 225;
+
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+							$("#dialog-form").dialog("close");
+							showILClient(clientId);
+						}
+
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.transfer.clients", templateSelector, width, height,  saveSuccessFunction);
+						e.preventDefault();
+					});
+
 					$('.clientclosebtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 						var clientClose = 'close';
 						var getUrl = 'clients/template?commandParam=' + clientClose;

@@ -9266,6 +9266,8 @@ $(document).ready(function() {
 
 		{{#if activationDate}}
 		
+		
+
 		{{#else}}
 			{{#if $ctx.showTask("ActivateClient")}}
 				<button id="activateclientbtn" class="activateclient">Activate</button>
@@ -9294,7 +9296,12 @@ $(document).ready(function() {
 			{{/if}}
 
 			{{#if $ctx.showTask("TransferClients")}}
+				{{#if status.value === "Transfer in progress"}
+					<button id="acceptClientsTransferbtn{{=officeId}}" class="acceptClientsTransferbtn">Accept Client Transfer</button>
+				
+				{{#else}}
 				<button id="transferclientsbtn{{=officeId}}" class="transferclientsbtn">{{=$ctx.doI18N("label.clients.transfer")}}</button>
+				{{/if}}
 			{{/if}}
 		{{/if}}
 		{{#if $ctx.showTask("ClientClose")}}
