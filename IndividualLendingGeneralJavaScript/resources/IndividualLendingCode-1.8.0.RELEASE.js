@@ -5831,6 +5831,11 @@ function loadLoan(loanId, parenttab) {
 				});
 				$('button.repaymentloan span').text(doI18N('button.loan.repayment'));
 					
+				$('.loaaccountfundstransfer'+loanId).button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
+					launchAccountTransferDialog(loanId, 1 ,parenttab);
+					e.preventDefault();
+				});
+
 				$('.waiveinterestloan'+loanId).button().click(function(e) {
 						var linkId = this.id;
 						var loanId = linkId.replace("waiveinterestbtn", "");
@@ -9492,7 +9497,7 @@ function loadSavingAccount(accountId,parenttab) {
 		$('button.savingsaccountapplyannualfee span').text(doI18N('button.applyAnuualFee'));
 		
 		$('.savingsaccountfundstransfer'+accountId).button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
-			launchAccountTransferDialog(accountId,parenttab);
+			launchAccountTransferDialog(accountId, 2 ,parenttab);
 			e.preventDefault();
 		});
 		$('button.savingsaccountfundstransfer span').text(doI18N('button.transferFunds'));
@@ -9563,10 +9568,10 @@ function loadSavingAccount(accountId,parenttab) {
 	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
 }
 
-function launchAccountTransferDialog(accountId, parenttab) {
+function launchAccountTransferDialog(accountId, accountType, parenttab) {
 
 	var postUrl = 'accounttransfers/';
-	var getUrl = 'accounttransfers/template?fromAccountId=' + accountId + '&fromAccountType=2';
+	var getUrl = 'accounttransfers/template?fromAccountId=' + accountId + '&fromAccountType='+accountType;
 	var templateSelector = "#accounttransfersFormTemplate";
 	var width = 800; 
 	var height = 300;
@@ -9579,9 +9584,14 @@ function launchAccountTransferDialog(accountId, parenttab) {
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
 
 		var newFormData = JSON.stringify(serializedArray);
+		if(accountType == 1){
+			eval(genSaveSuccessFunctionReloadLoan(accountId,parenttab));
+			executeAjaxRequest(postUrl, 'POST', newFormData, saveSuccessFunctionReloadLoan, formErrorFunction);
+		}else{
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
+			executeAjaxRequest(postUrl, 'POST', newFormData, saveSuccessFunctionReloadSaving, formErrorFunction);
+		}
 		
-		eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
-		executeAjaxRequest(postUrl, 'POST', newFormData, saveSuccessFunctionReloadSaving, formErrorFunction);
 	};
 
 	var openDialogFunction = function (event, ui) {
@@ -9595,7 +9605,12 @@ function launchAccountTransferDialog(accountId, parenttab) {
 	}
 
 	// open dialog
-	var titleCode = 'dialog.title.transferFunds';
+	var titleCode;
+	if(accountType == 1){
+		titleCode ="dialog.title.loan.transferFunds";
+	}else{
+		titleCode = 'dialog.title.transferFunds';
+	}
 	openAccountTransferDialog(titleCode, width, height, onSaveFunction, openDialogFunction);
 }
 
@@ -9612,14 +9627,14 @@ function rerenderAccountTransferDialogForm(dialogFormSelector, templateSelector,
 
 	$("#toOfficeId").change(function() {
 		var toOfficeId = $("#toOfficeId").val();
-		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType=2&toOfficeId=' + toOfficeId;
+		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType='+ data.fromAccountType.id+ '&toOfficeId=' + toOfficeId;
 		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
 	});
 
 	$("#toClientId").change(function() {
 		var toOfficeId = $("#toOfficeId").val();
 		var toClientId = $("#toClientId").val();
-		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType=2&toClientId=' + toClientId + '&toOfficeId=' + toOfficeId;
+		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType='+ data.fromAccountType.id+ '&toClientId=' + toClientId + '&toOfficeId=' + toOfficeId;
 		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
 	});
 
@@ -9627,7 +9642,7 @@ function rerenderAccountTransferDialogForm(dialogFormSelector, templateSelector,
 		var toOfficeId = $("#toOfficeId").val();
 		var toClientId = $("#toClientId").val();
 		var toAccountType = $("#toAccountType").val();
-		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType=2&toClientId=' + toClientId + '&toOfficeId=' + toOfficeId + '&toAccountType=' + toAccountType;
+		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType='+ data.fromAccountType.id+ '&toClientId=' + toClientId + '&toOfficeId=' + toOfficeId + '&toAccountType=' + toAccountType;
 		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
 	});
 
@@ -9636,7 +9651,7 @@ function rerenderAccountTransferDialogForm(dialogFormSelector, templateSelector,
 		var toClientId = $("#toClientId").val();
 		var toAccountType = $("#toAccountType").val();
 		var toAccountId = $("#toAccountId").val();
-		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType=2&toAccountId=' + toAccountId + '&toAccountType=' + toAccountType;
+		var getUrl = 'accounttransfers/template?fromAccountId=' + data.fromAccount.id + '&fromAccountType='+ data.fromAccountType.id+ '&toAccountId=' + toAccountId + '&toAccountType=' + toAccountType;
 		executeAjaxRequest(getUrl, "GET", "", renderFormOnSuccess, formErrorFunction);
 	});
 }
