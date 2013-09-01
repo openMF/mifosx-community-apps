@@ -770,9 +770,6 @@ function setXBRLContent(divName) {
 
         var getTaxonomyMapSuccessFunction = function(data, textStatus, jqXHR) {
         	
-            
-
-
             $("#" + divName).html($("#xbrlConfigTemplate").render());
             $('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'yy-mm-dd'});
             $("#xbrlconfigtabs").tabs();
@@ -846,7 +843,6 @@ function setXBRLContent(divName) {
                 serialObject["config"] = JSON.stringify(config);
                 serialObject["identifier"] = "default";
                 var formdata = JSON.stringify(serialObject);
-                // alert(formdata);
                 executeAjaxRequest('xbrlmapping', 'PUT', formdata, postTaxonomyMappingSuccessFunction, formErrorFunction);
             })
 
@@ -919,33 +915,6 @@ function showXBRLReport(xmlData) {
             }); 
         }
     }).dialog('open');
-	
-}
-
-function handleXBRLConfigTabSelection(taxonomyList, tab) {
-	var showlist = new Array();
-	for (var i = taxonomyList.length - 1; i >= 0; i--) {
-		if (taxonomyList[i].type == tab)
-			showlist.push(taxonomyList[i]);
-	}
-	var templateSelector = $("#xbrlTaxonomyListTemplate").render(showlist);
-	switch (tab) {
-		case 0:
-			$("#portfolio-tab").html(templateSelector);
-			break;
-		case 1:
-			$("#balancesheet-tab").html(templateSelector);
-			break;
-		case 2:
-			$("#incomes-tab").html(templateSelector);
-			break;
-		case 3:
-			$("#expenses-tab").html(templateSelector);
-			break;
-		default:
-			break;
-
-	}
 	
 }
 
