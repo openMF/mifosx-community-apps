@@ -1486,7 +1486,7 @@ $(document).ready(function() {
 		{{#each clientDocuments}}
 		<tr>
 			<td>
-				<a href="#" onclick="createDocumentForTemplate('{{=template.name}}',{{=template.id}}, {{=$parent.parent.data.clientId}});">{{=template.name}}</a>
+				<a href="#" onclick="createClientDocumentForTemplate('{{=template.name}}',{{=template.id}}, {{=$parent.parent.data.clientId}});">{{=template.name}}</a>
 			</td>
 		</tr>
 		{{/each}}
@@ -5113,6 +5113,7 @@ $(document).ready(function() {
 		<li><a href="#collaterals{{=id}}" title="collaterals">{{=$ctx.doI18N("tab.collaterals")}}</a></li>
 		{{/if}}
 		<li><a href="#loanDocuments{{=id}}" title="documents">{{=$ctx.doI18N("tab.loanDocuments")}}</a></li>
+		<li><a href="#loanTemplateDocuments{{=id}}" title="template documents">Template Documents</a></li>
 		{{#if notes}}
 		<li><a href="#loanNotes{{=id}}" title="notes">{{=$ctx.doI18N("tab.loanNotes")}}</a></li>
 		{{/if}}
@@ -5782,6 +5783,9 @@ $(document).ready(function() {
 	<div id="loanDocuments{{=id}}" style="margin-top: 5px;">
 	</div>
 
+	<div id="loanTemplateDocuments{{=id}}" style="margin-top: 5px;">
+	</div>
+
 	<!-- Loan Notes Tab-->
 	{{#if notes}}
 	<div id="loanNotes{{=id}}" style="margin-top: 5px;">
@@ -5805,6 +5809,18 @@ $(document).ready(function() {
 
 	
 </div>
+</script>
+
+<script id="loanTemplateDocumentsTemplate" type="text/x-jquery-tmpl">
+	<table>
+		{{#each loanDocuments}}
+		<tr>
+			<td>
+				<a href="#" onclick="createLoanDocumentForTemplate('{{=template.name}}',{{=template.id}}, {{=$parent.parent.data.loanId}});">{{=template.name}}</a>
+			</td>
+		</tr>
+		{{/each}}
+	</table>
 </script>
 
 <script id="loanDocumentsTemplate" type="text/x-jquery-tmpl">
@@ -11925,37 +11941,30 @@ $(document).ready(function() {
 	</table>
 
 	<form id="templateform" >
-	<table>
-		<tr>
-			<td colspan="2"><label>Template Name:</label></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="text" name="name" /></td>
-		</tr>
 
-		<tr>
-			<td></td>
-			<td></td>
-		</tr>
+	<label>Template Name:</label>
+	<input type="text" name="name" />
 
+	<br />
+
+	<a href="#" id="advancedMappers"> Advanced </a>
+
+	<br />
+
+	<div id="mappersDiv" style="display: none;">
+	<table id="mappersTable">
 		<tr>
 			<td><label>Mapper Key:</label></td>
 			<td><label>Mapper Value:</label></td>
+			<td></td>
 		</tr>
 		<tr>
-			<td><input type="text" name="mapperskey" /></td>
-			<td><input type="text" name="mappersvalue" /></td>
+			<td><input id="defaultmapperskey" type="text" name="mapperskey" readonly style="color:grey" /></td>
+			<td><input id="defaultmappersvalue" type="text" name="mappersvalue" readonly style="color:grey" /></td>
+			<td><button id="addMapper"> + </button></td>
 		</tr>
-		<tr>
-			<td><label>Mapper Key:</label></td>
-			<td><label>Mapper Value:</label></td>
-		</tr>
-		<tr>
-			<td><input type="text" name="mapperskey" /></td>
-			<td><input type="text" name="mappersvalue" /></td>
-		</tr>
-
 	</table>
+	</div>
 
 	<br />
 			
@@ -11998,31 +12007,46 @@ $(document).ready(function() {
 	</table>
 
 	<form id="templateform" >
-	<table>
-		<tr>
-			<td colspan="2"><label>Template Name:</label></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="text" name="name" value="{{=assignment.template.name}}" /></td>
-		</tr>
 
-		<tr>
-			<td></td>
-			<td></td>
-		</tr>
+	<label>Template Name:</label>
+	<input type="text" name="name" value="{{=assignment.template.name}}" />
 
-		{{#each mappers}}
+	<br />
+
+	<a href="#" id="advancedMappers"> Advanced </a>
+
+	<br />
+
+	<div id="mappersDiv" >
+	<table id="mappersTable">
+
 		<tr>
 			<td><label>Mapper Key:</label></td>
 			<td><label>Mapper Value:</label></td>
+			<td></td>
 		</tr>
 		<tr>
-			<td><input type="text" name="mapperskey" value="{{=name}}" /></td>
-			<td><input type="text" name="mappersvalue" value="{{=value}}"/></td>
+			<td><input id="defaultmapperskey" type="text" name="mapperskey" readonly style="color:grey"/></td>
+			<td><input id="defaultmappersvalue" type="text" name="mappersvalue" readonly style="color:grey"/></td>
+			<td><button id="addMapper"> + </button></td>
 		</tr>
+
+		{{#each mappers}}
+			{{#if $itemNumber != 1}}
+			<tr>
+				<td><label>Mapper Key:</label></td>
+				<td><label>Mapper Value:</label></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><input type="text" name="mapperskey" value="{{=name}}" /></td>
+				<td><input type="text" name="mappersvalue" value="{{=value}}"/></td>
+				<td><button class='removeMapper'> - </button></td>
+			</tr>
+			{{/if}}
 		{{/each}}
 	</table>
-
+	</div>
 	<br />
 
 	<textarea id="templateeditor" name="text">{{=assignment.template.text}}</textarea>

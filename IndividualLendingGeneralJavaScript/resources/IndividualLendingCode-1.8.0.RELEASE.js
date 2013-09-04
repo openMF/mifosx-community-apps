@@ -505,7 +505,7 @@ function setClientContent(divName) {
 	htmlVar += ' title="clienttab" class="topleveltab"><span id="clienttabname">' + doI18N("client.general.tab.name") + '</span></a></li>';
 	htmlVar += '<li><a href="#clientidentifiertab" title="clientidentifiertab" class="topleveltab"><span id="clientidentifiertabname">' + doI18N("client.identifier.tab.name")  + '</span></a></li>';
 	htmlVar += '<li><a href="#clientdocumenttab" title="clientdocumenttab" class="topleveltab"><span id="clientdocumenttabname">' + doI18N("client.document.tab.name")  + '</span></a></li>';
-	htmlVar += '<li><a href="#clientdocumentttemplateab" title="clienttemplatetabname" class="topleveltab"><span id="clientdocumenttemplatetabname">' + "Template Documents"  + '</span></a></li>';
+	htmlVar += '<li><a href="#clienttemplatetab" title="clienttemplatetabname" class="topleveltab"><span id="clientdocumenttemplatetabname">' + "Template Documents"  + '</span></a></li>';
 	htmlVar += '</ul><div id="clienttab"></div><div id="clientidentifiertab"></div><div id="clientdocumenttab"></div><div id="clienttemplatetab"></div></div></div>';
 	$("#" + divName).html(htmlVar);
 }
@@ -792,10 +792,40 @@ function setTemplateEntityAdminContent(divName) {
 			width : 800
 		} );
 		
+		$("#advancedMappers").click(function(e) {
+			e.preventDefault();
+			$("#mappersDiv").toggle();
+		});
+		
+		$("#addMapper").click(function(e) {
+			e.preventDefault();
+			$("#mappersTable").append(
+					"<tr>"+
+						"<td><label>Mapper Key:</label></td>"+
+						"<td><label>Mapper Value:</label></td>"+
+						"<td></td>"+
+					"</tr>"+
+					"<tr>"+
+						"<td><input type='text' name='mapperskey' /></td>"+
+						"<td><input type='text' name='mappersvalue' /></td>"+
+						"<td><button class='removeMapper'> - </button></td>"+
+					"</tr>" 
+			);
+			$(".removeMapper").click(function(e) {
+				e.preventDefault();
+				 $(this).parent().parent().prev().remove();
+	            $(this).parent().parent().remove();
+			});
+		});
+		
+		
+			
 		$("#createTemplate").button().click(function(e) {
 			CKupdate();
 			var formData = $("#templateform").serializeObject();
+			console.log(formData);
 			var mapper = mergeMaps(formData.mapperskey, formData.mappersvalue);
+			console.log(mapper);
 			formData.mappers = mapper;
 
 			delete formData['mappers.key'];
@@ -813,6 +843,8 @@ function setTemplateEntityAdminContent(divName) {
 		var assUrl = $(this).attr('href');
 		showTemplateEdit(assUrl, tmpid, divName);
 	});
+	
+
 }
 
 function showTemplateEdit(assUrl, id, divName) {
@@ -842,7 +874,7 @@ function showTemplateEdit(assUrl, id, divName) {
 		} else if ($(this).val() == 1)
 			showLoanKeys();
 		
-		$("label").click(function() {
+		$("#templateKeys label").click(function() {
 			CKEDITOR.instances.templateeditor.insertText($(this).text());	
 		} );
 		
@@ -859,6 +891,7 @@ function showTemplateEdit(assUrl, id, divName) {
 			"font-weight" : "bold", 
 			"padding" : "0.3em 0.6em 0.4em"
 		});
+		
 	}).change();
 	
 	templateId = assignmentObject.assignment.template.id;
@@ -884,6 +917,31 @@ function showTemplateEdit(assUrl, id, divName) {
 		setTemplateEntityAdminContent(divName);
 	});
 
+	$("#advancedMappers").click(function(e) {
+        e.preventDefault();
+		$("#mappersDiv").toggle();
+	});
+	
+	$("#addMapper").click(function(e) {
+		e.preventDefault();
+		$("#mappersTable").append(
+				"<tr>"+
+					"<td><label>Mapper Key:</label></td>"+
+					"<td><label>Mapper Value:</label></td>"+
+					"<td></td>"+
+				"</tr>"+
+				"<tr>"+
+					"<td><input type='text' name='mapperskey' /></td>"+
+					"<td><input type='text' name='mappersvalue' /></td>"+
+					"<td><button class='removeMapper'> - </button></td>"+
+				"</tr>" 
+		);
+		$(".removeMapper").click(function(e) {
+			e.preventDefault();
+			 $(this).parent().parent().prev().remove();
+            $(this).parent().parent().remove();
+		});
+	});
 }
 
 
@@ -896,9 +954,15 @@ function showClientKeys() {
 							"<label>{{client.displayName}}</label>"+
 							"<label>{{client.officeName}}</label>"+
 							"<label>{{#client.groups}} <br> {{/client.groups}}</label>");
+	$("#defaultmapperskey").val("client");
+	$("#defaultmappersvalue").val("clients/{{clientId}}?tenantIdentifier=default");
 }
 function showLoanKeys() {
-	$("#templateKeys").html("<label>{{loan.accountNo}}</label><label>{{loan.status.value}}</label>");
+	$("#templateKeys").html("<label>{{loan.accountNo}}</label>"+
+							"<label>{{loan.status.value}}</label>");
+	
+	$("#defaultmapperskey").val("loan");
+	$("#defaultmappersvalue").val("loans/{{loanId}}?tenantIdentifier=default");
 }
 
 function mergeMaps(keymap, valuemap) { 
@@ -3335,9 +3399,31 @@ function refreshClientTemplates(clientUrl) {
 	$("#clienttemplatetab").html(tableHtml);
 }
 
-function createDocumentForTemplate(title, templateId, clientId) {
+function createClientDocumentForTemplate(title, templateId, clientId) {
 	
 	var content = executeSynchroneAjaxRequest('templates/'+templateId+'?clientId='+clientId, "POST", "{}", null, null);
+	
+	var dialogDiv = $("<div id='dialog-form'></div>");
+	dialogDiv.html(content);
+	
+	dialogDiv.dialog({
+		title: title, 
+		width: 600, 
+		height: "auto", 
+		modal: true,
+		buttons: [ { text: "Save", click: function() { $( this ).dialog( "close" ); } },
+		           { text: "Print", click: function() { $( this ).printThis(); } }
+		],
+		close: function() {
+			// if i dont do this, theres a problem with errors being appended to dialog view second time round
+			$(this).remove();
+		}
+	}).dialog('open');	
+}
+
+function createLoanDocumentForTemplate(title, templateId, loanId) {
+	
+	var content = executeSynchroneAjaxRequest('templates/'+templateId+'?loanId='+loanId, "POST", "{}", null, null);
 	
 	var dialogDiv = $("<div id='dialog-form'></div>");
 	dialogDiv.html(content);
@@ -5873,7 +5959,10 @@ function loadLoan(loanId, parenttab) {
 		        	var $loantabs = $("#loantabs" + loanId).tabs({
 						beforeActivate: function( event, ui ) {
         					if($(ui.newPanel).attr( 'id' ) == ( "loanDocuments"+ loanId )){
-        						refreshLoanDocuments(loanId)
+        						refreshLoanDocuments(loanId);
+        					}
+        					if($(ui.newPanel).attr( 'id' ) == ( "loanTemplateDocuments"+ loanId )){
+        						refreshLoanTemplateDocuments(loanId);
         					}
    						}
 					});
@@ -6431,7 +6520,14 @@ function loadGuarantorForm(){
         }
     });
 }
-
+function refreshLoanTemplateDocuments(loanId) {
+	
+	var crudObject = new Object();
+	crudObject.loanDocuments = jQuery.parseJSON(executeSynchroneAjaxRequest('templateassignment?entityId=1&typeId=0', 'GET', "", null, null));
+	crudObject.loanId = loanId; 
+	var tableHtml = $("#loanTemplateDocumentsTemplate").render(crudObject);
+	$("#loanTemplateDocuments"+loanId).html(tableHtml);
+}
 function refreshLoanDocuments(loanId) {
 		var successFunction =  function(data, textStatus, jqXHR) {
 			var crudObject = new Object();
