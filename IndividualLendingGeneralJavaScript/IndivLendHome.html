@@ -1100,35 +1100,7 @@ $(document).ready(function() {
 	<form id="entityform">
 		<div id="formerrors"></div>
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
-		<div id="selecttransfertype" align="right">
-			<input type="radio" id="intraBranch" checked="checked" name="transfertype" value="intraBranch"/><label for="intraBranch">{{=$ctx.doI18N("form.label.group.transfer.intrabranch")}}</label>
-			<input type="radio" id="interBranch" name="transfertype" value="interBranch" /><label for="interBranch">{{=$ctx.doI18N("form.label.group.transfer.interbranch")}}</label>
-		</div>
 		<table>
-			<tr>
-				<td>
-					<div class="officedetailsdiv">
-						<label for="destinationOfficeId">{{=$ctx.doI18N("label.group.destination.office")}}</label>
-					</div>
-				</td>
-				<td>
-					<div class="officedetailsdiv">
-						<select id="destinationOfficeId" name="destinationOfficeId" class="destinationOfficeId" title="" >
-							<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-							{{#each officeOptions}}
-								{{#if $ctx.number($parent.parent.data.currentGroupOfficeId)!=$ctx.number(id)}}
-									{{#if $ctx.number($parent.parent.parent.data.officeId)==$ctx.number(id)}}
-										<option value="{{=id}}" selected="selected">{{=name}}</option>
-									{{#else}}
-										<option value="{{=id}}">{{=name}}</option>
-									{{/if}}
-								{{/if}}
-							{{/each}}
-						</select>
-					</div>
-				</td>
-			</tr>
-
 			<tr>
 				<td class="paddingB10">
 					<div class="multiselectwidget">
@@ -1159,34 +1131,46 @@ $(document).ready(function() {
 			</tr>
 			<tr>
 				<td>
-					<label for="destinationGroupId">{{=$ctx.doI18N("label.select.destination.group")}}</label>
-				</td>
-				<td>
-					<select id="destinationGroupId" name="destinationGroupId" class="destinationGroupId" title="">
-						<option value="">{{=$ctx.doI18N("option.group.search.first.choice")}}</option>
-						{{#each groupOptions}}
-							<option value="{{=id}}">{{=name}}</option>
-						{{/each}}
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input id="transferActiveLoans" type="checkbox" name="transferActiveLoans" value="{{=transferActiveLoans}}" checked/>
-				</td>
-				<td>
-					<label for="transferActiveLoans">{{=$ctx.doI18N("label.transferActiveLoans")}}</label>
-				</td>
-			</tr>
-			<tr>
-				<td>
 					<input id="inheritDestinationGroupLoanOfficer" type="checkbox" name="inheritDestinationGroupLoanOfficer" value="{{=inheritDestinationGroupLoanOfficer}}" checked/>
 				</td>
 				<td>
 					<label for="inheritDestinationGroupLoanOfficer">{{=$ctx.doI18N("label.inheritDestinationGroupLoanOfficer")}}</label>
 				</td>
 			</tr>
+			<tr>
+				<td><b>{{=$ctx.doI18N("label.group.smartsearch")}}</b>
+					<input id="smartGroupSearch" name="smartGroupSearch" title="" type="text" value=""/>
+				</td>
+			</tr>
+			<tr>
+				<td><small>{{=$ctx.doI18N("label.help.autocomplete")}}</small></td>
+			</tr>
 		</table>
+		<fieldset>
+			<legend>{{=$ctx.doI18N("label.destinationGroupDetails")}}</legend>
+			<table>
+				<tr>
+					<td><label for="selectedGroupName">{{=$ctx.doI18N("label.group.name")}}</label></td>
+					<td><input readonly="true" id="selectedGroupName" name="selectedGroupName" title="" type="text" value=""/></td>
+				</tr>
+				<tr>
+					<td><label for="selectedGroupIdentifier">{{=$ctx.doI18N("label.groupIdentifier")}}</label></td>
+					<td><input readonly="true" id="selectedGroupIdentifier" name="selectedGroupIdentifier" title="" type="text" value=""/></td>
+				</tr>
+				<tr>	
+					<td><label for="selectedGroupExternalId">{{=$ctx.doI18N("label.group.externalid")}}</label></td>
+					<td><input readonly="true" id="selectedGroupExternalId" name="selectedGroupExternalId" title="" type="text" value=""/></td>
+				</tr>
+				<tr>	
+					<td><label for="selectedGroupActivationDate">{{=$ctx.doI18N("label.activationDate")}}</label></td>
+					<td><input readonly="true" id="selectedGroupActivationDate" name="selectedGroupActivationDate" title="" type="text" value=""/></td>
+				</tr>
+				<tr>	
+					<td><label for="selectedGroupStaffName">{{=$ctx.doI18N("label.group.staff")}}</label></td>
+					<td><input readonly="true" id="selectedGroupStaffName" name="selectedGroupStaffName" title="" type="text" value=""/></td>
+				</tr>
+			</table>
+		</fieldset>
 	</form>
 </script>
 
@@ -1528,7 +1512,7 @@ $(document).ready(function() {
          <button id="newgroupsavingsbtn{{=id}}" class="newgroupsavingsbtn">{{=$ctx.doI18N("label.group.new.saving.account")}}</button>
         {{/if}}
         {{#if $ctx.showTask("TransferClients")}}
-			<button id="transfferclientsbtn{{=officeId}}" class="transfferclientsbtn">{{=$ctx.doI18N("label.group.transffer.clients")}}</button>
+			<button id="transferclientsbtn{{=officeId}}" class="transferclientsbtn">{{=$ctx.doI18N("label.group.transfer.clients")}}</button>
         {{/if}}
 
 	{{#else}}
@@ -9197,58 +9181,35 @@ $(document).ready(function() {
 </script>
 
 
-<script id="transferClientsBetweenBranchesFormTemplate" type="text/x-jquery-tmpl">
+<script id="proposeClientTransferFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>
 	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
 	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 
-	<table>
-		<tr>
-			<td>
-				<label for="destinationOfficeId">{{=$ctx.doI18N("label.office")}}</label>
-			</td>
-			<td>
-				<select id="destinationOfficeId" name="destinationOfficeId" title="" >
-					<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
-					{{#each officeOptions}}
-						{{#if $ctx.number($parent.parent.data.clientOfficeId)!=$ctx.number(id)}}
-							{{#if $ctx.number($parent.parent.parent.data.officeId)==$ctx.number(id)}}
-								<option value="{{=id}}" selected="selected">{{=name}}</option>
-							{{#else}}
-								<option value="{{=id}}">{{=name}}</option>
-							{{/if}}
-						{{/if}}
-					{{/each}}
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label for="newStaffId">{{=$ctx.doI18N("label.client.staff")}}</label>
-			</td>
-			<td>
-				<select id="newStaffId" name="newStaffId" title="">
-					<option value="">{{=$ctx.doI18N("option.client.select.staff.first.choice")}}</option>
-					{{#each staffOptions}}
-						{{#if $ctx.number($parent.parent.data.staffId)===$ctx.number(id)}}
-							<option value="{{=id}}" selected="selected">{{=displayName}}</option>
-						{{#else}}
-							<option value="{{=id}}">{{=displayName}}</option>
-						{{/if}}
-					{{/each}}
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<input id="transferActiveLoans" type="checkbox" name="transferActiveLoans" checked/>
-			</td>
-			<td>
-				<label for="transferActiveLoans">{{=$ctx.doI18N("label.transferActiveLoans")}}</label>
-			</td>
-		</tr>
-	</table>
+	<label for="destinationOfficeId">{{=$ctx.doI18N("label.office")}}</label>
+	<select id="destinationOfficeId" name="destinationOfficeId" title="" >
+		<option value="">{{=$ctx.doI18N("option.office.first.choice")}}</option>
+		{{#each officeOptions}}
+			{{#if $ctx.number($parent.parent.data.clientOfficeId)!=$ctx.number(id)}}
+				{{#if $ctx.number($parent.parent.parent.data.officeId)==$ctx.number(id)}}
+					<option value="{{=id}}" selected="selected">{{=name}}</option>
+				{{#else}}
+					<option value="{{=id}}">{{=name}}</option>
+				{{/if}}
+			{{/if}}
+		{{/each}}
+	</select>
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="5" cols="50" id="note" name="note" cssClass="text ui-widget-content ui-corner-all">{{=note}}</textarea>
+</form>
+</script>
+
+<script id="rejectClientTransferFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="5" cols="50" id="note" name="note" cssClass="text ui-widget-content ui-corner-all">{{=note}}</textarea>
 </form>
 </script>
 
@@ -9296,11 +9257,14 @@ $(document).ready(function() {
 			{{/if}}
 
 			{{#if $ctx.showTask("TransferClients")}}
-				{{#if status.value === "Transfer in progress"}
-					<button id="acceptClientsTransferbtn{{=officeId}}" class="acceptClientsTransferbtn">Accept Client Transfer</button>
-				
+				{{#if status.code === "clientStatusType.transfer.in.progress"}}
+					<button id="acceptClientTransferbtn{{=officeId}}" class="acceptClientTransferbtn">{{=$ctx.doI18N("label.clients.accept.transfer")}}</button>
+					<button id="rejectClientTransferbtn{{=officeId}}" class="rejectClientTransferbtn">{{=$ctx.doI18N("label.clients.reject.transfer")}}</button>
+					<button id="withdrawClientTransferbtn{{=officeId}}" class="withdrawClientTransferbtn">{{=$ctx.doI18N("label.clients.withdraw.transfer")}}</button>
+				{{#else if status.code === "clientStatusType.transfer.on.hold"}}
+					<button id="withdrawClientTransferbtn{{=officeId}}" class="withdrawClientTransferbtn">{{=$ctx.doI18N("label.clients.withdraw.transfer")}}</button>
 				{{#else}}
-				<button id="transferclientsbtn{{=officeId}}" class="transferclientsbtn">{{=$ctx.doI18N("label.clients.transfer")}}</button>
+					<button id="transferclientsbtn{{=officeId}}" class="transferclientsbtn">{{=$ctx.doI18N("label.clients.transfer")}}</button>
 				{{/if}}
 			{{/if}}
 		{{/if}}

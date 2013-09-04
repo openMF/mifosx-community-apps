@@ -2812,9 +2812,9 @@ function showILClient(clientId) {
 						currentClientOffice = officeId;
 						var getUrl = 'offices?fields=id,name';
 						var postUrl = 'clients/' + clientId + '?command=proposeTransfer';
-						var templateSelector = "#transferClientsBetweenBranchesFormTemplate";
-						var width = 400; 
-						var height = 225;
+						var templateSelector = "#proposeClientTransferFormTemplate";
+						var width = 500; 
+						var height = 325;
 
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 							$("#dialog-form").dialog("close");
@@ -2825,28 +2825,62 @@ function showILClient(clientId) {
 						e.preventDefault();
 					});
 
-					$('.acceptClientsTransferbtn').button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
+					$('.acceptClientTransferbtn').button({icons: {primary: "ui-icon-check"}}).click(function(e) {
 						var linkId = this.id;
-						var officeId = linkId.replace("acceptClientsTransferbtn", "");
+						var officeId = linkId.replace("acceptClientTransferbtn", "");
 						currentClientOffice = officeId;
-						var getUrl = 'offices?fields=id,name';
 						var postUrl = 'clients/' + clientId + '?command=acceptTransfer';
-						var templateSelector = "#transferClientsBetweenBranchesFormTemplate";
-						var width = 400; 
-						var height = 225;
+						var templateSelector = "#rejectClientTransferFormTemplate";
+						var width = 500; 
+						var height = 325;
 
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 							$("#dialog-form").dialog("close");
 							showILClient(clientId);
 						}
+						
+						popupDialogWithFormView("", postUrl, 'POST', "dialog.title.transfer.clients", templateSelector, width, height,  saveSuccessFunction);
+						e.preventDefault();
+					});
 
-						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.transfer.clients", templateSelector, width, height,  saveSuccessFunction);
+					$('.rejectClientTransferbtn').button({icons: {primary: "ui-icon-closethick"}}).click(function(e) {
+						var linkId = this.id;
+						var officeId = linkId.replace("rejectClientTransferbtn", "");
+						currentClientOffice = officeId;
+						var postUrl = 'clients/' + clientId + '?command=rejectTransfer';
+						var templateSelector = "#rejectClientTransferFormTemplate";
+						var width = 500; 
+						var height = 325;
+
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+							$("#dialog-form").dialog("close");
+							showILClient(clientId);
+						}
+						
+						popupDialogWithFormView("", postUrl, 'POST', "dialog.title.transfer.clients", templateSelector, width, height,  saveSuccessFunction);
+						e.preventDefault();
+					});
+
+					$('.withdrawClientTransferbtn').button({icons: {primary: "ui-icon-arrowrefresh-1-e"}}).click(function(e) {
+						var linkId = this.id;
+						var officeId = linkId.replace("undoClientTransferbtn", "");
+						currentClientOffice = officeId;
+						var postUrl = 'clients/' + clientId + '?command=withdrawTransfer';
+						var templateSelector = "#rejectClientTransferFormTemplate";
+						var width = 500; 
+						var height = 325;
+
+						var saveSuccessFunction = function(data, textStatus, jqXHR) {
+							$("#dialog-form").dialog("close");
+							showILClient(clientId);
+						}
+						
+						popupDialogWithFormView("", postUrl, 'POST', "dialog.title.transfer.clients", templateSelector, width, height,  saveSuccessFunction);
 						e.preventDefault();
 					});
 
 					$('.clientclosebtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 						var clientClose = 'close';
-						var getUrl = 'clients/template?commandParam=' + clientClose;
 						var postUrl = 'clients/' + clientId + '?command=' + clientClose;
 						var templateSelector = "#clientCloseTemplate";
 						var width = 400; 
@@ -3433,9 +3467,9 @@ function showGroup(groupId){
 			    e.preventDefault();
 			});
 
-			$('.transfferclientsbtn').button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
+			$('.transferclientsbtn').button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
 				var linkId = this.id;
-				var officeId = linkId.replace("transfferclientsbtn", "");
+				var officeId = linkId.replace("transferclientsbtn", "");
 				currentGroupOffice = officeId;
 				launchTransferClientsDialog(currentGroupId,associatedClients);
 				e.preventDefault();
@@ -3633,11 +3667,14 @@ function transferClients(divContainer, groupId) {
 		clients.push(temp);
 	};
 	serializedArray["clients"]=clients;
-	if ($("input[name='transfertype']:radio:checked").val() == 'intraBranch') {
-		delete serializedArray.destinationOfficeId;
-	}
+	serializedArray["destinationGroupId"] = $('#selectedGroupIdentifier').val();
 	delete serializedArray.clientMembers;
-	delete serializedArray.transfertype;
+	delete serializedArray.smartGroupSearch;
+	delete serializedArray.selectedGroupName;
+	delete serializedArray.selectedGroupIdentifier;
+	delete serializedArray.selectedGroupExternalId;
+	delete serializedArray.selectedGroupActivationDate;
+	delete serializedArray.selectedGroupStaffName;
 
 	var newFormData = JSON.stringify(serializedArray);
 
@@ -3656,7 +3693,6 @@ var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqX
 	//prepare the temp data object with available data.
 	var tempObject = new Object();
 	tempObject.clientOptions = currentGroupClients || [];
-	tempObject.officeOptions = data;
 	tempObject.currentGroupOfficeId = currentGroupOffice;
 
 	var groupId = currentGroup;
@@ -3666,7 +3702,6 @@ var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqX
 	var openClientTransferDialogFunc = function (event, ui) {
 		var formHtml = $(templateIdentifier).render(tempObject);
 		$("#dialog-form").html(formHtml);
-		$("#selecttransfertype").buttonset();
 		var officeId = currentGroupOffice;
 
 		var fetchGroupsSuccessFunction = function(data, textStatus, jqXHR) {
@@ -3679,32 +3714,6 @@ var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqX
 			});
 		}
 
-		if ($("input[name='transfertype']:radio:checked").val() == 'intraBranch') {
-			$(".officedetailsdiv").hide();
-			executeAjaxRequest('groups?templateType=clientstransfertemplate&officeId='+officeId+'&groupId='+groupId, 'GET', "", fetchGroupsSuccessFunction, formErrorFunction);
-		} else if ($("input[name='transfertype']:radio:checked").val() == 'interBranch') {
-			$(".officedetailsdiv").show();
-			$('select.destinationGroupId').empty();
-			$("#destinationOfficeId").change(function(e){
-				var selectedOfficeId = $(this).val();
-				executeAjaxRequest('groups?templateType=clientstransfertemplate&officeId='+selectedOfficeId+'&groupId='+groupId, 'GET', "", fetchGroupsSuccessFunction, formErrorFunction);
-			});
-		}
-
-		$("input[name='transfertype']").change(function() {
-			if ($("input[name='transfertype']:radio:checked").val() == 'intraBranch') {
-				$(".officedetailsdiv").hide();
-				executeAjaxRequest('groups?templateType=clientstransfertemplate&officeId='+officeId+'&groupId='+groupId, 'GET', "", fetchGroupsSuccessFunction, formErrorFunction);
-			} else if ($("input[name='transfertype']:radio:checked").val() == 'interBranch') {
-				$(".officedetailsdiv").show();
-				$('select.destinationGroupId').empty();
-				$("#destinationOfficeId").change(function(e){
-					var selectedOfficeId = $(this).val();
-					executeAjaxRequest('groups?templateType=clientstransfertemplate&officeId='+selectedOfficeId+'&groupId='+groupId, 'GET', "", fetchGroupsSuccessFunction, formErrorFunction);
-				});
-			}
-		});
-
 		$('.multiadd').click(function() {
 			return !$('.multiNotSelectedItems option:selected').remove().appendTo('#clientMembers');
 		});
@@ -3712,6 +3721,36 @@ var launchTransferClientDialogOnSuccessFunction = function(data, textStatus, jqX
 		$('.multiremove').click(function() {
 			return !$('.multiSelectedItems option:selected').remove().appendTo('#notSelectedClients');
 		});
+
+		$("#smartGroupSearch" ).autocomplete({
+	        source: function(request, response){
+	        	//get selected office
+				var sqlSearchValue = "display_name like '%" + request.term + "%' and g.status_enum != 600" ; 
+				smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
+					response( $.map( data.pageItems, function( item ) {
+	                    return {
+	                        label: item.name + "(" + item.officeName + ")",
+	                        value: item.name,
+	                        activationDate: item.activationDate,
+	                        id: item.id,
+	                        externalId:item.externalId,
+	                        staffName:item.staffName,
+	                    }
+	                }));
+		  		};
+				executeAjaxRequest("groups?officeId="+ officeId+"&limit=15&sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", smartSearchSuccessFunction, formErrorFunction);
+	        },
+	        minLength: 3,
+	        select: function( event, ui ) {
+	        	$("#smartGroupSearch" ).val(ui.item.value);
+	            $( "#selectedGroupName" ).val(ui.item.value);
+	            $( "#selectedGroupExternalId" ).val(ui.item.externalId);
+	            $( "#selectedGroupActivationDate" ).val(custom.helperFunctions.globalDate(ui.item.activationDate));
+	            $( "#selectedGroupIdentifier" ).val(ui.item.id);
+	            $( "#selectedGroupStaffName" ).val(ui.item.staffName);
+	            return false;
+	        }
+	    });
 
 		$("#entityform textarea").first().focus();
 		$('#entityform input').first().focus();
@@ -6993,7 +7032,7 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 					var codeValuesObject = new Object();
 			    	codeValuesObject.crudRows = data.closureReasons;
 					popupDialogWithFormViewData(codeValuesObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
-				}else if (templateSelector == "#transferClientsBetweenBranchesFormTemplate") {
+				}else if (templateSelector == "#proposeClientTransferFormTemplate") {
 					offices = data; //create & intialize window varible officesObject to reuse for OfficesOptions 
 					var tempObject = new Object();
 					tempObject.officeOptions = data;
@@ -7744,21 +7783,6 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		} else if (data.chargeCalculationType.id == "2") {
 			$("label[for='amount']").text(doI18N('label.percentage'));
 		}
-	}
-
-	if (templateSelector === "#transferClientsBetweenBranchesFormTemplate") {
-		$("#destinationOfficeId").change(function(e){
-			var selectedOfficeId = $(this).val();
-			var officeIdChangeSuccess = function(staffData, textStatus, jqXHR){
-				var tempObject = new Object();
-				tempObject['officeId'] = selectedOfficeId;
-				tempObject.officeOptions = offices;
-				tempObject.staffOptions = staffData;
-				tempObject.clientOfficeId = currentClientOffice;
-				repopulateOpenPopupDialogWithFormViewData(tempObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
-			}
-			executeAjaxRequest("staff?staffInOfficeHierarchy=true&fields=id,displayName&officeId=" + selectedOfficeId, "GET", "", officeIdChangeSuccess, formErrorFunction);
-		});
 	}
 
 	if (templateSelector === "#attendanceFormTemplate") {
