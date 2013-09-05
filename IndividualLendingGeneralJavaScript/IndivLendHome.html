@@ -105,6 +105,9 @@ JQuery plugins:
 <!-- This is a single Page javascript app - IndividualLendingCode.js has functions which switch functionality by replacing the html in the #container div -->
 <script type="text/javascript" src="resources/IndividualLendingCode-1.8.0.RELEASE.js"></script>
 <script type="text/javascript" src="resources/SetTenantLoadTenantConfig-1.8.0.RELEASE.js"></script>
+
+<script type="text/javascript"  src="resources/libs/ckeditor/ckeditor.js"></script>
+
 </head>
 
 <body>
@@ -431,7 +434,7 @@ $(document).ready(function() {
 		</div>
 	{{/if}}
 </script>
-
+            
 <script id="clientsTableTemplate" type="text/x-jquery-tmpl">
 	<table id='clientstable' width='100%' class="display">
 		<thead>
@@ -1476,6 +1479,18 @@ $(document).ready(function() {
 		</tr>
 	</table>
  </form>
+</script>
+
+<script id="clientTemplateDocumentsTemplate" type="text/x-jquery-tmpl">
+	<table>
+		{{#each clientDocuments}}
+		<tr>
+			<td>
+				<a href="#" onclick="createClientDocumentForTemplate('{{=template.name}}',{{=template.id}}, {{=$parent.parent.data.clientId}});">{{=template.name}}</a>
+			</td>
+		</tr>
+		{{/each}}
+	</table>
 </script>
 
 <script id="groupDetailsTemplate" type="text/x-jquery-tmpl">
@@ -5098,6 +5113,7 @@ $(document).ready(function() {
 		<li><a href="#collaterals{{=id}}" title="collaterals">{{=$ctx.doI18N("tab.collaterals")}}</a></li>
 		{{/if}}
 		<li><a href="#loanDocuments{{=id}}" title="documents">{{=$ctx.doI18N("tab.loanDocuments")}}</a></li>
+		<li><a href="#loanTemplateDocuments{{=id}}" title="template documents">Template Documents</a></li>
 		{{#if notes}}
 		<li><a href="#loanNotes{{=id}}" title="notes">{{=$ctx.doI18N("tab.loanNotes")}}</a></li>
 		{{/if}}
@@ -5767,6 +5783,9 @@ $(document).ready(function() {
 	<div id="loanDocuments{{=id}}" style="margin-top: 5px;">
 	</div>
 
+	<div id="loanTemplateDocuments{{=id}}" style="margin-top: 5px;">
+	</div>
+
 	<!-- Loan Notes Tab-->
 	{{#if notes}}
 	<div id="loanNotes{{=id}}" style="margin-top: 5px;">
@@ -5790,6 +5809,18 @@ $(document).ready(function() {
 
 	
 </div>
+</script>
+
+<script id="loanTemplateDocumentsTemplate" type="text/x-jquery-tmpl">
+	<table>
+		{{#each loanDocuments}}
+		<tr>
+			<td>
+				<a href="#" onclick="createLoanDocumentForTemplate('{{=template.name}}',{{=template.id}}, {{=$parent.parent.data.loanId}});">{{=template.name}}</a>
+			</td>
+		</tr>
+		{{/each}}
+	</table>
 </script>
 
 <script id="loanDocumentsTemplate" type="text/x-jquery-tmpl">
@@ -11151,6 +11182,7 @@ $(document).ready(function() {
 				-<span onCLick="viewAbove({{=root.coordinator.organisational_role_enum}},{{=root.coordinator.id}})"> {{=root.coordinator.fullName}} </span>
 				{{/if}}
 			{{/if}}
+
 			{{#if root.fieldAgent.fullName !== ''}}
 				{{#if root.fieldAgent.top}}
 				<span onCLick="viewAbove({{=root.fieldAgent.organisational_role_enum}},{{=root.fieldAgent.id}})"> Start </span>
@@ -11849,6 +11881,188 @@ $(document).ready(function() {
 	{{/each}}
 </script>
 
+<script id="templateEntityTypeAssignmentTemplate" type="text/x-jquery-tmpl">
+
+	<button style="margin-bottom:20px" id="createTemplateWithEntityAndType" >create new template</button>
+	
+	<div id="templatesListDiv">
+		<table>
+		<thead>
+			<tr>
+				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Etity</th>
+				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Type</th>
+				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Name</th>
+			</tr>
+		</thead>
+		<tbody>
+		{{#each templates}}
+			<tr>
+				<td style="padding:3px 10px;">{{=entity}}</td>
+				<td style="padding:3px 10px;">{{=type}}</td>
+				<td style="padding:3px 10px;">
+					<a href="templateassignment/{{=id}}" id="template{{=template.id}}">{{=template.name}}</a> 
+				</td>
+			</tr>
+		{{/each}}
+		</tbody>
+		</table>
+		
+	</div>
+</script>
+
+<script id="templateCreateFormTemplate" type="text/x-jquery-tmpl">
+
+<button style="margin-bottom:20px" id="templateOverview" >Template Overview</button>
+
+<div style="width:1000px">
+	<div style="float:right" id="templateKeys"></div>
+
+	<table>
+		<tr>
+			<td><label>Entity:</label></td>
+			<td><label>Type:</label></td>
+		</tr>
+		<tr>
+			<td>
+				<select id="entitySelect"> 
+					<option></option>
+					{{#each entities}}
+						<option value="{{=id undef 0}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<select id="typeSelect">
+					<option></option>
+					{{#each types}}
+						<option value="{{=id undef 0}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	</table>
+
+	<form id="templateform" >
+
+	<label>Template Name:</label>
+	<input type="text" name="name" />
+
+	<br />
+
+	<button style="margin:10px 0" id="advancedMappersOption" >Advanced Options</button>
+
+	<br />
+
+	<div id="mappersDiv" style="display: none;">
+	<table id="mappersTable">
+		<tr>
+			<td><label>Mapper Key:</label></td>
+			<td><label>Mapper Value:</label></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><input id="defaultmapperskey" type="text" name="mapperskey" readonly style="color:grey" /></td>
+			<td><input id="defaultmappersvalue" type="text" name="mappersvalue" readonly style="color:grey;width:500px" /></td>
+			<td><button id="addMapper"> + </button></td>
+		</tr>
+	</table>
+	</div>
+
+	<br />
+			
+	<textarea id="templateeditor" name="text"></textarea>
+
+	<br />
+
+	<button id="createTemplate"> create template </button>
+</form>
+</div>
+</script>
+
+<script id="templateUpdateFormTemplate" type="text/x-jquery-tmpl">
+
+<button style="margin-bottom:20px" id="templateOverview" >Template Overview</button>
+
+<div style="width:1000px">
+	<div style="float:right" id="templateKeys"></div>
+
+	<table>
+		<tr>
+			<td><label>Entity:</label></td>
+			<td><label>Type:</label></td>
+		</tr>
+		<tr>
+			<td>
+				<select id="entitySelect"> 
+					<option></option>
+					{{#each entities}}
+						<option value="{{=id undef 0}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+			<td>
+				<select id="typeSelect">
+					<option></option>
+					{{#each types}}
+						<option value="{{=id undef 0}}">{{=name}}</option>
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	</table>
+
+	<form id="templateform" >
+
+	<label>Template Name:</label>
+	<input type="text" name="name" value="{{=assignment.template.name}}" />
+
+	<br />
+
+	<button style="margin:10px 0" id="advancedMappersOption" >Advanced Options</button>
+
+	<br />
+
+	<div id="mappersDiv" >
+	<table id="mappersTable">
+
+		<tr>
+			<td><label>Mapper Key:</label></td>
+			<td><label>Mapper Value:</label></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><input id="defaultmapperskey" type="text" name="mapperskey" readonly style="color:grey"/></td>
+			<td><input id="defaultmappersvalue" type="text" name="mappersvalue" readonly style="color:grey;width:500px"/></td>
+			<td><button id="addMapper"> + </button></td>
+		</tr>
+
+		{{#each mappers}}
+			{{#if $itemNumber != 1}}
+			<tr>
+				<td><label>Mapper Key:</label></td>
+				<td><label>Mapper Value:</label></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><input type="text" name="mapperskey" value="{{=name}}" /></td>
+				<td><input type="text" name="mappersvalue" value="{{=value}}"/></td>
+				<td><button class='removeMapper'> - </button></td>
+			</tr>
+			{{/if}}
+		{{/each}}
+	</table>
+	</div>
+	<br />
+
+	<textarea id="templateeditor" name="text">{{=assignment.template.text}}</textarea>
+
+	<br />
+
+	<button id="saveTemplate"> save </button>
+	<button id="deleteTemplate"> delete </button>	
+	</form>
+</div>
+</script>
 
 </body>
 </html>
