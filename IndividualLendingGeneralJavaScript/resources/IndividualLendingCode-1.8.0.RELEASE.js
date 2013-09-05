@@ -792,12 +792,12 @@ function setTemplateEntityAdminContent(divName) {
 			width : 800
 		} );
 		
-		$("#advancedMappers").click(function(e) {
-			e.preventDefault();
+		$("#advancedMappersOption").button().click(function(e) {
+	        e.preventDefault();
 			$("#mappersDiv").toggle();
 		});
 		
-		$("#addMapper").click(function(e) {
+		$("#addMapper").button().click(function(e) {
 			e.preventDefault();
 			$("#mappersTable").append(
 					"<tr>"+
@@ -811,7 +811,7 @@ function setTemplateEntityAdminContent(divName) {
 						"<td><button class='removeMapper'> - </button></td>"+
 					"</tr>" 
 			);
-			$(".removeMapper").click(function(e) {
+			$(".removeMapper").button().click(function(e) {
 				e.preventDefault();
 				 $(this).parent().parent().prev().remove();
 	            $(this).parent().parent().remove();
@@ -833,6 +833,10 @@ function setTemplateEntityAdminContent(divName) {
 			entityId = $("#entitySelect").val(); 
 			typeId = $("#typeSelect").val();
 			executeSynchroneAjaxRequest('templateassignment?entityId='+entityId+'&typeId='+typeId, "POST", JSON.stringify(formData), null, null);
+			setTemplateEntityAdminContent(divName);
+		});
+		
+		$("#templateOverview").button().click(function(e) {
 			setTemplateEntityAdminContent(divName);
 		});
 	});
@@ -861,6 +865,7 @@ function showTemplateEdit(assUrl, id, divName) {
 	
 	templateUpdateFormTemplate = $("#templateUpdateFormTemplate").render(assignmentObject);
 	$("#"+divName).html(templateUpdateFormTemplate);
+	
 	CKEDITOR.replace( "templateeditor", {
 		width : 800
 	} );
@@ -916,8 +921,8 @@ function showTemplateEdit(assUrl, id, divName) {
 		executeSynchroneAjaxRequest('templateassignment/'+id, 'DELETE', "",null, null);
 		setTemplateEntityAdminContent(divName);
 	});
-
-	$("#advancedMappers").click(function(e) {
+	
+	$("#advancedMappersOption").button().click(function(e) {
         e.preventDefault();
 		$("#mappersDiv").toggle();
 	});
@@ -936,11 +941,15 @@ function showTemplateEdit(assUrl, id, divName) {
 					"<td><button class='removeMapper'> - </button></td>"+
 				"</tr>" 
 		);
-		$(".removeMapper").click(function(e) {
+		$(".removeMapper").button().click(function(e) {
 			e.preventDefault();
 			 $(this).parent().parent().prev().remove();
             $(this).parent().parent().remove();
 		});
+	});
+	
+	$("#templateOverview").button().click(function(e) {
+		setTemplateEntityAdminContent(divName);
 	});
 }
 
@@ -948,7 +957,8 @@ function showTemplateEdit(assUrl, id, divName) {
 
 
 function showClientKeys() {
-	$("#templateKeys").html("<label>{{client.accountNo}}</label>"+
+	$("#templateKeys").html(
+							"<label>{{client.accountNo}}</label>"+
 							"<label>{{client.status.value}}</label>"+
 							"<label>{{client.fullname}}</label>"+
 							"<label>{{client.displayName}}</label>"+
@@ -958,11 +968,56 @@ function showClientKeys() {
 	$("#defaultmappersvalue").val("clients/{{clientId}}?tenantIdentifier=default");
 }
 function showLoanKeys() {
-	$("#templateKeys").html("<label>{{loan.accountNo}}</label>"+
-							"<label>{{loan.status.value}}</label>");
+	$("#templateKeys").html(
+			"<div class='toggle'>Loan</div>"+
+				"<div  class='hidden'>"+
+					"<label>{{loan.accountNo}}</label>"+
+					"<label>{{loan.status.value}}</label>"+
+					"<label>{{loan.loanProductId}}</label>"+
+					"<label>{{loan.loanProductName}}</label>"+
+					"<label>{{loan.loanProductDescription}}</label>"+
+				"</div>"+
+			"</div>"+
+			"<div class='toggle'>Repayment Schedule</div>"+
+				"<div  class='hidden'>"+
+					"<label>{{loan.repaymentSchedule.loanTermInDays}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalPrincipalDisbursed}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalPrincipalExpected}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalPrincipalPaid}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalInterestCharged}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalFeeChargesCharged}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalPenaltyChargesCharged}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalWaived}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalWrittenOff}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalRepaymentExpected}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalRepayment}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalPaidInAdvance}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalPaidLate}}</label>"+
+					"<label>{{loan.repaymentSchedule.totalOutstanding}}</label>"+
+				"</div>"+
+			"</div>");
+	
+	jQuery(".toggle").css({
+		"background-color" : "#A4A4A4",
+    	"border-radius" : "0.25em 0.25em 0.25em 0.25em",
+    	"color" : "#FFFFFF",
+    	"cursor" : "pointer",
+    	"font-weight" : "bold",
+    	"line-height" : "1",
+    	"margin" : "10px 0",
+    	"padding" : "0.3em 0.6em 0.4em",
+    	"vertical-align" : "baseline",
+    	"white-space" : "nowrap"
+	});
+	jQuery(".toggle").next(".hidden").hide();
+    jQuery(".toggle").click(function() {
+        $('.active').not(this).toggleClass('active').next('.hidden').slideToggle(300);
+        $(this).toggleClass('active').next().slideToggle("fast");
+
+    });
 	
 	$("#defaultmapperskey").val("loan");
-	$("#defaultmappersvalue").val("loans/{{loanId}}?tenantIdentifier=default");
+	$("#defaultmappersvalue").val("loans/{{loanId}}?associations=all&tenantIdentifier=default");
 }
 
 function mergeMaps(keymap, valuemap) { 
@@ -3408,10 +3463,10 @@ function createClientDocumentForTemplate(title, templateId, clientId) {
 	
 	dialogDiv.dialog({
 		title: title, 
-		width: 600, 
+		width: "auto", 
 		height: "auto", 
 		modal: true,
-		buttons: [ { text: "Save", click: function() { $( this ).dialog( "close" ); } },
+		buttons: [ //{ text: "Save", click: function() { $( this ).dialog( "close" ); } },
 		           { text: "Print", click: function() { $( this ).printThis(); } }
 		],
 		close: function() {
@@ -3430,10 +3485,10 @@ function createLoanDocumentForTemplate(title, templateId, loanId) {
 	
 	dialogDiv.dialog({
 		title: title, 
-		width: 600, 
+		width: "auto", 
 		height: "auto", 
 		modal: true,
-		buttons: [ { text: "Save", click: function() { $( this ).dialog( "close" ); } },
+		buttons: [ //{ text: "Save", click: function() { $( this ).dialog( "close" ); } },
 		           { text: "Print", click: function() { $( this ).printThis(); } }
 		],
 		close: function() {

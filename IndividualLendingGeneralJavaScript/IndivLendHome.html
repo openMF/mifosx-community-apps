@@ -11883,23 +11883,23 @@ $(document).ready(function() {
 
 <script id="templateEntityTypeAssignmentTemplate" type="text/x-jquery-tmpl">
 
-	<button id="createTemplateWithEntityAndType" >create new template</button>
+	<button style="margin-bottom:20px" id="createTemplateWithEntityAndType" >create new template</button>
 	
 	<div id="templatesListDiv">
 		<table>
 		<thead>
 			<tr>
-				<th>ENTITY</th>
-				<th>TYPE</th>
-				<th>NAME</th>
+				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Etity</th>
+				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Type</th>
+				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Name</th>
 			</tr>
 		</thead>
 		<tbody>
 		{{#each templates}}
 			<tr>
-				<td>{{=entity}}</td>
-				<td>{{=type}}</td>
-				<td>
+				<td style="padding:3px 10px;">{{=entity}}</td>
+				<td style="padding:3px 10px;">{{=type}}</td>
+				<td style="padding:3px 10px;">
 					<a href="templateassignment/{{=id}}" id="template{{=template.id}}">{{=template.name}}</a> 
 				</td>
 			</tr>
@@ -11911,6 +11911,8 @@ $(document).ready(function() {
 </script>
 
 <script id="templateCreateFormTemplate" type="text/x-jquery-tmpl">
+
+<button style="margin-bottom:20px" id="templateOverview" >Template Overview</button>
 
 <div style="width:1000px">
 	<div style="float:right" id="templateKeys"></div>
@@ -11947,7 +11949,7 @@ $(document).ready(function() {
 
 	<br />
 
-	<a href="#" id="advancedMappers"> Advanced </a>
+	<button style="margin:10px 0" id="advancedMappersOption" >Advanced Options</button>
 
 	<br />
 
@@ -11960,7 +11962,7 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td><input id="defaultmapperskey" type="text" name="mapperskey" readonly style="color:grey" /></td>
-			<td><input id="defaultmappersvalue" type="text" name="mappersvalue" readonly style="color:grey" /></td>
+			<td><input id="defaultmappersvalue" type="text" name="mappersvalue" readonly style="color:grey;width:500px" /></td>
 			<td><button id="addMapper"> + </button></td>
 		</tr>
 	</table>
@@ -11978,6 +11980,9 @@ $(document).ready(function() {
 </script>
 
 <script id="templateUpdateFormTemplate" type="text/x-jquery-tmpl">
+
+<button style="margin-bottom:20px" id="templateOverview" >Template Overview</button>
+
 <div style="width:1000px">
 	<div style="float:right" id="templateKeys"></div>
 
@@ -12013,7 +12018,7 @@ $(document).ready(function() {
 
 	<br />
 
-	<a href="#" id="advancedMappers"> Advanced </a>
+	<button style="margin:10px 0" id="advancedMappersOption" >Advanced Options</button>
 
 	<br />
 
@@ -12027,7 +12032,7 @@ $(document).ready(function() {
 		</tr>
 		<tr>
 			<td><input id="defaultmapperskey" type="text" name="mapperskey" readonly style="color:grey"/></td>
-			<td><input id="defaultmappersvalue" type="text" name="mappersvalue" readonly style="color:grey"/></td>
+			<td><input id="defaultmappersvalue" type="text" name="mappersvalue" readonly style="color:grey;width:500px"/></td>
 			<td><button id="addMapper"> + </button></td>
 		</tr>
 

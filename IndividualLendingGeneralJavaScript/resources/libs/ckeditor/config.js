@@ -22,9 +22,12 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
 		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
 		{ name: 'styles' },
-		{ name: 'colors' },
-		{ name: 'about' }
+		{ name: 'colors' }
 	];
+	
+	config.protectedSource.push( /{{#\s*[\w\.]+\s*}}/g );
+	config.protectedSource.push( /{{\/\s*[\w\.]+\s*}}/g );
+	
 
 	// Remove some buttons, provided by the standard plugins, which we don't
 	// need to have in the Standard(s) toolbar.
