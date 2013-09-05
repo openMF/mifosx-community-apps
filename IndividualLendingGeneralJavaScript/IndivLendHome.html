@@ -6423,6 +6423,14 @@ $(document).ready(function() {
 					</td>
 				</tr>
 				<tr>
+					<td>{{=$ctx.doI18N("label.annualFee")}}</td>
+					<td>
+						<input id="annualFeeAmount" name="annualFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, annualFeeAmount)}}" style="width: 75px;" />
+						{{=$ctx.doI18N("label.on")}}
+						<input id="annualFeeOnMonthDay" name="annualFeeOnMonthDay" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(annualFeeOnMonthDay)}}" />
+					</td>
+				</tr>
+				<tr>
 					<td>{{=$ctx.doI18N("label.withdrawalFee")}}</td>
 					<td>
 						{{#if withdrawalFeeType}}
@@ -6462,15 +6470,17 @@ $(document).ready(function() {
 						{{/if}}
 					</td>
 				</tr>
-				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
-				<tr>
-					<td>{{=$ctx.doI18N("label.annualFee")}}</td>
-					<td>
-						<input id="annualFeeAmount" name="annualFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, annualFeeAmount)}}" style="width: 75px;" />
-						{{=$ctx.doI18N("label.on")}}
-						<input id="annualFeeOnMonthDay" name="annualFeeOnMonthDay" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(annualFeeOnMonthDay)}}" />
-					</td>
 				</tr>
+					<td>
+						{{#if withdrawalFeeForTransfers}}
+							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" checked />
+						{{#else}}
+							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" />
+						{{/if}}
+						{{=$ctx.doI18N("label.withdrawalFee.transfer")}}
+				</td>
+				</tr>
+				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
 			</table>
 		</div>
 
@@ -6942,6 +6952,14 @@ $(document).ready(function() {
 					</td>
 				</tr>
 				<tr>
+					<td>{{=$ctx.doI18N("label.annualFee")}}</td>
+					<td>
+						<input id="annualFeeAmount" name="annualFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, annualFeeAmount)}}" style="width: 75px;" />
+						{{=$ctx.doI18N("label.on")}}
+						<input id="annualFeeOnMonthDay" name="annualFeeOnMonthDay" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(annualFeeOnMonthDay)}}" />
+					</td>
+				</tr>
+				<tr>
 					<td>{{=$ctx.doI18N("label.withdrawalFee")}}</td>
 					<td>
 						{{#if withdrawalFeeType}}
@@ -6981,15 +6999,17 @@ $(document).ready(function() {
 						{{/if}}
 					</td>
 				</tr>
-				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
-				<tr>
-					<td>{{=$ctx.doI18N("label.annualFee")}}</td>
-					<td>
-						<input id="annualFeeAmount" name="annualFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, annualFeeAmount)}}" style="width: 75px;" />
-						{{=$ctx.doI18N("label.on")}}
-						<input id="annualFeeOnMonthDay" name="annualFeeOnMonthDay" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(annualFeeOnMonthDay)}}" />
-					</td>
 				</tr>
+					<td >
+						{{#if withdrawalFeeForTransfers}}
+							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" checked />
+						{{#else}}
+							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" />
+						{{/if}}
+					{{=$ctx.doI18N("label.withdrawalFee.transfer")}}
+				</td>
+				</tr>
+				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
 			</table>
 		</div>
 	</div>
