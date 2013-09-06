@@ -7282,11 +7282,10 @@ $(document).ready(function() {
 			<td>&nbsp;</td>
 			{{/if}}
 			<td>{{=$ctx.monetaryValue(currency, runningBalance)}}</td>
-
 			{{#if transfer}}
 				<td>&nbsp;</td>
 			{{#else}}
-				{{#if reversed}}
+				{{#if reversed or $parent.parent.parent.data.status.closed}}
 					<td>&nbsp;</td>
 				{{#else}}
 					<td>
