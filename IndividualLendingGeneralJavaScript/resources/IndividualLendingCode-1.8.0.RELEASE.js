@@ -2371,6 +2371,10 @@ function associateClientsToGroup(groupId){
 	executeAjaxRequest('groups/' + groupId + '?template=true&associations=clientMembers', 'GET', "", launchAssociateClientsToGroupDialogOnSuccessFunction, formErrorFunction);	
 }
 
+function closeGroup(groupId){
+	executeAjaxRequest('groups/' + groupId + '?command', 'POST', "", launchAssociateClientsToGroupDialogOnSuccessFunction, formErrorFunction);	
+}
+
 function launchCenterGroupDialog(groupId) {
 	
 	if (groupId) {
@@ -3366,6 +3370,25 @@ function showGroup(groupId){
 				e.preventDefault();
 			});
 
+			$('.closeGroupbtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
+				var groupClose = 'close';
+				var getGroupCloseUrl = 'groups/template?command=close';
+				var postUrl = 'groups/' + groupId + '?command=' + groupClose;
+				var templateSelector = "#groupCloseTemplate";
+				var width = 400; 
+				var height = 300;
+
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+					$("#dialog-form").dialog("close");
+					//showILClient(clientId);
+					showGroup(groupId)
+				}
+				popupDialogWithFormView(getGroupCloseUrl, postUrl, 'POST', "dialog.title.group.close", templateSelector, width, height, saveSuccessFunction);
+			    e.preventDefault();
+			});
+
+			$('button.closeGroupbtn span').text(doI18N('dialog.button.group.close'));
+
 			$('.addclientbtn').button().click(function(e){
 				var linkId = this.id;
 				var groupId = linkId.replace("addclientbtn", "");
@@ -3566,6 +3589,15 @@ function showGroup(groupId){
 			popupConfirmationDialogAndPost(resourceUrl, 'POST', 'dialog.title.confirmation.required', width, height, entityId, saveSuccessFunction);
 			e.preventDefault();
 		});
+
+		//hide assign/unassign staff button if center is closed.
+		if (data.status.value == 'Closed'){
+			$('.assignstafftogroup').hide();
+			$('.unassignstafftogroup').hide();
+			$('.addnewjlgloanbtn').hide();
+			$('.addnewjlgsavingstn').hide();
+			$('.disassociateClient').hide();
+		}
 	
 	}
 
@@ -3914,6 +3946,25 @@ function showCenter(centerId){
 
             $('button.addgroupnotebtn span').text(doI18N('dialog.button.add.note'));
 
+            $('.centerClosebtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
+				var centerClose = 'close';
+				var getCenterCloseUrl = 'centers/template?command=close';
+				var postUrl = 'centers/' + centerId + '?command=' + centerClose;
+				var templateSelector = "#groupCloseTemplate";
+				var width = 400; 
+				var height = 300;
+
+				var saveSuccessFunction = function(data, textStatus, jqXHR) {
+					$("#dialog-form").dialog("close");
+					//showILClient(clientId);
+					showCenter(centerId)
+				}
+				popupDialogWithFormView(getCenterCloseUrl, postUrl, 'POST', "dialog.title.group.close", templateSelector, width, height, saveSuccessFunction);
+			    e.preventDefault();
+			});
+			
+			$('button.centerClosebtn span').text(doI18N('dialog.button.group.close'));
+
 			$('.deletecenterbtn').button({icons:{primary: "ui-icon-trash"}}).click(function(e) {
 				var linkId = this.id;
 				var centerId = linkId.replace("deletecenterbtn", "");
@@ -3976,6 +4027,11 @@ function showCenter(centerId){
 				launchGroupSavingsAccountDialog(centerId);
 				e.preventDefault();
 			});
+			//hide assign/unassign staff button if center is closed.
+			if (data.status.value == 'Closed'){
+				$('.assignstafftogroup').hide();
+				$('.unassignstafftogroup').hide();
+			}
 		});
 		
 	}
