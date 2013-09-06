@@ -1483,6 +1483,9 @@ $(document).ready(function() {
 </script>
 
 <script id="groupDetailsTemplate" type="text/x-jquery-tmpl">
+{{#if status.value == 'Closed'}}
+
+{{#lse}}
 <div class="breadcrumb">
 	<span class="rowvalue">{{=officeName}}</span> 
 	{{#if centerId}}>> <span><a href="#" onClick="showCenter({{=centerId}});">{{=centerName}}</a></span>{{/if}}
@@ -1541,7 +1544,9 @@ $(document).ready(function() {
         
         {{#if $ctx.showTask("AddGroupNote")}}
             <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
-    {{/if}}
+    	{{/if}}
+
+    	<button id="closeGroupbtn{{=id}}" class="closeGroupbtn">{{=$ctx.doI18N("label.group.close")}}</button>
     			</span>
 			</td>
 		</tr>
@@ -1550,6 +1555,7 @@ $(document).ready(function() {
 	<br/>
 	<br/>
 </div>
+{{/if}}
 </script>
 
 <script id="groupClientsTabTemplate" type="text/x-jquery-tmpl">
@@ -1945,6 +1951,33 @@ $(document).ready(function() {
 		{{/if}}
 	{{/if}}
 </script>
+
+<script id="groupCloseTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	</div>
+	<table cellspacing="4px" cellpadding="8px">
+		<tr>
+			<td>
+				<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+				<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+				<label for="closureDate">{{=$ctx.doI18N("label.closureDate")}}</label>
+				<input id="closureDate" name="closureDate" title="" type="text" class="datepickerfield" value="{{=$ctx.globalDate(closureDate)}}"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label for="closureReasonId">{{=$ctx.doI18N("label.closure.reason")}}</label>
+				<select id="closureReasonId" name="closureReasonId" title="" >
+					{{#each closureReasons}}
+							<option value="{{=id}}">{{=$ctx.doI18N(name)}}</option>
+					{{/each}}
+				</select>
+			</td>
+		</tr>
+	</table>
+</form>
+</script> 
 
 <script id="memberLoanDetailsPartialTemplate" type="text/x-jquery-tmpl">
 	<div class="row">
@@ -10446,7 +10479,8 @@ $(document).ready(function() {
 				</td>
 				<td valign="top" style="text-align: right">
 					<span id="toolbar" class="ui-widget-header ui-corner-all">
-
+						{{#if status.value == 'Closed'}}
+						{{#else}}
 						{{#if activationDate}}
 							{{#if $ctx.showTask("EditCenter")}}
 								<button id="editcenterbtn{{=id}}" class="editcenterbtn">Edit center</button>
@@ -10485,6 +10519,8 @@ $(document).ready(function() {
 	                        {{#if $ctx.showTask("AddGroupNote")}}
     	                    <button id="addgroupnotebtn{{=id}}" class="addgroupnotebtn">Add note</button>
         	                {{/if}}
+						{{/if}}
+						<button id="centerClosebtn{{=id}}" class="centerClosebtn">{{=$ctx.doI18N("label.group.close")}}</button>
 						{{/if}}
 					</span>
 				</td>
