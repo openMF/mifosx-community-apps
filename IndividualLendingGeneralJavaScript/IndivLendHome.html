@@ -1485,7 +1485,7 @@ $(document).ready(function() {
 <script id="groupDetailsTemplate" type="text/x-jquery-tmpl">
 {{#if status.value == 'Closed'}}
 
-{{#lse}}
+{{#else}}
 <div class="breadcrumb">
 	<span class="rowvalue">{{=officeName}}</span> 
 	{{#if centerId}}>> <span><a href="#" onClick="showCenter({{=centerId}});">{{=centerName}}</a></span>{{/if}}
@@ -9254,6 +9254,57 @@ $(document).ready(function() {
 	</select>
 	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
 	<textarea rows="5" cols="50" id="note" name="note" cssClass="text ui-widget-content ui-corner-all">{{=note}}</textarea>
+</form>
+</script>
+
+<script id="acceptClientTransferFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	
+	<label for="staffId">{{=$ctx.doI18N("label.client.staff")}}</label>
+	<select id="staffId" name="staffId" title="" >
+		<option value="">{{=$ctx.doI18N("option.client.select.staff.first.choice")}}</option>
+		{{#each staffOptions}}
+			<option value="{{=id}}">{{=displayName}}</option>
+		{{/each}}
+	</select>
+	
+	
+	<label for="smartGroupSearch"><b>{{=$ctx.doI18N("label.group.smartsearch")}}</b></label>
+	<span>
+		<input id="smartGroupSearch" name="smartGroupSearch" title="" type="text" value=""/>
+		<small>{{=$ctx.doI18N("label.help.autocomplete")}}</small>
+	</span>
+	
+
+	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
+	<textarea rows="5" cols="50" id="note" name="note" cssClass="text ui-widget-content ui-corner-all">{{=note}}</textarea>
+
+	<fieldset>
+		<legend>{{=$ctx.doI18N("label.destinationGroupDetails")}}</legend>
+		<table>
+			<tr>
+				<td><label for="selectedGroupName">{{=$ctx.doI18N("label.group.name")}}</label></td>
+				<td><input readonly="true" id="selectedGroupName" name="selectedGroupName" title="" type="text" value=""/></td>
+			</tr>
+			<tr>
+				<td><label for="selectedGroupIdentifier">{{=$ctx.doI18N("label.groupIdentifier")}}</label></td>
+				<td><input readonly="true" id="selectedGroupIdentifier" name="selectedGroupIdentifier" title="" type="text" value=""/></td>
+			</tr>
+			<tr>	
+				<td><label for="selectedGroupExternalId">{{=$ctx.doI18N("label.group.externalid")}}</label></td>
+				<td><input readonly="true" id="selectedGroupExternalId" name="selectedGroupExternalId" title="" type="text" value=""/></td>
+			</tr>
+			<tr>	
+				<td><label for="selectedGroupActivationDate">{{=$ctx.doI18N("label.activationDate")}}</label></td>
+				<td><input readonly="true" id="selectedGroupActivationDate" name="selectedGroupActivationDate" title="" type="text" value=""/></td>
+			</tr>
+			<tr>	
+				<td><label for="selectedGroupStaffName">{{=$ctx.doI18N("label.group.staff")}}</label></td>
+				<td><input readonly="true" id="selectedGroupStaffName" name="selectedGroupStaffName" title="" type="text" value=""/></td>
+			</tr>
+		</table>
+	</fieldset>
 </form>
 </script>
 
