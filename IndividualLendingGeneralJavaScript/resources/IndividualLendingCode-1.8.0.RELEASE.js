@@ -2833,17 +2833,19 @@ function showILClient(clientId) {
 						var linkId = this.id;
 						var officeId = linkId.replace("acceptClientTransferbtn", "");
 						currentClientOffice = officeId;
+						transferToOfficeId = data.transferToOfficeId;
+						var getUrl = 'staff?staffInOfficeHierarchy=true&officeId='+transferToOfficeId;
 						var postUrl = 'clients/' + clientId + '?command=acceptTransfer';
-						var templateSelector = "#rejectClientTransferFormTemplate";
-						var width = 500; 
-						var height = 325;
+						var templateSelector = "#acceptClientTransferFormTemplate";
+						var width = 600; 
+						var height = 525;
 
 						var saveSuccessFunction = function(data, textStatus, jqXHR) {
 							$("#dialog-form").dialog("close");
 							showILClient(clientId);
 						}
 						
-						popupDialogWithFormView("", postUrl, 'POST', "dialog.title.transfer.clients", templateSelector, width, height,  saveSuccessFunction);
+						popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.transfer.clients", templateSelector, width, height,  saveSuccessFunction);
 						e.preventDefault();
 					});
 
@@ -6330,6 +6332,38 @@ function loadTransactionForm(){
 	});
 }
 
+function loadAcceptClientTransferForm(){
+	$("#smartGroupSearch" ).autocomplete({
+        source: function(request, response){
+        	//get selected office
+			var sqlSearchValue = "display_name like '%" + request.term + "%' and g.status_enum != 600" ; 
+			smartSearchSuccessFunction =  function(data, textStatus, jqXHR) {
+				response( $.map( data.pageItems, function( item ) {
+                    return {
+                        label: item.name + "(" + item.officeName + ")",
+                        value: item.name,
+                        activationDate: item.activationDate,
+                        id: item.id,
+                        externalId:item.externalId,
+                        staffName:item.staffName,
+                    }
+                }));
+	  		};
+			executeAjaxRequest("groups?officeId="+ transferToOfficeId+"&limit=15&sqlSearch=" + encodeURIComponent(sqlSearchValue), 'GET', "", smartSearchSuccessFunction, formErrorFunction);
+        },
+        minLength: 3,
+        select: function( event, ui ) {
+        	$("#smartGroupSearch" ).val(ui.item.value);
+            $( "#selectedGroupName" ).val(ui.item.value);
+            $( "#selectedGroupExternalId" ).val(ui.item.externalId);
+            $( "#selectedGroupActivationDate" ).val(custom.helperFunctions.globalDate(ui.item.activationDate));
+            $( "#selectedGroupIdentifier" ).val(ui.item.id);
+            $( "#selectedGroupStaffName" ).val(ui.item.staffName);
+            return false;
+        }
+    });
+}
+
 function loadGuarantorForm(){
 	//initially load the appropriate div
 	var isChecked = $('#internalGuarantorCheckbox').is(':checked')
@@ -7095,6 +7129,11 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 					tempObject.officeOptions = data;
 					tempObject.clientOfficeId = currentClientOffice;
 					popupDialogWithFormViewData(tempObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+				}else if (templateSelector == "#acceptClientTransferFormTemplate") {
+					staffOptions = data; //create & intialize window varible officesObject to reuse for OfficesOptions 
+					var tempObject = new Object();
+					tempObject.staffOptions = data;
+					popupDialogWithFormViewData(tempObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 				}else{
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 		  		}
@@ -7280,6 +7319,20 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			}
 			delete serializedArray["clientType"];
 		}
+
+		//manipulate serialized array for client acceptance
+    	if (postUrl.toLowerCase().indexOf("command=accepttransfer") >= 0){
+    		serializedArray = {};
+    		var destinationGroupIdentifier = $('#selectedGroupIdentifier').val();
+    		var staffId = $('#staffId').val();
+    		if($.trim(destinationGroupIdentifier)){
+    		serializedArray["destinationGroupId"] = $('#selectedGroupIdentifier').val();
+    		}
+    		if($.trim(staffId)){
+    		serializedArray["staffId"] = $('#staffId').val();
+    		}
+    		serializedArray["note"] = $('#note').val();
+    	}
 
 		//manipulate serialized array for guarantors
     	if (postUrl.toLowerCase().indexOf("guarantor") >= 0){
@@ -7741,6 +7794,10 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 
 	if (templateSelector === "#guarantorFormTemplate"){
     	loadGuarantorForm();	
+	}
+
+	if (templateSelector === "#acceptClientTransferFormTemplate") {
+		loadAcceptClientTransferForm();
 	}
 
 	if (templateSelector === "#transactionLoanFormTemplate"){
