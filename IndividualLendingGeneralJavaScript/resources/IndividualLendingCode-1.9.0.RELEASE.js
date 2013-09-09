@@ -165,6 +165,21 @@ function executeAjaxRequest(url, verbType, jsonData, successFunction, errorFunct
 			}); 
 }
 
+function executeAjaxRequestForXMLDownload(url, verbType,successFunction, errorFunction) {
+
+    var jqxhr = $.ajax({
+        url : baseApiUrl + url,
+        type: verbType, //POST, GET, PUT or DELETE
+        data: null,
+        beforeSend : function(xhr) {
+            if (tenantIdentifier > "") xhr.setRequestHeader("X-Mifos-Platform-TenantId", tenantIdentifier);
+            if (base64 > "") xhr.setRequestHeader("Authorization", "Basic " + base64);
+        },
+        success : successFunction,
+        error : errorFunction
+    });
+}
+
 function executeAjaxRequestForImageDownload(url, verbType,successFunction, errorFunction) { 
 
 	var jqxhr = $.ajax({ 
@@ -267,7 +282,7 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '		<ul>';
 		
 		if (jQuery.MifosXUI.showMenu("UserAdminMenu") == true)
-			htmlVar += '	<li><a href="unknown.hgtml" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
+			htmlVar += '	<li><a href="unknown.html" onclick="setUserAdminContent(' + "'" + 'content' + "'" +');return false;">' + doI18N("link.topnav.users") + '</a></li>';
 		
 		if (jQuery.MifosXUI.showMenu("OrgAdminMenu") == true)
 			htmlVar += '	<li><a href="unknown.html" onclick="setOrgAdminContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.organisation") + '</a></li>';
@@ -294,7 +309,8 @@ function showMainContainer(containerDivName, username) {
 		
 		if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
 			htmlVar += '      		<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Accounting' + "'" + ');return false;">' + doI18N("link.reports.accounting") + '</a></li>';
-		
+
+		htmlVar += '			<li><a href="unknown.html" onclick="showXBRLReporting();return false;">' + doI18N("link.reports.xbrl") + '</a></li>';
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
@@ -752,6 +768,199 @@ function setAccountingContent(divName) {
 		fetchAccountingTabContent(selected);
 	}
 	executeAjaxRequest('offices', 'GET', "", getOfficesSuccessFunction, formErrorFunction);
+}
+
+function setXBRLContent(divName) {
+	//get a list of all taxonomies
+	var taxonomyList;
+	var glaccounts;
+	var getTaxonomyListSuccessFunction = function(data, textStatus, jqXHR) {
+		taxonomyList = data;
+
+        var getTaxonomyMapSuccessFunction = function(data, textStatus, jqXHR) {
+        	
+            $("#" + divName).html($("#xbrlConfigTemplate").render());
+            $('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: 'yy-mm-dd'});
+            $("#xbrlconfigtabs").tabs();
+            //determine which tab is initially selected and load data for the same
+            var mappingJson = data["config"];
+            if (mappingJson != undefined && mappingJson.length > 0)
+            {
+                for (var i = taxonomyList.length - 1; i >= 0; i--) {
+                    var taxonomyId = taxonomyList[i]["id"];
+                    var mapping = ($.parseJSON(mappingJson))[''+taxonomyId];
+                    if (mapping != undefined)
+                        taxonomyList[i].mapping = mapping;
+
+                }
+
+            }
+
+            for (var tab = 0; tab < 4; tab++) {
+            	var showlist = new Array();
+				for (var i = taxonomyList.length - 1; i >= 0; i--) {
+					if (taxonomyList[i].type == tab)
+						showlist.push(taxonomyList[i]);
+				}
+				var templateSelector = $("#xbrlTaxonomyListTemplate").render(showlist);
+				switch (tab) {
+					case 0:
+						$("#portfolio-tab").html(templateSelector);
+						break;
+					case 1:
+						$("#balancesheet-tab").html(templateSelector);
+						break;
+					case 2:
+						$("#incomes-tab").html(templateSelector);
+						break;
+					case 3:
+						$("#expenses-tab").html(templateSelector);
+						break;
+					default:
+						break;
+			        }
+			    }
+
+            $("#saveconfig").button().click(function(e) {
+                var postTaxonomyMappingSuccessFunction = function(data, textStatus, jqXHR) {
+                    var dialogDiv = $("<div id='dialog-form'></div>");
+                    dialogDiv.dialog({
+                        width: 400,
+                        height: 200,
+                        modal: true,
+                        close: function() {
+                            // if i dont do this, theres a problem with errors being appended to dialog view second time round
+                            $(this).remove();
+                        },
+                        open: function (event, ui) {
+                            setTimeout( function() {dialogDiv.dialog('close'); },2000); // 3000 = 3 secs
+                            var html="<p>Saved Successfully!</p>";
+
+                            dialogDiv.html(html);
+                        }
+                    }).dialog('open');
+                }
+                var config = {};
+                var serialObject = {};
+                for (var i = taxonomyList.length - 1; i >= 0; i--) {
+                    var taxonomyId = taxonomyList[i]["id"];
+                    var value = $('#taxonomyId'+taxonomyId).val();
+                    if (value.length > 0)
+                        config[""+taxonomyId] = value;
+
+                }
+                serialObject["config"] = JSON.stringify(config);
+                serialObject["identifier"] = "default";
+                var formdata = JSON.stringify(serialObject);
+                executeAjaxRequest('mixmapping', 'PUT', formdata, postTaxonomyMappingSuccessFunction, formErrorFunction);
+            })
+
+            var getReportSuccessFunction = function(data, textStatus, jqXHR) {
+                showXBRLReport(data);
+            }
+            var getReportErrorFunction = function(jqXHR, textStatus, errorThrown) {
+            	var dialogDiv = $("<div id='error-form'></div>");
+                    dialogDiv.dialog({
+                        width: 400,
+                        height: 200,
+                        modal: true,
+                        close: function() {
+                            // if i dont do this, theres a problem with errors being appended to dialog view second time round
+                            $(this).remove();
+                        },
+                        open: function (event, ui) {
+
+                        }
+                    }).dialog('open');
+				handleXhrError(jqXHR, textStatus, errorThrown, "#formErrorsTemplate", "#error-form");
+			}
+            $("#runreport").button().click(function(e) {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+                executeAjaxRequestForXMLDownload('mixreport?startDate='+startDate+'&endDate='+endDate, 'GET', getReportSuccessFunction, getReportErrorFunction);
+            })
+            var getGlAccountsDoneFunction = function(data, textStatus, jqXHR) {
+				glaccounts = new Array();
+
+				for (var i = 0; i < data.length; i++) {
+					var glaccount = {};
+					glaccount.label = "{" + data[i].glCode + "}" + " - " + data[i].name;
+					glaccount.value = "{" + data[i].glCode + "}";
+					glaccounts.push(glaccount);
+				}
+				if (glaccounts.length > 0) {
+					$( ".taxonomyMap" ).autocomplete({
+						minLength: 0,
+		      			source: glaccounts,
+		      			select: function( event, ui ) {
+					        $( this ).val( ui.item.value );
+					 
+					        return false;
+					      },
+					    appendTo: this
+
+		    		});
+				}
+			}
+			executeAjaxRequest('glaccounts', 'GET', "", getGlAccountsDoneFunction, getGlAccountsDoneFunction);
+        }
+        executeAjaxRequest('mixmapping', 'GET', "", getTaxonomyMapSuccessFunction, formErrorFunction);
+	}
+	executeAjaxRequest('mixtaxonomy', 'GET', "", getTaxonomyListSuccessFunction, formErrorFunction);
+}
+
+function showXBRLReport(xmlData) {
+    var dialogDiv = $("<div id='dialog-form'></div>");
+    var saveButton = doI18N('dialog.button.save');
+	var cancelButton = doI18N('dialog.button.cancel');
+	
+	var downloadFunc = function () {
+		var string = (new XMLSerializer()).serializeToString(xmlData);
+		window.location.href='data:Application/octet-stream;Content-Disposition:attachment;filename=file.xml,'+escape(string);
+
+	}
+	var buttonsOpts = {};
+	buttonsOpts[saveButton] = downloadFunc;
+	buttonsOpts[cancelButton] = function() {$(this).dialog( "close" );};
+
+
+    var titleCode = 'XBRL Report';
+    dialogDiv.dialog({
+        title: doI18N(titleCode),
+        width: 900,
+        height: 450,
+        modal: true,
+        buttons: buttonsOpts,
+        close: function() {
+            // if i dont do this, theres a problem with errors being appended to dialog view second time round
+            $(this).remove();
+        },
+        open: function (event, ui) {
+
+        	
+            var html="<table width='100%' border='1'><tr><th>Title</th><th>Dimension</th><th>Value</th></tr>";
+            $(xmlData).find("*[contextRef]").each(function(i){
+                var contextId = $(this).attr("contextRef");
+                var context = $(xmlData).find("#"+contextId).find("scenario").text();
+                html += '<tr>';
+                html += '<td>' + this.tagName + '</td>';
+                html += '<td>' + context + '</td>';
+                var inputId = this.tagName + "|" + contextId;
+                html += '<td><input type="text" class="report" id="'+ inputId + '" value="' + $(this).text() + '" ></td>';
+                html += '</tr>';
+
+            });
+
+            dialogDiv.html(html);
+
+            $(".report[type='text']").change(function() {
+            	var tag = $(this).attr("id").split("|")[0];
+            	var contextId = $(this).attr("id").split("|")[1];
+            	$(xmlData).find("[contextRef="+contextId+"]").text(this.value);
+            }); 
+        }
+    }).dialog('open');
+	
 }
 
 function reverseJournalEntrySuccessFunction(data, textStatus, jqXHR) {
@@ -6871,6 +7080,10 @@ var launchReportDialogOnSuccessFunction = function(data, textStatus, jqXHR) {
 	
 
 /* reports code */
+
+function showXBRLReporting(){
+	setXBRLContent("content")
+}
 
 function showILReporting(reportCategory) {
 	setReportingContent("content");

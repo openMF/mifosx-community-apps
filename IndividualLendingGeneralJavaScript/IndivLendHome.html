@@ -10128,6 +10128,64 @@ $(document).ready(function() {
 	{{/each}}
 </script>
 
+<script id="xbrlConfigTemplate" type="text/x-jquery-tmpl">
+<div id="xbrlconfigtabs">
+	<ul>
+		<li><a href="#portfolio-tab">{{=$ctx.doI18N("Portfolio")}}</a></li>
+		<li><a href="#balancesheet-tab">{{=$ctx.doI18N("Balance Sheet")}}</a></li>
+		<li><a href="#incomes-tab">{{=$ctx.doI18N("Incomes")}}</a></li>
+		<li><a href="#expenses-tab">{{=$ctx.doI18N("Expenses")}}</a></li>
+	</ul>
+	<div id="portfolio-tab">
+	</div>
+	<div id="balancesheet-tab">
+	</div>
+	<div id="incomes-tab">
+	</div>
+	<div id="expenses-tab">
+	</div>
+	<br>    
+	<div style="text-align:right;padding-right: 210px;">
+		<button id="saveconfig" >{{=$ctx.doI18N("button.save")}}</button>
+	</div>
+	<br>
+	<br>
+	
+    <div style="padding-left: 20px">
+        <tr>
+            <td>{{=$ctx.doI18N("form.label.startDate")}}</td>
+            <td>
+                <input id="startDate" name="startDate" title="" type="text" class="datepickerfield" />&nbsp;&nbsp;
+                {{=$ctx.doI18N("form.label.endDate")}}
+                <input id="endDate" name="endDate" title="" type="text" class="datepickerfield" />
+                <button id="runreport" >{{=$ctx.doI18N("Run")}}</button>
+            </td>
+        </tr>
+    </div>
+</div>
+
+</script>
+
+<script id="xbrlTaxonomyListTemplate" type="text/x-jquery-tmpl">
+	<div>
+		
+		<table width="100%">
+			<tr>
+				<td width="30%">
+					<label for="taxonomyId{{=id}}" title="{{=description}}">{{=name}}</label>
+				</td>
+                <td width = "40%">
+                    <label for="taxonomyId{{=id}}" title="{{=description}}">{{=dimension}}</label>
+                </td>
+				<td width="30%">
+					<input type="text" id="taxonomyId{{=id}}" class="taxonomyMap" value="{{=mapping}}" />
+				</td>
+			</tr>
+
+		</table>
+	</div>	
+</script>
+
 <script id="reportListTemplate" type="text/x-jquery-tmpl">
 <table id='reportstable' width='100%'>
 	<thead>
