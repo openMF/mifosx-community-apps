@@ -298,7 +298,7 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '  <li><a href="unknown.html" onclick="setAccountingContent(' + "'" + 'content' + "'" + ');return false;">' + doI18N("link.topnav.accounting") + '</a></li>';
 	}
 		
-	if (jQuery.MifosXUI.showMenu("ReportsMenu") == true)
+	if (jQuery.MifosXUI.showMenu("ReportsMenu"))
 	{
 		htmlVar += '	<li class="dmenu"><a href="unknown.html" onclick="return false;">' + doI18N("link.reports") + '</a>';
 		htmlVar += '		<ul>';
@@ -307,10 +307,13 @@ function showMainContainer(containerDivName, username) {
 		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Loan' + "'" + ');return false;">' + doI18N("link.reports.loan") + '</a></li>';
 		htmlVar += '			<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Fund' + "'" + ');return false;">' + doI18N("link.reports.fund") + '</a></li>';
 		
-		if (jQuery.MifosXUI.showMenu("AccountingMenu") == true)
+		if (jQuery.MifosXUI.showMenu("AccountingMenu")) {
 			htmlVar += '      		<li><a href="unknown.html" onclick="showILReporting(' + "'" + 'Accounting' + "'" + ');return false;">' + doI18N("link.reports.accounting") + '</a></li>';
-
-		htmlVar += '			<li><a href="unknown.html" onclick="showXBRLReporting();return false;">' + doI18N("link.reports.xbrl") + '</a></li>';
+		}
+		
+		if (jQuery.MifosXUI.showTask("READMIXREPORT")) {
+			htmlVar += '			<li><a href="unknown.html" onclick="showXBRLReporting();return false;">' + doI18N("link.reports.xbrl") + '</a></li>';
+		}
 		htmlVar += '		</ul>';
 		htmlVar += '	</li>';
 	}
