@@ -13,8 +13,8 @@
 <link rel="stylesheet" type="text/css"	href="resources/libs/DataTables-1.9.4/media/css/demo_table_jui.css" />
 <link rel="stylesheet" type="text/css"	href="resources/libs/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css" />
 <link rel="stylesheet" type="text/css"	href="resources/libs/jquery-ui-timepicker-addon.css" />
-<link rel="stylesheet" type="text/css"	href="resources/stretchyreporting/stretchyreporting-1.8.0.RELEASE.css">
-<link rel="stylesheet" type="text/css"	href="resources/IndividualLendingCode-1.8.0.RELEASE.css" />
+<link rel="stylesheet" type="text/css"	href="resources/stretchyreporting/stretchyreporting-1.9.0.RELEASE.css">
+<link rel="stylesheet" type="text/css"	href="resources/IndividualLendingCode-1.9.0.RELEASE.css" />
 <link rel="stylesheet" type="text/css"  href="resources/libs/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css"  href="resources/libs/jWizard/jquery.jWizard.css" />
 
@@ -85,16 +85,16 @@ JQuery plugins:
 <script type="text/javascript"	src="resources/libs/printThis.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform additional data tables -->
-<script type="text/javascript" src="resources/stretchydatatables-1.8.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/stretchydatatables-1.9.0.RELEASE.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform reporting -->
-<script type="text/javascript"	src="resources/stretchyreporting/stretchyreporting-1.8.0.RELEASE.js"></script>
+<script type="text/javascript"	src="resources/stretchyreporting/stretchyreporting-1.9.0.RELEASE.js"></script>
 
 <!-- JQuery plug-in to check if links and buttons should be shown in Mifos X UI -->
-<script type="text/javascript" src="resources/MifosXUI-1.8.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/MifosXUI-1.9.0.RELEASE.js"></script>
 
 <!-- JQuery plug-in to manage permissions and role permissions in the UI as the UI code is quite elaborate -->
-<script type="text/javascript" src="resources/MifosXPermissions-1.8.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/MifosXPermissions-1.9.0.RELEASE.js"></script>
 
 <!-- Google charts api (used in stretchyreporting) -->
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -103,8 +103,8 @@ JQuery plugins:
 </script>
 
 <!-- This is a single Page javascript app - IndividualLendingCode.js has functions which switch functionality by replacing the html in the #container div -->
-<script type="text/javascript" src="resources/IndividualLendingCode-1.8.0.RELEASE.js"></script>
-<script type="text/javascript" src="resources/SetTenantLoadTenantConfig-1.8.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/IndividualLendingCode-1.9.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/SetTenantLoadTenantConfig-1.9.0.RELEASE.js"></script>
 </head>
 
 <body>
@@ -1131,21 +1131,19 @@ $(document).ready(function() {
 			</tr>
 			<tr>
 				<td>
-					<input id="inheritDestinationGroupLoanOfficer" type="checkbox" name="inheritDestinationGroupLoanOfficer" value="{{=inheritDestinationGroupLoanOfficer}}" checked/>
-				</td>
-				<td>
 					<label for="inheritDestinationGroupLoanOfficer">{{=$ctx.doI18N("label.inheritDestinationGroupLoanOfficer")}}</label>
 				</td>
-			</tr>
-			<tr>
-				<td><b>{{=$ctx.doI18N("label.group.smartsearch")}}</b>
-					<input id="smartGroupSearch" name="smartGroupSearch" title="" type="text" value=""/>
+				<td>
+					<input id="inheritDestinationGroupLoanOfficer" type="checkbox" name="inheritDestinationGroupLoanOfficer" value="{{=inheritDestinationGroupLoanOfficer}}" checked/>
 				</td>
 			</tr>
 			<tr>
-				<td><small>{{=$ctx.doI18N("label.help.autocomplete")}}</small></td>
+				<td><label for="smartGroupSearch">{{=$ctx.doI18N("label.group.smartsearch")}}</label>
+				</td>
+				<td><input id="smartGroupSearch" name="smartGroupSearch" title="" type="text" value=""/><small>{{=$ctx.doI18N("label.help.autocomplete")}}</small></td>
 			</tr>
 		</table>
+		<br/>
 		<fieldset>
 			<legend>{{=$ctx.doI18N("label.destinationGroupDetails")}}</legend>
 			<table>
