@@ -5762,13 +5762,17 @@ $(document).ready(function() {
 						{{#if penaltyChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Penalities: {{=$ctx.monetaryValue(currency, penaltyChargesPortion)}}</td></tr>{{/if}}
 					</table>
 				</td>
+				{{#if transfer}}
+					<td>&nbsp;</td>
+				{{#else}}
 				{{#if $ctx.isAdjustableTransaction(type.id)}}
 				<td>
-				    <button id="adjustrepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment{{=$parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button>
-				    <button id="undorepaymentbtn{{=$parent.parent.parent.data.id}}_{{=id}}" class="undoloanrepayment{{=$parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.undo")}}</button>
+				    <button id="adjustrepaymentbtn{{=$parent.parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment{{=$parent.parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button>
+				    <button id="undorepaymentbtn{{=$parent.parent.parent.parent.data.id}}_{{=id}}" class="undoloanrepayment{{=$parent.parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.undo")}}</button>
 				</td>
 				{{#else}}
 				<td>&nbsp;</td>
+				{{/if}}
 				{{/if}}
 				</tr>
 				{{/each}}
