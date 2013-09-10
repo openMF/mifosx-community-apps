@@ -2887,7 +2887,7 @@ function showILClient(clientId) {
 
 					$('.clientclosebtn').button({icons: {primary: "ui-icon-document"}}).click(function(e) {
 						var clientClose = 'close';
-						var getUrl = "clients/template?command=close";
+						var getUrl = "clients/template?commandParam=close";
 						var postUrl = 'clients/' + clientId + '?command=' + clientClose;
 						var templateSelector = "#clientCloseTemplate";
 						var width = 400; 
