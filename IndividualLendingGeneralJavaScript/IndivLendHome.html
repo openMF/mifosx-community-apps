@@ -6588,6 +6588,25 @@ $(document).ready(function() {
 								</select>  
 							</td>
 						</tr>
+						<tr>
+							<td title="{{=$ctx.doI18N(\"transfersInSuspenseTooltip\")}}">{{=$ctx.doI18N("label.transfersInSuspenseTooltip")}}</td>
+							<td>
+								<select id="transfersInSuspenseAccountId" name="transfersInSuspenseAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each accountingMappingOptions.liabilityAccountOptions}}
+										 {{#if $parent.parent.data.accountingMappings}}
+											{{#if $parent.parent.parent.data.accountingMappings.transfersInSuspenseAccountId === id)}}
+													<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+											{{#else}}
+													<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+											{{/if}}
+										{{#else}}
+											 <option value="{{=id}}">{{=name}}({{=glCode}})</option>
+										{{/if}}
+									{{/each}}
+								</select>  
+							</td>
+						</tr>
 					</table>
 				</fieldset>
 				<fieldset style="width: 80%;border-top: 1px dotted">
