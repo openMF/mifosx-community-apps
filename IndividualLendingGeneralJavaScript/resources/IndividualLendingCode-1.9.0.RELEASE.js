@@ -5446,6 +5446,7 @@ function showCenter(centerId){
 		  			//(initialize comboboxes)
 	  				$("#savingsReferenceAccountId").combobox();
 	  				$("#savingsControlAccountId").combobox();
+	  				$("#transfersInSuspenseAccountId").combobox();
 	  				$("#interestOnSavingsAccountId").combobox();
 	  				$("#incomeFromFeeAccountId").combobox();
 	  				
