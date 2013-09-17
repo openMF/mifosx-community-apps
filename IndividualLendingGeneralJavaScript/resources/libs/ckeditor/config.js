@@ -27,7 +27,7 @@ CKEDITOR.editorConfig = function( config ) {
 	
 	config.protectedSource.push( /{{#\s*[\w\.]+\s*}}/g );
 	config.protectedSource.push( /{{\/\s*[\w\.]+\s*}}/g );
-	
+	config.allowedContent = true;
 
 	// Remove some buttons, provided by the standard plugins, which we don't
 	// need to have in the Standard(s) toolbar.

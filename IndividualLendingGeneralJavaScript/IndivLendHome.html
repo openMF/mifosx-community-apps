@@ -5816,7 +5816,7 @@ $(document).ready(function() {
 		{{#each loanDocuments}}
 		<tr>
 			<td>
-				<a href="#" onclick="createLoanDocumentForTemplate('{{=template.name}}',{{=template.id}}, {{=$parent.parent.data.loanId}});">{{=template.name}}</a>
+				<a href="#" onclick="createLoanDocumentForTemplate('{{=name}}',{{=id}}, {{=$parent.parent.data.loanId}});">{{=name}}</a>
 			</td>
 		</tr>
 		{{/each}}
@@ -11881,15 +11881,15 @@ $(document).ready(function() {
 	{{/each}}
 </script>
 
-<script id="templateEntityTypeAssignmentTemplate" type="text/x-jquery-tmpl">
+<script id="templatesTemplate" type="text/x-jquery-tmpl">
 
-	<button style="margin-bottom:20px" id="createTemplateWithEntityAndType" >create new template</button>
+	<button style="margin-bottom:20px" id="createTemplate" >create new template</button>
 	
 	<div id="templatesListDiv">
 		<table>
 		<thead>
 			<tr>
-				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Etity</th>
+				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Entity</th>
 				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Type</th>
 				<th class="ui-state-default" style="padding:3px 10px; font-weight:bold">Name</th>
 			</tr>
@@ -11900,7 +11900,7 @@ $(document).ready(function() {
 				<td style="padding:3px 10px;">{{=entity}}</td>
 				<td style="padding:3px 10px;">{{=type}}</td>
 				<td style="padding:3px 10px;">
-					<a href="templateassignment/{{=id}}" id="template{{=template.id}}">{{=template.name}}</a> 
+					<a href="templates/{{=id}}" id="template{{=id}}">{{=name}}</a> 
 				</td>
 			</tr>
 		{{/each}}
@@ -11925,7 +11925,6 @@ $(document).ready(function() {
 		<tr>
 			<td>
 				<select id="entitySelect"> 
-					<option></option>
 					{{#each entities}}
 						<option value="{{=id undef 0}}">{{=name}}</option>
 					{{/each}}
@@ -11933,7 +11932,6 @@ $(document).ready(function() {
 			</td>
 			<td>
 				<select id="typeSelect">
-					<option></option>
 					{{#each types}}
 						<option value="{{=id undef 0}}">{{=name}}</option>
 					{{/each}}
@@ -11985,7 +11983,7 @@ $(document).ready(function() {
 
 <div style="width:1000px">
 	<div style="float:right" id="templateKeys"></div>
-
+	<form id="templateform" >
 	<table>
 		<tr>
 			<td><label>Entity:</label></td>
@@ -11994,7 +11992,6 @@ $(document).ready(function() {
 		<tr>
 			<td>
 				<select id="entitySelect"> 
-					<option></option>
 					{{#each entities}}
 						<option value="{{=id undef 0}}">{{=name}}</option>
 					{{/each}}
@@ -12002,7 +11999,6 @@ $(document).ready(function() {
 			</td>
 			<td>
 				<select id="typeSelect">
-					<option></option>
 					{{#each types}}
 						<option value="{{=id undef 0}}">{{=name}}</option>
 					{{/each}}
@@ -12011,10 +12007,10 @@ $(document).ready(function() {
 		</tr>
 	</table>
 
-	<form id="templateform" >
+	
 
 	<label>Template Name:</label>
-	<input type="text" name="name" value="{{=assignment.template.name}}" />
+	<input type="text" name="name" value="{{=template.name}}" />
 
 	<br />
 
@@ -12036,7 +12032,7 @@ $(document).ready(function() {
 			<td><button id="addMapper"> + </button></td>
 		</tr>
 
-		{{#each mappers}}
+		{{#each template.mappers}}
 			{{#if $itemNumber != 1}}
 			<tr>
 				<td><label>Mapper Key:</label></td>
@@ -12044,8 +12040,8 @@ $(document).ready(function() {
 				<td></td>
 			</tr>
 			<tr>
-				<td><input type="text" name="mapperskey" value="{{=name}}" /></td>
-				<td><input type="text" name="mappersvalue" value="{{=value}}"/></td>
+				<td><input type="text" name="mapperskey" value="{{=mapperkey}}" /></td>
+				<td><input type="text" name="mappersvalue" value="{{=mappervalue}}" style="width:500px"/></td>
 				<td><button class='removeMapper'> - </button></td>
 			</tr>
 			{{/if}}
@@ -12054,7 +12050,7 @@ $(document).ready(function() {
 	</div>
 	<br />
 
-	<textarea id="templateeditor" name="text">{{=assignment.template.text}}</textarea>
+	<textarea id="templateeditor" name="text">{{=template.text}}</textarea>
 
 	<br />
 
