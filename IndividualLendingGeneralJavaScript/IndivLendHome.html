@@ -4784,6 +4784,15 @@ $(document).ready(function() {
 			</select></td>
 		</tr>
 		<tr>
+			<td><label for="currencyCode">{{=$ctx.doI18N("label.currency")}}</label></td>
+			<td>
+			<select id="currencyCode" name="currencyCode" title="">
+				{{#each currencies}}
+				<option value="{{=code}}">{{=name}}({{=displaySymbol}})</option>
+				{{/each}}
+			</select></td>
+		</tr>
+		<tr>
 			<td><label for="referenceNumber">{{=$ctx.doI18N("label.referenceNumber")}}</label></td>
 			<td>
 			<input id="referenceNumber" name="referenceNumber" title="" type="text" value="{{=referenceNumber}}" />
@@ -11253,6 +11262,15 @@ $(document).ready(function() {
                 {{/each}}
             </select></td>
         </tr>
+        <tr>
+			<td><label for="currencyCode">{{=$ctx.doI18N("label.currency")}}</label></td>
+			<td>
+			<select id="currencyCode" name="currencyCode" title="">
+				{{#each currencies}}
+				<option value="{{=code}}">{{=name}}({{=displaySymbol}})</option>
+				{{/each}}
+			</select></td>
+		</tr>
         <tr>
             <td><label for="referenceNumber">{{=$ctx.doI18N("label.referenceNumber")}}</label></td>
             <td>
