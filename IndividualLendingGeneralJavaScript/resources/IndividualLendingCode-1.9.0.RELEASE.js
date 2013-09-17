@@ -753,10 +753,23 @@ function setAccountingContent(divName) {
 		});
 		var fetchAccountingTabContent = function(index) {
 			if (index == 0) {
-				handlePredefinedPostingEntriesTabSelection(officesObject);
+				var getCurrenciesSuccessFunction = function(data, textStatus, jqXHR) {
+					var officesAndCurrenciesObject = new Object();
+					officesAndCurrenciesObject.offices=officesObject;
+					officesAndCurrenciesObject.currencies=data.selectedCurrencyOptions;
+					handlePredefinedPostingEntriesTabSelection(officesAndCurrenciesObject);
+				}
+				executeAjaxRequest('currencies?fields=selectedCurrencyOptions', 'GET', "", getCurrenciesSuccessFunction, formErrorFunction);
 			}//journal entries tab selected
-			if (index == 1) {
-				handleJournalEntriesTabSelection(officesObject);
+			else if (index == 1) {
+				var getCurrenciesSuccessFunction = function(data, textStatus, jqXHR) {
+					var officesAndCurrenciesObject = new Object();
+					officesAndCurrenciesObject.offices=officesObject;
+					officesAndCurrenciesObject.currencies=data.selectedCurrencyOptions;
+					handleJournalEntriesTabSelection(officesAndCurrenciesObject);
+				}
+
+				executeAjaxRequest('currencies?fields=selectedCurrencyOptions', 'GET', "", getCurrenciesSuccessFunction, formErrorFunction);
 			}//accounting closures tab selecetd
 			else if (index == 2) {
 				handleGLClosuresTabSelection(officesObject);
@@ -971,10 +984,11 @@ function reverseJournalEntrySuccessFunction(data, textStatus, jqXHR) {
 	$("#searchjournalentries").click();
 }
 
-function handlePredefinedPostingEntriesTabSelection(officesObject) {
+function handlePredefinedPostingEntriesTabSelection(officesAndCurrenciesObject) {
 	var getAccountingRulesSuccessFunction = function (data, textStatus, jqXHR) {
 		var baseObject = new Object();
-		baseObject.offices = officesObject; 
+		baseObject.offices = officesAndCurrenciesObject.offices; 
+		baseObject.currencies = officesAndCurrenciesObject.currencies;
 		baseObject.accountingRuleOptions = data;
 		predefinedAccountingEntriesTabHtml = $("#predefinedAccountingRuleJournalEntriesTemplate").render(baseObject);
 		$("#predefinedpostings-tab").html(predefinedAccountingEntriesTabHtml);
@@ -1167,11 +1181,12 @@ function handlePredefinedPostingEntriesTabSelection(officesObject) {
 	executeAjaxRequest('accountingrules?associations=all', 'GET', "", getAccountingRulesSuccessFunction, formErrorFunction);
 }	
 
-function handleJournalEntriesTabSelection(officesObject) {
+function handleJournalEntriesTabSelection(officesAndCurrenciesObject) {
 	// get list of all offices and accounts and initialize the screen
 	var getAccountsSuccessFunction = function(data, textStatus, jqXHR) {
 		var baseObject = new Object();
-		baseObject.offices = officesObject;
+		baseObject.offices = officesAndCurrenciesObject.offices;
+		baseObject.currencies = officesAndCurrenciesObject.currencies;
 		baseObject.accounts = data;
 		journalEntriesTabHtml = $("#journalEntriesTemplate").render(baseObject);
 		$("#journalentry-tab").html(journalEntriesTabHtml);
@@ -7583,6 +7598,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
 			serializedArray["locale"] = $('#locale').val();
     	   	serializedArray["dateFormat"] = $('#dateFormat').val();
     	   	serializedArray["officeId"] = $('#officeId').val();
+    	   	serializedArray["currencyCode"] = $('#currencyCode').val();
     	   	serializedArray["transactionDate"] = $('#transactionDate').val();
     	   	serializedArray["referenceNumber"] = $('#referenceNumber').val();	
 			serializedArray["comments"] = $('#comments').val();
