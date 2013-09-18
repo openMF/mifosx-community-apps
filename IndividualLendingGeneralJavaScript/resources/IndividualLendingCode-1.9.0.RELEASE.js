@@ -6140,7 +6140,7 @@ function loadLoan(loanId, parenttab) {
 					var defaultOffset = offsetToExpectedDisbursementDate;
 					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
 			
-					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.repayment", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
+					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.disburse.loan", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
 				    e.preventDefault();
 				});
 				$('button.disburseloan span').text(doI18N('button.loan.disburse'));
@@ -6179,6 +6179,21 @@ function loadLoan(loanId, parenttab) {
 				$('.loaaccountfundstransfer'+loanId).button({icons: {primary: "ui-icon-transferthick-e-w"}}).click(function(e) {
 					launchAccountTransferDialog(loanId, 1 ,parenttab);
 					e.preventDefault();
+				});
+
+				$('.paychargebtn'+loanId).button().click(function(e) {
+					var linkId = this.id;
+					var loanId = linkId.replace("paychargebtn", "");
+					var getUrl = 'loans/' + loanId + '/charges';
+					var postUrl = 'loans/' + loanId + '/charges?command=pay';
+					var templateSelector = "#loanChargePaymentTemplate";
+					var width = 500; 
+					var height = 350;
+					var defaultOffset = offsetToApprovalDate;
+					eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
+			
+					popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.charge.payment", templateSelector, width, height,  saveSuccessFunctionReloadLoan);
+				    e.preventDefault();
 				});
 
 				$('.waiveinterestloan'+loanId).button().click(function(e) {
@@ -7365,6 +7380,10 @@ function popupDialogWithFormView(getUrl, postUrl, submitType, titleCode, templat
 					staffOptions = data; //create & intialize window varible officesObject to reuse for OfficesOptions 
 					var tempObject = new Object();
 					tempObject.staffOptions = data;
+					popupDialogWithFormViewData(tempObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
+				}else if(templateSelector == "#loanChargePaymentTemplate"){
+					var tempObject = new Object();
+					tempObject.loanCharges = data;
 					popupDialogWithFormViewData(tempObject, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);
 				}else{
 					popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templateSelector, width, height, saveSuccessFunction);

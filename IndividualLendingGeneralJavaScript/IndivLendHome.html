@@ -2971,6 +2971,23 @@ $(document).ready(function() {
 				{{/each}}
 			{{/if}}
 		</select>
+		<label for="chargePaymentMode">{{=$ctx.doI18N("form.label.charge.payment.mode")}}</label>
+		<select id="chargePaymentMode" name="chargePaymentMode" title="" style="width: 300px">
+			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+			{{#if chargePaymentMode}}
+				{{#each chargePaymetModeOptions}}
+					{{#if $ctx.number($parent.parent.data.chargePaymentMode.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+					{{/if}}
+				{{/each}}
+			{{#else}}
+				{{#each chargePaymetModeOptions}}
+					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+				{{/each}}
+			{{/if}}
+		</select>
 		<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
 		<label for="active">{{=$ctx.doI18N("label.active")}}</label>
@@ -5112,7 +5129,9 @@ $(document).ready(function() {
 				{{#if $ctx.showTask("LOANREPAYMENT")}}
 				<button id="repaymentbtn{{=id}}" class="repaymentloan{{=id}}">{{=$ctx.doI18N("button.loan.repayment")}}</button>
 				{{/if}}
-
+				{{#if $ctx.showTask("PAY_LOANCHARGE")}}
+				<!--button id="paychargebtn{{=id}}" class="paychargebtn{{=id}}">{{=$ctx.doI18N("button.loan.charge.payment")}}</button-->
+				{{/if}}
 				{{#if $ctx.showTask("WAIVEINTERESTPORTIONOFLOAN")}}
 				<button id="waiveinterestbtn{{=id}}" class="waiveinterestloan{{=id}}">{{=$ctx.doI18N("button.loan.waiveInterest")}}</button>
 				{{/if}}
@@ -6127,6 +6146,25 @@ $(document).ready(function() {
 
 	<label for="note">{{=$ctx.doI18N("label.note")}}</label>
 	<textarea rows="3" cols="53" id="note" name="note"></textarea>
+</form>
+</script>
+
+<script id="loanChargePaymentTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<label for="chargeId">{{=$ctx.doI18N("label.charge")}}</label>
+	<select id="chargeId" name="chargeId" title="" >
+		<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+		{{#each loanCharges}}
+			{{#if chargePayable}}
+				<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+			{{/if}}
+		{{/each}}
+	</select>
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	<input id="transactionDate" name="transactionDate" title="" class="datepickerfield" value="" />
 </form>
 </script>
 
@@ -8873,6 +8911,25 @@ $(document).ready(function() {
 					<td>{{=$ctx.doI18N("label.firstRepaymentOn")}}</td>
 					<td colspan="2">
 					<input id="repaymentsStartingFromDate" name="repaymentsStartingFromDate" title="" type="text" class="datepickerfieldnoconstraint" value="{{=$ctx.globalDate(repaymentsStartingFromDate)}}" style="width:215px;"/>
+					</td>
+				</tr>
+				<tr>
+					<td>{{=$ctx.doI18N("label.linksavings")}}</td>
+					<td colspan="2">
+						<select id="linkAccountId" name="linkAccountId" title="" style="width: 221px;">
+								<option value="">{{=$ctx.doI18N("option.linksavings.first.choice")}}</option>
+							{{#each accountLinkingOptions}}
+							{{#if $parent.parent.data.linkedAccount}}
+								{{#if $ctx.number($parent.parent.parent.data.linkedAccount.id)===$ctx.number(id)}}
+									<option value="{{=id}}" selected="selected">{{=productName}} - {{=accountNo}}</option>
+								{{#else}}
+									<option value="{{=id}}">{{=productName}} - {{=accountNo}}</option>
+								{{/if}}
+							{{#else}}
+								<option value="{{=id}}">{{=productName}} - {{=accountNo}}</option>
+							{{/if}}
+							{{/each}}
+						</select>
 					</td>
 				</tr>
 			</table>
