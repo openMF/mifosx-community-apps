@@ -11883,6 +11883,31 @@ $(document).ready(function() {
 </table>
 </script>
 
+<script id="cacheSettingsTemplate" type="text/x-jquery-tmpl">
+<h2>{{=$ctx.doI18N("label.cache.settings")}}</h2>
+<form id="entityform" name="cacheSettingsForm">
+	<div id="formerrors"></div>
+
+	<label for="cacheType">{{=$ctx.doI18N("label.cache")}}</label>
+	<select id="cacheType" name="cacheType">
+		{{#each crudRows}}
+			{{#if enabled}}
+			<option value="{{=$ctx.number(cacheType.id)}}" selected=true>
+				{{=$ctx.doI18N(cacheType.code)}}
+			</option>
+			{{#else}}
+			<option value="{{=$ctx.number(cacheType.id)}}">
+				{{=$ctx.doI18N(cacheType.code)}}
+			</option>
+			{{/if}}
+		{{/each}}
+	</select>
+
+	<button id="saveCacheSettings">{{=$ctx.doI18N("button.save")}}</button>
+</form>
+
+</script>
+
 <script id="batchJobFormTemplate" type="text/x-jquery-tmpl">
 
 	<fieldset>

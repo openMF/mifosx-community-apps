@@ -697,7 +697,8 @@ function setSysAdminContent(divName) {
 	var createDatatableUrl = "maintainTable('datatableCreate', 'datatables', 'POST'); return false;";
 	var registerDatatableUrl = "maintainTable('datatable', 'datatables', 'POST'); return false;";
 	var addReportUrl = "launchReportDialog(null);return false;";
-	var batchJobUrl = "showBatchJobDetails();return false;"
+	var batchJobUrl = "showBatchJobDetails();return false;";
+	var cacheSettingsUrl = "showCacheSettings();return false;";
 
 	var htmlOptions = "";
 	if (jQuery.MifosXUI.showTask("VIEWDATATABLES") == true)
@@ -733,7 +734,11 @@ function setSysAdminContent(divName) {
 	if (jQuery.MifosXUI.showTask("AddReport") == true)
 		htmlOptions += ' | <a href="unknown.html" onclick="' + addReportUrl + '" id="addreport">' + doI18N("administration.link.add.report") + '</a>';
 
+	if (jQuery.MifosXUI.showTask("AddReport"))
 		htmlOptions += ' | <a href="unknown.html" onclick="' + batchJobUrl + '" id="batchjob">' + doI18N("administration.link.batchjobs") + '</a>';
+	
+	if (jQuery.MifosXUI.showTask("AddReport"))
+		htmlOptions += ' | <a href="unknown.html" onclick="' + cacheSettingsUrl + '" id="cachesettings">' + doI18N("administration.link.cachesettings") + '</a>';
 	
 	if (htmlOptions > "") htmlOptions = htmlOptions.substring(3);
 
@@ -11300,6 +11305,42 @@ function listHolidays() {
   	};
 
   	executeAjaxRequest('offices', 'GET', "", officeSearchSuccessFunction, formErrorFunction);	
+}
+
+function showCacheSettings() {
+
+	var cacheSettingsSuccessFunction = function(data, textStatus, jqXHR) {
+
+		var crudObject = new Object();
+		crudObject.crudRows = data;
+
+		var cacheSettingsHtml = $("#cacheSettingsTemplate").render(crudObject);
+
+		$("#listplaceholder").html(cacheSettingsHtml);
+
+		// handle save operation
+		$("#saveCacheSettings").button({icons : {primary : "ui-icon-disk"}}).click(function(e) {
+			
+			var serializationOptions = {};
+			serializationOptions["checkboxesAsBools"] = true;
+		
+			var serializedArray = {};
+			serializedArray = $('#entityform').serializeObject(serializationOptions);
+
+			var newFormData = JSON.stringify(serializedArray);
+
+			var successFunction =  function(data, textStatus, jqXHR) {
+				// showCacheSettings();
+				$("#saveCacheSettings").button({icons : {primary : "ui-icon-plusthick"}});
+			};
+		
+			executeAjaxRequest('caches', "PUT", newFormData, successFunction, formErrorFunction);	  
+
+			e.preventDefault();
+		});
+	}
+
+	executeAjaxRequest('caches', 'GET', "", cacheSettingsSuccessFunction, formErrorFunction);
 }
 
 function showBatchJobDetails() {
