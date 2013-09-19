@@ -3041,7 +3041,7 @@ function showILClient(clientId) {
 						var linkId = this.id;
 						var officeId = linkId.replace("transferclientsbtn", "");
 						currentClientOffice = officeId;
-						var getUrl = 'offices?fields=id,name';
+						var getUrl = 'offices?includeAllOffices=true&fields=id,name';
 						var postUrl = 'clients/' + clientId + '?command=proposeTransfer';
 						var templateSelector = "#proposeClientTransferFormTemplate";
 						var width = 500; 
