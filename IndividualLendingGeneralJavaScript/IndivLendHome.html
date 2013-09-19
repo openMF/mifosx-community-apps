@@ -6360,7 +6360,10 @@ $(document).ready(function() {
 		<ul>
 			<li><a href="#savingsproductdetails" title="savingsproductdetails">{{=$ctx.doI18N("tab.details")}}</a></li>
 			<li><a href="#savingsproductterms" title="savingsproductterms">{{=$ctx.doI18N("tab.terms")}}</a></li>
-			<li><a href="#savingsproductsettings" title="savingsproductsettings">{{=$ctx.doI18N("tab.settings")}}</a></li>
+			<li><a href="#savingsproductsettings" title="savingsproductsettings">{{=$ctx.doI18N("tab.settings")}}</a>
+			</li>
+			<li><a href="#savingschargestab" title="savingschargestab">{{=$ctx.doI18N("tab.charges")}}</a>
+			</li>
 			{{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
 			<li><a href="#accounting" title="accounting">{{=$ctx.doI18N("tab.accounting")}}</a></li>
 			{{#else}}
@@ -6565,6 +6568,59 @@ $(document).ready(function() {
 				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
 			</table>
 		</div>
+		<!-- savings charges -->
+		{{#if $ctx.showTask("VIEWCHARGES")}}
+		<div id="savingschargestab" style="margin-top: 5px;" title="{{=$ctx.doI18N("tab.charges")}}">
+			<table>
+				<tr>
+					<td>
+						Associate a new charge with the savings product
+					</td>
+					<td>
+						<select id="chargeOptions" style="width: 221px;" title="">
+							<option value="">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+							{{#each chargeOptions}}
+							<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+							{{/each}}
+			 			</select>
+			 			<button id="savingsproduct-addSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+			 		</td>
+			 	</tr>
+			 </table>
+			 <table id="savingschargestable" class="pretty displayschedule">
+				<thead>
+					<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Type</th>
+					<th scope="col">Amount</th>
+					<th scope="col">Collected on</th>
+					<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each charges}}
+					<tr>
+						<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=$ctx.number(id)}}" />
+						<td>{{=name}}, {{=currency.displaySymbol}}</td>
+						<td>
+							<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+							<option value="{{=$ctx.number(chargeCalculationType.id)}}">{{=$ctx.doI18N(chargeCalculationType.code)}}</option>
+							</select>
+						</td>
+						<td><input id="charges[{{=$itemNumber}}][amount]" name="charges[{{=$itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 6)}}" style="width: 125px;" disabled="disabled"/></td>
+						<td>
+							<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+							<option value="{{=$ctx.number(chargeTimeType.id)}}">{{=$ctx.doI18N(chargeTimeType.code)}}</option>
+							</select>
+						</td>
+						<td><button id="savingsproduct-removeSavingsCharge{{=$itemNumber}}" class="savingsproduct-removeSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
+		{{/if}}
+		<!-- charges -->
 
 		<!-- accounting -->
 		{{#if $ctx.showTask("VIEWJOURNALENTRIES")}}
@@ -6939,6 +6995,7 @@ $(document).ready(function() {
 		<ul>
 			<li><a href="#savingsaccountterms" title="savingsaccountterms">{{=$ctx.doI18N("tab.terms")}}</a></li>
 			<li><a href="#savingsaccountsettings" title="savingsaccountsettings">{{=$ctx.doI18N("tab.settings")}}</a></li>
+			<li><a href="#savingscharges" title="savingscharges">{{=$ctx.doI18N("tab.charges")}}</a></li>
 		</ul>
 		
 		<div id="savingsaccountterms" style="margin-top: 5px;">
@@ -7113,6 +7170,67 @@ $(document).ready(function() {
 				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
 			</table>
 		</div>
+		<!-- savings charges -->
+		{{#if $ctx.showTask("VIEWCHARGES")}}
+			{{#if $ctx.arrayIsNotEmpty(chargeOptions)}}
+				<div id="savingscharges" style="margin-top: 5px;">
+					 <select id="chargeOptions">
+						<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+						{{#each chargeOptions}}
+						<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+						{{/each}}
+					 </select>
+					 <button id="savingsapp-addSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+					 <table id="savingschargestable" class="pretty displayschedule">
+						<thead>
+							<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Type</th>
+							<th scope="col">Amount</th>
+							<th scope="col">Collected on</th>
+							<th scope="col">Date</th>
+							<th scope="col">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each charges}}
+							<tr>
+								<input id="charges[{{=$itemNumber}}][id]" name="charges[{{=$itemNumber}}][id]" class="id" title="" type="hidden" value="{{=id}}" />
+								<input id="charges[{{=$itemNumber}}][chargeId]" name="charges[{{=$itemNumber}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=$ctx.number(chargeId)}}" />
+								<td>{{=name}}, {{=currency.displaySymbol}}</td>
+								<td>
+									<select id="charges[{{=$itemNumber}}][chargeCalculationType]" name="charges[{{=$itemNumber}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+										<option value="{{=$ctx.number(chargeCalculationType.id)}}" selected="selected">{{=$ctx.doI18N(chargeCalculationType.code)}}</option>
+									</select>
+								</td>
+								<td>
+							{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
+								<input id="charges[{{=$parent.itemNumber}}][amount]" name="charges[{{=$parent.itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;"/>
+							{{#else}}
+								<input id="charges[{{=$parent.itemNumber}}][amount]" name="charges[{{=$parent.itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
+							{{/if}}
+								</td>
+								<td>
+									<select id="charges[{{=$itemNumber}}][chargeTimeType]" name="charges[{{=$itemNumber}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+										<option value="{{=$ctx.number(chargeTimeType.id)}}" selected="selected">{{=$ctx.doI18N(chargeTimeType.code)}}</option>
+									</select>
+								</td>
+								<td>
+									<input id="charges[{{=$itemNumber}}][dueDate]" 
+											name="charges[{{=$itemNumber}}][dueDate]" 
+											class="dueDate datepickerfieldnoconstraint" 
+											title="" 
+											value="{{=$ctx.globalDate(dueDate)}}" />
+								</td>
+								<td><button id="savingsapp-removeSavingsCharge{{=$itemNumber}}" class="savingsapp-removeSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			{{/if}}
+		{{/if}}
+		<!-- end of savings charges-->
 	</div>
 	<!-- end of savings account tabs -->
 </form>
@@ -7140,7 +7258,9 @@ $(document).ready(function() {
 				{{#if $ctx.showTask("POSTINTERESTSAVINGSACCOUNT")}}
 				<button id="savingsaccountinterestpostbtn{{=id}}" class="savingsaccountinterestpost{{=id}}">{{=$ctx.doI18N("button.postInterest")}}</button>
 				{{/if}}
-
+				{{#if $ctx.showTask("AddSavingsCharge")}}
+				<button id="addsavingschargebtn{{=id}}" class="addsavingscharge{{=id}}">{{=$ctx.doI18N("button.addSavingsCharge")}}</button>
+				{{/if}}
 				{{#if $ctx.showTask("APPLYANNUALFEESAVINGSACCOUNT")}}
 				<button id="savingsaccountapplyannualfeebtn{{=id}}" class="savingsaccountapplyannualfee{{=id}}">{{=$ctx.doI18N("button.applyAnnualFee")}}</button>
 				{{/if}}
@@ -7154,6 +7274,9 @@ $(document).ready(function() {
 			{{/if}}
 
 			{{#if status.approved}}
+				{{#if $ctx.showTask("AddSavingsCharge")}}
+				<button id="addsavingschargebtn{{=id}}" class="addsavingscharge{{=id}}">{{=$ctx.doI18N("button.addSavingsCharge")}}</button>
+				{{/if}}
 				{{#if $ctx.showTask("UDNOSAVINGSACCOUNTAPPLICATIONAPPROVAL")}}
 				<button id="savingsaccountundoapprovebtn{{=id}}" class="savingsaccountundoapprove{{=id}}">{{=$ctx.doI18N("button.application.undoApproval")}}</button>
 				{{/if}}
@@ -7164,6 +7287,9 @@ $(document).ready(function() {
 			{{/if}}
 
 			{{#if status.submittedAndPendingApproval}}
+				{{#if $ctx.showTask("AddSavingsCharge")}}
+				<button id="addsavingschargebtn{{=id}}" class="addsavingscharge{{=id}}">{{=$ctx.doI18N("button.addSavingsCharge")}}</button>
+				{{/if}}
 				{{#if $ctx.showTask("MODIFYSAVINGSACCOUNTAPPLICATION")}}
 				<button id="savingsaccountmodifybtn{{=id}}" class="savingsaccountmodify{{=id}}">{{=$ctx.doI18N("button.application.modify")}}</button>
 				{{/if}}
@@ -7189,6 +7315,9 @@ $(document).ready(function() {
 <div id="savingtabs{{=id}}" class="savingtabs">
 	<ul>
 		<li><a href="#details{{=id}}" title="details">{{=$ctx.doI18N("tab.details")}}</a></li>
+		{{#if charges}}
+		<li><a href="#charges{{=id}}" title="charges">{{=$ctx.doI18N("tab.charges")}}</a></li>
+		{{/if}}
 		{{#if transactions}}
 		<li><a href="#transactions{{=id}}" title="transactions">{{=$ctx.doI18N("tab.transactions")}}</a></li>
 		{{/if}}
@@ -7308,7 +7437,75 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.globalDate(annualFeeNextDueDate)}}</span>
 		</div>
 	</div>
-		
+	{{#if charges}}
+		<div id="charges{{=id}}" style="margin-top: 5px;">
+			<table id="savingscharges{{=id}}" class="pretty displaypayments">
+			<caption>{{=$ctx.doI18N("table.caption.savingsCharges")}}</caption>
+				<thead>
+					<tr>
+					<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.feeOrPenalty")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.paymentDueAt")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.dueAsOf")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.calculationType")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.due")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.paid")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.waived")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.outstanding")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.action")}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each charges}}
+					<tr>
+						<td>{{=name}}</td>
+
+					{{#if penalty}}
+						<td>Penalty</td>
+					{{#else}}
+						<td>Fee</td>
+					{{/if}}
+
+						<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
+					{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+						<td>{{=$ctx.globalDate(dueDate)}}</td>
+					{{#else}}
+						<td>&nbsp;</td>
+					{{/if}}
+
+					{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
+						<td>{{=$ctx.doI18N(chargeCalculationType.code)}} - {{=$ctx.decimal(percentage, 6)}}% of {{=$ctx.moneyFormatted(currency, amountPercentageAppliedTo)}}</td>
+					{{#else}}
+						<td>{{=$ctx.doI18N(chargeCalculationType.code)}}</td>
+					{{/if}}
+						<td>{{=$ctx.moneyFormatted(currency, amount)}}</td>
+						<td>{{=$ctx.moneyFormatted(currency, amountPaid)}}</td>
+						<td>{{=$ctx.moneyFormatted(currency, amountWaived)}}</td>
+						<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
+						<td>
+							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.submitted.and.pending.approval"}}  
+							  <button id="modifysavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.edit")}}</button>
+							{{/if}}   
+							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.active"}}    
+								{{#if amountOutstanding === 0 }}
+
+								{{#else}}  
+							  	<button id="paysavings{{=$parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.pay")}}</button>
+							  	{{/if}}
+							{{/if}}
+							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.active"}}    
+							  	<button id="waivesavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.waive")}}</button>
+							{{/if}}
+							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.submitted.and.pending.approval"}}    
+							  <button id="deletesavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.delete")}}</button>
+							{{/if}}  
+						</td>
+					</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
+	{{/if}}		
 	{{#if transactions}}
 	<div id="transactions{{=id}}" style="margin-top: 5px;">
 	<table id="savingsaccounttransactions{{=id}}" class="pretty">
@@ -7372,6 +7569,87 @@ $(document).ready(function() {
 	{{/if}}
 </div>
 </script>
+
+<script id="paySavingsChargeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<div>
+			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
+			<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+
+			<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
+			
+		{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
+			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;"/>
+		{{#else}}
+			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amountOutstanding)}}" style="width: 125px;"/>			
+		{{/if}}
+		</div>
+	</fieldset>
+</form>
+</script>
+
+<!-- Template rendered when attaching new charge to Savings through popup (along with SavingsAccountChargeDetailsPartialFormTemplate) -->
+<script id="savingsChargeFormTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	</div>
+	<fieldset>
+		<div>
+			<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
+			<label for="chargeOptions">{{=$ctx.doI18N("label.charges")}}</label>
+			<select id="chargeOptions" name="chargeId">
+				<option value="-1">{{=$ctx.doI18N("option.charge.first.choice")}}</option>
+				{{#each chargeOptions}}
+					{{#if $ctx.number($parent.parent.data.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}, {{=currency.displaySymbol}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=name}}, {{=currency.displaySymbol}}</option>
+					{{/if}}
+				{{/each}}
+			</select>
+			<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+		</div>
+		<div id="savingsChargeDetails">
+			{{each $parent.data tmpl="#savingsChargeDetailsPartialFormTemplate"}}
+		</div>
+	</fieldset>
+</form>
+</script>
+
+<script id="savingsChargeDetailsPartialFormTemplate" type="text/x-jquery-tmpl">
+<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
+<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/>
+<label for="chargeCalculationType">{{=$ctx.doI18N("form.label.charge.calculation.type")}}</label>
+<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 180px" disabled="disabled">
+	{{#each chargeCalculationTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+</select>
+<label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
+<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 180px" disabled="disabled">
+	{{#each chargeTimeTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+			<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+			<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+</select>
+{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+<label for="dueDate">Due for collection on:</label>
+<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=dueDate}}" />
+{{/if}}
+</script>
+
 
 <script id="accounttransfersDetailsTemplate" type="text/x-jquery-tmpl">
 <div id="accounttransferDetails">
@@ -7716,6 +7994,41 @@ $(document).ready(function() {
 	</table>
 </form>
 </script>
+
+<script id="savingsApplicationAddChargeRowTemplate" type="text/x-jquery-tmpl">
+<tr>
+	<input id="charges[{{=index}}][chargeId]" name="charges[{{=index}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=id}}" />
+	<td>{{=name}}, {{=currency.displaySymbol}}</td>
+	<td>
+	<select id="charges[{{=index}}][chargeCalculationType]" name="charges[{{=index}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+	{{#each chargeCalculationTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+		<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+		<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+	</select>
+	</td>
+	<td><input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" style="width: 125px;"/></td>
+	<td>
+		<select id="charges[{{=index}}][chargeTimeType]" name="charges[{{=index}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+		{{#each chargeTimeTypeOptions}}
+			{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+			{{/if}}
+		{{/each}}
+		</select>
+	</td>
+	<td>
+		<input id="charges[{{=index}}][dueDate]" name="charges[{{=index}}][dueDate]" class="dueDate datepickerfieldnoconstraint" title="" value="" />
+	</td>
+	<td><button id="savingsapp-removeSavingsCharge{{=index}}" class="savingsapp-removeSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+</tr>
+</script>
+
 <!-- end of new savings accounts templates -->
 
 <!-- new loan product templates -->
@@ -12252,7 +12565,37 @@ $(document).ready(function() {
 		</div>
 	{{/each}}
 </script>
-
+<!-- Savings product charge row template-->
+<script id="savingsProductAddChargeRowTemplate" type="text/x-jquery-tmpl">
+<tr>
+	<input id="charges[{{=index}}][id]" name="charges[{{=index}}][id]" class="id" title="" type="hidden" value="{{=$ctx.number(id)}}" />
+	<td>{{=name}}, {{=currency.displaySymbol}}</td>
+	<td>
+	<select id="charges[{{=index}}][chargeCalculationType]" name="charges[{{=index}}][chargeCalculationType]" title="" style="width: 180px" disabled="disabled">
+	{{#each chargeCalculationTypeOptions}}
+		{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+		<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+		{{#else}}
+		<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+		{{/if}}
+	{{/each}}
+	</select>
+	</td>
+	<td><input id="charges[{{=index}}][amount]" name="charges[{{=index}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 6)}}" style="width: 125px;" disabled="disabled"/></td>
+	<td>
+		<select id="charges[{{=index}}][chargeTimeType]" name="charges[{{=index}}][chargeTimeType]" title="" style="width: 180px" disabled="disabled">
+		{{#each chargeTimeTypeOptions}}
+			{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+				<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+			{{#else}}
+				<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+			{{/if}}
+		{{/each}}
+		</select>
+	</td>
+	<td><button id="savingsproduct-removeSavingsCharge{{=index}}" class="savingsproduct-removeSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+</tr>
+</script>
 
 </body>
 </html>

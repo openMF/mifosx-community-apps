@@ -5559,6 +5559,51 @@ function showCenter(centerId){
 				        	$('#ui-datepicker-div').removeClass('hide-year-label');
 				        }
 				    });
+
+					var chargeIndex = 0;
+					if(undefined === data.charges || data.charges === null) {
+						chargeIndex = 0;
+					} else {
+						chargeIndex = data["charges"].length;
+					}
+					
+				    $("#savingsproduct-addSavingsCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+						
+						var chargeId = $('#chargeOptions option:selected').val();
+						
+						var addProductChargeSuccess = function (chargeData) {
+								chargeIndex++;
+								chargeData["index"] = chargeIndex;
+								var savingsChargeHtml = $("#savingsProductAddChargeRowTemplate").render(chargeData);
+								$("#savingschargestable tbody").append(savingsChargeHtml);
+					  		
+								$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+								$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+								
+								
+								// remove icon {icons: {primary: "ui-icon-trash"},text: false} as seems is cause of bug https://mifosforge.jira.com/browse/MIFOSX-386
+								$('#savingschargestable tbody tr:last .savingsproduct-removeSavingsCharge').button().click(function(e) {
+									$(this).closest('tr').remove();
+				            		e.preventDefault();
+				            	});
+						}
+							
+						if (chargeId && undefined != chargeId && chargeId > 0) {
+							executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addProductChargeSuccess, formErrorFunction);
+						}
+					    e.preventDefault();
+					});
+					
+					if(undefined === data.charges || data.charges === null) {
+						// do nothing
+					} else {
+						 $("#savingschargestable tbody tr .savingsproduct-removeSavingsCharge").each(function(index) {
+							 $(this).button().click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						 });
+					}
 		  		}
 		  	}).dialog('open');		
 	};
@@ -5611,6 +5656,43 @@ function showCenter(centerId){
 	        	$('#ui-datepicker-div').removeClass('hide-year-label');
 	        }
 	    });
+
+	    var chargeIndex = 0;
+		if(typeof data.charges === "object") {
+			chargeIndex = data["charges"].length;
+		}
+		$("#savingsapp-addSavingsCharge").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+			var chargeId = $('#chargeOptions option:selected').val();
+			
+				var addSavingsChargeSuccess = function (chargeData) {
+					chargeIndex++;
+					chargeData["index"] = chargeIndex;
+					var loanChargeHtml = $("#savingsApplicationAddChargeRowTemplate").render(chargeData);
+					$("#savingschargestable tbody").append(loanChargeHtml);
+		  		
+					$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
+					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+					
+					$('#savingschargestable tbody tr:last .savingsapp-removeSavingsCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+						$(this).closest('tr').remove();
+	            		e.preventDefault();
+	            	});
+				}
+				
+				if (chargeId && undefined != chargeId && chargeId > 0) {
+					executeAjaxRequest('charges/' + chargeId + '?template=true', 'GET', "", addSavingsChargeSuccess, formErrorFunction);
+				}
+		    e.preventDefault();
+		});
+		
+		if(typeof data.charges === "object") {
+			 $("#savingschargestable tbody tr .savingsapp-removeSavingsCharge").each(function(index) {
+				 $(this).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+					$(this).closest('tr').remove();
+	            	e.preventDefault();
+	            });
+			 });
+	    }
 	}
 	
 	function loadTabbedSavingsAccountForm(container, clientId, productId, groupId) {
@@ -5795,7 +5877,7 @@ function showCenter(centerId){
 	};
 	
 	function launchModifySavingsAccountDialog(savingsId) {
-		executeAjaxRequest('savingsaccounts/' + savingsId + '?template=true', 'GET', "", launchModifySavingsAccountDialogOnSuccessFunction, formErrorFunction);	
+		executeAjaxRequest('savingsaccounts/' + savingsId + '?template=true&associations=charges', 'GET', "", launchModifySavingsAccountDialogOnSuccessFunction, formErrorFunction);	
 	}
 	
 	function launchGroupSavingsAccountDialog(groupId) {
@@ -7856,17 +7938,80 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				dialogDiv.html(formHtml);
 	}
 
-	//attaching charges to loan from popup
-	$('#chargeOptions').change(function(e) {
-		if ($(this).val() > 0){
-			var selectChargeForLoanSuccess = function(chargeData, textStatus, jqXHR){
-				var partialFormHtml = $("#loanChargeDetailsPartialFormTemplate").render(chargeData);
-				$("#loanChargeDetails").html(partialFormHtml);
-				$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+	if (templateSelector === "#savingsChargeFormTemplate") {
+		//attaching charges to savings from popup
+		$('#chargeOptions').change(function(e) {
+			if ($(this).val() > 0){
+				var selectChargeForSavingsSuccess = function(chargeData, textStatus, jqXHR){
+					var partialFormHtml = $("#savingsChargeDetailsPartialFormTemplate").render(chargeData);
+					$("#savingsChargeDetails").html(partialFormHtml);
+					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+				}
+				executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForSavingsSuccess, formErrorFunction);    	
 			}
-			executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForLoanSuccess, formErrorFunction);    	
-		}
-	})
+		});
+
+		//jqueryify charges buttons
+		if(data.charges !=null){
+		     $.each(data.charges, function(i, val) {
+		        //pay savings charge buttons
+		        if(document.getElementById('paysavings'+ accountId +'charge'+val.id)){
+                    $('#paysavings'+ accountId +'charge'+val.id).button(
+                        {icons: {
+                        primary: "ui-icon-check"},
+                        text: false
+                    }).click(function(e) {
+                        paySavingsCharge(accountId,val.id,parenttab);
+                        e.preventDefault();
+                    });
+                }
+
+                //waive savings charge buttons
+		        if(document.getElementById('waivesavings'+ accountId +'charge'+val.id)){
+                    $('#waivesavings'+ accountId +'charge'+val.id).button(
+                        {icons: {
+                        primary: "ui-icon-flag"},
+                        text: false
+                    }).click(function(e) {
+                        waiveSavingsCharge(accountId,val.id,parenttab);
+                        e.preventDefault();
+                    });
+                }
+                
+                //delete savings charge buttons
+                if(document.getElementById('deletesavings'+ accountId +'charge'+val.id)){
+                    $('#deletesavings'+ accountId +'charge'+val.id).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+                        removeSavingsCharge(accountId,val.id,parenttab);
+                        e.preventDefault();
+                    });
+                }
+                //modify savings charge buttons
+                if(document.getElementById('modifysavings'+ accountId +'charge'+val.id)){
+                    $('#modifysavings'+ accountId +'charge'+val.id).button(
+                        {icons: {
+                        primary: "ui-icon-pencil"},
+                        text: false
+                    }).click(function(e) {
+                        modifySavingsCharge(accountId,val.id,parenttab);
+                        e.preventDefault();
+                    });
+                }
+            });
+        }
+
+	}else{
+		//attaching charges to loan from popup
+		$('#chargeOptions').change(function(e) {
+			if ($(this).val() > 0){
+				var selectChargeForLoanSuccess = function(chargeData, textStatus, jqXHR){
+					var partialFormHtml = $("#loanChargeDetailsPartialFormTemplate").render(chargeData);
+					$("#loanChargeDetails").html(partialFormHtml);
+					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+				}
+				executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForLoanSuccess, formErrorFunction);    	
+			}
+		});
+	}
 
 	// for accounting rule initialize comboboxes
 	if (templateSelector === "#accountingruleFormTemplate") {
@@ -9972,6 +10117,69 @@ function loadSavingAccount(accountId,parenttab) {
 			viewTransferDetails(transferId);
             e.preventDefault();
         }); 
+
+		$('.addsavingscharge'+accountId).button().click(function(e){
+				var linkId = this.id;
+				var accountId = linkId.replace("addsavingschargebtn", "");
+				var postUrl = 'savingsaccounts/' + accountId + '/charges';
+				var getUrl = 'savingsaccounts/' + accountId + '/charges/template';
+
+				var templateSelector = "#savingsChargeFormTemplate";
+				var width = 450; 
+				var height = 300;
+
+				eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
+				popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.addSavingsCharge", templateSelector, width,  height, saveSuccessFunctionReloadSaving);
+			    e.preventDefault();
+		});
+		$('button.addsavingscharge span').text(doI18N('button.addSavingsCharge'));
+        //jqueryify charges buttons
+		if(data.charges !=null){
+		     $.each(data.charges, function(i, val) {
+		        //pay savings charge buttons
+		        if(document.getElementById('paysavings'+ accountId +'charge'+val.id)){
+                    $('#paysavings'+ accountId +'charge'+val.id).button(
+                        {icons: {
+                        primary: "ui-icon-check"},
+                        text: false
+                    }).click(function(e) {
+                        paySavingsCharge(accountId,val.id,parenttab);
+                        e.preventDefault();
+                    });
+                }
+
+                //waive savings charge buttons
+		        if(document.getElementById('waivesavings'+ accountId +'charge'+val.id)){
+                    $('#waivesavings'+ accountId +'charge'+val.id).button(
+                        {icons: {
+                        primary: "ui-icon-flag"},
+                        text: false
+                    }).click(function(e) {
+                        waiveSavingsCharge(accountId,val.id,parenttab);
+                        e.preventDefault();
+                    });
+                }
+                
+                //delete loan charge buttons
+                if(document.getElementById('deletesavings'+ accountId +'charge'+val.id)){
+                    $('#deletesavings'+ accountId +'charge'+val.id).button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
+                        removeSavingsCharge(accountId,val.id,parenttab);
+                        e.preventDefault();
+                    });
+                }
+                //modify loan charge buttons
+                if(document.getElementById('modifysavings'+ accountId +'charge'+val.id)){
+                    $('#modifysavings'+ accountId +'charge'+val.id).button(
+                        {icons: {
+                        primary: "ui-icon-pencil"},
+                        text: false
+                    }).click(function(e) {
+                        modifySavingsCharge(accountId,val.id,parenttab);
+                        e.preventDefault();
+                    });
+                }
+            });
+        }
 		
 		/*
 		 * This works but not showing savings datatables by default yet.  When ready just uncomment
@@ -9980,6 +10188,62 @@ function loadSavingAccount(accountId,parenttab) {
 	}
 		
 	executeAjaxRequest(accountUrl, 'GET', "", successFunction, errorFunction);	
+}
+
+function removeSavingsCharge(accountId, savingsChargeId, parenttab) {
+
+	var successFunction = function(data, textStatus, jqXHR) {
+		$("#dialog-form").dialog("close");
+		loadSavingAccount(accountId, parenttab);
+	};
+
+	popupConfirmationDialogAndPost('savingsaccounts/' + accountId +'/charges/' + savingsChargeId, 'DELETE', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
+}
+
+function modifySavingsCharge(accountId, savingsChargeId, parenttab) {
+
+	var successFunction = function(data, textStatus, jqXHR) {
+		$("#dialog-form").dialog("close");
+		loadSavingAccount(accountId, parenttab);
+	};
+	
+	var getAndPutUrl = 'savingsaccounts/' + accountId +'/charges/' + savingsChargeId;
+	var templateSelector = "#modifyLoanChargeFormTemplate";
+	var width = 400;
+	var height = 250;
+	
+	popupDialogWithFormView(getAndPutUrl, getAndPutUrl, 'PUT', 'dialog.title.update.details', templateSelector, 400, 225, successFunction);
+
+	return false;
+}
+
+function paySavingsCharge(accountId, savingsChargeId, parenttab) {
+
+	var successFunction = function(data, textStatus, jqXHR) {
+		$("#dialog-form").dialog("close");
+		loadSavingAccount(accountId, parenttab);
+	};
+	
+	var getAndPutUrl = 'savingsaccounts/' + accountId +'/charges/' + savingsChargeId + '?command=paycharge';
+	var templateSelector = "#paySavingsChargeFormTemplate";
+	var width = 400;
+	var height = 250;
+	
+	popupDialogWithFormView(getAndPutUrl, getAndPutUrl, 'POST', 'dialog.title.pay.charge', templateSelector, 400, 225, successFunction);
+
+	return false;
+}
+
+function waiveSavingsCharge(accountId, savingsChargeId, parenttab) {
+
+	var successFunction = function(data, textStatus, jqXHR) {
+		$("#dialog-form").dialog("close");
+		loadSavingAccount(accountId, parenttab);
+	};
+
+	popupConfirmationDialogAndPost('savingsaccounts/' + accountId +'/charges/' + savingsChargeId + '?command=waive', 'POST', 'dialog.title.confirmation.required', 400, 225, 0, successFunction);
+
+	return false;
 }
 
 function launchAccountTransferDialog(accountId, accountType, parenttab) {
