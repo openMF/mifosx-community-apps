@@ -5520,11 +5520,14 @@ $(document).ready(function() {
 						  <button id="modifyloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
 						{{/if}}   
 						{{#if $parent.parent.data.status.code == "loanStatusType.active"}}    
-						  <button id="waiveloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.waive")}}</button>
+						  	<button id="waiveloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.waive")}}</button>
+						  	{{#if chargePayable}}    
+						  		<button id="payloan{{=$parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.pay")}}</button>
+							{{/if}}
 						{{/if}}	
 						{{#if $parent.parent.data.status.code == "loanStatusType.submitted.and.pending.approval"}}    
 						  <button id="deleteloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
-						{{/if}}  
+						{{/if}} 
 					</td>
 				</tr>
 				{{/each}}
@@ -6167,6 +6170,17 @@ $(document).ready(function() {
 	<input id="transactionDate" name="transactionDate" title="" class="datepickerfield" value="" />
 </form>
 </script>
+
+<script id="payLoanChargeTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	<input id="transactionDate" name="transactionDate" title="" class="datepickerfield" value="" />
+</form>
+</script>
+
 
 <script id="loanDisbursementTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">

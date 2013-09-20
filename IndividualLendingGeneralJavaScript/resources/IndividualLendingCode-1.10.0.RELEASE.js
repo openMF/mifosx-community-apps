@@ -5928,6 +5928,24 @@ function showCenter(centerId){
 
 		return false;
 	}
+
+		function payLoanCharge(loanId, loanChargeId, parenttab) {
+
+		var successFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			loadILLoan(loanId, parenttab);
+		};
+		var getUrl = 'loans/' + loanId + '/charges/'+loanChargeId;
+		var postUrl = 'loans/' + loanId + '/charges/'+loanChargeId+'?command=pay';
+		var templateSelector = "#payLoanChargeTemplate";
+		var width = 400; 
+		var height = 250;
+		eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
+			
+		popupDialogWithFormView("", postUrl, 'POST', "dialog.title.loan.charge.payment", templateSelector, width, height,  successFunction);
+		return false;
+	}
+
 	
 	function removeLoanCollateral(loanId, loanCollateralId, parenttab) {
 
@@ -6574,6 +6592,15 @@ function loadLoan(loanId, parenttab) {
                                 text: false
                             }).click(function(e) {
                                 waiveLoanCharge(loanId,val.id,parenttab);
+                                e.preventDefault();
+                            });
+                        }
+
+                        //Pay loan charge buttons
+				        if(document.getElementById('payloan'+ loanId +'charge'+val.id)){
+                            $('#payloan'+ loanId +'charge'+val.id).button(
+                                ).click(function(e) {
+                                payLoanCharge(loanId,val.id,parenttab);
                                 e.preventDefault();
                             });
                         }
