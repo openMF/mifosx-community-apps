@@ -31,6 +31,10 @@ Endpoint Alert
 ==============
 [Link](docs/endpointAlert.md)
 
+Design
+======
+[Link](docs/design.md)
+
 To Dos
 ======
 [Link](docs/toDos.md)
