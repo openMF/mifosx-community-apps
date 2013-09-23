@@ -7554,11 +7554,14 @@ $(document).ready(function() {
 			{{/if}}
 
 			{{#if $ctx.isCredit(transactionType)}}
-			<td>&nbsp;</td>
-			<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
+				<td>&nbsp;</td>
+				<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
+			{{#else if $ctx.isDebit(transactionType)}}
+				<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
+				<td>&nbsp;</td>
 			{{#else}}
-			<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
-			<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
 			{{/if}}
 			<td>{{=$ctx.monetaryValue(currency, runningBalance)}}</td>
 			{{#if transfer}}
