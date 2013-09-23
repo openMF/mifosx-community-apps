@@ -778,13 +778,12 @@ function setTemplatesAdminContent(divName) {
 	$("#"+divName).html(templatesHTML);
 	
 	$("a[id^=template]").click(function(e) {
-		e.preventDefault();
 		var templateUrl = $(this).attr('href');
 		showTemplateEdit(templateUrl, divName);
+		e.preventDefault();
 	});
 	
 	$("#createTemplate").button().click(function(e) {
-		
 		var templateData = new Object();
 		templateData = jQuery.parseJSON(executeSynchroneAjaxRequest('templates/template', 'GET', "", null, null));
 		templatesHTML = $("#templateCreateFormTemplate").render(templateData);
@@ -819,8 +818,8 @@ function setTemplatesAdminContent(divName) {
 		} );
 		
 		$("#advancedMappersOption").button().click(function(e) {
-	        e.preventDefault();
 			$("#mappersDiv").toggle();
+			e.preventDefault();
 		});
 		
 		$("#addMapper").button().click(function(e) {
@@ -844,9 +843,12 @@ function setTemplatesAdminContent(divName) {
 			});
 		});
 			
-		$("#createTemplate").button().click(function(e) {
+		$("#submitTemplate").button().click(function(e) {
+			alert("submit");
 			CKupdate();
+
 			var formData = $("#templateform").serializeObject();
+
 			var mapper = mergeMaps(formData.mapperskey, formData.mappersvalue);
 			formData.mappers = mapper;
 
@@ -854,8 +856,12 @@ function setTemplatesAdminContent(divName) {
 			delete formData['mappersvalue'];
 			formData.entity = $("#entitySelect").val(); 
 			formData.type = $("#typeSelect").val();
+			console.log(formData);
+
 			executeSynchroneAjaxRequest("templates", "POST", JSON.stringify(formData), null, null);
 			setTemplatesAdminContent(divName);
+
+			e.preventDefault();
 		});
 		
 		$("#templateOverview").button().click(function(e) {
@@ -1034,7 +1040,6 @@ function showLoanKeys() {
 }
 
 function mergeMaps(keymap, valuemap) { 
-	
 	mappers = [];
 	
     if($.isArray(keymap)) {
@@ -1042,7 +1047,7 @@ function mergeMaps(keymap, valuemap) {
     		mappers.push({"mappersorder":index,"mapperskey":value,"mappersvalue":valuemap[index]});
         })
     } else {
-    	mappers.push({"mappersorder":index,"mapperskey":value,"mappersvalue":valuemap[index]});
+    	mappers.push({"mappersorder":0,"mapperskey":keymap,"mappersvalue":valuemap});
     }
     
     return mappers;
