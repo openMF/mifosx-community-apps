@@ -2901,6 +2901,24 @@ $(document).ready(function() {
 	<fieldset>
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
+		<label for="chargeAppliesTo">{{=$ctx.doI18N("form.label.charge.applies.to")}}</label>
+		<select id="chargeAppliesTo" name="chargeAppliesTo" title="" style="width: 300px">
+			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+			{{#if chargeAppliesTo}}
+				{{#each chargeAppliesToOptions}}
+					{{#if $ctx.number($parent.parent.data.chargeAppliesTo.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+					{{/if}}
+				{{/each}}
+			{{#else}}
+				{{#each chargeAppliesToOptions}}
+					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+				{{/each}}
+			{{/if}}
+		</select>
+		<hr>
 		<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 		<input id="name" name="name" title="" type="text" value="{{=name}}" size="25"/>
 		<label for="currencyCode">{{=$ctx.doI18N("label.currency")}}</label>
@@ -2920,34 +2938,29 @@ $(document).ready(function() {
 				{{/each}}
 			{{/if}}
 		</select>
-		<label for="chargeAppliesTo">{{=$ctx.doI18N("form.label.charge.applies.to")}}</label>
-		<select id="chargeAppliesTo" name="chargeAppliesTo" title="" style="width: 300px">
-			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-			{{#if chargeAppliesTo}}
-				{{#each chargeAppliesToOptions}}
-					{{#if $ctx.number($parent.parent.data.chargeAppliesTo.id)===$ctx.number(id)}}
-						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-					{{#else}}
-						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-					{{/if}}
-				{{/each}}
-			{{#else}}
-				{{#each chargeAppliesToOptions}}
-					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-				{{/each}}
-			{{/if}}
-		</select>
+		
 		<label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
 		<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 300px">
 			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 			{{#if chargeTimeType}}
-				{{#each chargeTimeTypeOptions}}
-					{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-					{{#else}}
-						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-					{{/if}}
-				{{/each}}
+				{{#if $parent.data.chargeAppliesTo.id === 1}}
+					{{#each $parent.parent.data.loanChargeTimeTypeOptions}}
+						{{#if $ctx.number($parent.parent.parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+						{{/if}}
+					{{/each}}
+				{{/if}}
+				{{#if $parent.data.chargeAppliesTo.id === 2}}
+					{{#each $parent.parent.data.savingsChargeTimeTypeOptions}}
+						{{#if $ctx.number($parent.parent.parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+						{{/if}}
+					{{/each}}
+				{{/if}}
 			{{#else}}
 				{{#each chargeTimeTypeOptions}}
 					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
@@ -2958,13 +2971,24 @@ $(document).ready(function() {
 		<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 300px">
 			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 			{{#if chargeCalculationType}}
-				{{#each chargeCalculationTypeOptions}}
-					{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-					{{#else}}
-						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-					{{/if}}
-				{{/each}}
+				{{#if $parent.data.chargeAppliesTo.id === 1}}
+					{{#each $parent.parent.data.loanChargeCalculationTypeOptions}}
+						{{#if $ctx.number($parent.parent.parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+						{{/if}}
+					{{/each}}
+				{{/if}}
+				{{#if $parent.data.chargeAppliesTo.id === 2}}
+					{{#each $parent.parent.data.savingsChargeCalculationTypeOptions}}
+						{{#if $ctx.number($parent.parent.parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+						{{/if}}
+					{{/each}}
+				{{/if}}
 			{{#else}}
 				{{#each chargeCalculationTypeOptions}}
 					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
@@ -7392,6 +7416,24 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalAnnualFees)}}</span>
 		</div>
 		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalFeeCharges")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalFeeCharge)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalPenaltyCharges")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalPenaltyCharge)}}</span>
+		</div>
+		<!--
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalFeeChargesWaived")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalFeeChargesWaived)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalPenaltyChargesWaived")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalPenaltyChargesWaived)}}</span>
+		</div>
+		-->
+		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestEarned")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalInterestEarned)}}</span>
 		</div>
@@ -7505,10 +7547,8 @@ $(document).ready(function() {
 
 								{{#else}}  
 							  	<button id="paysavings{{=$parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.pay")}}</button>
+							  	<button id="waivesavings{{=$parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.waive")}}</button>
 							  	{{/if}}
-							{{/if}}
-							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.active"}}    
-							  	<button id="waivesavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.waive")}}</button>
 							{{/if}}
 							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.submitted.and.pending.approval"}}    
 							  <button id="deletesavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.delete")}}</button>
@@ -7604,6 +7644,10 @@ $(document).ready(function() {
 		{{#else}}
 			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amountOutstanding)}}" style="width: 125px;"/>			
 		{{/if}}
+
+		<label for="dueDate">Payment date:</label>
+		<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueDate)}}" />
+
 		</div>
 	</fieldset>
 </form>
