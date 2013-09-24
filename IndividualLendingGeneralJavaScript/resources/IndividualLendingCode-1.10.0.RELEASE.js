@@ -5785,6 +5785,15 @@ function showCenter(centerId){
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);	
 
+		// deleting all charges while modifying a loan application
+		// sends a request to the platform without any json element called
+		// "charges". The platform does not understand that charges have been deleted
+		// Sending an empty array of charges in this associative array instead
+		// for handling this scenario
+		if(!("charges" in serializedArray)){
+		    serializedArray["charges"] = [];
+		}
+
 		var groupId = null;
 		
         //If JLG loan, send group id and calendar id
@@ -8312,6 +8321,46 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	}
 
 	if (templateSelector === "#chargeFormTemplate") {
+		var loanChargeCalculationOptions = data.loanChargeCalculationTypeOptions;
+		var loanChargeTimeOptions = data.loanChargeTimeTypeOptions;
+		var savingsChargeCalculationOptions = data.savingsChargeCalculationTypeOptions;
+		var savingsChargeTimeOptions = data.savingsChargeTimeTypeOptions;
+		if(data.id !== undefined){
+			$("#chargeAppliesTo").attr("disabled", true);	
+		}
+		$("#chargeAppliesTo").change(function() {
+			var selectedValue = $(this).val();
+  			$('#chargeCalculationType').empty().append(function(){
+	            var output = '<option value="">--Select One--</option>';
+	            var calculationOptions;
+	            if (selectedValue == "1"){
+					calculationOptions = data.loanChargeCalculationTypeOptions;
+				}else if (selectedValue == "2"){
+					calculationOptions = data.savingsChargeCalculationTypeOptions;
+				}
+
+				$.each(calculationOptions, function(key, value){
+	               output += '<option value=' + value.id + '>' + doI18N(value.code) + '</option>';
+	            });
+	            return output;
+	        });
+
+	        $('#chargeTimeType').empty().append(function(){
+	            var output = '<option value="">--Select One--</option>';
+	            var collectionTypeOptions;
+	            if (selectedValue == "1"){
+					collectionTypeOptions = data.loanChargeTimeTypeOptions;
+				}else if (selectedValue == "2"){
+					collectionTypeOptions = data.savingsChargeTimeTypeOptions;
+				}				
+
+				$.each(collectionTypeOptions, function(key, value){
+	               output += '<option value=' + value.id + '>' + doI18N(value.code) + '</option>';
+	            });
+	            return output;
+	        });
+		});
+
 		$("#chargeCalculationType").change(function() {
 			var selectedValue = $(this).val();
 	  		if (selectedValue == "1"){
@@ -8321,11 +8370,11 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			}
 		});
 
-		if(data.chargeCalculationType.id == "1") {
-			$("label[for='amount']").text(doI18N('label.amount'));
-		} else if (data.chargeCalculationType.id == "2") {
-			$("label[for='amount']").text(doI18N('label.percentage'));
-		}
+		//if(data.chargeCalculationType.id == "1") {
+		//	$("label[for='amount']").text(doI18N('label.amount'));
+		//} else if (data.chargeCalculationType.id == "2") {
+		//	$("label[for='amount']").text(doI18N('label.percentage'));
+		//}
 	}
 
 	if (templateSelector === "#attendanceFormTemplate") {
