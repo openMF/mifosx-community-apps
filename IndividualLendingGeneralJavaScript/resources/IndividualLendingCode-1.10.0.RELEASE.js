@@ -5372,10 +5372,19 @@ function showCenter(centerId){
 		
 		var serializationOptions = {};
 		serializationOptions["checkboxesAsBools"] = true;
-		
+
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
 
+		// deleting all charges while modifying a savings product
+		// sends a request to the platform without any json element called
+		// "charges". The platform does not understand that charges have been deleted
+		// Sending an empty array of charges in this associative array instead
+		// for handling this scenario
+		if(!("charges" in serializedArray)){
+		    serializedArray["charges"] = [];
+		}
+		
 		if (!serializedArray["paymentChannelToFundSourceMappings"]) {
 			serializedArray["paymentChannelToFundSourceMappings"] = new Array();
 		}
