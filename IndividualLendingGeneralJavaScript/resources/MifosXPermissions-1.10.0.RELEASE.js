@@ -225,14 +225,12 @@ var makeRolePermissionsTabContent = function(currentGrouping, currentTabData, is
 				{
 					permissionCode = i + "_" + singleEntityName;
 					/* transaction_savings have two entity types ACCOUNTTRANSFER & SAVINGSACCOUNT*/
-					if (currentGrouping == "transaction_savings") {
-						for (var x in currentTabData.entityNames) {
-							tempEntityName = x;
-							if (tempEntityName != singleEntityName) {
-								var tempPermissionCode = i + "_" + tempEntityName;
-								if (currentTabData.permissions.hasOwnProperty(tempPermissionCode)) {
-									permissionCode=tempPermissionCode;
-								}
+					for (var x in currentTabData.entityNames) {
+						tempEntityName = x;
+						if (tempEntityName != singleEntityName) {
+							var tempPermissionCode = i + "_" + tempEntityName;
+							if (currentTabData.permissions.hasOwnProperty(tempPermissionCode)) {
+								permissionCode=tempPermissionCode;
 							}
 						}
 					}
