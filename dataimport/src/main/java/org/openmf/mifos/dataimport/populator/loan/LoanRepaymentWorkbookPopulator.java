@@ -19,7 +19,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.util.CellReference;
 import org.openmf.mifos.dataimport.dto.loan.CompactLoan;
 import org.openmf.mifos.dataimport.handler.Result;
 import org.openmf.mifos.dataimport.http.RestClient;
@@ -110,7 +109,7 @@ public class LoanRepaymentWorkbookPopulator extends AbstractWorkbookPopulator {
     	Result result = new Result();
     	try {
         	restClient.createAuthToken();
-            content = restClient.get("loans");
+            content = restClient.get("loans?limit=-1");
             Gson gson = new Gson();
             JsonParser parser = new JsonParser();
             JsonObject obj = parser.parse(content).getAsJsonObject();
@@ -257,10 +256,10 @@ public class LoanRepaymentWorkbookPopulator extends AbstractWorkbookPopulator {
     	
     	//Clients Named after Offices
     	for(Integer i = 0, j = 2; i < officeNames.size(); i++, j = j + 2) {
-    		String lastColumnLetters = CellReference.convertNumToColString(clientSheetPopulator.getLastColumnLetters().get(i));
+    		Integer[] officeNameToBeginEndIndexesOfClients = clientSheetPopulator.getOfficeNameToBeginEndIndexesOfClients().get(i);
     		Name name = loanRepaymentWorkbook.createName();
     	    name.setNameName(officeNames.get(i));
-    	    name.setRefersToFormula("Clients!$B$" + j + ":$" + lastColumnLetters + "$" + j);
+    	    name.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
     	}
     	
     	//Counting clients with active loans and starting and end addresses of cells

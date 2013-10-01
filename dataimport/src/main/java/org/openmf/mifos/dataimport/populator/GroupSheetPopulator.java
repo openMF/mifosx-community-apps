@@ -34,10 +34,11 @@ private static final Logger logger = LoggerFactory.getLogger(GroupSheetPopulator
     
     private Map<String, ArrayList<String>> officeToGroups;
     private Map<String, Integer> groupNameToGroupId;
-    private Map<Integer, Integer> lastColumnLetters;
+    private Map<Integer, Integer[]> officeNameToBeginEndIndexesOfGroups;
     
     private static final int OFFICE_NAME_COL = 0;
     private static final int GROUP_NAME_COL = 1;
+    private static final int GROUP_ID_COL = 2;
     
     public GroupSheetPopulator(RestClient restClient) {
     	this.restClient = restClient;
@@ -49,9 +50,9 @@ private static final Logger logger = LoggerFactory.getLogger(GroupSheetPopulator
     	try {
         	restClient.createAuthToken();
         	groups = new ArrayList<CompactGroup>();
-            content = restClient.get("groups");
+            content = restClient.get("groups?limit=-1");
             parseGroups();
-            content = restClient.get("offices");
+            content = restClient.get("offices?limit=-1");
             parseOfficeNames();
         } catch (Exception e) {
             result.addError(e.getMessage());
@@ -88,7 +89,7 @@ private static final Logger logger = LoggerFactory.getLogger(GroupSheetPopulator
         	CompactGroup group = gson.fromJson(json, CompactGroup.class);
         	if(group.isActive())
         	  groups.add(group);
-        	groupNameToGroupId.put(group.getName(), group.getId());
+        	groupNameToGroupId.put(group.getName().trim(), group.getId());
         }
     }
     
@@ -99,7 +100,7 @@ private static final Logger logger = LoggerFactory.getLogger(GroupSheetPopulator
         officeNames = new ArrayList<String>();
         while(iterator.hasNext()) {
         	String officeName = iterator.next().getAsJsonObject().get("name").toString();
-        	officeName = officeName.substring(1, officeName.length()-1).replaceAll("[ )(]", "_");
+        	officeName = officeName.substring(1, officeName.length()-1).trim().replaceAll("[ )(]", "_");
          officeNames.add(officeName);
         }
     }
@@ -107,7 +108,7 @@ private static final Logger logger = LoggerFactory.getLogger(GroupSheetPopulator
     private void setOfficeToGroupsMap() {
     	officeToGroups = new HashMap<String, ArrayList<String>>();
     	for(CompactGroup group : groups) {
-    		add(group.getOfficeName().replaceAll("[ )(]", "_"), group.getName());
+    		add(group.getOfficeName().trim().replaceAll("[ )(]", "_"), group.getName().trim());
     	}
     }
     
@@ -122,30 +123,28 @@ private static final Logger logger = LoggerFactory.getLogger(GroupSheetPopulator
     }
     
     private void populateGroupsByOfficeName(Sheet groupSheet) {
-    	int rowIndex = 1, officeIndex = 0, colIndex;
-    	lastColumnLetters = new HashMap<Integer, Integer>();
-	    Row row;
+    	int rowIndex = 1, officeIndex = 0, startIndex = 1;
+    	officeNameToBeginEndIndexesOfGroups = new HashMap<Integer, Integer[]>();
+    	Row row = groupSheet.createRow(rowIndex);
 		for(String officeName : officeNames) {
-			colIndex = 0;
-       	    row = groupSheet.createRow(rowIndex);
+			startIndex = rowIndex+1;
        	    writeString(OFFICE_NAME_COL, row, officeName);
        	    ArrayList<String> groupsList = new ArrayList<String>();
        	    
        	    if(officeToGroups.containsKey(officeName))
        	    	groupsList = officeToGroups.get(officeName);
        	    
-       	    if(!groupsList.isEmpty()) 
-       		   for(String groupName : groupsList) 
-       		       writeString(++colIndex, row, groupName);
-       	    
-       	    row = groupSheet.createRow(++rowIndex);
-       	    if(!groupsList.isEmpty()) {
-       	        colIndex = 0;	
-       	        for(String groupName: groupsList) 
-       	             writeInt(++colIndex, row, groupNameToGroupId.get(groupName));
-       	    }
-       	    lastColumnLetters.put(officeIndex++, colIndex);
-       	    rowIndex++;
+       	 if(!groupsList.isEmpty()) {
+     		   for(String groupName : groupsList) {
+     		       writeString(GROUP_NAME_COL, row, groupName);
+     		       writeInt(GROUP_ID_COL, row, groupNameToGroupId.get(groupName));
+     		       row = groupSheet.createRow(++rowIndex);
+     		   }
+     		  officeNameToBeginEndIndexesOfGroups.put(officeIndex++, new Integer[]{startIndex, rowIndex});
+     	    }
+     	    else {
+     	    	officeNameToBeginEndIndexesOfGroups.put(officeIndex++, new Integer[]{startIndex, rowIndex+1});
+     	    }
 		}
     }
     
@@ -156,6 +155,7 @@ private static final Logger logger = LoggerFactory.getLogger(GroupSheetPopulator
            worksheet.setColumnWidth(colIndex, 6000);
         writeString(OFFICE_NAME_COL, rowHeader, "Office Names");
         writeString(GROUP_NAME_COL, rowHeader, "Group Names");
+        writeString(GROUP_ID_COL, rowHeader, "Group ID");
     }
     
     public Integer getGroupsSize() {
@@ -166,8 +166,8 @@ private static final Logger logger = LoggerFactory.getLogger(GroupSheetPopulator
     	return groups;
     }
     
-    public Map<Integer, Integer> getLastColumnLetters() {
-    	return lastColumnLetters;
+    public Map<Integer, Integer[]> getOfficeNameToBeginEndIndexesOfGroups() {
+    	return officeNameToBeginEndIndexesOfGroups;
     }
     
     public Map<String, Integer> getGroupNameToGroupId() {

@@ -116,7 +116,7 @@ public class LoanWorkbookPopulator extends AbstractWorkbookPopulator {
 	    	setLayout(loanSheet);
 	    	if(result.isSuccess())
 	            result = setRules(loanSheet);
-	    	if(result.isSuccess())
+	    	if(result.isSuccess()) 
 	            result = setDefaults(loanSheet);
 	    	setClientAndGroupDateLookupTable(loanSheet, clientSheetPopulator.getClients(), groupSheetPopulator.getGroups(),
 	    			LOOKUP_CLIENT_NAME_COL, LOOKUP_ACTIVATION_DATE_COL);
@@ -241,20 +241,20 @@ public class LoanWorkbookPopulator extends AbstractWorkbookPopulator {
 	        	
 	        	DataValidationConstraint officeNameConstraint = validationHelper.createFormulaListConstraint("Office");
 	        	DataValidationConstraint loanTypeConstraint = validationHelper.createExplicitListConstraint(new String[] {"Individual","Group"});
-	        	DataValidationConstraint clientNameConstraint = validationHelper.createFormulaListConstraint("IF($B1=\"Individual\",INDIRECT($A1),INDIRECT(CONCATENATE($A1,\"_Group\")))");
+	        	DataValidationConstraint clientNameConstraint = validationHelper.createFormulaListConstraint("IF($B1=\"Individual\",INDIRECT(CONCATENATE(\"Client_\",$A1)),INDIRECT(CONCATENATE(\"Group_\",$A1)))");
 	        	DataValidationConstraint productNameConstraint = validationHelper.createFormulaListConstraint("Products");
-	        	DataValidationConstraint loanOfficerNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE($A1,\"_Staff\"))");
-	        	DataValidationConstraint submittedDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=IF(INDIRECT(CONCATENATE($D1,\"_START_DATE\"))>VLOOKUP($C1,$AQ$2:$AR$" + (clientSheetPopulator.getClientsSize() + groupSheetPopulator.getGroupsSize() + 1) + ",2,FALSE),INDIRECT(CONCATENATE($D1,\"_START_DATE\")),VLOOKUP($C1,$AQ$2:$AR$" + (clientSheetPopulator.getClientsSize() + groupSheetPopulator.getGroupsSize() + 1) + ",2,FALSE))", "=TODAY()", "dd/mm/yy");
+	        	DataValidationConstraint loanOfficerNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Staff_\",$A1))");
+	        	DataValidationConstraint submittedDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=IF(INDIRECT(CONCATENATE(\"START_DATE_\",$D1))>VLOOKUP($C1,$AQ$2:$AR$" + (clientSheetPopulator.getClientsSize() + groupSheetPopulator.getGroupsSize() + 1) + ",2,FALSE),INDIRECT(CONCATENATE(\"START_DATE_\",$D1)),VLOOKUP($C1,$AQ$2:$AR$" + (clientSheetPopulator.getClientsSize() + groupSheetPopulator.getGroupsSize() + 1) + ",2,FALSE))", "=TODAY()", "dd/mm/yy");
 	        	DataValidationConstraint approvalDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=$F1", "=TODAY()", "dd/mm/yy");
 	        	DataValidationConstraint disbursedDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=$G1", "=TODAY()", "dd/mm/yy");
 	        	DataValidationConstraint paymentTypeConstraint = validationHelper.createFormulaListConstraint("PaymentTypes");
 	        	DataValidationConstraint fundNameConstraint = validationHelper.createFormulaListConstraint("Funds");
-	        	DataValidationConstraint principalConstraint = validationHelper.createDecimalConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=INDIRECT(CONCATENATE($D1,\"_MIN_PRINCIPAL\"))", "=INDIRECT(CONCATENATE($D1,\"_MAX_PRINCIPAL\"))");
-	        	DataValidationConstraint noOfRepaymentsConstraint = validationHelper.createIntegerConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=INDIRECT(CONCATENATE($D1,\"_MIN_REPAYMENT\"))", "=INDIRECT(CONCATENATE($D1,\"_MAX_REPAYMENT\"))");
+	        	DataValidationConstraint principalConstraint = validationHelper.createDecimalConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=INDIRECT(CONCATENATE(\"MIN_PRINCIPAL_\",$D1))", "=INDIRECT(CONCATENATE(\"MAX_PRINCIPAL_\",$D1))");
+	        	DataValidationConstraint noOfRepaymentsConstraint = validationHelper.createIntegerConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=INDIRECT(CONCATENATE(\"MIN_REPAYMENT_\",$D1))", "=INDIRECT(CONCATENATE(\"MAX_REPAYMENT_\",$D1))");
 	        	DataValidationConstraint frequencyConstraint = validationHelper.createExplicitListConstraint(new String[] {"Days","Weeks","Months"});
 	        	DataValidationConstraint loanTermConstraint = validationHelper.createIntegerConstraint(DataValidationConstraint.OperatorType.GREATER_OR_EQUAL, "=$L1*$M1", null);
-	        	DataValidationConstraint interestFrequencyConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE($D1,\"_INTEREST_FREQUENCY\"))");
-	        	DataValidationConstraint interestConstraint = validationHelper.createIntegerConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=INDIRECT(CONCATENATE($D1,\"_MIN_INTEREST\"))", "=INDIRECT(CONCATENATE($D1,\"_MAX_INTEREST\"))");
+	        	DataValidationConstraint interestFrequencyConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"INTEREST_FREQUENCY_\",$D1))");
+	        	DataValidationConstraint interestConstraint = validationHelper.createIntegerConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=INDIRECT(CONCATENATE(\"MIN_INTEREST_\",$D1))", "=INDIRECT(CONCATENATE(\"MAX_INTEREST_\",$D1))");
 	        	DataValidationConstraint amortizationConstraint = validationHelper.createExplicitListConstraint(new String[] {"Equal principal payments","Equal installments"});
 	        	DataValidationConstraint interestMethodConstraint = validationHelper.createExplicitListConstraint(new String[] {"Flat","Declining Balance"});
 	        	DataValidationConstraint interestCalculationPeriodConstraint = validationHelper.createExplicitListConstraint(new String[] {"Daily","Same as repayment period"});
@@ -335,23 +335,23 @@ public class LoanWorkbookPopulator extends AbstractWorkbookPopulator {
 	    		for(Integer rowNo = 1; rowNo < 1000; rowNo++)
 	    		{
 	    			Row row = worksheet.createRow(rowNo);
-	    			writeFormula(FUND_NAME_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_FUND\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_FUND\")))");
-	    			writeFormula(PRINCIPAL_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_PRINCIPAL\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_PRINCIPAL\")))");
-	    			writeFormula(REPAID_EVERY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_REPAYMENT_EVERY\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_REPAYMENT_EVERY\")))");
-	    			writeFormula(REPAID_EVERY_FREQUENCY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_REPAYMENT_FREQUENCY\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_REPAYMENT_FREQUENCY\")))");
-	    			writeFormula(NO_OF_REPAYMENTS_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_NO_REPAYMENT\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_NO_REPAYMENT\")))");
+	    			writeFormula(FUND_NAME_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"FUND_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"FUND_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(PRINCIPAL_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"PRINCIPAL_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"PRINCIPAL_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(REPAID_EVERY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"REPAYMENT_EVERY_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"REPAYMENT_EVERY_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(REPAID_EVERY_FREQUENCY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"REPAYMENT_FREQUENCY_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"REPAYMENT_FREQUENCY_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(NO_OF_REPAYMENTS_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"NO_REPAYMENT_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"NO_REPAYMENT_\",$D"+ (rowNo + 1) + ")))");
 	    			writeFormula(LOAN_TERM_COL, row, "IF(ISERROR($L" + (rowNo + 1) + "*$M" + (rowNo + 1) + "),\"\",$L" + (rowNo + 1) + "*$M" + (rowNo + 1) + ")");
 	    			writeFormula(LOAN_TERM_FREQUENCY_COL, row, "$N" + (rowNo + 1));
-	    			writeFormula(NOMINAL_INTEREST_RATE_FREQUENCY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_INTEREST_FREQUENCY\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_INTEREST_FREQUENCY\")))");
-	    			writeFormula(NOMINAL_INTEREST_RATE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_INTEREST\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_INTEREST\")))");
-	    			writeFormula(AMORTIZATION_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_AMORTIZATION\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_AMORTIZATION\")))");
-	    			writeFormula(INTEREST_METHOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_INTEREST_TYPE\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_INTEREST_TYPE\")))");
-	    			writeFormula(INTEREST_CALCULATION_PERIOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_INTEREST_CALCULATION\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_INTEREST_CALCULATION\")))");
-	    			writeFormula(ARREARS_TOLERANCE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_ARREARS_TOLERANCE\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_ARREARS_TOLERANCE\")))");
-	    			writeFormula(REPAYMENT_STRATEGY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_STRATEGY\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_STRATEGY\")))");
-	    			writeFormula(GRACE_ON_PRINCIPAL_PAYMENT_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_GRACE_PRINCIPAL\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_GRACE_PRINCIPAL\")))");
-	    			writeFormula(GRACE_ON_INTEREST_PAYMENT_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_GRACE_INTEREST_PAYMENT\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_GRACE_INTEREST_PAYMENT\")))");
-	    			writeFormula(GRACE_ON_INTEREST_CHARGED_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_GRACE_INTEREST_CHARGED\"))),\"\",INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_GRACE_INTEREST_CHARGED\")))");
+	    			writeFormula(NOMINAL_INTEREST_RATE_FREQUENCY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"INTEREST_FREQUENCY_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"INTEREST_FREQUENCY_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(NOMINAL_INTEREST_RATE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"INTEREST_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"INTEREST_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(AMORTIZATION_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"AMORTIZATION_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"AMORTIZATION_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(INTEREST_METHOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"INTEREST_TYPE_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"INTEREST_TYPE_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(INTEREST_CALCULATION_PERIOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"INTEREST_CALCULATION_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"INTEREST_CALCULATION_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(ARREARS_TOLERANCE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"ARREARS_TOLERANCE_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"ARREARS_TOLERANCE_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(REPAYMENT_STRATEGY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"STRATEGY_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"STRATEGY_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(GRACE_ON_PRINCIPAL_PAYMENT_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"GRACE_PRINCIPAL_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"GRACE_PRINCIPAL_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(GRACE_ON_INTEREST_PAYMENT_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"GRACE_INTEREST_PAYMENT_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"GRACE_INTEREST_PAYMENT_\",$D" + (rowNo + 1) + ")))");
+	    			writeFormula(GRACE_ON_INTEREST_CHARGED_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"GRACE_INTEREST_CHARGED_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"GRACE_INTEREST_CHARGED_\",$D" + (rowNo + 1) + ")))");
 	    		}
 	    	} catch (RuntimeException re) {
 	    		result.addError(re.getMessage());
@@ -371,18 +371,24 @@ public class LoanWorkbookPopulator extends AbstractWorkbookPopulator {
         	
         	//Client and Loan Officer Names for each office
         	for(Integer i = 0, j = 2; i < officeNames.size(); i++, j = j + 2) {
-        		String lastColumnLettersOfClients = CellReference.convertNumToColString(clientSheetPopulator.getLastColumnLetters().get(i));
+        		Integer[] officeNameToBeginEndIndexesOfClients = clientSheetPopulator.getOfficeNameToBeginEndIndexesOfClients().get(i);
         		String lastColumnLettersOfStaff = CellReference.convertNumToColString(personnelSheetPopulator.getLastColumnLetters().get(i));
-        		String lastColumnLettersOfGroups = CellReference.convertNumToColString(groupSheetPopulator.getLastColumnLetters().get(i));
+        		Integer[] officeNameToBeginEndIndexesOfGroups = groupSheetPopulator.getOfficeNameToBeginEndIndexesOfGroups().get(i);
         		Name clientName = loanWorkbook.createName();
         		Name loanOfficerName = loanWorkbook.createName();
         		Name groupName = loanWorkbook.createName();
-        	    clientName.setNameName(officeNames.get(i));
-        	    loanOfficerName.setNameName(officeNames.get(i) + "_Staff");
-        	    groupName.setNameName(officeNames.get(i) + "_Group");
-        	    clientName.setRefersToFormula("Clients!$B$" + j + ":$" + lastColumnLettersOfClients + "$" + j);
+        	    
+        	    loanOfficerName.setNameName("Staff_" + officeNames.get(i));
         	    loanOfficerName.setRefersToFormula("Staff!$B$" + j + ":$" + lastColumnLettersOfStaff + "$" + j);
-        	    groupName.setRefersToFormula("Groups!$B$" + j + ":$" + lastColumnLettersOfGroups + "$" + j);
+        	    if(officeNameToBeginEndIndexesOfClients != null) {
+        	    	clientName.setNameName("Client_" + officeNames.get(i));
+            	    clientName.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
+        	    }
+        	    if(officeNameToBeginEndIndexesOfGroups != null) {
+        	    	groupName.setNameName("Group_" + officeNames.get(i));
+            	    groupName.setRefersToFormula("Groups!$B$" + officeNameToBeginEndIndexesOfGroups[0] + ":$B$" + officeNameToBeginEndIndexesOfGroups[1]);
+        	    }
+        	    
         	}
         	
         	//Product Name
@@ -428,28 +434,28 @@ public class LoanWorkbookPopulator extends AbstractWorkbookPopulator {
         		Name graceOnInterestChargedName = loanWorkbook.createName();
         		Name startDateName = loanWorkbook.createName();
         		String productName = products.get(i).getName().replaceAll("[ ]", "_");
-        	    fundName.setNameName(productName + "_FUND");
-        	    principalName.setNameName(productName + "_PRINCIPAL");
-        	    minPrincipalName.setNameName(productName + "_MIN_PRINCIPAL");
-        	    maxPrincipalName.setNameName(productName + "_MAX_PRINCIPAL");
-        	    noOfRepaymentName.setNameName(productName + "_NO_REPAYMENT");
-        	    minNoOfRepayment.setNameName(productName + "_MIN_REPAYMENT");
-        	    maxNoOfRepaymentName.setNameName(productName + "_MAX_REPAYMENT");
-        	    repaymentEveryName.setNameName(productName + "_REPAYMENT_EVERY");
-        	    repaymentFrequencyName.setNameName(productName + "_REPAYMENT_FREQUENCY");
-        	    interestName.setNameName(productName + "_INTEREST");
-        	    minInterestName.setNameName(productName + "_MIN_INTEREST");
-        	    maxInterestName.setNameName(productName + "_MAX_INTEREST");
-        	    interestFrequencyName .setNameName(productName + "_INTEREST_FREQUENCY");
-        	    amortizationName.setNameName(productName + "_AMORTIZATION");
-        	    interestTypeName.setNameName(productName + "_INTEREST_TYPE");
-        	    interestCalculationPeriodName.setNameName(productName + "_INTEREST_CALCULATION");
-        	    transactionProcessingStrategyName.setNameName(productName + "_STRATEGY");
-        	    arrearsToleranceName.setNameName(productName + "_ARREARS_TOLERANCE");
-        	    graceOnPrincipalPaymentName.setNameName(productName + "_GRACE_PRINCIPAL");
-        	    graceOnInterestPaymentName.setNameName(productName + "_GRACE_INTEREST_PAYMENT");
-        	    graceOnInterestChargedName.setNameName(productName + "_GRACE_INTEREST_CHARGED");
-        	    startDateName.setNameName(productName + "_START_DATE");
+        	    fundName.setNameName("FUND_" + productName);
+        	    principalName.setNameName("PRINCIPAL_" + productName);
+        	    minPrincipalName.setNameName("MIN_PRINCIPAL_" + productName);
+        	    maxPrincipalName.setNameName("MAX_PRINCIPAL_" + productName);
+        	    noOfRepaymentName.setNameName("NO_REPAYMENT_" + productName);
+        	    minNoOfRepayment.setNameName("MIN_REPAYMENT_" + productName);
+        	    maxNoOfRepaymentName.setNameName("MAX_REPAYMENT_" + productName);
+        	    repaymentEveryName.setNameName("REPAYMENT_EVERY_" + productName);
+        	    repaymentFrequencyName.setNameName("REPAYMENT_FREQUENCY_" + productName);
+        	    interestName.setNameName("INTEREST_" + productName);
+        	    minInterestName.setNameName("MIN_INTEREST_" + productName);
+        	    maxInterestName.setNameName("MAX_INTEREST_" + productName);
+        	    interestFrequencyName .setNameName("INTEREST_FREQUENCY_" + productName);
+        	    amortizationName.setNameName("AMORTIZATION_" + productName);
+        	    interestTypeName.setNameName("INTEREST_TYPE_" + productName);
+        	    interestCalculationPeriodName.setNameName("INTEREST_CALCULATION_" + productName);
+        	    transactionProcessingStrategyName.setNameName("STRATEGY_" + productName);
+        	    arrearsToleranceName.setNameName("ARREARS_TOLERANCE_" + productName);
+        	    graceOnPrincipalPaymentName.setNameName("GRACE_PRINCIPAL_" + productName);
+        	    graceOnInterestPaymentName.setNameName("GRACE_INTEREST_PAYMENT_" + productName);
+        	    graceOnInterestChargedName.setNameName("GRACE_INTEREST_CHARGED_" + productName);
+        	    startDateName.setNameName("START_DATE_" + productName);
         	    if(products.get(i).getFundName() != null)
         	        fundName.setRefersToFormula("Products!$C$" + (i + 2));
         	    principalName.setRefersToFormula("Products!$D$" + (i + 2));

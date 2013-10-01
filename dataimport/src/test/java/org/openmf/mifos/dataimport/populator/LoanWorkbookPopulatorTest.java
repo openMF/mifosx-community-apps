@@ -30,7 +30,7 @@ public class LoanWorkbookPopulatorTest {
 	@Test
     public void shouldPopulateLoanWorkbook() {
 		
-		Mockito.when(restClient.get("clients")).thenReturn("{\"totalFilteredRecords\": 2,\"pageItems\": [{\"id\": 1,\"accountNo\": \"000000001\"," +
+		Mockito.when(restClient.get("clients?limit=-1")).thenReturn("{\"totalFilteredRecords\": 2,\"pageItems\": [{\"id\": 1,\"accountNo\": \"000000001\"," +
     	 		"\"status\": {\"id\": 300,\"code\": \"clientStatusType.active\",\"value\": \"Active\"},\"active\": true,\"activationDate\": [2013,7,1]," +
     	 		"\"firstname\": \"Arsene\",\"middlename\": \"K\",\"lastname\": \"Wenger\",\"displayName\": \"Arsene K Wenger\",\"officeId\": 1," +
     	 		"\"officeName\": \"Head Office\",\"staffId\": 1,\"staffName\": \"Chatta, Sahil\"},{\"id\": 2,\"accountNo\": \"000000002\"," +
@@ -38,15 +38,15 @@ public class LoanWorkbookPopulatorTest {
     	 		"\"firstname\": \"Billy\",\"middlename\": \"T\",\"lastname\": \"Bob\",\"displayName\": \"Billy T Bob\",\"officeId\": 2,\"officeName\": \"Office1\"," +
     	 		"\"staffId\": 2,\"staffName\": \"Dzeko, Edin\"}]}");
 		
-		Mockito.when(restClient.get("groups")).thenReturn("{\"totalFilteredRecords\": 1,\"pageItems\": [{\"id\": 1, \"name\": \"Group 1\", \"externalId\":" +
+		Mockito.when(restClient.get("groups?limit=-1")).thenReturn("{\"totalFilteredRecords\": 1,\"pageItems\": [{\"id\": 1, \"name\": \"Group 1\", \"externalId\":" +
     			" \"B1561\", \"status\": {\"id\": 300, \"code\": \"clientStatusType.active\", \"value\": \"Active\"},\"active\": true,\"activationDate\":" +
     			" [2013,9,1], \"officeId\": 1, \"officeName\": \"Head Office\", \"staffId\": 1, \"staffName\": \"Chatta, Sahil\", \"hierarchy\": \".1.\"}]}");
 		
-		Mockito.when(restClient.get("offices")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
+		Mockito.when(restClient.get("offices?limit=-1")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
         		"\"openingDate\":[2009,1,1],\"hierarchy\": \".\"},{\"id\": 2,\"name\": \"Office1\",\"nameDecorated\": \"....Office1\",\"openingDate\":[2013,4,1]," +
         		"\"hierarchy\": \".2.\",\"parentId\": 1,\"parentName\": \"Head Office\"}]");
 		
-    	Mockito.when(restClient.get("staff")).thenReturn("[{\"id\": 1, \"firstname\": \"Sahil\", \"lastname\": \"Chatta\", \"displayName\": \"Chatta, Sahil\"," +
+    	Mockito.when(restClient.get("staff?limit=-1")).thenReturn("[{\"id\": 1, \"firstname\": \"Sahil\", \"lastname\": \"Chatta\", \"displayName\": \"Chatta, Sahil\"," +
         		" \"officeId\": 1,\"officeName\": \"Head Office\", \"isLoanOfficer\": true },{\"id\": 2, \"firstname\": \"Edin\", \"lastname\": \"Dzeko\",\"displayName\":" +
         		" \"Dzeko, Edin\",\"officeId\": 2,\"officeName\": \"Office1\",\"isLoanOfficer\": true}]");
     	
@@ -72,10 +72,10 @@ public class LoanWorkbookPopulatorTest {
         Workbook loanWorkbook = new HSSFWorkbook();
         Result result = loanWorkbookPopulator.populate(loanWorkbook);
         Assert.assertTrue(result.isSuccess());
-        Mockito.verify(restClient, Mockito.atLeastOnce()).get("clients");
-        Mockito.verify(restClient, Mockito.atLeastOnce()).get("groups");
-        Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices");
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("staff");
+        Mockito.verify(restClient, Mockito.atLeastOnce()).get("clients?limit=-1");
+        Mockito.verify(restClient, Mockito.atLeastOnce()).get("groups?limit=-1");
+        Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices?limit=-1");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("staff?limit=-1");
     	Mockito.verify(restClient, Mockito.atLeastOnce()).get("loanproducts");
     	Mockito.verify(restClient, Mockito.atLeastOnce()).get("funds");
     	Mockito.verify(restClient, Mockito.atLeastOnce()).get("codes/12/codevalues");

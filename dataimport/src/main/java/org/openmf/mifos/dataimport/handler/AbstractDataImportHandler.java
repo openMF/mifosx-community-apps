@@ -129,7 +129,7 @@ public abstract class AbstractDataImportHandler implements DataImportHandler {
     	 return message.toString();
     }
     
-    public Integer getIdByName (Sheet sheet, String name) {
+    protected Integer getIdByName (Sheet sheet, String name) {
     	String sheetName = sheet.getSheetName();
     	if(!sheetName.equals("Products")) {
     	for (Row row : sheet) {
@@ -137,10 +137,12 @@ public abstract class AbstractDataImportHandler implements DataImportHandler {
                 if (cell.getCellType() == Cell.CELL_TYPE_STRING && cell.getRichStringCellValue().getString().trim().equals(name)) {
                     	if(sheetName.equals("Offices"))
                             return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue(); 
-                    	else if(sheetName.equals("Staff") || sheetName.equals("Clients") || sheetName.equals("Groups"))
+                    	else if(sheetName.equals("Staff"))
                            return ((Double)sheet.getRow(row.getRowNum() + 1).getCell(cell.getColumnIndex()).getNumericCellValue()).intValue();
                     	else if(sheetName.equals("Extras"))
                     		return ((Double)row.getCell(cell.getColumnIndex() - 1).getNumericCellValue()).intValue();
+                    	else if(sheetName.equals("Clients") || sheetName.equals("Groups")) 
+                    		return ((Double)row.getCell(cell.getColumnIndex() + 1).getNumericCellValue()).intValue();
                     }
             }
           }

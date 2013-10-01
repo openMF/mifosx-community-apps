@@ -28,7 +28,7 @@ public class LoanRepaymentWorkbookPopulatorTest {
     @Test
     public void shouldPopulateLoanRepaymentWorkbook() {
     	
-    	Mockito.when(restClient.get("loans")).thenReturn("{\"totalFilteredRecords\": 1,\"pageItems\": [{" +
+    	Mockito.when(restClient.get("loans?limit=-1")).thenReturn("{\"totalFilteredRecords\": 1,\"pageItems\": [{" +
       "\"id\": 3,\"accountNo\": \"000000003\",\"status\": {\"id\": 300,\"code\": \"loanStatusType.active\",\"value\": \"Active\",\"pendingApproval\": false,\"waitingForDisbursal\": false," +
       "\"active\": true,\"closedObligationsMet\": false,\"closedWrittenOff\": false,\"closedRescheduled\": false,\"closed\": false,\"overpaid\": false},\"clientId\": 2," +
       "\"clientName\": \"Billy T Bob\",\"clientOfficeId\": 2,\"loanProductId\": 1,\"loanProductName\": \"HM\",\"loanProductDescription\": \"HM\",\"fundId\": 1,\"fundName\": \"Fund1\"," +
@@ -47,7 +47,7 @@ public class LoanRepaymentWorkbookPopulatorTest {
       "\"summary\": {\"currency\": {\"code\": \"USD\",\"name\": \"US Dollar\",\"decimalPlaces\": 2,\"inMultiplesOf\": 5,\"displaySymbol\": \"$\",\"nameCode\": \"currency.USD\"," +
       "\"displayLabel\": \"US Dollar ($)\"}},\"feeChargesAtDisbursementCharged\": 0,\"loanCounter\": 1,\"loanProductCounter\": 1}]}");
     	
-    	Mockito.when(restClient.get("clients")).thenReturn("{\"totalFilteredRecords\": 2,\"pageItems\": [{\"id\": 1,\"accountNo\": \"000000001\"," +
+    	Mockito.when(restClient.get("clients?limit=-1")).thenReturn("{\"totalFilteredRecords\": 2,\"pageItems\": [{\"id\": 1,\"accountNo\": \"000000001\"," +
     	 		"\"status\": {\"id\": 300,\"code\": \"clientStatusType.active\",\"value\": \"Active\"},\"active\": true,\"activationDate\": [2013,7,1]," +
     	 		"\"firstname\": \"Arsene\",\"middlename\": \"K\",\"lastname\": \"Wenger\",\"displayName\": \"Arsene K Wenger\",\"officeId\": 1," +
     	 		"\"officeName\": \"Head Office\",\"staffId\": 1,\"staffName\": \"Chatta, Sahil\"},{\"id\": 2,\"accountNo\": \"000000002\"," +
@@ -55,7 +55,7 @@ public class LoanRepaymentWorkbookPopulatorTest {
     	 		"\"firstname\": \"Billy\",\"middlename\": \"T\",\"lastname\": \"Bob\",\"displayName\": \"Billy T Bob\",\"officeId\": 2,\"officeName\": \"Office1\"," +
     	 		"\"staffId\": 2,\"staffName\": \"Dzeko, Edin\"}]}");
 		
-		Mockito.when(restClient.get("offices")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
+		Mockito.when(restClient.get("offices?limit=-1")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
         		"\"openingDate\":[2009,1,1],\"hierarchy\": \".\"},{\"id\": 2,\"name\": \"Office1\",\"nameDecorated\": \"....Office1\",\"openingDate\":[2013,4,1]," +
         		"\"hierarchy\": \".2.\",\"parentId\": 1,\"parentName\": \"Head Office\"}]");
 		
@@ -69,9 +69,9 @@ public class LoanRepaymentWorkbookPopulatorTest {
     	Workbook loanRepaymentWorkbook = new HSSFWorkbook();
     	Result result = loanRepaymentWorkbookPopulator.populate(loanRepaymentWorkbook);
     	Assert.assertTrue(result.isSuccess());
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("loans");
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("clients");
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("loans?limit=-1");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("clients?limit=-1");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices?limit=-1");
     	Mockito.verify(restClient, Mockito.atLeastOnce()).get("funds");
     	Mockito.verify(restClient, Mockito.atLeastOnce()).get("codes/12/codevalues");
     	

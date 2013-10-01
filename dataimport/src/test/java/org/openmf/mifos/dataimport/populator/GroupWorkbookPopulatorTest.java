@@ -28,13 +28,13 @@ public class GroupWorkbookPopulatorTest {
     
     @Test
     public void shouldPopulateGroupWorkbook() {
-    	Mockito.when(restClient.get("offices")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
+    	Mockito.when(restClient.get("offices?limit=-1")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
         		"\"openingDate\":[2009,1,1],\"hierarchy\": \".\"},{\"id\": 2,\"name\": \"Office1\",\"nameDecorated\": \"....Office1\",\"openingDate\":[2013,4,1]," +
         		"\"hierarchy\": \".2.\",\"parentId\": 1,\"parentName\": \"Head Office\"}]");
-    	Mockito.when(restClient.get("staff")).thenReturn("[{\"id\": 1, \"firstname\": \"Sahil\", \"lastname\": \"Chatta\", \"displayName\": \"Chatta, Sahil\"," +
+    	Mockito.when(restClient.get("staff?limit=-1")).thenReturn("[{\"id\": 1, \"firstname\": \"Sahil\", \"lastname\": \"Chatta\", \"displayName\": \"Chatta, Sahil\"," +
         		" \"officeId\": 1,\"officeName\": \"Head Office\", \"isLoanOfficer\": true },{\"id\": 2, \"firstname\": \"Edin\", \"lastname\": \"Dzeko\",\"displayName\":" +
         		" \"Dzeko, Edin\",\"officeId\": 2,\"officeName\": \"Office1\",\"isLoanOfficer\": true}]");
-    	Mockito.when(restClient.get("clients")).thenReturn("{\"totalFilteredRecords\": 2,\"pageItems\": [{\"id\": 1,\"accountNo\": \"000000001\"," +
+    	Mockito.when(restClient.get("clients?limit=-1")).thenReturn("{\"totalFilteredRecords\": 2,\"pageItems\": [{\"id\": 1,\"accountNo\": \"000000001\"," +
     	 		"\"status\": {\"id\": 300,\"code\": \"clientStatusType.active\",\"value\": \"Active\"},\"active\": true,\"activationDate\": [2013,7,1]," +
     	 		"\"firstname\": \"Arsene\",\"middlename\": \"K\",\"lastname\": \"Wenger\",\"displayName\": \"Arsene K Wenger\",\"officeId\": 1," +
     	 		"\"officeName\": \"Head Office\",\"staffId\": 1,\"staffName\": \"Chatta, Sahil\"},{\"id\": 2,\"accountNo\": \"000000002\"," +
@@ -49,9 +49,9 @@ public class GroupWorkbookPopulatorTest {
     	Workbook groupWorkbook = new HSSFWorkbook();
     	Result result = groupWorkbookPopulator.populate(groupWorkbook);
     	Assert.assertTrue(result.isSuccess());
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices");
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("staff");
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("clients");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices?limit=-1");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("staff?limit=-1");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("clients?limit=-1");
     	
     	Sheet groupSheet = groupWorkbook.getSheet("Groups");
     	Row row = groupSheet.getRow(0);

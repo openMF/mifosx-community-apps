@@ -55,9 +55,9 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	        try {
 	        	client.createAuthToken();
 	        	personnel = new ArrayList<Personnel>();
-	            content = client.get("staff");
+	            content = client.get("staff?limit=-1");
 	            parseStaff();
-	            content = client.get("offices");
+	            content = client.get("offices?limit=-1");
 	            parseOffices();
 	        } catch (RuntimeException re) {
 	            result.addError(re.getMessage());
@@ -120,7 +120,7 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	        lastColumnLetters = new HashMap<Integer, Integer>();
 	        for(Office office : offices) {
 	        	Row row = staffSheet.createRow(rowIndex);
-	        	writeString(OFFICE_NAME_COL, row, office.getName().replaceAll("[ )(]", "_"));
+	        	writeString(OFFICE_NAME_COL, row, office.getName().trim().replaceAll("[ )(]", "_"));
 	        	
 	        	Integer colIndex = 0;
 	        	ArrayList<String> fullStaffList = getStaffList(office.getHierarchy());

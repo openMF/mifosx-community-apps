@@ -295,18 +295,18 @@ public class SavingsWorkbookPopulator extends AbstractWorkbookPopulator {
       	
       	//Client and Loan Officer Names for each office
       	for(Integer i = 0, j = 2; i < officeNames.size(); i++, j = j + 2) {
-      		String lastColumnLettersOfClients = CellReference.convertNumToColString(clientSheetPopulator.getLastColumnLetters().get(i));
+      		Integer[] officeNameToBeginEndIndexesOfClients = clientSheetPopulator.getOfficeNameToBeginEndIndexesOfClients().get(i);
       		String lastColumnLettersOfStaff = CellReference.convertNumToColString(personnelSheetPopulator.getLastColumnLetters().get(i));
-      		String lastColumnLettersOfGroups = CellReference.convertNumToColString(groupSheetPopulator.getLastColumnLetters().get(i));
+      		Integer[] officeNameToBeginEndIndexesOfGroups = groupSheetPopulator.getOfficeNameToBeginEndIndexesOfGroups().get(i);
       		Name clientName = savingsWorkbook.createName();
       		Name fieldOfficerName = savingsWorkbook.createName();
       		Name groupName = savingsWorkbook.createName();
       	    clientName.setNameName(officeNames.get(i));
       	    fieldOfficerName.setNameName(officeNames.get(i)+"_Staff");
       	    groupName.setNameName(officeNames.get(i) + "_Group");
-      	    clientName.setRefersToFormula("Clients!$B$" + j + ":$" + lastColumnLettersOfClients + "$" + j);
+      	    clientName.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
       	    fieldOfficerName.setRefersToFormula("Staff!$B$" + j + ":$" + lastColumnLettersOfStaff + "$" + j);
-      	    groupName.setRefersToFormula("Groups!$B$" + j + ":$" + lastColumnLettersOfGroups + "$" + j);
+      	    groupName.setRefersToFormula("Groups!$B$" + officeNameToBeginEndIndexesOfGroups[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
       	}
       	
       	//Product Name
@@ -385,6 +385,6 @@ public class SavingsWorkbookPopulator extends AbstractWorkbookPopulator {
       			inMultiplesOfName.setRefersToFormula("Products!$Q$" + (i + 2));
       		}
       	}
-	    }
+	 }
 	    	
 }

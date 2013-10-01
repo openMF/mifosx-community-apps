@@ -48,7 +48,7 @@ public class OfficeSheetPopulator extends AbstractWorkbookPopulator {
         	client.createAuthToken();
         	offices = new ArrayList<Office>();
         	officeNames = new ArrayList<String>();
-            content = client.get("offices");
+            content = client.get("offices?limit=-1");
             parseOffices();
         } catch (Exception e) {
             result.addError(e.getMessage());
@@ -97,7 +97,7 @@ public class OfficeSheetPopulator extends AbstractWorkbookPopulator {
         	json = iterator.next();
         	Office office = gson.fromJson(json, Office.class);
         	offices.add(office);
-        	officeNames.add(office.getName().replaceAll("[ )(]", "_"));
+        	officeNames.add(office.getName().trim().replaceAll("[ )(]", "_"));
         }
     }
     

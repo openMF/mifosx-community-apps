@@ -166,14 +166,14 @@ public class GroupWorkbookPopulator extends AbstractWorkbookPopulator {
     	
 
     	DataValidationConstraint officeNameConstraint = validationHelper.createFormulaListConstraint("Office");
-    	DataValidationConstraint staffNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE($B1,\"_Staff\"))");
+    	DataValidationConstraint staffNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Staff_\",$B1))");
     	DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($B1,$DG$2:$DH" + (officeNames.size() + 1)+",2,FALSE)", "=TODAY()", "dd/mm/yy");
     	DataValidationConstraint booleanConstraint = validationHelper.createExplicitListConstraint(new String[]{"True", "False"});
     	DataValidationConstraint meetingStartDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=$F1", "=TODAY()", "dd/mm/yy");
     	DataValidationConstraint repeatsConstraint = validationHelper.createExplicitListConstraint(new String[]{"Daily", "Weekly", "Monthly", "Yearly"});
     	DataValidationConstraint repeatsEveryConstraint = validationHelper.createFormulaListConstraint("INDIRECT($I1)");
     	DataValidationConstraint repeatsOnConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE($I1,\"_DAYS\"))");
-    	DataValidationConstraint clientNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT($B1)");
+    	DataValidationConstraint clientNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Client_\",$B1))");
 
 
     	DataValidation officeValidation = validationHelper.createValidation(officeNameConstraint, officeNameRange);
@@ -228,13 +228,15 @@ public class GroupWorkbookPopulator extends AbstractWorkbookPopulator {
     	
     	//Client and Staff Names for each office
     	for(Integer i = 0, j = 2; i < officeNames.size(); i++, j = j + 2) {
-    		String lastColumnLettersOfClients = CellReference.convertNumToColString(clientSheetPopulator.getLastColumnLetters().get(i));
+    		Integer[] officeNameToBeginEndIndexesOfClients = clientSheetPopulator.getOfficeNameToBeginEndIndexesOfClients().get(i);
     		String lastColumnLettersOfStaff = CellReference.convertNumToColString(personnelSheetPopulator.getLastColumnLetters().get(i));
     		Name clientName = groupWorkbook.createName();
     		Name loanOfficerName = groupWorkbook.createName();
-    	    clientName.setNameName(officeNames.get(i));
-    	    loanOfficerName.setNameName(officeNames.get(i)+"_Staff");
-    	    clientName.setRefersToFormula("Clients!$B$" + j + ":$" + lastColumnLettersOfClients + "$" + j);
+    		 if(officeNameToBeginEndIndexesOfClients != null) {
+    	          clientName.setNameName("Client_" + officeNames.get(i));
+    	          clientName.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
+    		 }
+    	    loanOfficerName.setNameName("Staff_" + officeNames.get(i));
     	    loanOfficerName.setRefersToFormula("Staff!$B$" + j + ":$" + lastColumnLettersOfStaff + "$" + j);
     	}
     }

@@ -17,8 +17,6 @@ import org.openmf.mifos.dataimport.dto.client.CompactClient;
 import org.openmf.mifos.dataimport.dto.client.CompactGroup;
 
 public abstract class AbstractWorkbookPopulator implements WorkbookPopulator {
-	
-//	private static final Logger logger = LoggerFactory.getLogger(AbstractWorkbookPopulator.class);
 
 	    protected void writeInt(int colIndex, Row row, int value) {
 	            row.createCell(colIndex).setCellValue(value);
@@ -75,6 +73,8 @@ public abstract class AbstractWorkbookPopulator implements WorkbookPopulator {
 	    	int rowIndex = 0;
     		for(CompactClient client: clients) {
     			Row row = sheet.getRow(++rowIndex);
+    			if(row == null)
+    			    row = sheet.createRow(rowIndex);
     			writeString(nameCol, row, client.getDisplayName().replaceAll("[ )(] ", "_"));
     			writeDate(activationDateCol, row, client.getActivationDate().get(2) + "/" + client.getActivationDate().get(1) + "/" + client.getActivationDate().get(0), dateCellStyle);
     		}

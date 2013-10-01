@@ -117,7 +117,7 @@ public class ClientWorkbookPopulator extends AbstractWorkbookPopulator {
     	setNames(worksheet, offices);
 
     	DataValidationConstraint officeNameConstraint = validationHelper.createFormulaListConstraint("Office");
-    	DataValidationConstraint staffNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT($D1)");
+    	DataValidationConstraint staffNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Staff_\",$D1))");
     	DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($D1,$Q$2:$R" + (offices.size() + 1)+",2,FALSE)", "=TODAY()", "dd/mm/yy");
     	DataValidationConstraint activeConstraint = validationHelper.createExplicitListConstraint(new String[]{"True", "False"});
 
@@ -146,7 +146,7 @@ public class ClientWorkbookPopulator extends AbstractWorkbookPopulator {
     	for(Integer i = 0, j = 2; i < offices.size(); i++, j = j+2) {
     		String lastColumnLetters = CellReference.convertNumToColString(personnelSheetPopulator.getLastColumnLetters().get(i));
     		Name name = clientWorkbook.createName();
-    	    name.setNameName(offices.get(i).getName().trim().replaceAll("[ )(]", "_"));
+    	    name.setNameName("Staff_" + offices.get(i).getName().trim().replaceAll("[ )(]", "_"));
     	    name.setRefersToFormula("Staff!$B$" + j + ":$" + lastColumnLetters + "$" + j);
     	}
     }

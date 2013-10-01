@@ -30,7 +30,7 @@ public class OfficeSheetPopulatorTest {
     @Test
     public void shouldDownloadAndParseOffices() {
     	
-        Mockito.when(restClient.get("offices")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
+        Mockito.when(restClient.get("offices?limit=-1")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
         		"\"openingDate\":[2009,1,1],\"hierarchy\": \".\"},{\"id\": 2,\"name\": \"Office1\",\"nameDecorated\": \"....Office1\",\"openingDate\":[2013,4,1]," +
         		"\"hierarchy\": \".2.\",\"parentId\": 1,\"parentName\": \"Head Office\"}]");
 
@@ -38,7 +38,7 @@ public class OfficeSheetPopulatorTest {
     	Result result = populator.downloadAndParse();
     	
     	Assert.assertTrue(result.isSuccess());
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices?limit=-1");
     	List<Office> offices = populator.getOffices();
     	Assert.assertEquals(2, offices.size());
     	Office office = offices.get(1);
@@ -55,7 +55,7 @@ public class OfficeSheetPopulatorTest {
     @Test
     public void shouldPopulateOfficeSheet() {
     	
-        Mockito.when(restClient.get("offices")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
+        Mockito.when(restClient.get("offices?limit=-1")).thenReturn("[{\"id\":1,\"name\":\"Head Office\",\"nameDecorated\":\"Head Office\",\"externalId\": \"1\"," +
         		"\"openingDate\":[2009,1,1],\"hierarchy\": \".\"},{\"id\": 2,\"name\": \"Office1\",\"nameDecorated\": \"....Office1\",\"openingDate\":[2013,4,1]," +
         		"\"hierarchy\": \".2.\",\"parentId\": 1,\"parentName\": \"Head Office\"}]");
 
@@ -65,7 +65,7 @@ public class OfficeSheetPopulatorTest {
     	Result result = populator.populate(book);
     	
     	Assert.assertTrue(result.isSuccess());
-    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices");
+    	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices?limit=-1");
     	
     	Sheet officeSheet = book.getSheet("Offices");
     	Row row = officeSheet.getRow(2);

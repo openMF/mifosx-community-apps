@@ -33,12 +33,12 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
     private ArrayList<String> officeNames;
     
     private Map<String, ArrayList<String>> officeToClients;
-    private Map<Integer, Integer> lastColumnLetters;
+    private Map<Integer, Integer[]> officeNameToBeginEndIndexesOfClients;
     private Map<String, Integer> clientNameToClientId;
     
     private static final int OFFICE_NAME_COL = 0;
     private static final int CLIENT_NAME_COL = 1;
-    private static final int NOTICE_COL = 2;
+    private static final int CLIENT_ID_COL = 2;
 	
 	public ClientSheetPopulator(RestClient restClient) {
     	this.restClient = restClient;
@@ -50,9 +50,9 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
     	try {
         	restClient.createAuthToken();
         	clients = new ArrayList<CompactClient>();
-            content = restClient.get("clients");
+            content = restClient.get("clients?limit=-1");
             parseClients();
-            content = restClient.get("offices");
+            content = restClient.get("offices?limit=-1");
             parseOfficeNames();
         } catch (Exception e) {
             result.addError(e.getMessage());
@@ -87,9 +87,10 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
         while(iterator.hasNext()) {
         	JsonElement json = iterator.next();
         	CompactClient client = gson.fromJson(json, CompactClient.class);
-        	if(client.isActive())
+        	if(client.isActive()) {
         	  clients.add(client);
-        	clientNameToClientId.put(client.getDisplayName(), client.getId());
+        	}
+        	clientNameToClientId.put(client.getDisplayName().trim(), client.getId());
         }
     }
     
@@ -100,44 +101,41 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
         officeNames = new ArrayList<String>();
         while(iterator.hasNext()) {
         	String officeName = iterator.next().getAsJsonObject().get("name").toString();
-        	officeName = officeName.substring(1, officeName.length()-1).replaceAll("[ )(]", "_");
+        	officeName = officeName.substring(1, officeName.length()-1).trim().replaceAll("[ )(]", "_");
          officeNames.add(officeName);
         }
     }
     
     private void populateClientsByOfficeName(Sheet clientSheet) {
-    	int rowIndex = 1, officeIndex = 0, colIndex;
-    	lastColumnLetters = new HashMap<Integer, Integer>();
-	    Row row;
+    	int rowIndex = 1, startIndex = 1, officeIndex = 0;
+    	officeNameToBeginEndIndexesOfClients = new HashMap<Integer, Integer[]>();
+	    Row row = clientSheet.createRow(rowIndex);
 		for(String officeName : officeNames) {
-			colIndex = 0;
-       	    row = clientSheet.createRow(rowIndex);
+			startIndex = rowIndex+1;
        	    writeString(OFFICE_NAME_COL, row, officeName);
        	    ArrayList<String> clientList = new ArrayList<String>();
-       	    
        	    if(officeToClients.containsKey(officeName))
        	         clientList = officeToClients.get(officeName);
        	    
-       	    if(!clientList.isEmpty()) 
-       		   for(String clientName : clientList) 
-       		       writeString(++colIndex, row, clientName);
-       	    
-       	    row = clientSheet.createRow(++rowIndex);
        	    if(!clientList.isEmpty()) {
-       	        colIndex = 0;	
-       	        for(String clientName: clientList) 
-       	             writeInt(++colIndex, row, clientNameToClientId.get(clientName));
+       		   for(String clientName : clientList) {
+       		       writeString(CLIENT_NAME_COL, row, clientName);
+       		       writeInt(CLIENT_ID_COL, row, clientNameToClientId.get(clientName));
+       		       row = clientSheet.createRow(++rowIndex);
+       		   }
+       		officeNameToBeginEndIndexesOfClients.put(officeIndex++, new Integer[]{startIndex, rowIndex});
        	    }
-       	    lastColumnLetters.put(officeIndex++, colIndex);
-       	    rowIndex++;
+       	    else {
+       	    	officeIndex++;
+       	    }
+       	    
 		}
     }
     
     private void setOfficeToClientsMap() {
     	officeToClients = new HashMap<String, ArrayList<String>>();
-    	for(CompactClient person : clients) {
-    		add(person.getOfficeName().replaceAll("[ )(]", "_"), person.getDisplayName());
-    	}
+    	for(CompactClient person : clients) 
+    		add(person.getOfficeName().trim().replaceAll("[ )(]", "_"), person.getDisplayName().trim());
     }
     
     //Guava Multi-map can reduce this.
@@ -158,7 +156,7 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
            worksheet.setColumnWidth(colIndex, 6000);
         writeString(OFFICE_NAME_COL, rowHeader, "Office Names");
         writeString(CLIENT_NAME_COL, rowHeader, "Client Names");
-        writeString(NOTICE_COL, rowHeader, "Every alternating Row consists of corresponding Client IDs.");
+        writeString(CLIENT_ID_COL, rowHeader, "Client ID");
     }
     
     public List<CompactClient> getClients() {
@@ -173,8 +171,8 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
     	return clients.size();
     }
     
-    public Map<Integer, Integer> getLastColumnLetters() {
-    	return lastColumnLetters;
+    public Map<Integer, Integer[]> getOfficeNameToBeginEndIndexesOfClients() {
+    	return officeNameToBeginEndIndexesOfClients;
     }
     
     public Map<String, ArrayList<String>> getOfficeToClients() {
