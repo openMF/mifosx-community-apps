@@ -5751,6 +5751,22 @@ function showCenter(centerId){
 					$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 					
+					$('.noyeardatepickerfield').datepicker(
+					{
+						constrainInput: true, 
+						defaultDate: 0, 
+						dateFormat: 'dd MM',
+						changeMonth: true,
+				        changeYear: false,
+				        showButtonPanel: false,
+				        beforeShow : function(input, inst) {
+				        	$('#ui-datepicker-div').addClass('hide-year-label');
+				        },
+				        onClose: function() {
+				        	$('#ui-datepicker-div').removeClass('hide-year-label');
+				        }
+				    });
+
 					$('#savingschargestable tbody tr:last .savingsapp-removeSavingsCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 						$(this).closest('tr').remove();
 	            		e.preventDefault();
@@ -8052,6 +8068,17 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				dialogDiv.html(formHtml);
 	}
 
+	//apply noyeardatapickerfield stayle
+	$('.noyeardatepickerfield').datepicker({constrainInput: true,defaultDate: 0, dateFormat: 'dd MM',
+		changeMonth: true,changeYear: false,showButtonPanel: false,
+		beforeShow : function(input, inst) {
+        	$('#ui-datepicker-div').addClass('hide-year-label');
+        },
+        onClose: function() {
+        	$('#ui-datepicker-div').removeClass('hide-year-label');
+        }
+    });
+
 	if (templateSelector === "#savingsChargeFormTemplate") {
 		//attaching charges to savings from popup
 		$('#chargeOptions').change(function(e) {
@@ -8060,6 +8087,21 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 					var partialFormHtml = $("#savingsChargeDetailsPartialFormTemplate").render(chargeData);
 					$("#savingsChargeDetails").html(partialFormHtml);
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+					$('.noyeardatepickerfield').datepicker(
+					{
+						constrainInput: true, 
+						defaultDate: 0, 
+						dateFormat: 'dd MM',
+						changeMonth: true,
+				        changeYear: false,
+				        showButtonPanel: false,
+				        beforeShow : function(input, inst) {
+				        	$('#ui-datepicker-div').addClass('hide-year-label');
+				        },
+				        onClose: function() {
+				        	$('#ui-datepicker-div').removeClass('hide-year-label');
+				        }
+				    });					
 				}
 				executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForSavingsSuccess, formErrorFunction);    	
 			}
@@ -9977,6 +10019,7 @@ function loadSavingAccount(accountId,parenttab) {
 
 	var clientId = null;
 	var groupId = null;
+	var annualFeeId = null;
 
 	var accountUrl = 'savingsaccounts/' + accountId+ "?associations=all";
 
@@ -9988,7 +10031,7 @@ function loadSavingAccount(accountId,parenttab) {
 		
 		clientId = data.clientId;
 		groupId = data.groupId;
-		
+		annualFeeId = data.annualFee.id;	
 		var currentTabIndex = $newtabs.tabs('option', 'active');
     	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
     	
@@ -10196,8 +10239,8 @@ function loadSavingAccount(accountId,parenttab) {
 		
 		$('.savingsaccountapplyannualfee'+accountId).button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
 			
-			var postUrl = 'savingsaccounts/' + accountId + '?command=applyAnnualFees';
-			var getUrl = 'savingsaccounts/' + accountId + '/?template=true';
+			var postUrl = 'savingsaccounts/' + accountId + '/charges/' + annualFeeId + '?command=paycharge';
+			var getUrl = 'savingsaccounts/' + accountId + '/charges/' + annualFeeId;
 			var templateSelector = "#savingsAccountApplyAnnualFeeFormTemplate";
 			var width = 400; 
 			var height = 280;
