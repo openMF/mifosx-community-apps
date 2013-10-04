@@ -5146,6 +5146,7 @@ function showCenter(centerId){
 	  				$("#loanPortfolioAccountId").combobox();
 	  				$("#interestOnLoanAccountId").combobox();
 	  				$("#incomeFromFeeAccountId").combobox();
+	  				$("#overpaymentLiabilityAccountId").combobox();
 	  				$("#incomeFromPenaltyAccountId").combobox();
 	  				$("#writeOffAccountId").combobox();
 	  				$("#receivableInterestAccountId").combobox();

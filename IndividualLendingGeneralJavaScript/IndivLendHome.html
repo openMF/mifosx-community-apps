@@ -5821,6 +5821,7 @@ $(document).ready(function() {
 						{{#if interestPortion}}<tr><td style="border: 0px; text-align: left; ">Interest: {{=$ctx.monetaryValue(currency, interestPortion)}}</td></tr>{{/if}}
 						{{#if feeChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Fees: {{=$ctx.monetaryValue(currency, feeChargesPortion)}}</td></tr>{{/if}}
 						{{#if penaltyChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Penalities: {{=$ctx.monetaryValue(currency, penaltyChargesPortion)}}</td></tr>{{/if}}
+						{{#if overpaymentPortion}}<tr><td style="border: 0px; text-align: left; ">Overpayment: {{=$ctx.monetaryValue(currency, overpaymentPortion)}}</td></tr>{{/if}}
 					</table>
 				</td>
 				{{#if transfer}}
@@ -8724,6 +8725,31 @@ $(document).ready(function() {
 									{{#each accountingMappingOptions.expenseAccountOptions}}
 										{{#if $parent.parent.data.accountingMappings}}
 											{{#if $parent.parent.parent.data.accountingMappings.writeOffAccountId === id)}}
+													<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+											{{#else}}
+													<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+											{{/if}}
+										{{#else}}
+											<option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+										{{/if}}
+									{{/each}}
+								</select> 
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<fieldset style="width: 80%;border-top: 1px dotted">
+					<legend>{{=$ctx.doI18N("legend.liabilities")}}</legend>	
+					<table style="width:100%">
+						<tr>
+							<td>{{=$ctx.doI18N("label.overpayments")}}</td>
+							<td>
+								<img src="resources/img/help.png" height="16" width="16" id="accTooltip" title="{{=$ctx.doI18N(\"overPaymentLiabilityTooltip\")}}">
+								<select id="overpaymentLiabilityAccountId" name="overpaymentLiabilityAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each accountingMappingOptions.liabilityAccountOptions}}
+										{{#if $parent.parent.data.accountingMappings}}
+											{{#if $parent.parent.parent.data.accountingMappings.overpaymentLiabilityAccountId === id)}}
 													<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
 											{{#else}}
 													<option value="{{=id}}">{{=name}}({{=glCode}})</option>
