@@ -1,7 +1,5 @@
 package org.openmf.mifos.dataimport.populator;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -71,9 +69,5 @@ public class OfficeSheetPopulatorTest {
     	Row row = officeSheet.getRow(2);
     	Assert.assertEquals("2.0", "" + row.getCell(0).getNumericCellValue());
     	Assert.assertEquals("Office1", row.getCell(1).getStringCellValue());
-    	Assert.assertEquals("Head Office", row.getCell(4).getStringCellValue());
-    	Assert.assertEquals(".2.", row.getCell(5).getStringCellValue());
-    	DateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
-    	Assert.assertEquals("01 April 2013" , dateFormat.format(row.getCell(3).getDateCellValue()));
     }
 }

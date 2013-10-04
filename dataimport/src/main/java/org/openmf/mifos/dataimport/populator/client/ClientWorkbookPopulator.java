@@ -13,7 +13,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.util.CellReference;
 import org.openmf.mifos.dataimport.dto.Office;
 import org.openmf.mifos.dataimport.handler.Result;
 import org.openmf.mifos.dataimport.populator.AbstractWorkbookPopulator;
@@ -143,11 +142,13 @@ public class ClientWorkbookPopulator extends AbstractWorkbookPopulator {
     	officeGroup.setNameName("Office");
     	officeGroup.setRefersToFormula("Offices!$B$2:$B$" + (offices.size() + 1));
     	
-    	for(Integer i = 0, j = 2; i < offices.size(); i++, j = j+2) {
-    		String lastColumnLetters = CellReference.convertNumToColString(personnelSheetPopulator.getLastColumnLetters().get(i));
-    		Name name = clientWorkbook.createName();
-    	    name.setNameName("Staff_" + offices.get(i).getName().trim().replaceAll("[ )(]", "_"));
-    	    name.setRefersToFormula("Staff!$B$" + j + ":$" + lastColumnLetters + "$" + j);
+    	for(Integer i = 0; i < offices.size(); i++) {
+    		Integer[] officeNameToBeginEndIndexesOfStaff = personnelSheetPopulator.getOfficeNameToBeginEndIndexesOfStaff().get(i);
+    		if(officeNameToBeginEndIndexesOfStaff != null) {
+    		   Name name = clientWorkbook.createName();
+    	       name.setNameName("Staff_" + offices.get(i).getName().trim().replaceAll("[ )(]", "_"));
+    	       name.setRefersToFormula("Staff!$B$" + officeNameToBeginEndIndexesOfStaff[0] + ":$B$" + officeNameToBeginEndIndexesOfStaff[1]);
+    		}
     	}
     }
 

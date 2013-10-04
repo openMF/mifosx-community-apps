@@ -20,7 +20,7 @@ public class ApplicationContextListner implements ServletContextListener {
 	private static final Logger logger = LoggerFactory.getLogger(ApplicationContextListner.class);
 
 	@Override
-	public void contextInitialized(ServletContextEvent sce) {
+	public void contextInitialized(@SuppressWarnings("unused") ServletContextEvent sce) {
 		Properties prop = new Properties();
 	    String homeDirectory = System.getProperty("user.home");
 		FileInputStream fis = null;
@@ -51,7 +51,7 @@ public class ApplicationContextListner implements ServletContextListener {
 
 
 	@Override
-	public void contextDestroyed(ServletContextEvent sce) {
+	public void contextDestroyed(@SuppressWarnings("unused") ServletContextEvent sce) {
 		// TODO Auto-generated method stub
 	} 
 }

@@ -6,6 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+
 import org.openmf.mifos.dataimport.dto.AuthToken;
 import org.openmf.mifos.dataimport.http.SimpleHttpRequest.Method;
 import org.slf4j.Logger;
@@ -28,29 +32,29 @@ public class MifosRestClient implements RestClient {
 
     private String authToken;
     
-//    static {
-//    	if(System.getProperty("mifos.endpoint").contains("localhost")) {
-//	    //for localhost testing only
-//	       HttpsURLConnection.setDefaultHostnameVerifier(
-//	       new HostnameVerifier(){
-//
-//	    	  @Override
-//	          public boolean verify(String hostname, @SuppressWarnings("unused") SSLSession sslSession) {
-//	              if (hostname.equals("localhost")) {
-//	                  return true;
-//	              }
-//	              return false;
-//	          }
-//	       });
-//    	}
-//	}
+    static {
+    	if(System.getProperty("mifos.endpoint").contains("localhost")) {
+	    //for localhost testing only
+	       HttpsURLConnection.setDefaultHostnameVerifier(
+	       new HostnameVerifier(){
+
+	    	  @Override
+	          public boolean verify(String hostname, @SuppressWarnings("unused") SSLSession sslSession) {
+	              if (hostname.equals("localhost")) {
+	                  return true;
+	              }
+	              return false;
+	          }
+	       });
+    	}
+	}
     
     public MifosRestClient() {
     	
-        baseURL = "https://maarg.openmf.org/mifosng-provider/api/v1/";   //System.getProperty("mifos.endpoint");
-        userName = "mifos"; //System.getProperty("mifos.user.id");
-        password = "password";  //System.getProperty("mifos.password");
-        tenantId = "maarg";  //System.getProperty("mifos.tenant.id");
+        baseURL  = System.getProperty("mifos.endpoint");
+        userName = System.getProperty("mifos.user.id");
+        password = System.getProperty("mifos.password");
+        tenantId = System.getProperty("mifos.tenant.id");
     };
 
     public static final class Header {

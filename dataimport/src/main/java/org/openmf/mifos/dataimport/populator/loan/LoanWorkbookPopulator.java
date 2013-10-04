@@ -17,7 +17,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.util.CellReference;
 import org.openmf.mifos.dataimport.dto.loan.LoanProduct;
 import org.openmf.mifos.dataimport.handler.Result;
 import org.openmf.mifos.dataimport.populator.AbstractWorkbookPopulator;
@@ -370,16 +369,18 @@ public class LoanWorkbookPopulator extends AbstractWorkbookPopulator {
         	officeGroup.setRefersToFormula("Offices!$B$2:$B$" + (officeNames.size() + 1));
         	
         	//Client and Loan Officer Names for each office
-        	for(Integer i = 0, j = 2; i < officeNames.size(); i++, j = j + 2) {
+        	for(Integer i = 0; i < officeNames.size(); i++) {
         		Integer[] officeNameToBeginEndIndexesOfClients = clientSheetPopulator.getOfficeNameToBeginEndIndexesOfClients().get(i);
-        		String lastColumnLettersOfStaff = CellReference.convertNumToColString(personnelSheetPopulator.getLastColumnLetters().get(i));
+        		Integer[] officeNameToBeginEndIndexesOfStaff = personnelSheetPopulator.getOfficeNameToBeginEndIndexesOfStaff().get(i);
         		Integer[] officeNameToBeginEndIndexesOfGroups = groupSheetPopulator.getOfficeNameToBeginEndIndexesOfGroups().get(i);
         		Name clientName = loanWorkbook.createName();
         		Name loanOfficerName = loanWorkbook.createName();
         		Name groupName = loanWorkbook.createName();
         	    
-        	    loanOfficerName.setNameName("Staff_" + officeNames.get(i));
-        	    loanOfficerName.setRefersToFormula("Staff!$B$" + j + ":$" + lastColumnLettersOfStaff + "$" + j);
+        		if(officeNameToBeginEndIndexesOfStaff != null) {
+        	       loanOfficerName.setNameName("Staff_" + officeNames.get(i));
+        	       loanOfficerName.setRefersToFormula("Staff!$B$" + officeNameToBeginEndIndexesOfStaff[0] + ":$B$" + officeNameToBeginEndIndexesOfStaff[1]);
+        		}
         	    if(officeNameToBeginEndIndexesOfClients != null) {
         	    	clientName.setNameName("Client_" + officeNames.get(i));
             	    clientName.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);

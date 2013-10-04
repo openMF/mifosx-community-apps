@@ -32,15 +32,15 @@ public class GroupDataImportHandlerTest {
 	        Group group = handler.getGroups().get(0);
 	        WeeklyMeeting meeting = (WeeklyMeeting)handler.getMeetings().get(0);
 	        Assert.assertEquals("Test Group X", group.getName());
-	        Assert.assertEquals("15", group.getOfficeId());
-	        Assert.assertEquals("15", handler.getIdByName(book.getSheet("Offices"), "Branch_office").toString());
-	        Assert.assertEquals("21", group.getStaffId());
-	        Assert.assertEquals("21", handler.getIdByName(book.getSheet("Staff"), "Sahil Chatta").toString());
+	        Assert.assertEquals("1", group.getOfficeId());
+	        Assert.assertEquals("1", handler.getIdByName(book.getSheet("Offices"), "Head_Office").toString());
+	        Assert.assertEquals("1", group.getStaffId());
+	        Assert.assertEquals("1", handler.getIdByName(book.getSheet("Staff"), "Sahil Chatta").toString());
 	        Assert.assertEquals("4531",group.getExternalId());
 	        Assert.assertEquals("true", group.isActive());
 	        Assert.assertEquals("13 September 2013", group.getActivationDate());
-	        Assert.assertEquals("187", group.getClientMembers().get(0));
-	        Assert.assertEquals("187", handler.getIdByName(book.getSheet("Clients"), "Yang Ping").toString());
+	        Assert.assertEquals("1", group.getClientMembers().get(0));
+	        Assert.assertEquals("1", handler.getIdByName(book.getSheet("Clients"), "Arsene K Wenger").toString());
 	        
 	        Assert.assertEquals("14 September 2013", meeting.getStartDate());
 	        Assert.assertEquals("true", meeting.isRepeating());

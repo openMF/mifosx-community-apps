@@ -16,7 +16,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.util.CellReference;
 import org.openmf.mifos.dataimport.dto.savings.SavingsProduct;
 import org.openmf.mifos.dataimport.handler.Result;
 import org.openmf.mifos.dataimport.populator.AbstractWorkbookPopulator;
@@ -196,9 +195,9 @@ public class SavingsWorkbookPopulator extends AbstractWorkbookPopulator {
 	        	
 	        	DataValidationConstraint officeNameConstraint = validationHelper.createFormulaListConstraint("Office");
 	        	DataValidationConstraint savingsTypeConstraint = validationHelper.createExplicitListConstraint(new String[] {"Individual","Group"});
-	        	DataValidationConstraint clientNameConstraint = validationHelper.createFormulaListConstraint("IF($B1=\"Individual\",INDIRECT($A1),INDIRECT(CONCATENATE($A1,\"_Group\")))");
+	        	DataValidationConstraint clientNameConstraint = validationHelper.createFormulaListConstraint("IF($B1=\"Individual\",INDIRECT(CONCATENATE(\"Client_\",$A1)),INDIRECT(CONCATENATE(\"Group_\",$A1)))");
 	        	DataValidationConstraint productNameConstraint = validationHelper.createFormulaListConstraint("Products");
-	        	DataValidationConstraint fieldOfficerNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE($A1,\"_STAFF\"))");
+	        	DataValidationConstraint fieldOfficerNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Staff_\",$A1))");
 	        	DataValidationConstraint submittedDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($C1,$AF$2:$AG$" + (clientSheetPopulator.getClientsSize() + groupSheetPopulator.getGroupsSize() + 1) + ",2,FALSE)", "=TODAY()", "dd/mm/yy");
 	        	DataValidationConstraint approvalDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=$F1", "=TODAY()", "dd/mm/yy");
 	        	DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=$G1", "=TODAY()", "dd/mm/yy");
@@ -259,21 +258,21 @@ public class SavingsWorkbookPopulator extends AbstractWorkbookPopulator {
 	    		for(Integer rowNo = 1; rowNo < 1000; rowNo++)
 	    		{
 	    			Row row = worksheet.createRow(rowNo);
-	    			writeFormula(CURRENCY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Currency\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Currency\")))");
-	    			writeFormula(DECIMAL_PLACES_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Decimal_Places\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Decimal_Places\")))");
-	    			writeFormula(IN_MULTIPLES_OF_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_In_Multiples\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_In_Multiples\")))");
-	    			writeFormula(NOMINAL_ANNUAL_INTEREST_RATE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Interest_Rate\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Interest_Rate\")))");
-	    			writeFormula(INTEREST_COMPOUNDING_PERIOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Interest_Compouding\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Interest_Compouding\")))");
-	    			writeFormula(INTEREST_POSTING_PERIOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Interest_Posting\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Interest_Posting\")))");
-	    			writeFormula(INTEREST_CALCULATION_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Interest_Calculation\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Interest_Calculation\")))");
-	    			writeFormula(INTEREST_CALCULATION_DAYS_IN_YEAR_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Days_In_Year\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Days_In_Year\")))");
-	    			writeFormula(MIN_OPENING_BALANCE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Min_Balance\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Min_Balance\")))");
-	    			writeFormula(LOCKIN_PERIOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Lockin_Period\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Lockin_Period\")))");
-	    			writeFormula(LOCKIN_PERIOD_FREQUENCY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Lockin_Frequency\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Lockin_Frequency\")))");
-	    			writeFormula(WITHDRAWAL_FEE_AMOUNT_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Withdrawal_Fee\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Withdrawal_Fee\")))");
-	    			writeFormula(WITHDRAWAL_FEE_TYPE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Withdrawal_Fee_Type\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Withdrawal_Fee_Type\")))");
-	    			writeFormula(ANNUAL_FEE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Annual_Fee\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Annual_Fee\")))");
-	    			writeFormula(ANNUAL_FEE_ON_MONTH_DAY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE($D" + (rowNo + 1) + ",\"_Annual_Fee_Date\"))),\"\",INDIRECT(CONCATENATE($D"+ (rowNo + 1) + ",\"_Annual_Fee_Date\")))");
+	    			writeFormula(CURRENCY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Currency_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Currency_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(DECIMAL_PLACES_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Decimal_Places_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Decimal_Places_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(IN_MULTIPLES_OF_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"In_Multiples_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"In_Multiples_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(NOMINAL_ANNUAL_INTEREST_RATE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Interest_Rate_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Interest_Rate_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(INTEREST_COMPOUNDING_PERIOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Interest_Compouding_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Interest_Compouding_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(INTEREST_POSTING_PERIOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Interest_Posting_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Interest_Posting_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(INTEREST_CALCULATION_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Interest_Calculation_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Interest_Calculation_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(INTEREST_CALCULATION_DAYS_IN_YEAR_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Days_In_Year_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Days_In_Year_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(MIN_OPENING_BALANCE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Min_Balance_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Min_Balance_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(LOCKIN_PERIOD_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Lockin_Period_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Lockin_Period_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(LOCKIN_PERIOD_FREQUENCY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Lockin_Frequency_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Lockin_Frequency_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(WITHDRAWAL_FEE_AMOUNT_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Withdrawal_Fee_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Withdrawal_Fee_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(WITHDRAWAL_FEE_TYPE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Withdrawal_Fee_Type_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Withdrawal_Fee_Type_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(ANNUAL_FEE_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Annual_Fee_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Annual_Fee_\",$D"+ (rowNo + 1) + ")))");
+	    			writeFormula(ANNUAL_FEE_ON_MONTH_DAY_COL, row, "IF(ISERROR(INDIRECT(CONCATENATE(\"Annual_Fee_Date_\",$D" + (rowNo + 1) + "))),\"\",INDIRECT(CONCATENATE(\"Annual_Fee_Date_\",$D"+ (rowNo + 1) + ")))");
 	    			row.getCell(ANNUAL_FEE_ON_MONTH_DAY_COL).setCellStyle(dateCellStyle);
 	    		}
 	    	} catch (RuntimeException re) {
@@ -294,19 +293,25 @@ public class SavingsWorkbookPopulator extends AbstractWorkbookPopulator {
       	officeGroup.setRefersToFormula("Offices!$B$2:$B$" + (officeNames.size() + 1));
       	
       	//Client and Loan Officer Names for each office
-      	for(Integer i = 0, j = 2; i < officeNames.size(); i++, j = j + 2) {
+      	for(Integer i = 0; i < officeNames.size(); i++) {
       		Integer[] officeNameToBeginEndIndexesOfClients = clientSheetPopulator.getOfficeNameToBeginEndIndexesOfClients().get(i);
-      		String lastColumnLettersOfStaff = CellReference.convertNumToColString(personnelSheetPopulator.getLastColumnLetters().get(i));
+      		Integer[] officeNameToBeginEndIndexesOfStaff = personnelSheetPopulator.getOfficeNameToBeginEndIndexesOfStaff().get(i);
       		Integer[] officeNameToBeginEndIndexesOfGroups = groupSheetPopulator.getOfficeNameToBeginEndIndexesOfGroups().get(i);
       		Name clientName = savingsWorkbook.createName();
       		Name fieldOfficerName = savingsWorkbook.createName();
       		Name groupName = savingsWorkbook.createName();
-      	    clientName.setNameName(officeNames.get(i));
-      	    fieldOfficerName.setNameName(officeNames.get(i)+"_Staff");
-      	    groupName.setNameName(officeNames.get(i) + "_Group");
-      	    clientName.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
-      	    fieldOfficerName.setRefersToFormula("Staff!$B$" + j + ":$" + lastColumnLettersOfStaff + "$" + j);
-      	    groupName.setRefersToFormula("Groups!$B$" + officeNameToBeginEndIndexesOfGroups[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
+      		if(officeNameToBeginEndIndexesOfStaff != null) {
+      			fieldOfficerName.setNameName("Staff_" + officeNames.get(i));
+      			fieldOfficerName.setRefersToFormula("Staff!$B$" + officeNameToBeginEndIndexesOfStaff[0] + ":$B$" + officeNameToBeginEndIndexesOfStaff[1]);
+      		}
+      		if(officeNameToBeginEndIndexesOfClients != null) {
+      	        clientName.setNameName("Client_" + officeNames.get(i));
+      	        clientName.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
+      		}
+      		if(officeNameToBeginEndIndexesOfGroups != null) {
+      	        groupName.setNameName("Group_" + officeNames.get(i));
+      	        groupName.setRefersToFormula("Groups!$B$" + officeNameToBeginEndIndexesOfGroups[0] + ":$B$" + officeNameToBeginEndIndexesOfGroups[1]);
+      		}
       	}
       	
       	//Product Name
@@ -336,15 +341,15 @@ public class SavingsWorkbookPopulator extends AbstractWorkbookPopulator {
       		SavingsProduct product = products.get(i);
       		String productName = product.getName().replaceAll("[ ]", "_");
       		if(product.getNominalAnnualInterestRate() != null) {
-      		   interestRateName.setNameName(productName + "_Interest_Rate");
+      		   interestRateName.setNameName("Interest_Rate_" + productName);
       		   interestRateName.setRefersToFormula("Products!$C$" + (i + 2));
       		}
-      		interestCompoundingPeriodName.setNameName(productName + "_Interest_Compouding");
-      		interestPostingPeriodName.setNameName(productName + "_Interest_Posting");
-      		interestCalculationName.setNameName(productName + "_Interest_Calculation");
-      		daysInYearName.setNameName(productName + "_Days_In_Year");
-      		currencyName.setNameName(productName + "_Currency");
-      		decimalPlacesName.setNameName(productName + "_Decimal_Places");
+      		interestCompoundingPeriodName.setNameName("Interest_Compouding_" + productName);
+      		interestPostingPeriodName.setNameName("Interest_Posting_" + productName);
+      		interestCalculationName.setNameName("Interest_Calculation_" + productName);
+      		daysInYearName.setNameName("Days_In_Year_" + productName);
+      		currencyName.setNameName("Currency_" + productName);
+      		decimalPlacesName.setNameName("Decimal_Places_" + productName);
       		interestCompoundingPeriodName.setRefersToFormula("Products!$D$" + (i + 2));
       		interestPostingPeriodName.setRefersToFormula("Products!$E$" + (i + 2));
       		interestCalculationName.setRefersToFormula("Products!$F$" + (i + 2));
@@ -352,36 +357,36 @@ public class SavingsWorkbookPopulator extends AbstractWorkbookPopulator {
       		currencyName.setRefersToFormula("Products!$O$" + (i + 2));
       		decimalPlacesName.setRefersToFormula("Products!$P$" + (i + 2));
       		if(product.getMinRequiredOpeningBalance() != null) {
-      		   minOpeningBalanceName.setNameName(productName + "_Min_Balance");
+      		   minOpeningBalanceName.setNameName("Min_Balance_" + productName);
       		   minOpeningBalanceName.setRefersToFormula("Products!$H$" + (i + 2));
       		}
       		if(product.getLockinPeriodFrequency() != null) {
-      		   lockinPeriodName.setNameName(productName + "_Lockin_Period");
+      		   lockinPeriodName.setNameName("Lockin_Period_" + productName);
       		   lockinPeriodName.setRefersToFormula("Products!$I$" + (i + 2));
       		}
       		if(product.getLockinPeriodFrequencyType() != null) {
-      		   lockinPeriodFrequencyName.setNameName(productName + "_Lockin_Frequency");
+      		   lockinPeriodFrequencyName.setNameName("Lockin_Frequency_" + productName);
       		   lockinPeriodFrequencyName.setRefersToFormula("Products!$J$" + (i + 2));
       		}
       		if(product.getWithdrawalFeeAmount() != null) {
-      		   withdrawalFeeAmountName.setNameName(productName + "_Withdrawal_Fee");
+      		   withdrawalFeeAmountName.setNameName("Withdrawal_Fee_" + productName);
       		   withdrawalFeeAmountName.setRefersToFormula("Products!$K$" + (i + 2));
       		}
       		if(product.getWithdrawalFeeType() != null) {
-      		   withdrawalFeeTypeName.setNameName(productName + "_Withdrawal_Fee_Type");
+      		   withdrawalFeeTypeName.setNameName("Withdrawal_Fee_Type_" + productName);
       		   withdrawalFeeTypeName.setRefersToFormula("Products!$L$" + (i + 2));
       		}
       		if(product.getAnnualFeeAmount() != null) {
-      		   annualFeeName.setNameName(productName + "_Annual_Fee");
+      		   annualFeeName.setNameName("Annual_Fee_" + productName);
       		   annualFeeName.setRefersToFormula("Products!$M$" + (i + 2));
       		}
       		if(product.getAnnualFeeOnMonthDay() != null) {
-      		   annualFeeOnDateName.setNameName(productName + "_Annual_Fee_Date");
+      		   annualFeeOnDateName.setNameName("Annual_Fee_Date_" + productName);
       		   annualFeeOnDateName.setRefersToFormula("Products!$N$" + (i + 2));
       		}
       		
       		if(product.getCurrency().getInMultiplesOf() != null) {
-      			inMultiplesOfName.setNameName(productName + "_In_Multiples");
+      			inMultiplesOfName.setNameName("In_Multiples_" + productName);
       			inMultiplesOfName.setRefersToFormula("Products!$Q$" + (i + 2));
       		}
       	}

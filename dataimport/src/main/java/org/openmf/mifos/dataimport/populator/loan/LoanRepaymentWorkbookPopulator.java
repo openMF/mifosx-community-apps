@@ -208,8 +208,8 @@ public class LoanRepaymentWorkbookPopulator extends AbstractWorkbookPopulator {
         	setNames(worksheet);
         	
         	DataValidationConstraint officeNameConstraint = validationHelper.createFormulaListConstraint("Office");
-        	DataValidationConstraint clientNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT($A1)");
-        	DataValidationConstraint accountNumberConstraint = validationHelper.createFormulaListConstraint("INDIRECT(SUBSTITUTE($B1,\" \",\"_\"))");
+        	DataValidationConstraint clientNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Client_\",$A1))");
+        	DataValidationConstraint accountNumberConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Account_\",SUBSTITUTE($B1,\" \",\"_\")))");
         	DataValidationConstraint paymentTypeConstraint = validationHelper.createFormulaListConstraint("PaymentTypes");
         	DataValidationConstraint repaymentDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($C1,$P$2:$S$" + (loans.size() + 1) + ",4,FALSE)", "=TODAY()", "dd/mm/yy");
         	
@@ -255,11 +255,13 @@ public class LoanRepaymentWorkbookPopulator extends AbstractWorkbookPopulator {
     	officeGroup.setRefersToFormula("Offices!$B$2:$B$" + (officeNames.size() + 1));
     	
     	//Clients Named after Offices
-    	for(Integer i = 0, j = 2; i < officeNames.size(); i++, j = j + 2) {
+    	for(Integer i = 0; i < officeNames.size(); i++) {
     		Integer[] officeNameToBeginEndIndexesOfClients = clientSheetPopulator.getOfficeNameToBeginEndIndexesOfClients().get(i);
     		Name name = loanRepaymentWorkbook.createName();
-    	    name.setNameName(officeNames.get(i));
-    	    name.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
+    		if(officeNameToBeginEndIndexesOfClients != null) {
+    	       name.setNameName("Client_" + officeNames.get(i));
+    	       name.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
+    		}
     	}
     	
     	//Counting clients with active loans and starting and end addresses of cells
@@ -285,7 +287,7 @@ public class LoanRepaymentWorkbookPopulator extends AbstractWorkbookPopulator {
     	//Account Number Named  after Clients
     	for(int j = 0; j < clientsWithActiveLoans.size(); j++) {
     		Name name = loanRepaymentWorkbook.createName();
-    		name.setNameName(clientsWithActiveLoans.get(j).replaceAll(" ", "_"));
+    		name.setNameName("Account_" + clientsWithActiveLoans.get(j).replaceAll(" ", "_"));
     		name.setRefersToFormula("LoanRepayment!$P$" + clientNameToBeginEndIndexes.get(clientsWithActiveLoans.get(j))[0] + ":$P$" + clientNameToBeginEndIndexes.get(clientsWithActiveLoans.get(j))[1]);
     	}
     	

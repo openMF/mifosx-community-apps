@@ -84,7 +84,7 @@ public class PersonnelSheetPopulatorTest {
     	Result result = populator.populate(book);
     	
     	Map<String, ArrayList<String>> officeToPersonnel = populator.getOfficeToPersonnel();
-    	Map<Integer, Integer> lastColumnLetters = populator.getLastColumnLetters();
+    	Integer[] officeNameToBeginEndIndexesOfStaff = populator.getOfficeNameToBeginEndIndexesOfStaff().get(0);
     	Map<Integer,String> officeIdToOfficeName = populator.getOfficeIdToOfficeName();
     	Map<String, Integer> staffNameToStaffId = populator.getStaffNameToStaffId();
     	
@@ -93,18 +93,16 @@ public class PersonnelSheetPopulatorTest {
     	Mockito.verify(restClient, Mockito.atLeastOnce()).get("offices?limit=-1");
     	
     	Sheet staffSheet = book.getSheet("Staff");
-    	Row row = staffSheet.getRow(3);
+    	Row row = staffSheet.getRow(2);
     	Assert.assertEquals("Office1", row.getCell(0).getStringCellValue());
     	Assert.assertEquals("Sahil Chatta", row.getCell(1).getStringCellValue());
-    	Assert.assertEquals("Edin Dzeko", row.getCell(2).getStringCellValue());
-    	row = staffSheet.getRow(4);
-    	Assert.assertEquals("1.0", "" + row.getCell(1).getNumericCellValue());
-    	Assert.assertEquals("2.0", "" + row.getCell(2).getNumericCellValue());
+    	Assert.assertEquals("1.0", "" + row.getCell(2).getNumericCellValue());
     	
     	Assert.assertEquals(1, officeToPersonnel.get("Office1").size());
-    	Assert.assertEquals(1, officeToPersonnel.get("Head Office").size());
+    	Assert.assertEquals(1, officeToPersonnel.get("Head_Office").size());
     	Assert.assertEquals("Edin Dzeko", officeToPersonnel.get("Office1").get(0));
-    	Assert.assertEquals("2", "" + lastColumnLetters.get(1));
+    	Assert.assertEquals("2", "" + officeNameToBeginEndIndexesOfStaff[0]);
+    	Assert.assertEquals("2", "" + officeNameToBeginEndIndexesOfStaff[1]);
     	Assert.assertEquals(2, officeIdToOfficeName.size());
     	Assert.assertEquals(2, staffNameToStaffId.size());
     	Assert.assertEquals("Office1", officeIdToOfficeName.get(2));

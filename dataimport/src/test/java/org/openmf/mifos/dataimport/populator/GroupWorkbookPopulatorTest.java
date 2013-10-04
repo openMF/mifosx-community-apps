@@ -23,8 +23,8 @@ public class GroupWorkbookPopulatorTest {
 	@Mock
 	RestClient restClient;
     
-	private static final int LOOKUP_OFFICE_NAME_COL = 110;
-    private static final int LOOKUP_OFFICE_OPENING_DATE_COL = 111;
+	private static final int LOOKUP_OFFICE_NAME_COL = 251;
+    private static final int LOOKUP_OFFICE_OPENING_DATE_COL = 252;
     
     @Test
     public void shouldPopulateGroupWorkbook() {

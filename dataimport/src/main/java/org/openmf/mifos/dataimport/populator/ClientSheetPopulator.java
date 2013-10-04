@@ -125,10 +125,8 @@ public class ClientSheetPopulator extends AbstractWorkbookPopulator {
        		   }
        		officeNameToBeginEndIndexesOfClients.put(officeIndex++, new Integer[]{startIndex, rowIndex});
        	    }
-       	    else {
+       	    else 
        	    	officeIndex++;
-       	    }
-       	    
 		}
     }
     

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -32,10 +31,6 @@ public class OfficeSheetPopulator extends AbstractWorkbookPopulator {
 	
 	private static final int ID_COL = 0;
 	private static final int OFFICE_NAME_COL = 1;
-	private static final int EXTERNAL_ID_COL = 2;
-	private static final int OPENING_DATE_COL = 3;
-    private static final int PARENT_NAME_COL = 4;
-    private static final int HIERARCHY_COL = 5;
 
     public OfficeSheetPopulator(RestClient client) {
         this.client = client;
@@ -75,15 +70,10 @@ public class OfficeSheetPopulator extends AbstractWorkbookPopulator {
     }
     
     private void populateOffices(Sheet officeSheet, int rowIndex) {
-    	CellStyle dateCellStyle = getDateCellStyle(officeSheet.getWorkbook());
     	for(Office office:offices) {
         	Row row = officeSheet.createRow(rowIndex);
         	writeInt(ID_COL, row, office.getId());
         	writeString(OFFICE_NAME_COL, row, office.getName().trim().replaceAll("[ )(]", "_"));
-        	writeString(EXTERNAL_ID_COL, row, office.getExternalId());
-        	writeDate(OPENING_DATE_COL, row, office.getOpeningDate().get(2) + "/" + office.getOpeningDate().get(1) + "/" + office.getOpeningDate().get(0), dateCellStyle);
-        	writeString(PARENT_NAME_COL,row,office.getParentName());
-        	writeString(HIERARCHY_COL, row, office.getHierarchy());
         	rowIndex++;
         }
     }
@@ -104,18 +94,10 @@ public class OfficeSheetPopulator extends AbstractWorkbookPopulator {
     private void setLayout(Sheet worksheet) {
     	worksheet.setColumnWidth(ID_COL, 2000);
         worksheet.setColumnWidth(OFFICE_NAME_COL, 7000);
-        worksheet.setColumnWidth(EXTERNAL_ID_COL, 7000);
-        worksheet.setColumnWidth(OPENING_DATE_COL, 4000);
-        worksheet.setColumnWidth(PARENT_NAME_COL, 7000);
-        worksheet.setColumnWidth(HIERARCHY_COL, 6000);
         Row rowHeader = worksheet.createRow(0);
         rowHeader.setHeight((short)500);
         writeString(ID_COL, rowHeader, "ID");
         writeString(OFFICE_NAME_COL, rowHeader, "Name");
-        writeString(EXTERNAL_ID_COL, rowHeader, "External ID");
-        writeString(OPENING_DATE_COL, rowHeader, "Opening Date");
-        writeString(PARENT_NAME_COL, rowHeader, "Parent Name");
-        writeString(HIERARCHY_COL, rowHeader, "Hierarchy");
     }
     
     public List<Office> getOffices() {

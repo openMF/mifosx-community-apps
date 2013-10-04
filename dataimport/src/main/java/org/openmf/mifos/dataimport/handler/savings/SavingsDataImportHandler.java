@@ -261,7 +261,8 @@ public class SavingsDataImportHandler extends AbstractDataImportHandler {
     	if(approvalDates.get(rowIndex) != null) {
             String payload = gson.toJson(approvalDates.get(rowIndex));
             logger.info(payload);
-            restClient.post("savingsaccounts/" + savingsId + "?command=approve", payload);
+            String response = restClient.post("savingsaccounts/" + savingsId + "?command=approve", payload);
+            logger.info(response);
          }
     	return 2;
     }
@@ -280,7 +281,7 @@ public class SavingsDataImportHandler extends AbstractDataImportHandler {
     	savingsSheet.setColumnWidth(STATUS_COL, 4000);
         Row rowHeader = savingsSheet.getRow(0);
     	writeString(STATUS_COL, rowHeader, "Status");
-    	writeString(SAVINGS_ID_COL, rowHeader, "Loan ID");
+    	writeString(SAVINGS_ID_COL, rowHeader, "Savings ID");
     	writeString(FAILURE_REPORT_COL, rowHeader, "Report");
     }
     

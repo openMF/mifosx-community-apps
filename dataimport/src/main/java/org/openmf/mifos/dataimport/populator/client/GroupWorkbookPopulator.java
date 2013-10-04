@@ -14,7 +14,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.ss.util.CellReference;
 import org.openmf.mifos.dataimport.handler.Result;
 import org.openmf.mifos.dataimport.populator.AbstractWorkbookPopulator;
 import org.openmf.mifos.dataimport.populator.ClientSheetPopulator;
@@ -39,12 +38,12 @@ public class GroupWorkbookPopulator extends AbstractWorkbookPopulator {
     private static final int GROUP_ID_COL = 12;
     private static final int FAILURE_COL = 13;
     private static final int CLIENT_NAMES_STARTING_COL = 14;
-    private static final int CLIENT_NAMES_ENDING_COL = 109;
-    private static final int LOOKUP_OFFICE_NAME_COL = 110;
-    private static final int LOOKUP_OFFICE_OPENING_DATE_COL = 111;
-    private static final int LOOKUP_REPEAT_NORMAL_COL = 112;
-    private static final int LOOKUP_REPEAT_MONTHLY_COL = 113;
-    private static final int LOOKUP_IF_REPEAT_WEEKLY_COL = 114;
+    private static final int CLIENT_NAMES_ENDING_COL = 250;
+    private static final int LOOKUP_OFFICE_NAME_COL = 251;
+    private static final int LOOKUP_OFFICE_OPENING_DATE_COL = 252;
+    private static final int LOOKUP_REPEAT_NORMAL_COL = 253;
+    private static final int LOOKUP_REPEAT_MONTHLY_COL = 254;
+    private static final int LOOKUP_IF_REPEAT_WEEKLY_COL = 255;
     @SuppressWarnings("CPD-END")
     
     private OfficeSheetPopulator officeSheetPopulator;
@@ -167,7 +166,7 @@ public class GroupWorkbookPopulator extends AbstractWorkbookPopulator {
 
     	DataValidationConstraint officeNameConstraint = validationHelper.createFormulaListConstraint("Office");
     	DataValidationConstraint staffNameConstraint = validationHelper.createFormulaListConstraint("INDIRECT(CONCATENATE(\"Staff_\",$B1))");
-    	DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($B1,$DG$2:$DH" + (officeNames.size() + 1)+",2,FALSE)", "=TODAY()", "dd/mm/yy");
+    	DataValidationConstraint activationDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=VLOOKUP($B1,$IR$2:$IS" + (officeNames.size() + 1)+",2,FALSE)", "=TODAY()", "dd/mm/yy");
     	DataValidationConstraint booleanConstraint = validationHelper.createExplicitListConstraint(new String[]{"True", "False"});
     	DataValidationConstraint meetingStartDateConstraint = validationHelper.createDateConstraint(DataValidationConstraint.OperatorType.BETWEEN, "=$F1", "=TODAY()", "dd/mm/yy");
     	DataValidationConstraint repeatsConstraint = validationHelper.createExplicitListConstraint(new String[]{"Daily", "Weekly", "Monthly", "Yearly"});
@@ -212,32 +211,34 @@ public class GroupWorkbookPopulator extends AbstractWorkbookPopulator {
     	//Repeat constraint names
     	Name repeatsDaily = groupWorkbook.createName();
     	repeatsDaily.setNameName("Daily");
-    	repeatsDaily.setRefersToFormula("Groups!$DI$2:$DI$4");
+    	repeatsDaily.setRefersToFormula("Groups!$IT$2:$IT$4");
     	Name repeatsWeekly = groupWorkbook.createName();
     	repeatsWeekly.setNameName("Weekly");
-    	repeatsWeekly.setRefersToFormula("Groups!$DI$2:$DI$4");
+    	repeatsWeekly.setRefersToFormula("Groups!$IT$2:$IT$4");
     	Name repeatYearly = groupWorkbook.createName();
     	repeatYearly.setNameName("Yearly");
-    	repeatYearly.setRefersToFormula("Groups!$DI$2:$DI$4");
+    	repeatYearly.setRefersToFormula("Groups!$IT$2:$IT$4");
     	Name repeatsMonthly = groupWorkbook.createName();
     	repeatsMonthly.setNameName("Monthly");
-    	repeatsMonthly.setRefersToFormula("Groups!$DJ$2:$DJ$12");
+    	repeatsMonthly.setRefersToFormula("Groups!$IU$2:$IU$12");
     	Name repeatsOnWeekly = groupWorkbook.createName();
     	repeatsOnWeekly.setNameName("Weekly_Days");
-    	repeatsOnWeekly.setRefersToFormula("Groups!$DK$2:$DK$8");
+    	repeatsOnWeekly.setRefersToFormula("Groups!$IV$2:$IV$8");
     	
     	//Client and Staff Names for each office
-    	for(Integer i = 0, j = 2; i < officeNames.size(); i++, j = j + 2) {
+    	for(Integer i = 0; i < officeNames.size(); i++) {
     		Integer[] officeNameToBeginEndIndexesOfClients = clientSheetPopulator.getOfficeNameToBeginEndIndexesOfClients().get(i);
-    		String lastColumnLettersOfStaff = CellReference.convertNumToColString(personnelSheetPopulator.getLastColumnLetters().get(i));
+    		Integer[] officeNameToBeginEndIndexesOfStaff = personnelSheetPopulator.getOfficeNameToBeginEndIndexesOfStaff().get(i);
     		Name clientName = groupWorkbook.createName();
     		Name loanOfficerName = groupWorkbook.createName();
     		 if(officeNameToBeginEndIndexesOfClients != null) {
     	          clientName.setNameName("Client_" + officeNames.get(i));
     	          clientName.setRefersToFormula("Clients!$B$" + officeNameToBeginEndIndexesOfClients[0] + ":$B$" + officeNameToBeginEndIndexesOfClients[1]);
     		 }
-    	    loanOfficerName.setNameName("Staff_" + officeNames.get(i));
-    	    loanOfficerName.setRefersToFormula("Staff!$B$" + j + ":$" + lastColumnLettersOfStaff + "$" + j);
+    		 if(officeNameToBeginEndIndexesOfStaff != null) {
+    	        loanOfficerName.setNameName("Staff_" + officeNames.get(i));
+    	        loanOfficerName.setRefersToFormula("Staff!$B$" + officeNameToBeginEndIndexesOfStaff[0] + ":$B$" + officeNameToBeginEndIndexesOfStaff[1]);
+    		 }
     	}
     }
 

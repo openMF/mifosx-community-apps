@@ -37,12 +37,12 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	private Map<String, ArrayList<String>> officeToPersonnel;
 	private Map<String, Integer> staffNameToStaffId;
 	
-	private Map<Integer, Integer> lastColumnLetters;
+	private Map<Integer, Integer[]> officeNameToBeginEndIndexesOfStaff;
 	private Map<Integer,String> officeIdToOfficeName;
 	
 	private static final int OFFICE_NAME_COL = 0;
-	private static final int STAFF_LIST_START_COL = 1;
-	private static final int NOTICE_COL = 2;
+	private static final int STAFF_NAME_COL = 1;
+	private static final int STAFF_ID_COL = 2;
 	
 	public PersonnelSheetPopulator(Boolean onlyLoanOfficers, RestClient client) {
 		this.onlyLoanOfficers = onlyLoanOfficers;
@@ -110,43 +110,38 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
             while(iterator.hasNext()) {
             	json = iterator.next();
             	Office office = new Gson().fromJson(json, Office.class);
-            	officeIdToOfficeName.put(office.getId(), office.getName());
+            	officeIdToOfficeName.put(office.getId(), office.getName().trim().replaceAll("[ )(]", "_"));
             	offices.add(office);
             }
 	    }
 	    
 	    private void populateStaffByOfficeName(Sheet staffSheet) {
-	    	int rowIndex = 1, officeIndex = 0;
-	        lastColumnLetters = new HashMap<Integer, Integer>();
+	    	int rowIndex = 1, startIndex = 1, officeIndex = 0;
+	    	officeNameToBeginEndIndexesOfStaff = new HashMap<Integer, Integer[]>();
+	    	Row row = staffSheet.createRow(rowIndex);
 	        for(Office office : offices) {
-	        	Row row = staffSheet.createRow(rowIndex);
+	        	startIndex = rowIndex+1;
 	        	writeString(OFFICE_NAME_COL, row, office.getName().trim().replaceAll("[ )(]", "_"));
 	        	
-	        	Integer colIndex = 0;
 	        	ArrayList<String> fullStaffList = getStaffList(office.getHierarchy());
-	        	ArrayList<Integer> staffIdList = new ArrayList<Integer> ();
 	        	
-	        	if(!fullStaffList.isEmpty())
+	        	if(!fullStaffList.isEmpty()) {
 	        		for(String staffName : fullStaffList) {
-	        			staffIdList.add(staffNameToStaffId.get(staffName));
-	        			colIndex++;
-	        		    writeString(colIndex, row, staffName);
+	        			int staffId = staffNameToStaffId.get(staffName);
+	        		    writeString(STAFF_NAME_COL, row, staffName);
+	        		    writeInt(STAFF_ID_COL, row, staffId);
+	        		    row = staffSheet.createRow(++rowIndex);	
 	        		}
-	        	
-	        	row = staffSheet.createRow(++rowIndex);	
-	        	colIndex=0;
-	        	    for(Integer staffId : staffIdList) {
-	        	    	writeInt(++colIndex, row, staffId);
-	        	    }
-	        	lastColumnLetters.put(officeIndex++, colIndex);
-	        	rowIndex++;
+	        		officeNameToBeginEndIndexesOfStaff.put(officeIndex++, new Integer[]{startIndex, rowIndex});
+	        	} else 
+	        		  officeIndex++;
 	        }
 	    }
 	    
 	    private void setOfficeToPersonnelMap() {
 	    	officeToPersonnel = new HashMap<String, ArrayList<String>>();
 	    	for(Personnel person : personnel) {
-	    		add(person.getOfficeName(), person.getName());
+	    		add(person.getOfficeName().trim().replaceAll("[ )(]", "_"), person.getName().trim());
 	    	}
 	    }
 	    
@@ -164,7 +159,7 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	    	ArrayList<String> fullStaffList = new ArrayList<String>();
 	    	Integer hierarchyLength = hierarchy.length();
 			String[] officeIds = hierarchy.substring(1, hierarchyLength).split("\\.");
-			String headOffice = offices.get(0).getName();
+			String headOffice = offices.get(0).getName().trim().replaceAll("[ )(]", "_");
 			if(officeToPersonnel.containsKey(headOffice))
 			    fullStaffList.addAll(officeToPersonnel.get(headOffice));
 			if(officeIds[0].isEmpty())
@@ -183,13 +178,13 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	    
 	    
 	    private void setLayout(Sheet worksheet) {
-	    	for(Integer i=0; i<100; i++)
+	    	for(Integer i=0; i<3; i++)
 	    		worksheet.setColumnWidth(i, 6000);
 	        Row rowHeader = worksheet.createRow(0);
 	        rowHeader.setHeight((short)500);
 	        writeString(OFFICE_NAME_COL, rowHeader, "Office Name");
-	        writeString(STAFF_LIST_START_COL, rowHeader, "Staff List");
-	        writeString(NOTICE_COL, rowHeader, "Every alternating Row consists of corresponding Staff IDs.");
+	        writeString(STAFF_NAME_COL, rowHeader, "Staff List");
+	        writeString(STAFF_ID_COL, rowHeader, "Staff ID");
 	    }
 	    
 	    public List<Personnel> getPersonnel() {
@@ -204,8 +199,8 @@ public class PersonnelSheetPopulator extends AbstractWorkbookPopulator {
 	    	return officeToPersonnel;
 	    }
 	    
-	    public Map<Integer, Integer> getLastColumnLetters() {
-	    	return lastColumnLetters;
+	    public Map<Integer, Integer[]> getOfficeNameToBeginEndIndexesOfStaff() {
+	    	return officeNameToBeginEndIndexesOfStaff;
 	    }
 	    
 	    public Map<Integer,String> getOfficeIdToOfficeName() {
