@@ -5511,6 +5511,7 @@ function showCenter(centerId){
 	  				$("#loanPortfolioAccountId").combobox();
 	  				$("#interestOnLoanAccountId").combobox();
 	  				$("#incomeFromFeeAccountId").combobox();
+	  				$("#overpaymentLiabilityAccountId").combobox();
 	  				$("#incomeFromPenaltyAccountId").combobox();
 	  				$("#writeOffAccountId").combobox();
 	  				$("#receivableInterestAccountId").combobox();
@@ -5737,12 +5738,25 @@ function showCenter(centerId){
 		
 		var serializationOptions = {};
 		serializationOptions["checkboxesAsBools"] = true;
-		
+
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
 
+		// deleting all charges while modifying a savings product
+		// sends a request to the platform without any json element called
+		// "charges". The platform does not understand that charges have been deleted
+		// Sending an empty array of charges in this associative array instead
+		// for handling this scenario
+		if(!("charges" in serializedArray)){
+		    serializedArray["charges"] = [];
+		}
+		
 		if (!serializedArray["paymentChannelToFundSourceMappings"]) {
 			serializedArray["paymentChannelToFundSourceMappings"] = new Array();
+		}
+
+		if (!serializedArray["feeToIncomeAccountMappings"]) {
+			serializedArray["feeToIncomeAccountMappings"] = new Array();
 		}
 		
 		var newFormData = JSON.stringify(serializedArray);
@@ -5834,6 +5848,7 @@ function showCenter(centerId){
 	  				$("#transfersInSuspenseAccountId").combobox();
 	  				$("#interestOnSavingsAccountId").combobox();
 	  				$("#incomeFromFeeAccountId").combobox();
+	  				$("#incomeFromPenaltyAccountId").combobox();
 	  				
 	  				
 	  				var showCashFinancialPlaceholders = function() {
@@ -5899,6 +5914,70 @@ function showCenter(centerId){
 						$("#paymentChannelToFundSourceMappingTable tbody").append(paymentChannelToFundSourceMappingHtml);
 			  		
 						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button().click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					    e.preventDefault();
+					});
+
+					//initialize button for adding new "charge to income account mappings"
+				  	var chargeToIncomeAccountMappingIndex = 0;
+					if(undefined === data.feeToIncomeAccountMappings || data.feeToIncomeAccountMappings === null) {
+						chargeToIncomeAccountMappingIndex = 0;
+					} else {
+						chargeToIncomeAccountMappingIndex = data["feeToIncomeAccountMappings"].length;
+						//initialize all delete buttons for "charge to income account mappings"
+						$("#feeToIncomeAccountMappingTable tbody tr .removeFeeToIncomeAccountMappings").each(function(index) {
+							 $(this).button().click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						});
+					}
+				  	$("#addFeeToIncomeAccountMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+				  		chargeToIncomeAccountMappingIndex++;
+						var crudObject = new Object();
+						crudObject["index"] = chargeToIncomeAccountMappingIndex;
+						crudObject["chargeOptions"] = data.chargeOptions;
+						crudObject["incomeAccountOptions"] = data["accountingMappingOptions"]["incomeAccountOptions"];
+						var chargeToIncomeAccountMappingHtml = $("#loanProductAddFeeToIncomeAccountRowTemplate").render(crudObject);
+						$("#feeToIncomeAccountMappingTable tbody").append(chargeToIncomeAccountMappingHtml);
+			  		
+						$('#removeFeeToIncomeAccountMappings'+chargeToIncomeAccountMappingIndex)
+						.button()
+						.click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					    e.preventDefault();
+					});
+
+					//initialize button for adding new "penalty to income account mappings"
+				  	var penaltyToIncomeAccountMappingIndex = 0;
+					if(undefined === data.penaltyToIncomeAccountMappings || data.penaltyToIncomeAccountMappings === null) {
+						penaltyToIncomeAccountMappingIndex = 0;
+					} else {
+						penaltyToIncomeAccountMappingIndex = data["penaltyToIncomeAccountMappings"].length;
+						//initialize all delete buttons for "charge to income account mappings"
+						$("#penaltyToIncomeAccountMappingTable tbody tr .removePenaltyToIncomeAccountMappings").each(function(index) {
+							 $(this).button().click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						});
+					}
+				  	$("#addPenaltyToIncomeAccountMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+				  		penaltyToIncomeAccountMappingIndex++;
+						var crudObject = new Object();
+						crudObject["index"] = penaltyToIncomeAccountMappingIndex;
+						crudObject["penaltyOptions"] = data.penaltyOptions;
+						crudObject["incomeAccountOptions"] = data["accountingMappingOptions"]["incomeAccountOptions"];
+						var chargeToIncomeAccountMappingHtml = $("#loanProductAddPenaltyToIncomeAccountRowTemplate").render(crudObject);
+						$("#penaltyToIncomeAccountMappingTable tbody").append(chargeToIncomeAccountMappingHtml);
+			  		
+						$('#removePenaltyToIncomeAccountMappings'+ penaltyToIncomeAccountMappingIndex)
+						.button()
+						.click(function(e) {
 							$(this).closest('tr').remove();
 		            		e.preventDefault();
 		            	});
@@ -6038,6 +6117,22 @@ function showCenter(centerId){
 					$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 					
+					$('.noyeardatepickerfield').datepicker(
+					{
+						constrainInput: true, 
+						defaultDate: 0, 
+						dateFormat: 'dd MM',
+						changeMonth: true,
+				        changeYear: false,
+				        showButtonPanel: false,
+				        beforeShow : function(input, inst) {
+				        	$('#ui-datepicker-div').addClass('hide-year-label');
+				        },
+				        onClose: function() {
+				        	$('#ui-datepicker-div').removeClass('hide-year-label');
+				        }
+				    });
+
 					$('#savingschargestable tbody tr:last .savingsapp-removeSavingsCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 						$(this).closest('tr').remove();
 	            		e.preventDefault();
@@ -6149,6 +6244,15 @@ function showCenter(centerId){
 		
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);	
+
+		// deleting all charges while modifying a loan application
+		// sends a request to the platform without any json element called
+		// "charges". The platform does not understand that charges have been deleted
+		// Sending an empty array of charges in this associative array instead
+		// for handling this scenario
+		if(!("charges" in serializedArray)){
+		    serializedArray["charges"] = [];
+		}
 
 		var groupId = null;
 		
@@ -8342,6 +8446,17 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				dialogDiv.html(formHtml);
 	}
 
+	//apply noyeardatapickerfield stayle
+	$('.noyeardatepickerfield').datepicker({constrainInput: true,defaultDate: 0, dateFormat: 'dd MM',
+		changeMonth: true,changeYear: false,showButtonPanel: false,
+		beforeShow : function(input, inst) {
+        	$('#ui-datepicker-div').addClass('hide-year-label');
+        },
+        onClose: function() {
+        	$('#ui-datepicker-div').removeClass('hide-year-label');
+        }
+    });
+
 	if (templateSelector === "#savingsChargeFormTemplate") {
 		//attaching charges to savings from popup
 		$('#chargeOptions').change(function(e) {
@@ -8350,6 +8465,21 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 					var partialFormHtml = $("#savingsChargeDetailsPartialFormTemplate").render(chargeData);
 					$("#savingsChargeDetails").html(partialFormHtml);
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+					$('.noyeardatepickerfield').datepicker(
+					{
+						constrainInput: true, 
+						defaultDate: 0, 
+						dateFormat: 'dd MM',
+						changeMonth: true,
+				        changeYear: false,
+				        showButtonPanel: false,
+				        beforeShow : function(input, inst) {
+				        	$('#ui-datepicker-div').addClass('hide-year-label');
+				        },
+				        onClose: function() {
+				        	$('#ui-datepicker-div').removeClass('hide-year-label');
+				        }
+				    });					
 				}
 				executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForSavingsSuccess, formErrorFunction);    	
 			}
@@ -8689,6 +8819,46 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	}
 
 	if (templateSelector === "#chargeFormTemplate") {
+		var loanChargeCalculationOptions = data.loanChargeCalculationTypeOptions;
+		var loanChargeTimeOptions = data.loanChargeTimeTypeOptions;
+		var savingsChargeCalculationOptions = data.savingsChargeCalculationTypeOptions;
+		var savingsChargeTimeOptions = data.savingsChargeTimeTypeOptions;
+		if(data.id !== undefined){
+			$("#chargeAppliesTo").attr("disabled", true);	
+		}
+		$("#chargeAppliesTo").change(function() {
+			var selectedValue = $(this).val();
+  			$('#chargeCalculationType').empty().append(function(){
+	            var output = '<option value="">--Select One--</option>';
+	            var calculationOptions;
+	            if (selectedValue == "1"){
+					calculationOptions = data.loanChargeCalculationTypeOptions;
+				}else if (selectedValue == "2"){
+					calculationOptions = data.savingsChargeCalculationTypeOptions;
+				}
+
+				$.each(calculationOptions, function(key, value){
+	               output += '<option value=' + value.id + '>' + doI18N(value.code) + '</option>';
+	            });
+	            return output;
+	        });
+
+	        $('#chargeTimeType').empty().append(function(){
+	            var output = '<option value="">--Select One--</option>';
+	            var collectionTypeOptions;
+	            if (selectedValue == "1"){
+					collectionTypeOptions = data.loanChargeTimeTypeOptions;
+				}else if (selectedValue == "2"){
+					collectionTypeOptions = data.savingsChargeTimeTypeOptions;
+				}				
+
+				$.each(collectionTypeOptions, function(key, value){
+	               output += '<option value=' + value.id + '>' + doI18N(value.code) + '</option>';
+	            });
+	            return output;
+	        });
+		});
+
 		$("#chargeCalculationType").change(function() {
 			var selectedValue = $(this).val();
 	  		if (selectedValue == "1"){
@@ -8698,11 +8868,11 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			}
 		});
 
-		if(data.chargeCalculationType.id == "1") {
-			$("label[for='amount']").text(doI18N('label.amount'));
-		} else if (data.chargeCalculationType.id == "2") {
-			$("label[for='amount']").text(doI18N('label.percentage'));
-		}
+		//if(data.chargeCalculationType.id == "1") {
+		//	$("label[for='amount']").text(doI18N('label.amount'));
+		//} else if (data.chargeCalculationType.id == "2") {
+		//	$("label[for='amount']").text(doI18N('label.percentage'));
+		//}
 	}
 
 	if (templateSelector === "#attendanceFormTemplate") {
@@ -10227,6 +10397,7 @@ function loadSavingAccount(accountId,parenttab) {
 
 	var clientId = null;
 	var groupId = null;
+	var annualFeeId = null;
 
 	var accountUrl = 'savingsaccounts/' + accountId+ "?associations=all";
 
@@ -10238,7 +10409,7 @@ function loadSavingAccount(accountId,parenttab) {
 		
 		clientId = data.clientId;
 		groupId = data.groupId;
-		
+		annualFeeId = data.annualFee.id;	
 		var currentTabIndex = $newtabs.tabs('option', 'active');
     	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
     	
@@ -10446,8 +10617,8 @@ function loadSavingAccount(accountId,parenttab) {
 		
 		$('.savingsaccountapplyannualfee'+accountId).button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
 			
-			var postUrl = 'savingsaccounts/' + accountId + '?command=applyAnnualFees';
-			var getUrl = 'savingsaccounts/' + accountId + '/?template=true';
+			var postUrl = 'savingsaccounts/' + accountId + '/charges/' + annualFeeId + '?command=paycharge';
+			var getUrl = 'savingsaccounts/' + accountId + '/charges/' + annualFeeId;
 			var templateSelector = "#savingsAccountApplyAnnualFeeFormTemplate";
 			var width = 400; 
 			var height = 280;
