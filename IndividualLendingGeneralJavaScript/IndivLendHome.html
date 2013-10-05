@@ -5843,6 +5843,7 @@ $(document).ready(function() {
 				{{#else}}
 				{{#if $ctx.isAdjustableTransaction(type.id)}}
 				<td>
+				    <button id="viewrepaymentbtn{{=$parent.parent.parent.parent.data.id}}_{{=id}}" class="viewloanrepayment{{=$parent.parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.view")}}</button>
 				    <button id="adjustrepaymentbtn{{=$parent.parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment{{=$parent.parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button>
 				    <button id="undorepaymentbtn{{=$parent.parent.parent.parent.data.id}}_{{=id}}" class="undoloanrepayment{{=$parent.parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.undo")}}</button>
 				</td>
@@ -6379,6 +6380,50 @@ $(document).ready(function() {
 		<input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail" value="{{=paymentDetailData.bankNumber}}"/>
 	{{#else}}
 		<input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail"/> 
+	{{/if}} 
+   
+</form>
+</script>
+
+<script id="transactionLoanFormTemplateView" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	{{=$ctx.globalDate(date)}}
+
+	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
+	{{=$ctx.monetaryValue(currency, amount)}}
+
+	<label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
+	{{#if paymentDetailData}}
+			{{=$ctx.doI18N(name)}}
+	{{/if}}
+
+	<label>{{=$ctx.doI18N("label.payment.details")}}</label>
+	<span></span>
+
+	<label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
+	{{#if paymentDetailData}}
+		<input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail" value="{{=paymentDetailData.accountNumber}}"/> 
+	{{/if}}
+
+	<label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
+	{{#if paymentDetailData}}
+		<input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail" value="{{=paymentDetailData.checkNumber}}"/> 
+	{{/if}}
+
+	<label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
+	{{#if paymentDetailData}}
+		<input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail" value="{{=paymentDetailData.routingCode}}"/> 
+	{{/if}}
+
+	<label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
+	{{#if paymentDetailData}}
+		<input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail" value="{{=paymentDetailData.receiptNumber}}"/>
+	{{/if}} 
+
+	<label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
+	{{#if paymentDetailData}}
+		<input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail" value="{{=paymentDetailData.bankNumber}}"/>
 	{{/if}} 
    
 </form>
@@ -7678,6 +7723,7 @@ $(document).ready(function() {
 				{{#else}}
 					<td>
 						{{#if transactionType.deposit or transactionType.withdrawal}}
+						<button id="viewtransaction{{=id}}_{{=accountId}}" class="viewtransaction">{{=$ctx.doI18N("VIEW")}}</button>
 						<button id="adjusttransaction{{=id}}_{{=accountId}}" class="adjusttransaction">{{=$ctx.doI18N("ADJUST")}}</button>
 						{{/if}}
 						<button id="undotransactionbtn{{=id}}_{{=accountId}}" class="undotransaction">{{=$ctx.doI18N("button.undo")}}</button>
@@ -8135,6 +8181,50 @@ $(document).ready(function() {
 		{{/if}}
 		</tr> 
 	</table>
+</form>
+</script>
+
+<script id="savingsAccountTransactionFormViewTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	{{=$ctx.globalDate(date)}}
+
+	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
+	{{=$ctx.monetaryValue(currency, amount)}}
+
+	<label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
+	{{#if paymentDetailData}}
+			{{=$ctx.doI18N(name)}}
+	{{/if}}
+
+	<label>{{=$ctx.doI18N("label.payment.details")}}</label>
+	<span></span>
+
+	<label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
+	{{#if paymentDetailData}}
+		<input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail" value="{{=paymentDetailData.accountNumber}}"/> 
+	{{/if}}
+
+	<label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
+	{{#if paymentDetailData}}
+		<input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail" value="{{=paymentDetailData.checkNumber}}"/> 
+	{{/if}}
+
+	<label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
+	{{#if paymentDetailData}}
+		<input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail" value="{{=paymentDetailData.routingCode}}"/> 
+	{{/if}}
+
+	<label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
+	{{#if paymentDetailData}}
+		<input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail" value="{{=paymentDetailData.receiptNumber}}"/>
+	{{/if}} 
+
+	<label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
+	{{#if paymentDetailData}}
+		<input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail" value="{{=paymentDetailData.bankNumber}}"/>
+	{{/if}} 
+   
 </form>
 </script>
 
