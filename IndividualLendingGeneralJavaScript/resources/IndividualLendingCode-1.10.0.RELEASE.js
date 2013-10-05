@@ -6885,6 +6885,27 @@ function loadLoan(loanId, parenttab) {
 				});
 				
 				//$('button.adjustloanrepayment span').text(doI18N('button.loanTransaction.adjust'));
+
+				$('.viewloanrepayment'+loanId).button({
+                    icons : {
+                        primary : "ui-icon-info"
+                    },
+                    text : false
+                }).click(function(e) {
+					var linkId = this.id;
+					var loanAndRepaymentId = linkId.replace("viewrepaymentbtn", "");
+					var ids = loanAndRepaymentId.split("_");
+					var loanId = ids[0];
+					var transactionId = ids[1];
+					var getUrl = 'loans/' + loanId + '/transactions/' + transactionId + '/?template=true';
+					
+					var templateSelector = "#transactionLoanFormTemplateView";
+					var width = 500; 
+					var height = 550;
+											
+				    popupDialogWithReadOnlyFormView(getUrl,"dialog.title.journalEntry.view", templateSelector, width, height);
+				    e.preventDefault();
+				});
 				
 				$('.undoloanrepayment'+loanId).button({
                     icons : {
@@ -10683,6 +10704,30 @@ function loadSavingAccount(accountId,parenttab) {
 			popupDialogWithFormView(getUrl, postURL, 'POST', 'dialog.title.adjust', templateSelector, width, height, saveSuccessFunctionReloadSaving);
 		    
 			e.preventDefault();		});
+
+		$('.viewtransaction').button({
+                icons : {
+                    primary : "ui-icon-pencil"
+                },
+                text : false
+            }).click(function(e) {
+				var linkId = this.id;
+				var transactionAndAccountId = linkId.replace("viewtransaction", "");
+				var ids = transactionAndAccountId.split("_");
+				var transactionId = ids[0];
+				var savingsAccountId = ids[1];
+				var getUrl = 'savingsaccounts/' + savingsAccountId + '/transactions/' + transactionId + '?template=true';
+				var templateSelector = "#savingsAccountTransactionFormViewTemplate";
+				var width = 400; 
+				var height = 280;
+				var defaultOffset = offsetToApprovalDate;
+
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
+			popupDialogWithReadOnlyFormView(getUrl,"dialog.title.journalEntry.view", templateSelector, width, height);
+		    
+			e.preventDefault();		});
+
+
 		
 		$('.showtransferdetails').button({icons : {primary : "ui-icon-info"},text : false}).click(function(e) {
 			
