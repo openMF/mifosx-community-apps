@@ -6581,7 +6581,7 @@ $(document).ready(function() {
 						</select>
 					</td>
 				</tr>
-				</tr>
+				<tr>
 					<td>
 						{{#if withdrawalFeeForTransfers}}
 							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" checked />
@@ -7237,6 +7237,16 @@ $(document).ready(function() {
 								{{/each}}
 							{{/if}}
 						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						{{#if withdrawalFeeForTransfers}}
+							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" checked />
+						{{#else}}
+							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" />
+						{{/if}}
+						{{=$ctx.doI18N("label.withdrawalFee.transfer")}}
 					</td>
 				</tr>
 			</table>
