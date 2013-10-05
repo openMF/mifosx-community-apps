@@ -10409,7 +10409,10 @@ function loadSavingAccount(accountId,parenttab) {
 		
 		clientId = data.clientId;
 		groupId = data.groupId;
-		annualFeeId = data.annualFee.id;	
+		if(data.annualFee){
+			annualFeeId = data.annualFee.id;
+		}
+
 		var currentTabIndex = $newtabs.tabs('option', 'active');
     	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
     	
