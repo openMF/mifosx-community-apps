@@ -6903,7 +6903,7 @@ function loadLoan(loanId, parenttab) {
 					var width = 500; 
 					var height = 550;
 											
-				    popupDialogWithReadOnlyFormView(getUrl,"dialog.title.journalEntry.view", templateSelector, width, height);
+				    popupDialogWithReadOnlyFormView(getUrl,"dialog.title.view.loan.repayment", templateSelector, width, height);
 				    e.preventDefault();
 				});
 				
@@ -10710,7 +10710,7 @@ function loadSavingAccount(accountId,parenttab) {
 
 		$('.viewtransaction').button({
                 icons : {
-                    primary : "ui-icon-pencil"
+                    primary : "ui-icon-info"
                 },
                 text : false
             }).click(function(e) {
@@ -10726,7 +10726,7 @@ function loadSavingAccount(accountId,parenttab) {
 				var defaultOffset = offsetToApprovalDate;
 
 			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
-			popupDialogWithReadOnlyFormView(getUrl,"dialog.title.journalEntry.view", templateSelector, width, height);
+			popupDialogWithReadOnlyFormView(getUrl,"dialog.title.view", templateSelector, width, height);
 		    
 			e.preventDefault();		});
 
