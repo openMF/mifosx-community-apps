@@ -6393,38 +6393,35 @@ $(document).ready(function() {
 	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
 	{{=$ctx.monetaryValue(currency, amount)}}
 
-	<label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
 	{{#if paymentDetailData}}
+			<label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
 			{{=$ctx.doI18N(name)}}
+	
+		{{#if paymentDetailData.accountNumber}}
+			<label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
+			{{=paymentDetailData.accountNumber}}
+		{{/if}}
+
+		{{#if paymentDetailData.checkNumber}}
+			<label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
+			{{=paymentDetailData.checkNumber}}
+		{{/if}}
+		
+		{{#if paymentDetailData.routingCode}}
+			<label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
+			{{=paymentDetailData.routingCode}} 
+		{{/if}}
+
+		{{#if paymentDetailData.receiptNumber}}
+			<label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
+			{{=paymentDetailData.receiptNumber}}
+		{{/if}} 
+
+		{{#if paymentDetailData.bankNumber}}
+			<label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
+			{{=paymentDetailData.bankNumber}}
+		{{/if}} 
 	{{/if}}
-
-	<label>{{=$ctx.doI18N("label.payment.details")}}</label>
-	<span></span>
-
-	<label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
-	{{#if paymentDetailData}}
-		<input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail" value="{{=paymentDetailData.accountNumber}}"/> 
-	{{/if}}
-
-	<label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
-	{{#if paymentDetailData}}
-		<input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail" value="{{=paymentDetailData.checkNumber}}"/> 
-	{{/if}}
-
-	<label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
-	{{#if paymentDetailData}}
-		<input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail" value="{{=paymentDetailData.routingCode}}"/> 
-	{{/if}}
-
-	<label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
-	{{#if paymentDetailData}}
-		<input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail" value="{{=paymentDetailData.receiptNumber}}"/>
-	{{/if}} 
-
-	<label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
-	{{#if paymentDetailData}}
-		<input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail" value="{{=paymentDetailData.bankNumber}}"/>
-	{{/if}} 
    
 </form>
 </script>
@@ -8192,38 +8189,36 @@ $(document).ready(function() {
 	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
 	{{=$ctx.monetaryValue(currency, amount)}}
 
-	<label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
+	
 	{{#if paymentDetailData}}
+			<label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
 			{{=$ctx.doI18N(name)}}
+	
+		{{#if paymentDetailData.accountNumber}}
+			<label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
+			{{=paymentDetailData.accountNumber}}
+		{{/if}}
+
+		{{#if paymentDetailData.checkNumber}}
+			<label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
+			{{=paymentDetailData.checkNumber}}
+		{{/if}}
+		
+		{{#if paymentDetailData.routingCode}}
+			<label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
+			{{=paymentDetailData.routingCode}} 
+		{{/if}}
+
+		{{#if paymentDetailData.receiptNumber}}
+			<label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
+			{{=paymentDetailData.receiptNumber}}
+		{{/if}} 
+
+		{{#if paymentDetailData.bankNumber}}
+			<label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
+			{{=paymentDetailData.bankNumber}}
+		{{/if}} 
 	{{/if}}
-
-	<label>{{=$ctx.doI18N("label.payment.details")}}</label>
-	<span></span>
-
-	<label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
-	{{#if paymentDetailData}}
-		<input id="accountNumber" name="accountNumber" class="paymentDetail accountDetail" value="{{=paymentDetailData.accountNumber}}"/> 
-	{{/if}}
-
-	<label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
-	{{#if paymentDetailData}}
-		<input id="checkNumber" name="checkNumber" class="paymentDetail checkDetail" value="{{=paymentDetailData.checkNumber}}"/> 
-	{{/if}}
-
-	<label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
-	{{#if paymentDetailData}}
-		<input id="routingCode" name="routingCode" class="paymentDetail routingCodeDetail" value="{{=paymentDetailData.routingCode}}"/> 
-	{{/if}}
-
-	<label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
-	{{#if paymentDetailData}}
-		<input id="receiptNumber" name="receiptNumber" class="paymentDetail receiptDetail" value="{{=paymentDetailData.receiptNumber}}"/>
-	{{/if}} 
-
-	<label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
-	{{#if paymentDetailData}}
-		<input id="bankNumber" name="bankNumber" class="paymentDetail bankDetail" value="{{=paymentDetailData.bankNumber}}"/>
-	{{/if}} 
    
 </form>
 </script>
