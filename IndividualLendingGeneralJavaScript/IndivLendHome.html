@@ -3025,6 +3025,11 @@ $(document).ready(function() {
 				{{/each}}
 			{{/if}}
 		</select>
+		<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+		<label for="feeOnMonthDay">{{=$ctx.doI18N("form.label.charge.feeOnMonthDay")}}</label>
+		<input for="feeOnMonthDay" id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}"/>
+		<label for="feeInterval">{{=$ctx.doI18N("form.label.charge.feeInterval")}}</label>
+		<input for="feeInterval" id="feeInterval" name="feeInterval" title="" type="text" value="{{=$ctx.number(feeInterval)}}" size="2"/> month(s)
 		<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
 		<label for="active">{{=$ctx.doI18N("label.active")}}</label>
@@ -3040,6 +3045,7 @@ $(document).ready(function() {
 		{{#else}}
 			<input type="checkbox" id="penalty" name="penalty" title="" style="width: 125px;" />
 		{{/if}}
+
 	</fieldset>
 </form>
 </script>
@@ -5043,9 +5049,18 @@ $(document).ready(function() {
 			<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
 			<label for="feeOnMonthDay">Due on:</label>
 			<input id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+		{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+			<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+			<label for="feeOnMonthDay">Due on:</label>
+			<input id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
 		{{#else}}
+
 			&nbsp;
 		{{/if}}
+		{{#if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+			<label for="feeInterval">{{=$ctx.doI18N("form.label.charge.feeInterval")}}</label>
+			<input id="feeInterval" name="feeInterval" title="" type="text" size="2" value="{{=$ctx.number(feeInterval)}}" />
+		{{#else}}
 		</div>
 	</fieldset>
 </form>
@@ -7312,6 +7327,7 @@ $(document).ready(function() {
 							<th scope="col">Amount</th>
 							<th scope="col">Collected on</th>
 							<th scope="col">Date</th>
+							<th scope="col">Repeats every</th>
 							<th scope="col">Actions</th>
 							</tr>
 						</thead>
@@ -7347,7 +7363,17 @@ $(document).ready(function() {
 											value="{{=$ctx.globalDate(dueDate)}}" />
 									{{#else if chargeTimeType.code === 'chargeTimeType.annualFee'}}
 										<input id="charges[{{=$parent.itemNumber}}][feeOnMonthDay]" name="charges[{{=$parent.itemNumber}}][feeOnMonthDay]" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+									{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+										<input id="charges[{{=$parent.itemNumber}}][feeOnMonthDay]" name="charges[{{=$parent.itemNumber}}][feeOnMonthDay]" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
 									{{#else}}
+
+									{{/if}}
+								</td>
+								<td>
+									{{#if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+										<input id="charges[{{=$parent.itemNumber}}][feeInterval]" name="charges[{{=$parent.itemNumber}}][feeInterval]" title="" type="text" size="2" value="{{=$ctx.number(feeInterval)}}" />
+									{{#else}}
+
 									{{/if}}
 								</td>
 								<td><button id="savingsapp-removeSavingsCharge{{=$itemNumber}}" class="savingsapp-removeSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
@@ -7603,6 +7629,8 @@ $(document).ready(function() {
 					<th>{{=$ctx.doI18N("table.heading.name")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.feeOrPenalty")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.paymentDueAt")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.repeatsOn")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.repeatsEvery")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.dueAsOf")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.calculationType")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.due")}}</th>
@@ -7624,12 +7652,21 @@ $(document).ready(function() {
 					{{/if}}
 
 						<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
-
 					{{#if chargeTimeType.code === 'chargeTimeType.specifiedDueDate'}}
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
 						<td>{{=$ctx.globalDate(dueDate)}}</td>
 					{{#else if chargeTimeType.code === 'chargeTimeType.annualFee'}}
 						<td>{{=$ctx.monthDayDate(feeOnMonthDay)}}</td>
+						<td>&nbsp;</td>
+						<td>{{=$ctx.globalDate(dueDate)}}</td>
+					{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+						<td>{{=$ctx.monthDayDate(feeOnMonthDay)}}</td>
+						<td>{{=$ctx.number(feeInterval)}}</td>
+						<td>{{=$ctx.globalDate(dueDate)}}</td>
 					{{#else}}
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					{{/if}}
 
@@ -7822,6 +7859,17 @@ $(document).ready(function() {
 	<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
 	<label for="feeOnMonthDay">Due on:</label>
 	<input id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+	<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+	<label for="feeOnMonthDay">Due on:</label>
+	<input id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+{{#else}}
+	&nbsp;
+{{/if}}
+
+{{#if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+	<label for="feeInterval">{{=$ctx.doI18N("form.label.charge.feeInterval")}}</label>
+	<input id="feeInterval" name="feeInterval" title="" type="text" size="2" value="{{=$ctx.number(feeInterval)}}" />
 {{#else}}
 	&nbsp;
 {{/if}}
@@ -8256,10 +8304,20 @@ $(document).ready(function() {
 		{{#else if chargeTimeType.code === 'chargeTimeType.annualFee'}}
 			<input id="charges[{{=index}}][feeOnMonthDay]" name="charges[{{=index}}][feeOnMonthDay]" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
 
+		{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+			<input id="charges[{{=index}}][feeOnMonthDay]" name="charges[{{=index}}][feeOnMonthDay]" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+
 		{{#else}}
-		&nbsp;
+			&nbsp;
 		{{/if}}
 
+	</td>
+	<td>
+		{{#if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+			<input id="charges[{{=index}}][feeInterval]" name="charges[{{=index}}][feeInterval]" title="" type="text" size="2" value="{{=$ctx.number(feeInterval)}}" />
+		{{#else}}
+			&nbsp;
+		{{/if}}
 	</td>
 	<td><button id="savingsapp-removeSavingsCharge{{=index}}" class="savingsapp-removeSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 </tr>
