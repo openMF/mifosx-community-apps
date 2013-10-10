@@ -8849,17 +8849,28 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		}
 
 		if(data.chargeTimeType !== undefined){
+			if(data.chargeTimeType.code === 'chargeTimeType.annualFee'){
+				$("label[for='feeOnMonthDay']").show();
+				$("input[for='feeOnMonthDay']").show();
+				$("label[for='feeInterval']").hide();
+				$("input[for='feeInterval']").attr("disabled",true);
+				$("input[for='feeInterval']").hide();
+			}
 			if(data.chargeTimeType.code === 'chargeTimeType.monthlyFee'){
 				$("label[for='feeOnMonthDay']").show();
 				$("input[for='feeOnMonthDay']").show();
 				$("label[for='feeInterval']").show();
 				$("input[for='feeInterval']").show();
+				$("input[for='feeInterval']").attr("disabled",false);				
 			}
+
 		}else{
+			
 			$("label[for='feeOnMonthDay']").hide();
 			$("input[for='feeOnMonthDay']").hide();
 			$("label[for='feeInterval']").hide();
 			$("input[for='feeInterval']").hide();
+
 		}
 
 		$("#chargeAppliesTo").change(function() {
@@ -8906,11 +8917,13 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 
 		$("#chargeTimeType").change(function() {
 			var selectedValue = $(this).val();
-			if (selectedValue == "7"){
+			if (selectedValue == "7" || selectedValue == "6"){
 				$("label[for='feeOnMonthDay']").show();
 				$("input[for='feeOnMonthDay']").show();
-				$("label[for='feeInterval']").show();
-				$("input[for='feeInterval']").show();
+				if (selectedValue == "7"){
+					$("label[for='feeInterval']").show();
+					$("input[for='feeInterval']").show();
+				}
 			}else{
 				$("label[for='feeOnMonthDay']").hide();
 				$("input[for='feeOnMonthDay']").hide();
