@@ -3029,7 +3029,7 @@ $(document).ready(function() {
 		<label for="feeOnMonthDay">{{=$ctx.doI18N("form.label.charge.feeOnMonthDay")}}</label>
 		<input for="feeOnMonthDay" id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}"/>
 		<label for="feeInterval">{{=$ctx.doI18N("form.label.charge.feeInterval")}}</label>
-		<input for="feeInterval" id="feeInterval" name="feeInterval" title="" type="text" value="{{=$ctx.number(feeInterval)}}" size="2"/> month(s)
+		<input for="feeInterval" id="feeInterval" name="feeInterval" title="" type="text" value="{{=$ctx.number(feeInterval)}}" size="2"/> <label for="feeInterval">month(s)</label>
 		<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
 		<label for="active">{{=$ctx.doI18N("label.active")}}</label>
