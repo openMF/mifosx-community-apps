@@ -3009,7 +3009,7 @@ $(document).ready(function() {
 			{{/if}}
 		</select>
 		<label for="chargePaymentMode">{{=$ctx.doI18N("form.label.charge.payment.mode")}}</label>
-		<select id="chargePaymentMode" name="chargePaymentMode" title="" style="width: 300px">
+		<select for="chargePaymentMode" id="chargePaymentMode" name="chargePaymentMode" title="" style="width: 300px">
 			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 			{{#if chargePaymentMode}}
 				{{#each chargePaymetModeOptions}}
