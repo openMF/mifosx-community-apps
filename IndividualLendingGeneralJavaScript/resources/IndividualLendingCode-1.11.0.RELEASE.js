@@ -8845,7 +8845,16 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 		var savingsChargeCalculationOptions = data.savingsChargeCalculationTypeOptions;
 		var savingsChargeTimeOptions = data.savingsChargeTimeTypeOptions;
 		if(data.id !== undefined){
-			$("#chargeAppliesTo").attr("disabled", true);	
+			$("#chargeAppliesTo").attr("disabled", true);
+			if(data.chargeAppliesTo.code === 'chargeAppliesTo.loan'){
+				$("label[for='chargePaymentMode']").show();
+				$("select[for='chargePaymentMode']").show();
+				$("select[for='chargePaymentMode']").attr("disabled",false);
+			}else if(data.chargeAppliesTo.code === 'chargeAppliesTo.savings'){
+				$("select[for='chargePaymentMode']").attr("disabled",true);
+				$("label[for='chargePaymentMode']").hide();
+				$("select[for='chargePaymentMode']").hide();
+			}
 		}
 		if(data.chargeTimeType !== undefined){
 			if(data.chargeTimeType.code === 'chargeTimeType.annualFee'){
@@ -8860,7 +8869,10 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				$("label[for='feeInterval']").show();
 				$("input[for='feeInterval']").show();
 				$("input[for='feeInterval']").attr("disabled",false);				
+				$("input[for='feeOnMonthDay']").attr("disabled",false);
 			}else{
+				$("input[for='feeOnMonthDay']").attr("disabled",true);
+				$("input[for='feeInterval']").attr("disabled",true);
 				$("label[for='feeOnMonthDay']").hide();
 				$("input[for='feeOnMonthDay']").hide();
 				$("label[for='feeInterval']").hide();
@@ -8868,7 +8880,8 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			}
 
 		}else{
-			
+			$("input[for='feeOnMonthDay']").attr("disabled",true);
+			$("input[for='feeInterval']").attr("disabled",true);
 			$("label[for='feeOnMonthDay']").hide();
 			$("input[for='feeOnMonthDay']").hide();
 			$("label[for='feeInterval']").hide();
@@ -8878,6 +8891,18 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 
 		$("#chargeAppliesTo").change(function() {
 			var selectedValue = $(this).val();
+
+			//enable chargePaymentMode for loans
+			if(selectedValue == "1"){
+				$("label[for='chargePaymentMode']").show();
+				$("select[for='chargePaymentMode']").show();
+				$("select[for='chargePaymentMode']").attr("disabled",false);
+			}else if(selectedValue == "2"){
+				$("select[for='chargePaymentMode']").attr("disabled",true);
+				$("label[for='chargePaymentMode']").hide();
+				$("select[for='chargePaymentMode']").hide();
+			}
+
   			$('#chargeCalculationType').empty().append(function(){
 	            var output = '<option value="">--Select One--</option>';
 	            var calculationOptions;
@@ -8923,11 +8948,16 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			if (selectedValue == "7" || selectedValue == "6"){
 				$("label[for='feeOnMonthDay']").show();
 				$("input[for='feeOnMonthDay']").show();
+				$("input[for='feeOnMonthDay']").attr("disabled",false);
+				
 				if (selectedValue == "7"){
 					$("label[for='feeInterval']").show();
 					$("input[for='feeInterval']").show();
+					$("input[for='feeInterval']").attr("disabled",false);
 				}
 			}else{
+				$("input[for='feeOnMonthDay']").attr("disabled",true);
+				$("input[for='feeInterval']").attr("disabled",true);
 				$("label[for='feeOnMonthDay']").hide();
 				$("input[for='feeOnMonthDay']").hide();
 				$("label[for='feeInterval']").hide();
