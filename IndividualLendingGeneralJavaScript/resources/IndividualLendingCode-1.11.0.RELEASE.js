@@ -3823,7 +3823,7 @@ function refreshClientTemplates(clientUrl) {
 }
 
 function formatDateTags() {
-	
+
 	var dateTags = document.getElementsByTagName('date');
 	
 	for( i=0; i<dateTags.length; i++ ) {
@@ -3840,9 +3840,16 @@ function formatDateTags() {
 }
 
 function createClientDocumentForTemplate(title, templateId, clientId) {
-	
 	var content = executeSynchroneAjaxRequest('templates/'+templateId+'?clientId='+clientId, "POST", "{}", null, null);
-	
+	openDocumentForTemplate(title, content)
+}
+
+function createLoanDocumentForTemplate(title, templateId, loanId) {
+	var content = executeSynchroneAjaxRequest('templates/'+templateId+'?loanId='+loanId, "POST", "{}", null, null);
+	openDocumentForTemplate(title, content)
+}
+
+function openDocumentForTemplate(title, content) {
 	var dialogDiv = $("<div id='dialog-form'></div>");
 	dialogDiv.html(content);
 	
