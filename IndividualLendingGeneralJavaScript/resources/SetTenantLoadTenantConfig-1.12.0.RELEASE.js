@@ -261,6 +261,9 @@ custom.helperFunctions = {
 	isCredit : function(savingsTransactionType) {
     	return savingsTransactionType.deposit == true || savingsTransactionType.interestPosting == true;
 	},
+	isDebit : function(savingsTransactionType) {
+    	return savingsTransactionType.withdrawal == true || savingsTransactionType.feeDeduction == true;
+	},
 	getDataTableFieldEntry : function(data, fieldName, displayMode, updateColumnTagExtra) {
 
 		return jQuery.stretchyDataTables.getDataTableFieldEntry(data, 

@@ -778,13 +778,12 @@ function setTemplatesAdminContent(divName) {
 	$("#"+divName).html(templatesHTML);
 	
 	$("a[id^=template]").click(function(e) {
-		e.preventDefault();
 		var templateUrl = $(this).attr('href');
 		showTemplateEdit(templateUrl, divName);
+		e.preventDefault();
 	});
 	
 	$("#createTemplate").button().click(function(e) {
-		
 		var templateData = new Object();
 		templateData = jQuery.parseJSON(executeSynchroneAjaxRequest('templates/template', 'GET', "", null, null));
 		templatesHTML = $("#templateCreateFormTemplate").render(templateData);
@@ -819,8 +818,8 @@ function setTemplatesAdminContent(divName) {
 		} );
 		
 		$("#advancedMappersOption").button().click(function(e) {
-	        e.preventDefault();
 			$("#mappersDiv").toggle();
+			e.preventDefault();
 		});
 		
 		$("#addMapper").button().click(function(e) {
@@ -844,9 +843,12 @@ function setTemplatesAdminContent(divName) {
 			});
 		});
 			
-		$("#createTemplate").button().click(function(e) {
+		$("#submitTemplate").button().click(function(e) {
+			alert("submit");
 			CKupdate();
+
 			var formData = $("#templateform").serializeObject();
+
 			var mapper = mergeMaps(formData.mapperskey, formData.mappersvalue);
 			formData.mappers = mapper;
 
@@ -854,8 +856,12 @@ function setTemplatesAdminContent(divName) {
 			delete formData['mappersvalue'];
 			formData.entity = $("#entitySelect").val(); 
 			formData.type = $("#typeSelect").val();
+			console.log(formData);
+
 			executeSynchroneAjaxRequest("templates", "POST", JSON.stringify(formData), null, null);
 			setTemplatesAdminContent(divName);
+
+			e.preventDefault();
 		});
 		
 		$("#templateOverview").button().click(function(e) {
@@ -1034,7 +1040,6 @@ function showLoanKeys() {
 }
 
 function mergeMaps(keymap, valuemap) { 
-	
 	mappers = [];
 	
     if($.isArray(keymap)) {
@@ -1042,7 +1047,7 @@ function mergeMaps(keymap, valuemap) {
     		mappers.push({"mappersorder":index,"mapperskey":value,"mappersvalue":valuemap[index]});
         })
     } else {
-    	mappers.push({"mappersorder":index,"mapperskey":value,"mappersvalue":valuemap[index]});
+    	mappers.push({"mappersorder":0,"mapperskey":keymap,"mappersvalue":valuemap});
     }
     
     return mappers;
@@ -3818,7 +3823,7 @@ function refreshClientTemplates(clientUrl) {
 }
 
 function formatDateTags() {
-	
+
 	var dateTags = document.getElementsByTagName('date');
 	
 	for( i=0; i<dateTags.length; i++ ) {
@@ -3835,9 +3840,16 @@ function formatDateTags() {
 }
 
 function createClientDocumentForTemplate(title, templateId, clientId) {
-	
 	var content = executeSynchroneAjaxRequest('templates/'+templateId+'?clientId='+clientId, "POST", "{}", null, null);
-	
+	openDocumentForTemplate(title, content)
+}
+
+function createLoanDocumentForTemplate(title, templateId, loanId) {
+	var content = executeSynchroneAjaxRequest('templates/'+templateId+'?loanId='+loanId, "POST", "{}", null, null);
+	openDocumentForTemplate(title, content)
+}
+
+function openDocumentForTemplate(title, content) {
 	var dialogDiv = $("<div id='dialog-form'></div>");
 	dialogDiv.html(content);
 	
@@ -5506,6 +5518,7 @@ function showCenter(centerId){
 	  				$("#loanPortfolioAccountId").combobox();
 	  				$("#interestOnLoanAccountId").combobox();
 	  				$("#incomeFromFeeAccountId").combobox();
+	  				$("#overpaymentLiabilityAccountId").combobox();
 	  				$("#incomeFromPenaltyAccountId").combobox();
 	  				$("#writeOffAccountId").combobox();
 	  				$("#receivableInterestAccountId").combobox();
@@ -5732,12 +5745,25 @@ function showCenter(centerId){
 		
 		var serializationOptions = {};
 		serializationOptions["checkboxesAsBools"] = true;
-		
+
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);
 
+		// deleting all charges while modifying a savings product
+		// sends a request to the platform without any json element called
+		// "charges". The platform does not understand that charges have been deleted
+		// Sending an empty array of charges in this associative array instead
+		// for handling this scenario
+		if(!("charges" in serializedArray)){
+		    serializedArray["charges"] = [];
+		}
+		
 		if (!serializedArray["paymentChannelToFundSourceMappings"]) {
 			serializedArray["paymentChannelToFundSourceMappings"] = new Array();
+		}
+
+		if (!serializedArray["feeToIncomeAccountMappings"]) {
+			serializedArray["feeToIncomeAccountMappings"] = new Array();
 		}
 		
 		var newFormData = JSON.stringify(serializedArray);
@@ -5829,6 +5855,7 @@ function showCenter(centerId){
 	  				$("#transfersInSuspenseAccountId").combobox();
 	  				$("#interestOnSavingsAccountId").combobox();
 	  				$("#incomeFromFeeAccountId").combobox();
+	  				$("#incomeFromPenaltyAccountId").combobox();
 	  				
 	  				
 	  				var showCashFinancialPlaceholders = function() {
@@ -5894,6 +5921,70 @@ function showCenter(centerId){
 						$("#paymentChannelToFundSourceMappingTable tbody").append(paymentChannelToFundSourceMappingHtml);
 			  		
 						$('#removePaymentChannelToFundSourceMappings'+paymentChannelToFundSourceMappingIndex).button().click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					    e.preventDefault();
+					});
+
+					//initialize button for adding new "charge to income account mappings"
+				  	var chargeToIncomeAccountMappingIndex = 0;
+					if(undefined === data.feeToIncomeAccountMappings || data.feeToIncomeAccountMappings === null) {
+						chargeToIncomeAccountMappingIndex = 0;
+					} else {
+						chargeToIncomeAccountMappingIndex = data["feeToIncomeAccountMappings"].length;
+						//initialize all delete buttons for "charge to income account mappings"
+						$("#feeToIncomeAccountMappingTable tbody tr .removeFeeToIncomeAccountMappings").each(function(index) {
+							 $(this).button().click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						});
+					}
+				  	$("#addFeeToIncomeAccountMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+				  		chargeToIncomeAccountMappingIndex++;
+						var crudObject = new Object();
+						crudObject["index"] = chargeToIncomeAccountMappingIndex;
+						crudObject["chargeOptions"] = data.chargeOptions;
+						crudObject["incomeAccountOptions"] = data["accountingMappingOptions"]["incomeAccountOptions"];
+						var chargeToIncomeAccountMappingHtml = $("#loanProductAddFeeToIncomeAccountRowTemplate").render(crudObject);
+						$("#feeToIncomeAccountMappingTable tbody").append(chargeToIncomeAccountMappingHtml);
+			  		
+						$('#removeFeeToIncomeAccountMappings'+chargeToIncomeAccountMappingIndex)
+						.button()
+						.click(function(e) {
+							$(this).closest('tr').remove();
+		            		e.preventDefault();
+		            	});
+					    e.preventDefault();
+					});
+
+					//initialize button for adding new "penalty to income account mappings"
+				  	var penaltyToIncomeAccountMappingIndex = 0;
+					if(undefined === data.penaltyToIncomeAccountMappings || data.penaltyToIncomeAccountMappings === null) {
+						penaltyToIncomeAccountMappingIndex = 0;
+					} else {
+						penaltyToIncomeAccountMappingIndex = data["penaltyToIncomeAccountMappings"].length;
+						//initialize all delete buttons for "charge to income account mappings"
+						$("#penaltyToIncomeAccountMappingTable tbody tr .removePenaltyToIncomeAccountMappings").each(function(index) {
+							 $(this).button().click(function(e) {
+								$(this).closest('tr').remove();
+				            	e.preventDefault();
+				            });
+						});
+					}
+				  	$("#addPenaltyToIncomeAccountMappings").button({icons: {primary: "ui-icon-circle-plus"}}).click(function(e) {
+				  		penaltyToIncomeAccountMappingIndex++;
+						var crudObject = new Object();
+						crudObject["index"] = penaltyToIncomeAccountMappingIndex;
+						crudObject["penaltyOptions"] = data.penaltyOptions;
+						crudObject["incomeAccountOptions"] = data["accountingMappingOptions"]["incomeAccountOptions"];
+						var chargeToIncomeAccountMappingHtml = $("#loanProductAddPenaltyToIncomeAccountRowTemplate").render(crudObject);
+						$("#penaltyToIncomeAccountMappingTable tbody").append(chargeToIncomeAccountMappingHtml);
+			  		
+						$('#removePenaltyToIncomeAccountMappings'+ penaltyToIncomeAccountMappingIndex)
+						.button()
+						.click(function(e) {
 							$(this).closest('tr').remove();
 		            		e.preventDefault();
 		            	});
@@ -6033,6 +6124,22 @@ function showCenter(centerId){
 					$('.datepickerfield').datepicker({constrainInput: true, defaultDate: 0, maxDate: 0, dateFormat: custom.datePickerDateFormat});
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
 					
+					$('.noyeardatepickerfield').datepicker(
+					{
+						constrainInput: true, 
+						defaultDate: 0, 
+						dateFormat: 'dd MM',
+						changeMonth: true,
+				        changeYear: false,
+				        showButtonPanel: false,
+				        beforeShow : function(input, inst) {
+				        	$('#ui-datepicker-div').addClass('hide-year-label');
+				        },
+				        onClose: function() {
+				        	$('#ui-datepicker-div').removeClass('hide-year-label');
+				        }
+				    });
+
 					$('#savingschargestable tbody tr:last .savingsapp-removeSavingsCharge').button({icons: {primary: "ui-icon-trash"},text: false}).click(function(e) {
 						$(this).closest('tr').remove();
 	            		e.preventDefault();
@@ -6144,6 +6251,15 @@ function showCenter(centerId){
 		
 		var serializedArray = {};
 		serializedArray = $('#entityform').serializeObject(serializationOptions);	
+
+		// deleting all charges while modifying a loan application
+		// sends a request to the platform without any json element called
+		// "charges". The platform does not understand that charges have been deleted
+		// Sending an empty array of charges in this associative array instead
+		// for handling this scenario
+		if(!("charges" in serializedArray)){
+		    serializedArray["charges"] = [];
+		}
 
 		var groupId = null;
 		
@@ -6776,6 +6892,27 @@ function loadLoan(loanId, parenttab) {
 				});
 				
 				//$('button.adjustloanrepayment span').text(doI18N('button.loanTransaction.adjust'));
+
+				$('.viewloanrepayment'+loanId).button({
+                    icons : {
+                        primary : "ui-icon-info"
+                    },
+                    text : false
+                }).click(function(e) {
+					var linkId = this.id;
+					var loanAndRepaymentId = linkId.replace("viewrepaymentbtn", "");
+					var ids = loanAndRepaymentId.split("_");
+					var loanId = ids[0];
+					var transactionId = ids[1];
+					var getUrl = 'loans/' + loanId + '/transactions/' + transactionId + '/?template=true';
+					
+					var templateSelector = "#transactionLoanFormTemplateView";
+					var width = 500; 
+					var height = 550;
+											
+				    popupDialogWithReadOnlyFormView(getUrl,"dialog.title.view.loan.repayment", templateSelector, width, height);
+				    e.preventDefault();
+				});
 				
 				$('.undoloanrepayment'+loanId).button({
                     icons : {
@@ -8337,6 +8474,17 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 				dialogDiv.html(formHtml);
 	}
 
+	//apply noyeardatapickerfield stayle
+	$('.noyeardatepickerfield').datepicker({constrainInput: true,defaultDate: 0, dateFormat: 'dd MM',
+		changeMonth: true,changeYear: false,showButtonPanel: false,
+		beforeShow : function(input, inst) {
+        	$('#ui-datepicker-div').addClass('hide-year-label');
+        },
+        onClose: function() {
+        	$('#ui-datepicker-div').removeClass('hide-year-label');
+        }
+    });
+
 	if (templateSelector === "#savingsChargeFormTemplate") {
 		//attaching charges to savings from popup
 		$('#chargeOptions').change(function(e) {
@@ -8345,6 +8493,21 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 					var partialFormHtml = $("#savingsChargeDetailsPartialFormTemplate").render(chargeData);
 					$("#savingsChargeDetails").html(partialFormHtml);
 					$('.datepickerfieldnoconstraint').datepicker({constrainInput: true, defaultDate: 0, dateFormat: custom.datePickerDateFormat});
+					$('.noyeardatepickerfield').datepicker(
+					{
+						constrainInput: true, 
+						defaultDate: 0, 
+						dateFormat: 'dd MM',
+						changeMonth: true,
+				        changeYear: false,
+				        showButtonPanel: false,
+				        beforeShow : function(input, inst) {
+				        	$('#ui-datepicker-div').addClass('hide-year-label');
+				        },
+				        onClose: function() {
+				        	$('#ui-datepicker-div').removeClass('hide-year-label');
+				        }
+				    });					
 				}
 				executeAjaxRequest("charges/" + $(this).val() + "?template=true", "GET", "", selectChargeForSavingsSuccess, formErrorFunction);    	
 			}
@@ -8684,6 +8847,100 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 	}
 
 	if (templateSelector === "#chargeFormTemplate") {
+		var loanChargeCalculationOptions = data.loanChargeCalculationTypeOptions;
+		var loanChargeTimeOptions = data.loanChargeTimeTypeOptions;
+		var savingsChargeCalculationOptions = data.savingsChargeCalculationTypeOptions;
+		var savingsChargeTimeOptions = data.savingsChargeTimeTypeOptions;
+		if(data.id !== undefined){
+			$("#chargeAppliesTo").attr("disabled", true);
+			if(data.chargeAppliesTo.code === 'chargeAppliesTo.loan'){
+				$("label[for='chargePaymentMode']").show();
+				$("select[for='chargePaymentMode']").show();
+				$("select[for='chargePaymentMode']").attr("disabled",false);
+			}else if(data.chargeAppliesTo.code === 'chargeAppliesTo.savings'){
+				$("select[for='chargePaymentMode']").attr("disabled",true);
+				$("label[for='chargePaymentMode']").hide();
+				$("select[for='chargePaymentMode']").hide();
+			}
+		}
+		if(data.chargeTimeType !== undefined){
+			if(data.chargeTimeType.code === 'chargeTimeType.annualFee'){
+				$("label[for='feeOnMonthDay']").show();
+				$("input[for='feeOnMonthDay']").show();
+				$("label[for='feeInterval']").hide();
+				$("input[for='feeInterval']").attr("disabled",true);
+				$("input[for='feeInterval']").hide();
+			}else if(data.chargeTimeType.code === 'chargeTimeType.monthlyFee'){
+				$("label[for='feeOnMonthDay']").show();
+				$("input[for='feeOnMonthDay']").show();
+				$("label[for='feeInterval']").show();
+				$("input[for='feeInterval']").show();
+				$("input[for='feeInterval']").attr("disabled",false);				
+				$("input[for='feeOnMonthDay']").attr("disabled",false);
+			}else{
+				$("input[for='feeOnMonthDay']").attr("disabled",true);
+				$("input[for='feeInterval']").attr("disabled",true);
+				$("label[for='feeOnMonthDay']").hide();
+				$("input[for='feeOnMonthDay']").hide();
+				$("label[for='feeInterval']").hide();
+				$("input[for='feeInterval']").hide();
+			}
+
+		}else{
+			$("input[for='feeOnMonthDay']").attr("disabled",true);
+			$("input[for='feeInterval']").attr("disabled",true);
+			$("label[for='feeOnMonthDay']").hide();
+			$("input[for='feeOnMonthDay']").hide();
+			$("label[for='feeInterval']").hide();
+			$("input[for='feeInterval']").hide();
+
+		}
+
+		$("#chargeAppliesTo").change(function() {
+			var selectedValue = $(this).val();
+
+			//enable chargePaymentMode for loans
+			if(selectedValue == "1"){
+				$("label[for='chargePaymentMode']").show();
+				$("select[for='chargePaymentMode']").show();
+				$("select[for='chargePaymentMode']").attr("disabled",false);
+			}else if(selectedValue == "2"){
+				$("select[for='chargePaymentMode']").attr("disabled",true);
+				$("label[for='chargePaymentMode']").hide();
+				$("select[for='chargePaymentMode']").hide();
+			}
+
+  			$('#chargeCalculationType').empty().append(function(){
+	            var output = '<option value="">--Select One--</option>';
+	            var calculationOptions;
+	            if (selectedValue == "1"){
+					calculationOptions = data.loanChargeCalculationTypeOptions;
+				}else if (selectedValue == "2"){
+					calculationOptions = data.savingsChargeCalculationTypeOptions;
+				}
+
+				$.each(calculationOptions, function(key, value){
+	               output += '<option value=' + value.id + '>' + doI18N(value.code) + '</option>';
+	            });
+	            return output;
+	        });
+
+	        $('#chargeTimeType').empty().append(function(){
+	            var output = '<option value="">--Select One--</option>';
+	            var collectionTypeOptions;
+	            if (selectedValue == "1"){
+					collectionTypeOptions = data.loanChargeTimeTypeOptions;
+				}else if (selectedValue == "2"){
+					collectionTypeOptions = data.savingsChargeTimeTypeOptions;
+				}				
+
+				$.each(collectionTypeOptions, function(key, value){
+	               output += '<option value=' + value.id + '>' + doI18N(value.code) + '</option>';
+	            });
+	            return output;
+	        });
+		});
+
 		$("#chargeCalculationType").change(function() {
 			var selectedValue = $(this).val();
 	  		if (selectedValue == "1"){
@@ -8693,11 +8950,33 @@ function repopulateOpenPopupDialogWithFormViewData(data, postUrl, submitType, ti
 			}
 		});
 
-		if(data.chargeCalculationType.id == "1") {
-			$("label[for='amount']").text(doI18N('label.amount'));
-		} else if (data.chargeCalculationType.id == "2") {
-			$("label[for='amount']").text(doI18N('label.percentage'));
-		}
+		$("#chargeTimeType").change(function() {
+			var selectedValue = $(this).val();
+			if (selectedValue == "7" || selectedValue == "6"){
+				$("label[for='feeOnMonthDay']").show();
+				$("input[for='feeOnMonthDay']").show();
+				$("input[for='feeOnMonthDay']").attr("disabled",false);
+				
+				if (selectedValue == "7"){
+					$("label[for='feeInterval']").show();
+					$("input[for='feeInterval']").show();
+					$("input[for='feeInterval']").attr("disabled",false);
+				}
+			}else{
+				$("input[for='feeOnMonthDay']").attr("disabled",true);
+				$("input[for='feeInterval']").attr("disabled",true);
+				$("label[for='feeOnMonthDay']").hide();
+				$("input[for='feeOnMonthDay']").hide();
+				$("label[for='feeInterval']").hide();
+				$("input[for='feeInterval']").hide();
+			}
+		});
+
+		//if(data.chargeCalculationType.id == "1") {
+		//	$("label[for='amount']").text(doI18N('label.amount'));
+		//} else if (data.chargeCalculationType.id == "2") {
+		//	$("label[for='amount']").text(doI18N('label.percentage'));
+		//}
 	}
 
 	if (templateSelector === "#attendanceFormTemplate") {
@@ -10222,6 +10501,7 @@ function loadSavingAccount(accountId,parenttab) {
 
 	var clientId = null;
 	var groupId = null;
+	var annualFeeId = null;
 
 	var accountUrl = 'savingsaccounts/' + accountId+ "?associations=all";
 
@@ -10233,7 +10513,10 @@ function loadSavingAccount(accountId,parenttab) {
 		
 		clientId = data.clientId;
 		groupId = data.groupId;
-		
+		if(data.annualFee){
+			annualFeeId = data.annualFee.id;
+		}
+
 		var currentTabIndex = $newtabs.tabs('option', 'active');
     	var currentTabAnchor = $newtabs.data('ui-tabs').anchors[currentTabIndex];
     	
@@ -10441,8 +10724,8 @@ function loadSavingAccount(accountId,parenttab) {
 		
 		$('.savingsaccountapplyannualfee'+accountId).button({icons: {primary: "ui-icon-clock"}}).click(function(e) {
 			
-			var postUrl = 'savingsaccounts/' + accountId + '?command=applyAnnualFees';
-			var getUrl = 'savingsaccounts/' + accountId + '/?template=true';
+			var postUrl = 'savingsaccounts/' + accountId + '/charges/' + annualFeeId + '?command=paycharge';
+			var getUrl = 'savingsaccounts/' + accountId + '/charges/' + annualFeeId;
 			var templateSelector = "#savingsAccountApplyAnnualFeeFormTemplate";
 			var width = 400; 
 			var height = 280;
@@ -10507,6 +10790,30 @@ function loadSavingAccount(accountId,parenttab) {
 			popupDialogWithFormView(getUrl, postURL, 'POST', 'dialog.title.adjust', templateSelector, width, height, saveSuccessFunctionReloadSaving);
 		    
 			e.preventDefault();		});
+
+		$('.viewtransaction').button({
+                icons : {
+                    primary : "ui-icon-info"
+                },
+                text : false
+            }).click(function(e) {
+				var linkId = this.id;
+				var transactionAndAccountId = linkId.replace("viewtransaction", "");
+				var ids = transactionAndAccountId.split("_");
+				var transactionId = ids[0];
+				var savingsAccountId = ids[1];
+				var getUrl = 'savingsaccounts/' + savingsAccountId + '/transactions/' + transactionId + '?template=true';
+				var templateSelector = "#savingsAccountTransactionFormViewTemplate";
+				var width = 400; 
+				var height = 280;
+				var defaultOffset = offsetToApprovalDate;
+
+			eval(genSaveSuccessFunctionReloadSaving(accountId,parenttab));
+			popupDialogWithReadOnlyFormView(getUrl,"dialog.title.view", templateSelector, width, height);
+		    
+			e.preventDefault();		});
+
+
 		
 		$('.showtransferdetails').button({icons : {primary : "ui-icon-info"},text : false}).click(function(e) {
 			

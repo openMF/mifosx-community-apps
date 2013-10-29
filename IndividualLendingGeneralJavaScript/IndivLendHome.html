@@ -13,8 +13,8 @@
 <link rel="stylesheet" type="text/css"	href="resources/libs/DataTables-1.9.4/media/css/demo_table_jui.css" />
 <link rel="stylesheet" type="text/css"	href="resources/libs/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css" />
 <link rel="stylesheet" type="text/css"	href="resources/libs/jquery-ui-timepicker-addon.css" />
-<link rel="stylesheet" type="text/css"	href="resources/stretchyreporting/stretchyreporting-1.10.0.RELEASE.css">
-<link rel="stylesheet" type="text/css"	href="resources/IndividualLendingCode-1.10.0.RELEASE.css" />
+<link rel="stylesheet" type="text/css"	href="resources/stretchyreporting/stretchyreporting-1.12.0.RELEASE.css">
+<link rel="stylesheet" type="text/css"	href="resources/IndividualLendingCode-1.12.0.RELEASE.css" />
 <link rel="stylesheet" type="text/css"  href="resources/libs/jquery.multiselect.css" />
 <link rel="stylesheet" type="text/css"  href="resources/libs/jWizard/jquery.jWizard.css" />
 
@@ -85,16 +85,16 @@ JQuery plugins:
 <script type="text/javascript"	src="resources/libs/printThis.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform additional data tables -->
-<script type="text/javascript" src="resources/stretchydatatables-1.10.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/stretchydatatables-1.12.0.RELEASE.js"></script>
 
 <!-- JQuery plug-in to show Mifos X Platform reporting -->
-<script type="text/javascript"	src="resources/stretchyreporting/stretchyreporting-1.10.0.RELEASE.js"></script>
+<script type="text/javascript"	src="resources/stretchyreporting/stretchyreporting-1.12.0.RELEASE.js"></script>
 
 <!-- JQuery plug-in to check if links and buttons should be shown in Mifos X UI -->
-<script type="text/javascript" src="resources/MifosXUI-1.10.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/MifosXUI-1.12.0.RELEASE.js"></script>
 
 <!-- JQuery plug-in to manage permissions and role permissions in the UI as the UI code is quite elaborate -->
-<script type="text/javascript" src="resources/MifosXPermissions-1.10.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/MifosXPermissions-1.12.0.RELEASE.js"></script>
 
 <!-- Google charts api (used in stretchyreporting) -->
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -103,8 +103,8 @@ JQuery plugins:
 </script>
 
 <!-- This is a single Page javascript app - IndividualLendingCode.js has functions which switch functionality by replacing the html in the #container div -->
-<script type="text/javascript" src="resources/IndividualLendingCode-1.10.0.RELEASE.js"></script>
-<script type="text/javascript" src="resources/SetTenantLoadTenantConfig-1.10.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/IndividualLendingCode-1.12.0.RELEASE.js"></script>
+<script type="text/javascript" src="resources/SetTenantLoadTenantConfig-1.12.0.RELEASE.js"></script>
 <script type="text/javascript"  src="resources/libs/ckeditor/ckeditor.js"></script>
 </head>
 
@@ -1486,7 +1486,7 @@ $(document).ready(function() {
 		{{#each clientDocuments}}
 		<tr>
 			<td>
-				<a href="#" onclick="createClientDocumentForTemplate('{{=template.name}}',{{=template.id}}, {{=$parent.parent.data.clientId}});">{{=template.name}}</a>
+				<a href="#" onclick="createClientDocumentForTemplate('{{=name}}',{{=id}}, {{=$parent.parent.data.clientId}});">{{=name}}</a>
 			</td>
 		</tr>
 		{{/each}}
@@ -2914,6 +2914,24 @@ $(document).ready(function() {
 	<fieldset>
 		<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
 		<legend>{{=$ctx.doI18N("form.legend.charge.details")}}</legend>
+		<label for="chargeAppliesTo">{{=$ctx.doI18N("form.label.charge.applies.to")}}</label>
+		<select id="chargeAppliesTo" name="chargeAppliesTo" title="" style="width: 300px">
+			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
+			{{#if chargeAppliesTo}}
+				{{#each chargeAppliesToOptions}}
+					{{#if $ctx.number($parent.parent.data.chargeAppliesTo.id)===$ctx.number(id)}}
+						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+					{{#else}}
+						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+					{{/if}}
+				{{/each}}
+			{{#else}}
+				{{#each chargeAppliesToOptions}}
+					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+				{{/each}}
+			{{/if}}
+		</select>
+		<hr>
 		<label for="name">{{=$ctx.doI18N("label.name")}}</label>
 		<input id="name" name="name" title="" type="text" value="{{=name}}" size="25"/>
 		<label for="currencyCode">{{=$ctx.doI18N("label.currency")}}</label>
@@ -2933,34 +2951,29 @@ $(document).ready(function() {
 				{{/each}}
 			{{/if}}
 		</select>
-		<label for="chargeAppliesTo">{{=$ctx.doI18N("form.label.charge.applies.to")}}</label>
-		<select id="chargeAppliesTo" name="chargeAppliesTo" title="" style="width: 300px">
-			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-			{{#if chargeAppliesTo}}
-				{{#each chargeAppliesToOptions}}
-					{{#if $ctx.number($parent.parent.data.chargeAppliesTo.id)===$ctx.number(id)}}
-						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-					{{#else}}
-						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-					{{/if}}
-				{{/each}}
-			{{#else}}
-				{{#each chargeAppliesToOptions}}
-					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-				{{/each}}
-			{{/if}}
-		</select>
+		
 		<label for="chargeTimeType">{{=$ctx.doI18N("form.label.charge.time")}}</label>
 		<select id="chargeTimeType" name="chargeTimeType" title="" style="width: 300px">
 			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 			{{#if chargeTimeType}}
-				{{#each chargeTimeTypeOptions}}
-					{{#if $ctx.number($parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
-						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-					{{#else}}
-						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-					{{/if}}
-				{{/each}}
+				{{#if $parent.data.chargeAppliesTo.id === 1}}
+					{{#each $parent.parent.data.loanChargeTimeTypeOptions}}
+						{{#if $ctx.number($parent.parent.parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+						{{/if}}
+					{{/each}}
+				{{/if}}
+				{{#if $parent.data.chargeAppliesTo.id === 2}}
+					{{#each $parent.parent.data.savingsChargeTimeTypeOptions}}
+						{{#if $ctx.number($parent.parent.parent.parent.data.chargeTimeType.id)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+						{{/if}}
+					{{/each}}
+				{{/if}}
 			{{#else}}
 				{{#each chargeTimeTypeOptions}}
 					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
@@ -2971,13 +2984,24 @@ $(document).ready(function() {
 		<select id="chargeCalculationType" name="chargeCalculationType" title="" style="width: 300px">
 			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 			{{#if chargeCalculationType}}
-				{{#each chargeCalculationTypeOptions}}
-					{{#if $ctx.number($parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
-						<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-					{{#else}}
-						<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-					{{/if}}
-				{{/each}}
+				{{#if $parent.data.chargeAppliesTo.id === 1}}
+					{{#each $parent.parent.data.loanChargeCalculationTypeOptions}}
+						{{#if $ctx.number($parent.parent.parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+						{{/if}}
+					{{/each}}
+				{{/if}}
+				{{#if $parent.data.chargeAppliesTo.id === 2}}
+					{{#each $parent.parent.data.savingsChargeCalculationTypeOptions}}
+						{{#if $ctx.number($parent.parent.parent.parent.data.chargeCalculationType.id)===$ctx.number(id)}}
+							<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
+						{{#else}}
+							<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
+						{{/if}}
+					{{/each}}
+				{{/if}}
 			{{#else}}
 				{{#each chargeCalculationTypeOptions}}
 					<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
@@ -2985,7 +3009,7 @@ $(document).ready(function() {
 			{{/if}}
 		</select>
 		<label for="chargePaymentMode">{{=$ctx.doI18N("form.label.charge.payment.mode")}}</label>
-		<select id="chargePaymentMode" name="chargePaymentMode" title="" style="width: 300px">
+		<select for="chargePaymentMode" id="chargePaymentMode" name="chargePaymentMode" title="" style="width: 300px">
 			<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
 			{{#if chargePaymentMode}}
 				{{#each chargePaymetModeOptions}}
@@ -3001,6 +3025,11 @@ $(document).ready(function() {
 				{{/each}}
 			{{/if}}
 		</select>
+		<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+		<label for="feeOnMonthDay">{{=$ctx.doI18N("form.label.charge.feeOnMonthDay")}}</label>
+		<input for="feeOnMonthDay" id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}"/>
+		<label for="feeInterval">{{=$ctx.doI18N("form.label.charge.feeInterval")}}</label>
+		<input for="feeInterval" id="feeInterval" name="feeInterval" title="" type="text" value="{{=$ctx.number(feeInterval)}}" size="2"/> <label for="feeInterval">month(s)</label>
 		<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amount, 2)}}" size="25"/>
 		<label for="active">{{=$ctx.doI18N("label.active")}}</label>
@@ -3016,6 +3045,7 @@ $(document).ready(function() {
 		{{#else}}
 			<input type="checkbox" id="penalty" name="penalty" title="" style="width: 125px;" />
 		{{/if}}
+
 	</fieldset>
 </form>
 </script>
@@ -5012,10 +5042,25 @@ $(document).ready(function() {
 			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>			
 		{{/if}}
 
-		{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+		{{#if chargeTimeType.code === 'chargeTimeType.specifiedDueDate'}}
 			<label for="dueDate">Due for collection on:</label>
 			<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueDate)}}" />
+		{{#else if chargeTimeType.code === 'chargeTimeType.annualFee'}}
+			<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+			<label for="feeOnMonthDay">Due on:</label>
+			<input id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+		{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+			<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+			<label for="feeOnMonthDay">Due on:</label>
+			<input id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+		{{#else}}
+
+			&nbsp;
 		{{/if}}
+		{{#if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+			<label for="feeInterval">{{=$ctx.doI18N("form.label.charge.feeInterval")}}</label>
+			<input id="feeInterval" name="feeInterval" title="" type="text" size="2" value="{{=$ctx.number(feeInterval)}}" />
+		{{#else}}
 		</div>
 	</fieldset>
 </form>
@@ -5805,6 +5850,7 @@ $(document).ready(function() {
 						{{#if interestPortion}}<tr><td style="border: 0px; text-align: left; ">Interest: {{=$ctx.monetaryValue(currency, interestPortion)}}</td></tr>{{/if}}
 						{{#if feeChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Fees: {{=$ctx.monetaryValue(currency, feeChargesPortion)}}</td></tr>{{/if}}
 						{{#if penaltyChargesPortion}}<tr><td style="border: 0px; text-align: left; ">Penalities: {{=$ctx.monetaryValue(currency, penaltyChargesPortion)}}</td></tr>{{/if}}
+						{{#if overpaymentPortion}}<tr><td style="border: 0px; text-align: left; ">Overpayment: {{=$ctx.monetaryValue(currency, overpaymentPortion)}}</td></tr>{{/if}}
 					</table>
 				</td>
 				{{#if transfer}}
@@ -5812,6 +5858,7 @@ $(document).ready(function() {
 				{{#else}}
 				{{#if $ctx.isAdjustableTransaction(type.id)}}
 				<td>
+				    <button id="viewrepaymentbtn{{=$parent.parent.parent.parent.data.id}}_{{=id}}" class="viewloanrepayment{{=$parent.parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.view")}}</button>
 				    <button id="adjustrepaymentbtn{{=$parent.parent.parent.parent.data.id}}_{{=id}}" class="adjustloanrepayment{{=$parent.parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.adjust")}}</button>
 				    <button id="undorepaymentbtn{{=$parent.parent.parent.parent.data.id}}_{{=id}}" class="undoloanrepayment{{=$parent.parent.parent.parent.data.id}}">{{=$ctx.doI18N("button.loanTransaction.undo")}}</button>
 				</td>
@@ -6353,6 +6400,47 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="transactionLoanFormTemplateView" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	{{=$ctx.globalDate(date)}}
+
+	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
+	{{=$ctx.monetaryValue(currency, amount)}}
+
+	{{#if paymentDetailData}}
+			<label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
+			{{=$ctx.doI18N(name)}}
+	
+		{{#if paymentDetailData.accountNumber}}
+			<label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
+			{{=paymentDetailData.accountNumber}}
+		{{/if}}
+
+		{{#if paymentDetailData.checkNumber}}
+			<label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
+			{{=paymentDetailData.checkNumber}}
+		{{/if}}
+		
+		{{#if paymentDetailData.routingCode}}
+			<label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
+			{{=paymentDetailData.routingCode}} 
+		{{/if}}
+
+		{{#if paymentDetailData.receiptNumber}}
+			<label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
+			{{=paymentDetailData.receiptNumber}}
+		{{/if}} 
+
+		{{#if paymentDetailData.bankNumber}}
+			<label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
+			{{=paymentDetailData.bankNumber}}
+		{{/if}} 
+	{{/if}}
+   
+</form>
+</script>
+
 <script id="loanTransactionWriteOffFormTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
 	<div id="formerrors"></div>
@@ -6551,54 +6639,6 @@ $(document).ready(function() {
 					</td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("label.annualFee")}}</td>
-					<td>
-						<input id="annualFeeAmount" name="annualFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, annualFeeAmount)}}" style="width: 75px;" />
-						{{=$ctx.doI18N("label.on")}}
-						<input id="annualFeeOnMonthDay" name="annualFeeOnMonthDay" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(annualFeeOnMonthDay)}}" />
-					</td>
-				</tr>
-				<tr>
-					<td>{{=$ctx.doI18N("label.withdrawalFee")}}</td>
-					<td>
-						{{#if withdrawalFeeType}}
-
-							{{#if $ctx.number(withdrawalFeeType.id)===2}}
-							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, withdrawalFeeAmount)}}" style="width: 75px;" />
-							{{#else}}
-							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" value="{{=$ctx.decimal(withdrawalFeeAmount, 4)}}" style="width: 75px;" />
-							{{/if}}
-
-							<select name="withdrawalFeeType" id="withdrawalFeeType"  title="" style="width: 135px;">
-							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#if withdrawalFeeType}}
-							{{#each withdrawalFeeTypeOptions}}
-									{{#if $ctx.number($parent.parent.data.withdrawalFeeType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-									{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-									{{/if}}
-							{{/each}}
-							{{#else}}
-								{{#each withdrawalFeeTypeOptions}}
-									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-								{{/each}}
-							{{/if}}
-							</select>
-						{{#else}}
-							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" 
-										value="{{=$ctx.monetaryValue(currency, withdrawalFeeAmount)}}" style="width: 75px;" />
-
-							<select name="withdrawalFeeType" id="withdrawalFeeType"  title="" style="width: 135px;">
-							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#each withdrawalFeeTypeOptions}}
-								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-							{{/each}}
-							</select>
-						{{/if}}
-					</td>
-				</tr>
-				</tr>
 					<td>
 						{{#if withdrawalFeeForTransfers}}
 							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" checked />
@@ -6801,6 +6841,25 @@ $(document).ready(function() {
 								</select> 
 							</td>
 						</tr>
+						<tr>
+							<td>{{=$ctx.doI18N("label.incomeFromPenalties")}}</td>
+							<td>
+								<select id="incomeFromPenaltyAccountId" name="incomeFromPenaltyAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each accountingMappingOptions.incomeAccountOptions}}
+										{{#if $parent.parent.data.accountingMappings}}
+											{{#if $parent.parent.parent.data.accountingMappings.incomeFromPenaltyAccountId === id)}}
+													<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+											{{#else}}
+													<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+											{{/if}}
+										{{#else}}
+											<option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+										{{/if}}
+									{{/each}}
+								</select> 
+							</td>
+						</tr>
 					</table>
 				</fieldset>
 				</div>
@@ -6848,6 +6907,91 @@ $(document).ready(function() {
 									</select>
 								</td>
 								<td><button id="removePaymentChannelToFundSourceMappings{{=$itemNumber}}" class="removePaymentChannelToFundSourceMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+					<!--Fees to Income Account Mappings -->
+					<h3>{{=$ctx.doI18N("label.fee.specific.income.account")}}</h3>    
+					<button id="addFeeToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+					<table id="feeToIncomeAccountMappingTable" class="pretty displayschedule">
+						<thead>
+							<tr>
+							<th scope="col">{{=$ctx.doI18N("label.fee")}}</th>
+							<th scope="col">{{=$ctx.doI18N("label.incomeAccountForCharge")}}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each feeToIncomeAccountMappings}}
+							<tr>
+								<td>
+									<select id="feeToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" name="feeToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" title="" style="width: 180px">
+										{{#each $parent.parent.data.chargeOptions}}
+											{{#if $ctx.number($parent.parent.data.chargeId)===$ctx.number(id)}}
+												<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+											{{#else}}
+												<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+											{{/if}}
+										{{/each}}
+
+									</select>
+								   
+								</td>
+								<td>
+									<select id="feeToIncomeAccountMappings[{{=$itemNumber}}][incomeAccountId]" name="feeToIncomeAccountMappings[{{=$itemNumber}}][incomeAccountId]" title="" style="width: 180px">
+										{{#each $parent.parent.data.accountingMappingOptions.incomeAccountOptions}}
+											{{#if $ctx.number($parent.parent.data.incomeAccountId)===$ctx.number(id)}}
+												<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+											{{#else}}
+												<option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
+											{{/if}}
+										{{/each}}
+									</select>
+								</td>
+								<td><button id="removeFeeToIncomeAccountMappings{{=$itemNumber}}" class="removeFeeToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+					<br/>
+					<!--Penalty to Income Account Mappings -->
+					<h3>{{=$ctx.doI18N("label.penalty.specific.income.account")}}</h3>    
+					<button id="addPenaltyToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.add")}}</button>
+					<table id="penaltyToIncomeAccountMappingTable" class="pretty displayschedule">
+						<thead>
+							<tr>
+							<th scope="col">{{=$ctx.doI18N("label.penalty")}}</th>
+							<th scope="col">{{=$ctx.doI18N("label.incomeAccountForCharge")}}</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each penaltyToIncomeAccountMappings}}
+							<tr>
+								<td>
+									<select id="penaltyToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" name="penaltyToIncomeAccountMappings[{{=$itemNumber}}][chargeId]" title="" style="width: 180px">
+										{{#each $parent.parent.data.penaltyOptions}}
+											{{#if $ctx.number($parent.parent.data.chargeId)===$ctx.number(id)}}
+												<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}</option>
+											{{#else}}
+												<option value="{{=$ctx.number(id)}}">{{=name}}</option>
+											{{/if}}
+										{{/each}}
+
+									</select>
+								   
+								</td>
+								<td>
+									<select id="penaltyToIncomeAccountMappings[{{=$itemNumber}}][incomeAccountId]" name="penaltyToIncomeAccountMappings[{{=$itemNumber}}][incomeAccountId]" title="" style="width: 180px">
+										{{#each $parent.parent.data.accountingMappingOptions.incomeAccountOptions}}
+											{{#if $ctx.number($parent.parent.data.incomeAccountId)===$ctx.number(id)}}
+												<option value="{{=$ctx.number(id)}}" selected="selected">{{=name}}({{=glCode}})</option>
+											{{#else}}
+												<option value="{{=$ctx.number(id)}}">{{=name}}({{=glCode}})</option>
+											{{/if}}
+										{{/each}}
+									</select>
+								</td>
+								<td><button id="removePenaltyToIncomeAccountMappings{{=$itemNumber}}" class="removePenaltyToIncomeAccountMappings">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 							</tr>
 							{{/each}}
 						</tbody>
@@ -7153,64 +7297,15 @@ $(document).ready(function() {
 					</td>
 				</tr>
 				<tr>
-					<td>{{=$ctx.doI18N("label.annualFee")}}</td>
 					<td>
-						<input id="annualFeeAmount" name="annualFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, annualFeeAmount)}}" style="width: 75px;" />
-						{{=$ctx.doI18N("label.on")}}
-						<input id="annualFeeOnMonthDay" name="annualFeeOnMonthDay" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(annualFeeOnMonthDay)}}" />
-					</td>
-				</tr>
-				<tr>
-					<td>{{=$ctx.doI18N("label.withdrawalFee")}}</td>
-					<td>
-						{{#if withdrawalFeeType}}
-
-							{{#if $ctx.number(withdrawalFeeType.id)===2}}
-							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, withdrawalFeeAmount)}}" style="width: 75px;" />
-							{{#else}}
-							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" value="{{=$ctx.decimal(withdrawalFeeAmount, 4)}}" style="width: 75px;" />
-							{{/if}}
-
-							<select name="withdrawalFeeType" id="withdrawalFeeType"  title="" style="width: 135px;">
-							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#if withdrawalFeeType}}
-							{{#each withdrawalFeeTypeOptions}}
-									{{#if $ctx.number($parent.parent.data.withdrawalFeeType.id)===$ctx.number(id)}}
-									<option value="{{=$ctx.number(id)}}" selected="selected">{{=$ctx.doI18N(code)}}</option>
-									{{#else}}
-									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-									{{/if}}
-							{{/each}}
-							{{#else}}
-								{{#each withdrawalFeeTypeOptions}}
-									<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-								{{/each}}
-							{{/if}}
-							</select>
-						{{#else}}
-							<input id="withdrawalFeeAmount" name="withdrawalFeeAmount" title="" type="text" 
-										value="{{=$ctx.monetaryValue(currency, withdrawalFeeAmount)}}" style="width: 75px;" />
-
-							<select name="withdrawalFeeType" id="withdrawalFeeType"  title="" style="width: 135px;">
-							<option value="">{{=$ctx.doI18N("form.option.select.one")}}</option>
-							{{#each withdrawalFeeTypeOptions}}
-								<option value="{{=$ctx.number(id)}}">{{=$ctx.doI18N(code)}}</option>
-							{{/each}}
-							</select>
-						{{/if}}
-					</td>
-				</tr>
-				</tr>
-					<td >
 						{{#if withdrawalFeeForTransfers}}
 							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" checked />
 						{{#else}}
 							<input type="checkbox" name="withdrawalFeeForTransfers" id="withdrawalFeeForTransfers" value="{{=withdrawalFeeForTransfers}}" />
 						{{/if}}
-					{{=$ctx.doI18N("label.withdrawalFee.transfer")}}
-				</td>
+						{{=$ctx.doI18N("label.withdrawalFee.transfer")}}
+					</td>
 				</tr>
-				<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
 			</table>
 		</div>
 		<!-- savings charges -->
@@ -7232,6 +7327,7 @@ $(document).ready(function() {
 							<th scope="col">Amount</th>
 							<th scope="col">Collected on</th>
 							<th scope="col">Date</th>
+							<th scope="col">Repeats every</th>
 							<th scope="col">Actions</th>
 							</tr>
 						</thead>
@@ -7248,7 +7344,7 @@ $(document).ready(function() {
 								</td>
 								<td>
 							{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
-								<input id="charges[{{=$parent.itemNumber}}][amount]" name="charges[{{=$parent.itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;"/>
+								<input id="charges[{{=$parent.itemNumber}}][amount]" name="charges[{{=$parent.itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.decimal(amount, 6)}}" style="width: 125px;"/>
 							{{#else}}
 								<input id="charges[{{=$parent.itemNumber}}][amount]" name="charges[{{=$parent.itemNumber}}][amount]" class="chargeAmount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>
 							{{/if}}
@@ -7259,17 +7355,33 @@ $(document).ready(function() {
 									</select>
 								</td>
 								<td>
-									<input id="charges[{{=$itemNumber}}][dueDate]" 
-											name="charges[{{=$itemNumber}}][dueDate]" 
+									{{#if chargeTimeType.code === 'chargeTimeType.specifiedDueDate'}}
+									<input id="charges[{{=$parent.itemNumber}}][dueDate]" 
+											name="charges[{{=$parent.itemNumber}}][dueDate]" 
 											class="dueDate datepickerfieldnoconstraint" 
 											title="" 
 											value="{{=$ctx.globalDate(dueDate)}}" />
+									{{#else if chargeTimeType.code === 'chargeTimeType.annualFee'}}
+										<input id="charges[{{=$parent.itemNumber}}][feeOnMonthDay]" name="charges[{{=$parent.itemNumber}}][feeOnMonthDay]" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+									{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+										<input id="charges[{{=$parent.itemNumber}}][feeOnMonthDay]" name="charges[{{=$parent.itemNumber}}][feeOnMonthDay]" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+									{{#else}}
+
+									{{/if}}
+								</td>
+								<td>
+									{{#if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+										<input id="charges[{{=$parent.itemNumber}}][feeInterval]" name="charges[{{=$parent.itemNumber}}][feeInterval]" title="" type="text" size="2" value="{{=$ctx.number(feeInterval)}}" />
+									{{#else}}
+
+									{{/if}}
 								</td>
 								<td><button id="savingsapp-removeSavingsCharge{{=$itemNumber}}" class="savingsapp-removeSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 							</tr>
 							{{/each}}
 						</tbody>
 					</table>
+					<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
 				</div>
 			{{/if}}
 		{{/if}}
@@ -7305,7 +7417,9 @@ $(document).ready(function() {
 				<button id="addsavingschargebtn{{=id}}" class="addsavingscharge{{=id}}">{{=$ctx.doI18N("button.addSavingsCharge")}}</button>
 				{{/if}}
 				{{#if $ctx.showTask("APPLYANNUALFEESAVINGSACCOUNT")}}
-				<button id="savingsaccountapplyannualfeebtn{{=id}}" class="savingsaccountapplyannualfee{{=id}}">{{=$ctx.doI18N("button.applyAnnualFee")}}</button>
+					{{#if annualFee}}
+						<button id="savingsaccountapplyannualfeebtn{{=id}}" class="savingsaccountapplyannualfee{{=id}}">{{=$ctx.doI18N("button.applyAnnualFee")}}</button>
+					{{/if}}
 				{{/if}}
 
 				{{#if $ctx.showTask("APPLYANNUALFEESAVINGSACCOUNT")}}
@@ -7421,6 +7535,24 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalAnnualFees)}}</span>
 		</div>
 		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalFeeCharges")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalFeeCharge)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalPenaltyCharges")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalPenaltyCharge)}}</span>
+		</div>
+		<!--
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalFeeChargesWaived")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalFeeChargesWaived)}}</span>
+		</div>
+		<div class="row">
+			<span class="longrowlabel">{{=$ctx.doI18N("label.totalPenaltyChargesWaived")}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalPenaltyChargesWaived)}}</span>
+		</div>
+		-->
+		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.totalInterestEarned")}}</span>
 			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, summary.totalInterestEarned)}}</span>
 		</div>
@@ -7458,26 +7590,34 @@ $(document).ready(function() {
 			<span class="rowvalue">{{=$ctx.doI18N(interestCalculationDaysInYearType.code)}}</span>
 		</div>
 		<br/>
-		{{#if withdrawalFeeType}}
-			{{#if $ctx.number(withdrawalFeeType.id)===1}}
+		{{#if withdrawalFee}}
+			{{#if $ctx.number(withdrawalFee.chargeCalculationType.id)===1}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawalFee")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, withdrawalFeeAmount)}} {{=$ctx.doI18N(withdrawalFeeType.code)}}</span>
+			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, withdrawalFee.amount)}} {{=$ctx.doI18N(withdrawalFee.chargeCalculationType.code)}}</span>
 		</div>
 			{{#else}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.withdrawalFee")}}</span>
-			<span class="rowvalue">{{=$ctx.decimal(withdrawalFeeAmount, 4)}} {{=$ctx.doI18N(withdrawalFeeType.code)}}</span>
+			<span class="rowvalue">{{=$ctx.decimal(withdrawalFee.percentage, 4)}} {{=$ctx.doI18N(withdrawalFee.chargeCalculationType.code)}}</span>
 		</div>
 			{{/if}}
 		{{/if}}
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.annualFee")}}</span>
-			<span class="rowvalue">{{=$ctx.moneyFormatted(currency, annualFeeAmount)}} {{=$ctx.doI18N("label.on")}} {{=$ctx.monthDayDate(annualFeeOnMonthDay)}}</span>
+			{{#if annualFee}}
+				<span class="rowvalue">{{=$ctx.moneyFormatted(currency, annualFee.amount)}} 
+			{{/if}}
+			{{=$ctx.doI18N("label.on")}} 
+			{{#if annualFee}}
+				{{=$ctx.monthDayDate(annualFee.feeOnMonthDay)}}</span>
+			{{/if}}
 		</div>
 		<div class="row">
 			<span class="longrowlabel">{{=$ctx.doI18N("label.annualFeeNextDueDate")}}</span>
-			<span class="rowvalue">{{=$ctx.globalDate(annualFeeNextDueDate)}}</span>
+			{{#if annualFee}}
+				<span class="rowvalue">{{=$ctx.globalDate(annualFee.dueDate)}}</span>
+			{{/if}}
 		</div>
 	</div>
 	{{#if charges}}
@@ -7489,6 +7629,8 @@ $(document).ready(function() {
 					<th>{{=$ctx.doI18N("table.heading.name")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.feeOrPenalty")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.paymentDueAt")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.repeatsOn")}}</th>
+					<th>{{=$ctx.doI18N("table.heading.repeatsEvery")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.dueAsOf")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.calculationType")}}</th>
 					<th>{{=$ctx.doI18N("table.heading.due")}}</th>
@@ -7510,9 +7652,21 @@ $(document).ready(function() {
 					{{/if}}
 
 						<td>{{=$ctx.doI18N(chargeTimeType.code)}}</td>
-					{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
+					{{#if chargeTimeType.code === 'chargeTimeType.specifiedDueDate'}}
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td>{{=$ctx.globalDate(dueDate)}}</td>
+					{{#else if chargeTimeType.code === 'chargeTimeType.annualFee'}}
+						<td>{{=$ctx.monthDayDate(feeOnMonthDay)}}</td>
+						<td>&nbsp;</td>
+						<td>{{=$ctx.globalDate(dueDate)}}</td>
+					{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+						<td>{{=$ctx.monthDayDate(feeOnMonthDay)}}</td>
+						<td>{{=$ctx.number(feeInterval)}}</td>
 						<td>{{=$ctx.globalDate(dueDate)}}</td>
 					{{#else}}
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					{{/if}}
 
@@ -7527,20 +7681,22 @@ $(document).ready(function() {
 						<td>{{=$ctx.moneyFormatted(currency, amountOutstanding)}}</td>
 						<td>
 							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.submitted.and.pending.approval"}}  
-							  <button id="modifysavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.edit")}}</button>
+						  		<button id="modifysavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.edit")}}</button>
 							{{/if}}   
 							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.active"}}    
 								{{#if amountOutstanding === 0 }}
 
-								{{#else}}  
-							  	<button id="paysavings{{=$parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.pay")}}</button>
+								{{#else}}
+									{{#if chargeTimeType.code === "chargeTimeType.withdrawalFee"}}  
+
+									{{#else}}
+									  	<button id="paysavings{{=$parent.parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.pay")}}</button>
+									  	<button id="waivesavings{{=$parent.parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.waive")}}</button>
+									{{/if}}
 							  	{{/if}}
 							{{/if}}
-							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.active"}}    
-							  	<button id="waivesavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.waive")}}</button>
-							{{/if}}
 							{{#if $parent.parent.data.status.code == "savingsAccountStatusType.submitted.and.pending.approval"}}    
-							  <button id="deletesavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.delete")}}</button>
+						  		<button id="deletesavings{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.savings.charge.delete")}}</button>
 							{{/if}}  
 						</td>
 					</tr>
@@ -7583,11 +7739,14 @@ $(document).ready(function() {
 			{{/if}}
 
 			{{#if $ctx.isCredit(transactionType)}}
-			<td>&nbsp;</td>
-			<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
+				<td>&nbsp;</td>
+				<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
+			{{#else if $ctx.isDebit(transactionType)}}
+				<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
+				<td>&nbsp;</td>
 			{{#else}}
-			<td>{{=$ctx.monetaryValue($parent.data.currency, $parent.data.amount)}}</td>
-			<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
 			{{/if}}
 			<td>{{=$ctx.monetaryValue(currency, runningBalance)}}</td>
 			{{#if transfer}}
@@ -7598,6 +7757,7 @@ $(document).ready(function() {
 				{{#else}}
 					<td>
 						{{#if transactionType.deposit or transactionType.withdrawal}}
+						<button id="viewtransaction{{=id}}_{{=accountId}}" class="viewtransaction">{{=$ctx.doI18N("VIEW")}}</button>
 						<button id="adjusttransaction{{=id}}_{{=accountId}}" class="adjusttransaction">{{=$ctx.doI18N("ADJUST")}}</button>
 						{{/if}}
 						<button id="undotransactionbtn{{=id}}_{{=accountId}}" class="undotransaction">{{=$ctx.doI18N("button.undo")}}</button>
@@ -7630,6 +7790,10 @@ $(document).ready(function() {
 		{{#else}}
 			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amountOutstanding)}}" style="width: 125px;"/>			
 		{{/if}}
+
+		<label for="dueDate">Payment date:</label>
+		<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueDate)}}" />
+
 		</div>
 	</fieldset>
 </form>
@@ -7686,10 +7850,28 @@ $(document).ready(function() {
 		{{/if}}
 	{{/each}}
 </select>
-{{#if $ctx.number(chargeTimeType.id)===$ctx.number(2)}}
-<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
-<label for="dueDate">Due for collection on:</label>
-<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=dueDate}}" />
+
+{{#if chargeTimeType.code === 'chargeTimeType.specifiedDueDate'}}
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<label for="dueDate">Due for collection on:</label>
+	<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=dueDate}}" />
+{{#else if chargeTimeType.code === 'chargeTimeType.annualFee'}}
+	<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+	<label for="feeOnMonthDay">Due on:</label>
+	<input id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+	<input type="hidden" id="monthDayFormat" name="monthDayFormat" value="dd MMM" />
+	<label for="feeOnMonthDay">Due on:</label>
+	<input id="feeOnMonthDay" name="feeOnMonthDay" class="noyeardatepickerfield" title="" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+{{#else}}
+	&nbsp;
+{{/if}}
+
+{{#if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+	<label for="feeInterval">{{=$ctx.doI18N("form.label.charge.feeInterval")}}</label>
+	<input id="feeInterval" name="feeInterval" title="" type="text" size="2" value="{{=$ctx.number(feeInterval)}}" />
+{{#else}}
+	&nbsp;
 {{/if}}
 </script>
 
@@ -7945,7 +8127,16 @@ $(document).ready(function() {
 	<table>
 		<tr>
 			<td>{{=$ctx.doI18N("label.transactionDate")}}</td>
-			<td><input id="annualFeeTransactionDate" name="annualFeeTransactionDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(annualFeeNextDueDate)}}"/></td>
+			<td><input id="dueDate" name="dueDate" title="" class="datepickerfield" value="{{=$ctx.globalDate(dueDate)}}"/></td>
+		</tr>
+			<td>{{=$ctx.doI18N("label.amount")}}</td>
+			<td>
+				{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
+					<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;" readonly="true"/>
+				{{#else}}
+					<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;" readonly="true"/>			
+				{{/if}}
+			</td>
 		</tr>
 	</table>
 </form>
@@ -8038,6 +8229,48 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="savingsAccountTransactionFormViewTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	{{=$ctx.globalDate(date)}}
+
+	<label for="transactionAmount">{{=$ctx.doI18N("label.amount")}}</label>
+	{{=$ctx.monetaryValue(currency, amount)}}
+
+	
+	{{#if paymentDetailData}}
+			<label for="paymentTypeId">{{=$ctx.doI18N("label.payment.type")}}</label>
+			{{=$ctx.doI18N(name)}}
+	
+		{{#if paymentDetailData.accountNumber}}
+			<label id="accountNumberLabel" for="accountNumber" class="paymentDetail accountDetail">{{=$ctx.doI18N("label.account.number")}}</label>
+			{{=paymentDetailData.accountNumber}}
+		{{/if}}
+
+		{{#if paymentDetailData.checkNumber}}
+			<label id="checkNumberLabel" for="checkNumber" class="paymentDetail checkDetail">{{=$ctx.doI18N("label.check.number")}}</label>
+			{{=paymentDetailData.checkNumber}}
+		{{/if}}
+		
+		{{#if paymentDetailData.routingCode}}
+			<label id="routingCodeLabel" for="routingCode" class="paymentDetail routingCodeDetail">{{=$ctx.doI18N("label.routing.code")}}</label>
+			{{=paymentDetailData.routingCode}} 
+		{{/if}}
+
+		{{#if paymentDetailData.receiptNumber}}
+			<label id="receiptNumberLabel" for="receiptNumber" class="paymentDetail receiptDetail">{{=$ctx.doI18N("label.receipt.number")}}</label>
+			{{=paymentDetailData.receiptNumber}}
+		{{/if}} 
+
+		{{#if paymentDetailData.bankNumber}}
+			<label id="bankNumberLabel" for="bankNumber" class="paymentDetail bankDetail">{{=$ctx.doI18N("label.bank.number")}}</label>
+			{{=paymentDetailData.bankNumber}}
+		{{/if}} 
+	{{/if}}
+   
+</form>
+</script>
+
 <script id="savingsApplicationAddChargeRowTemplate" type="text/x-jquery-tmpl">
 <tr>
 	<input id="charges[{{=index}}][chargeId]" name="charges[{{=index}}][chargeId]" class="chargeId" title="" type="hidden" value="{{=id}}" />
@@ -8066,7 +8299,25 @@ $(document).ready(function() {
 		</select>
 	</td>
 	<td>
-		<input id="charges[{{=index}}][dueDate]" name="charges[{{=index}}][dueDate]" class="dueDate datepickerfieldnoconstraint" title="" value="" />
+		{{#if chargeTimeType.code === 'chargeTimeType.specifiedDueDate'}}
+			<input id="charges[{{=index}}][dueDate]" name="charges[{{=index}}][dueDate]" class="dueDate datepickerfieldnoconstraint" title="" value="" />
+		{{#else if chargeTimeType.code === 'chargeTimeType.annualFee'}}
+			<input id="charges[{{=index}}][feeOnMonthDay]" name="charges[{{=index}}][feeOnMonthDay]" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+
+		{{#else if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+			<input id="charges[{{=index}}][feeOnMonthDay]" name="charges[{{=index}}][feeOnMonthDay]" title="" type="text" class="noyeardatepickerfield" value="{{=$ctx.monthDayDate(feeOnMonthDay)}}" />
+
+		{{#else}}
+			&nbsp;
+		{{/if}}
+
+	</td>
+	<td>
+		{{#if chargeTimeType.code === 'chargeTimeType.monthlyFee'}}
+			<input id="charges[{{=index}}][feeInterval]" name="charges[{{=index}}][feeInterval]" title="" type="text" size="2" value="{{=$ctx.number(feeInterval)}}" />
+		{{#else}}
+			&nbsp;
+		{{/if}}
 	</td>
 	<td><button id="savingsapp-removeSavingsCharge{{=index}}" class="savingsapp-removeSavingsCharge">{{=$ctx.doI18N("widget.multiselect.button.remove")}}</button></td>
 </tr>
@@ -8656,6 +8907,31 @@ $(document).ready(function() {
 									{{#each accountingMappingOptions.expenseAccountOptions}}
 										{{#if $parent.parent.data.accountingMappings}}
 											{{#if $parent.parent.parent.data.accountingMappings.writeOffAccountId === id)}}
+													<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
+											{{#else}}
+													<option value="{{=id}}">{{=name}}({{=glCode}})</option>
+											{{/if}}
+										{{#else}}
+											<option value="{{=id}}">{{=name}}({{=glCode}})</option>                           
+										{{/if}}
+									{{/each}}
+								</select> 
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<fieldset style="width: 80%;border-top: 1px dotted">
+					<legend>{{=$ctx.doI18N("legend.liabilities")}}</legend>	
+					<table style="width:100%">
+						<tr>
+							<td>{{=$ctx.doI18N("label.overpayments")}}</td>
+							<td>
+								<img src="resources/img/help.png" height="16" width="16" id="accTooltip" title="{{=$ctx.doI18N(\"overPaymentLiabilityTooltip\")}}">
+								<select id="overpaymentLiabilityAccountId" name="overpaymentLiabilityAccountId" title="" >
+									<option value="">{{=$ctx.doI18N("option.glAccount.first.choice")}}</option>
+									{{#each accountingMappingOptions.liabilityAccountOptions}}
+										{{#if $parent.parent.data.accountingMappings}}
+											{{#if $parent.parent.parent.data.accountingMappings.overpaymentLiabilityAccountId === id)}}
 													<option value="{{=id}}" selected="true">{{=name}}({{=glCode}})</option>
 											{{#else}}
 													<option value="{{=id}}">{{=name}}({{=glCode}})</option>
@@ -12728,12 +13004,10 @@ $(document).ready(function() {
 	</div>
 
 	<br />
-			
 	<textarea id="templateeditor" name="text"></textarea>
-
 	<br />
 
-	<button id="createTemplate"> create template </button>
+	<button id="submitTemplate">{{=$ctx.doI18N("button.save")}}</button>
 </form>
 </div>
 </script>
