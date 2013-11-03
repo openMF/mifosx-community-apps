@@ -10468,13 +10468,13 @@ $(document).ready(function() {
 			<table>
 				<tr>
 					<td>
-						<label for="repeats">{{=$ctx.doI18N("label.calendar.repeats")}}</label>
-						<select id="repeats" class="repeats" name="repeats" title="">
+						<label for="frequency">{{=$ctx.doI18N("label.calendar.repeats")}}</label>
+						<select id="frequency" class="frequency" name="frequency" title="">
 						</select>
 					</td>
 					<td>
-						<label for="repeatsEvery">{{=$ctx.doI18N("label.calendar.repeats.every")}}</label>
-						<select id="repeatsEvery" class="repeatsEvery" name="repeatsEvery" title="">
+						<label for="interval">{{=$ctx.doI18N("label.calendar.repeats.every")}}</label>
+						<select id="interval" class="interval" name="interval" title="">
 						</select> <span class=repeatsOnText>day(s)</span>
 					</td>
 				</tr>
@@ -10483,13 +10483,13 @@ $(document).ready(function() {
 						<br>
 						<div id="weeklyoptions">
 						<label for="repeats">{{=$ctx.doI18N("label.calendar.repeats.on")}}</label>
-						<input type="radio" id="mon" value="MO" name="repeatson[]" checked="checked">MON
-						<input type="radio" id="tue" value="TU" name="repeatson[]"/>TUE
-						<input type="radio" id="wed" value="WE" name="repeatson[]"/>WED
-						<input type="radio" id="thu" value="TH" name="repeatson[]"/>THU
-						<input type="radio" id="fri" value="FR" name="repeatson[]"/>FRI
-						<input type="radio" id="sat" value="SA" name="repeatson[]"/>SAT
-						<input type="radio" id="sun" value="SU" name="repeatson[]"/>SUN
+						<input type="radio" id="mon" value="1" name="repeatson[]" checked="checked">MON
+						<input type="radio" id="tue" value="2" name="repeatson[]"/>TUE
+						<input type="radio" id="wed" value="3" name="repeatson[]"/>WED
+						<input type="radio" id="thu" value="4" name="repeatson[]"/>THU
+						<input type="radio" id="fri" value="5" name="repeatson[]"/>FRI
+						<input type="radio" id="sat" value="6" name="repeatson[]"/>SAT
+						<input type="radio" id="sun" value="7" name="repeatson[]"/>SUN
 						</div>
 						<br>
 						

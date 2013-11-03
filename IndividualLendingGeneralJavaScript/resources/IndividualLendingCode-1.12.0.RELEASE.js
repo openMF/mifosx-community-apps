@@ -3994,7 +3994,7 @@ function showGroup(groupId){
 			    e.preventDefault();
 			});
 
-			$('button.closeGroupbtn span').text(doI18N('dialog.button.group.close'));
+			$('button.closeGroupbtn span').text(doI18N('dialog.button.close'));
 
 			$('.addclientbtn').button().click(function(e){
 				var linkId = this.id;
@@ -4570,7 +4570,7 @@ function showCenter(centerId){
 			    e.preventDefault();
 			});
 			
-			$('button.centerClosebtn span').text(doI18N('dialog.button.group.close'));
+			$('button.centerClosebtn span').text(doI18N('dialog.button.close'));
 
 			$('.deletecenterbtn').button({icons:{primary: "ui-icon-trash"}}).click(function(e) {
 				var linkId = this.id;
@@ -8299,7 +8299,7 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
         if (postUrl.toLowerCase().indexOf("calendars") > 0){
             
             //var rrule = convertToRfc5545();
-            var freq = $("#repeats").val();
+            var freq = $("#frequency").val();
             serializedArray = {};
             serializedArray["locale"] = $('#locale').val();
             serializedArray["dateFormat"] = $('#dateFormat').val();
@@ -8317,10 +8317,10 @@ function popupDialogWithFormViewData(data, postUrl, submitType, titleCode, templ
             }else{
 				serializedArray["repeating"] = "false";
             }
-            serializedArray["repeats"] = $("#repeats").val();
-            serializedArray["repeatsEvery"] = $('#repeatsEvery').val();
+            serializedArray["frequency"] = $("#frequency").val();
+            serializedArray["interval"] = $('#interval').val();
 
-			if(freq == "Weekly"){
+			if(freq == "2"){
 				//Get weekly details
 				var values = new Array();
 				$.each($("input[name='repeatson[]']:checked"), function() {
@@ -11212,13 +11212,13 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
 
         	//do not allow to edit frequency and repeats every
 
-        	$('#repeats').attr("disabled", true);
-        	$('#repeatsEvery').attr("disabled", true);
+        	$('#frequency').attr("disabled", true);
+        	$('#interval').attr("disabled", true);
 
         }
 
-        var repeats =  $('select.repeats');
-        var repeatsEvery = $('select.repeatsEvery');
+        var frequency =  $('select.frequency');
+        var interval = $('select.interval');
         
         if(data.repeating === true){
             $("#repeatingdetails").show();
@@ -11242,23 +11242,23 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         });
         
         var repeatsOptions = {
-            "Daily":"day(s)",
-            "Weekly":"week(s)",
-            "Monthly":"month(s)",
-            "Yearly":"year(s)"
+            "1":"day(s)",
+            "2":"week(s)",
+            "3":"month(s)",
+            "4":"year(s)"
         }
                             
         //Load Repeats options
-        repeats.empty().append(function() {
+        frequency.empty().append(function() {
             var output = '';
-            $.each(repeatsOptions, function(key, value) {
-                output += '<option value="' + key + '">' + key + '</option>';
+            $.each(data.frequencyOptions, function(key, value) {
+                output += '<option value="' + value.id + '">' + doI18N(value.code) + '</option>';
             });
             return output;
         });
 
         var repeatsEveryLimit=3;
-		repeatsEvery.empty().append(function() {
+		interval.empty().append(function() {
 			var output = '';
 			for(i=1; i<=repeatsEveryLimit; i++){
 				output += '<option value="' + i + '">' + i + '</option>';
@@ -11266,20 +11266,20 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
 			return output;
 		});
         
-        repeats.change(function() {
-            var textOpt = repeatsOptions[repeats.val()];
+        frequency.change(function() {
+            var textOpt = repeatsOptions[frequency.val()];
             $('.repeatsOnText').html(textOpt);
-            if(repeats.val() == "Weekly"){
+            if(frequency.val() == "2"){
                 $('#weeklyoptions').show();    
             }else{
                 $('#weeklyoptions').hide();
             }
-			if(repeats.val() == "Monthly"){
+			if(frequency.val() == "3"){
 				repeatsEveryLimit = 11;
 			}else{
 				repeatsEveryLimit = 3;
 			}
-			repeatsEvery.empty().append(function() {
+			interval.empty().append(function() {
 				var output = '';
 				for(i=1; i<=repeatsEveryLimit; i++){
 					output += '<option value="' + i + '">' + i + '</option>';
@@ -11328,17 +11328,17 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         
         if(data.recurrence){
             var freqoptions = {
-                'DAILY':'Daily',
-                'WEEKLY':'Weekly',
-                'MONTHLY':'Monthly',
-                'YEARLY':'Yearly'
+                '1':'Daily',
+                '2':'Weekly',
+                '3':'Monthly',
+                '4':'Yearly'
             }
             
             matches = /FREQ=([^;]+);?/.exec(data.recurrence);
             if (matches) {
                 var freq = matches[1];
                 var repeatOption = freqoptions[freq];
-                $('#repeats').val(repeatOption);
+                $('#frequency').val(repeatOption);
                 
                 //If recurring weekly, set week day
                 if(freq === 'WEEKLY'){
@@ -11362,7 +11362,7 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
             } else {
                 interval = '1';
             }
-            $('#repeatsEvery').val(interval);
+            $('#interval').val(interval);
             
             matches = /COUNT=([0-9]+);?/.exec(data.recurrence);
             if (matches) {
