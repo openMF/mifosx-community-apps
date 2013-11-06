@@ -5036,12 +5036,7 @@ $(document).ready(function() {
 
 			<label for="amount">{{=$ctx.doI18N("label.amount")}}</label>
 			
-		{{#if $ctx.number(chargeCalculationType.id)===$ctx.number(2)}}
-			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(percentage, 6)}}" style="width: 125px;"/>
-		{{#else}}
-			<input id="amount" name="amount" title="" type="text" value="{{=$ctx.monetaryValue(currency, amount)}}" style="width: 125px;"/>			
-		{{/if}}
-
+		<input id="amount" name="amount" title="" type="text" value="{{=$ctx.decimal(amountOrPercentage, 6)}}" style="width: 125px;"/>
 		{{#if chargeTimeType.code === 'chargeTimeType.specifiedDueDate'}}
 			<label for="dueDate">Due for collection on:</label>
 			<input id="dueDate" name="dueDate" class="datepickerfieldnoconstraint" title="" value="{{=$ctx.globalDate(dueDate)}}" />
