@@ -5573,11 +5573,19 @@ $(document).ready(function() {
 						{{#if $parent.parent.data.status.code == "loanStatusType.submitted.and.pending.approval"}}  
 						  <button id="modifyloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.edit")}}</button>
 						{{/if}}   
-						{{#if $parent.parent.data.status.code == "loanStatusType.active"}}    
-						  	<button id="waiveloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.waive")}}</button>
-						  	{{#if chargePayable}}    
-						  		<button id="payloan{{=$parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.pay")}}</button>
+						{{#if $parent.parent.data.status.code == "loanStatusType.active"}}  
+							{{#if chargeTimeType.code === 'chargeTimeType.instalmentFee'}}
+							  	<button id="waiveinstallloan{{=$parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.waive")}}</button>
+							  	{{#if chargePayable}}    
+							  		<button id="payinstallloan{{=$parent.parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.pay")}}</button>
+								{{/if}}
+							{{#else}}
+								<button id="waiveloan{{=$parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.waive")}}</button>
+							  	{{#if chargePayable}}    
+							  		<button id="payloan{{=$parent.parent.parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.pay")}}</button>
+								{{/if}}
 							{{/if}}
+
 						{{/if}}	
 						{{#if $parent.parent.data.status.code == "loanStatusType.submitted.and.pending.approval"}}    
 						  <button id="deleteloan{{=$parent.parent.parent.data.id}}charge{{=id}}">{{=$ctx.doI18N("link.action.delete")}}</button>
@@ -6252,6 +6260,35 @@ $(document).ready(function() {
 </form>
 </script>
 
+<script id="waiveInstallLoanChargeTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<label for="installmentNumber">{{=$ctx.doI18N("label.loan.select.installment.waive")}}</label>
+	<select id="installmentNumber" name="installmentNumber" title="" >
+		{{#each installmentChargeData}}
+			<option value="{{=$ctx.number(installmentNumber)}}">{{=installmentNumber}}</option>
+		{{/each}}
+	</select>
+</form>
+</script>
+
+<script id="payInstallLoanChargeTemplate" type="text/x-jquery-tmpl">
+<form id="entityform">
+	<div id="formerrors"></div>
+	<input type="hidden" id="dateFormat" name="dateFormat" value="{{=$ctx.currentDateFormat()}}" />
+	<input type="hidden" id="locale" name="locale" value="{{=$ctx.currentLocale()}}" />
+	<label for="installmentNumber">{{=$ctx.doI18N("label.loan.select.installment.pay")}}</label>
+	<select id="installmentNumber" name="installmentNumber" title="" >
+		{{#each installmentChargeData}}
+			<option value="{{=$ctx.number(installmentNumber)}}">{{=installmentNumber}}</option>
+		{{/each}}
+	</select>
+	<label for="transactionDate">{{=$ctx.doI18N("label.loan.transaction.on")}}</label>
+	<input id="transactionDate" name="transactionDate" title="" class="datepickerfield" value="" />
+</form>
+</script>
 
 <script id="loanDisbursementTemplate" type="text/x-jquery-tmpl">
 <form id="entityform">
