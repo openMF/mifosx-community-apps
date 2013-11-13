@@ -6422,6 +6422,40 @@ function showCenter(centerId){
 		return false;
 	}
 
+	function waiveinstallLoanCharge(loanId, loanChargeId, parenttab) {
+
+		var successFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			loadILLoan(loanId, parenttab);
+		};
+		var getUrl = 'loans/' + loanId + '/charges/'+loanChargeId;
+		var postUrl = 'loans/' + loanId + '/charges/'+loanChargeId+'?command=waive';
+		var templateSelector = "#waiveInstallLoanChargeTemplate";
+		var width = 400; 
+		var height = 250;
+		eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
+			
+		popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.charge.waive", templateSelector, width, height,  successFunction);
+		
+		return false;
+	}
+
+		function payinstallLoanCharge(loanId, loanChargeId, parenttab) {
+
+		var successFunction = function(data, textStatus, jqXHR) {
+			$("#dialog-form").dialog("close");
+			loadILLoan(loanId, parenttab);
+		};
+		var getUrl = 'loans/' + loanId + '/charges/'+loanChargeId;
+		var postUrl = 'loans/' + loanId + '/charges/'+loanChargeId+'?command=pay';
+		var templateSelector = "#payInstallLoanChargeTemplate";
+		var width = 400; 
+		var height = 250;
+		eval(genSaveSuccessFunctionReloadLoan(loanId, parenttab));
+			
+		popupDialogWithFormView(getUrl, postUrl, 'POST', "dialog.title.loan.charge.payment", templateSelector, width, height,  successFunction);
+		return false;
+	}
 	
 	function removeLoanCollateral(loanId, loanCollateralId, parenttab) {
 
@@ -7120,6 +7154,27 @@ function loadLoan(loanId, parenttab) {
                                 text: false
                             }).click(function(e) {
                                 modifyLoanCharge(loanId,val.id,parenttab);
+                                e.preventDefault();
+                            });
+                        }
+
+                         //waive loan charge buttons
+				        if(document.getElementById('waiveinstallloan'+ loanId +'charge'+val.id)){
+                            $('#waiveinstallloan'+ loanId +'charge'+val.id).button(
+                                {icons: {
+                                primary: "ui-icon-flag"},
+                                text: false
+                            }).click(function(e) {
+                                waiveinstallLoanCharge(loanId,val.id,parenttab);
+                                e.preventDefault();
+                            });
+                        }
+
+                        //Pay loan charge buttons
+				        if(document.getElementById('payinstallloan'+ loanId +'charge'+val.id)){
+                            $('#payinstallloan'+ loanId +'charge'+val.id).button(
+                                ).click(function(e) {
+                                payinstallLoanCharge(loanId,val.id,parenttab);
                                 e.preventDefault();
                             });
                         }
