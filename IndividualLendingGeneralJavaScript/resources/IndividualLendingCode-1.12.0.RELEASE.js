@@ -11383,10 +11383,20 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
         
         if(data.recurrence){
             var freqoptions = {
-                '1':'Daily',
-                '2':'Weekly',
-                '3':'Monthly',
-                '4':'Yearly'
+                'DAILY':'1',
+                'WEEKLY':'2',
+                'MONTHLY':'3',
+                'YEARLY':'4'
+            }
+
+            var bydayOptions = {
+            	'MO':'1',
+            	'TU':'2',
+            	'WE':'3',
+            	'TH':'4',
+            	'FR':'5',
+            	'SA':'6',
+            	'SU':'7'
             }
             
             matches = /FREQ=([^;]+);?/.exec(data.recurrence);
@@ -11399,7 +11409,7 @@ function getCalendar(resourceId, resource, contentDiv, action, submitType, postP
                 if(freq === 'WEEKLY'){
                     matches = /BYDAY=([^;]+);?/.exec(data.recurrence);
                     if (matches) {
-                        var byday = matches[1]; 
+                        var byday = bydayOptions[matches[1]]; 
                         $('#weeklyoptions').show();
                         
                         $.each($("input[name='repeatson[]']"), function() {
