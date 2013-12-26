@@ -11692,7 +11692,7 @@ function loadCentersAssociatedToOffice(officeId){
 
     var centersSuccessFunction =  function(data) {
         var centerObject = new Object();
-        centerObject.crudRows = data.pageItems;
+        centerObject.crudRows = data;
 
         $('#centerId').empty().append(function(){
             var output = '<option value=0> -- Select a Center -- </option>';
@@ -11717,7 +11717,7 @@ function loadCentersAssociatedToOffice(officeId){
         */
     };
     clearMeetingCalendarsAndTransactionDate();
-    executeAjaxRequest('centers?officeId=' + officeId, 'GET', "", centersSuccessFunction, formErrorFunction);
+    executeAjaxRequest('centers?paged=false&limit=-1&officeId=' + officeId, 'GET', "", centersSuccessFunction, formErrorFunction);
 }
 
 //used for collectionsheet
@@ -11812,7 +11812,7 @@ function loadGroupsAssociatedToOffice(officeId){
 
     var csGroupSearchSuccessFunction =  function(data) {
         var groupObject = new Object();
-        groupObject.crudRows = data.pageItems;
+        groupObject.crudRows = data;
 
         $('#groupId').empty().append(function(){
             var output = '<option value=0> -- Select a Group -- </option>';
@@ -11829,7 +11829,7 @@ function loadGroupsAssociatedToOffice(officeId){
         })    
         
     };
-    executeAjaxRequest('groups?officeId=' + officeId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
+    executeAjaxRequest('groups?paged=false&limit=-1&officeId=' + officeId, 'GET', "", csGroupSearchSuccessFunction, formErrorFunction);
 }
 
 /*
