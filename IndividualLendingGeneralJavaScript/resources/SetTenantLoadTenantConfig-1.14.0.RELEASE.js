@@ -852,7 +852,7 @@ custom.jqueryDataTableServerSide = {
 			"sPaginationType": "full_numbers",
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": tableId.indexOf("scheduler") > -1 ? "jobs/"+tempId.replace("schedulerjobstable","")+"/runhistory" : tableId.replace("table",""),
+			"sAjaxSource": tableId.indexOf("scheduler") > -1 ? "jobs/"+tempId.replace("schedulerjobstable","")+"/runhistory" : (tableId.indexOf("groups") > -1 || tableId.indexOf("centers") > -1)? tableId.replace("table","?paged=true") : tableId.replace("table",""),
 			"fnServerData": serverData(data),
 			"fnDrawCallback":function() {
 				$("#"+tableId+" tr").click(function() {
