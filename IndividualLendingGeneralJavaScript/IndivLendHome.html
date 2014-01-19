@@ -2087,6 +2087,10 @@ $(document).ready(function() {
 				<label for="name">{{=$ctx.doI18N("form.label.saving.product.name")}}</label></td><td>
 				<input id="name" name="name" type="text" title="" value="{{=name}}"/>
 			</td>
+			<tr>
+				<td>{{=$ctx.doI18N("label.shortname")}}</td>
+				<td><input id="shortName" name="shortName" type="text" title="" value="{{=shortName}}" style="width: 544px;"/></td>
+			</tr>
 		</tr>
 		<tr>
 			<td>
@@ -6496,6 +6500,7 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.shortName")}}</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -6503,6 +6508,7 @@ $(document).ready(function() {
 {{#each crudRows}}
 <tr>
 	<td title='{{=description}}'>{{=name}}</td>
+	<td>{{=shortName}}</td>
 	<td>
 		<a id='editsavingproduct{{=id}}' class='editsavingproduct' href='#' style='margin-right: 5px;'>{{=$ctx.doI18N("link.action.viewedit")}}</a>
 	</td>
@@ -6539,6 +6545,10 @@ $(document).ready(function() {
 			<tr>
 				<td>{{=$ctx.doI18N("label.name")}}</td>
 				<td><input id="name" name="name" type="text" title="" value="{{=name}}" style="width: 544px;"/></td>
+			</tr>
+			<tr>
+				<td>{{=$ctx.doI18N("label.shortname")}}</td>
+				<td><input id="shortName" name="shortName" type="text" title="" value="{{=shortName}}" style="width: 544px;"/></td>
 			</tr>
 			<tr>
 				<td>{{=$ctx.doI18N("label.description")}}</td>
@@ -8363,6 +8373,7 @@ $(document).ready(function() {
 	<thead>
 		<tr>
 			<th>{{=$ctx.doI18N("table.heading.name")}}</th>
+			<th>{{=$ctx.doI18N("table.heading.shortName")}}</th>
 			{{#if $ctx.showTask("VIEWFUNDS")}}
 			<th>{{=$ctx.doI18N("table.heading.fundname")}}</th>
 			{{/if}}
@@ -8375,6 +8386,7 @@ $(document).ready(function() {
 {{#each crudRows}}
 <tr>
 	<td title='{{=description}}'>{{=name}}</td>
+	<td>{{=shortName}}</td>
 	{{#if $ctx.showTask("VIEWFUNDS")}}
 	<td>{{=fundName}}</td>
 	{{/if}}
@@ -8406,6 +8418,10 @@ $(document).ready(function() {
 			<tr>
 				<td>{{=$ctx.doI18N("label.name")}}</td>
 				<td><input id="name" name="name" type="text" title="" value="{{=name}}" style="width: 544px;"/></td>
+			</tr>
+			<tr>
+				<td>{{=$ctx.doI18N("label.shortname")}}</td>
+				<td><input id="shortName" name="shortName" type="text" title="" value="{{=shortName}}" style="width: 544px;"/></td>
 			</tr>
 			<tr>
 				<td>{{=$ctx.doI18N("label.description")}}</td>
